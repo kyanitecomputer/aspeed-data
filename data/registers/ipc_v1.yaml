@@ -1,0 +1,64 @@
+# AST2600 IPC (Inter-Processor Communication) doorbell mailbox registers.
+#
+# Base address (CM3 view): 0x7E6C_0000.
+# 15-channel doorbell between the CM3 SSP and the CA7 ARM cores.
+#
+# Direction model (CM3 perspective):
+#   CM3 → CA7 ("send"): write BIT(n) to TRIG (0x18).
+#   CA7 → CM3 ("recv"): IRQ 182-196 fires; read STATUS (0x28) for pending
+#                        channels; write STATUS value to CLEAR (0x2C).
+#
+# The STATUS register at 0x28 shows both:
+#   - Channels triggered by CA7 (pending for CM3 to acknowledge).
+#   - Channels triggered by CM3 still waiting for CA7 to acknowledge.
+# Polling STATUS after TRIG write allows the CM3 to wait for CA7 completion.
+#
+# Sources:
+#   ast2600_ssp.md v0.1f  Section 3.9 – IPC registers
+#   Zephyr: drivers/ipm/ipm_ast2600.c  (IPCR_TRIG=0x18, STATUS=0x28, CLEAR=0x2C)
+
+block/IPC:
+  description: >
+    AST2600 IPC doorbell mailbox.
+    Base: 0x7E6C_0000 (CM3 view).
+    15-channel doorbell between CM3 SSP (IRQs 182-196) and CA7.
+  items:
+    - name: TRIG
+      description: >
+        IPC Trigger Register (offset 0x18).
+        Write BIT(n) to ring doorbell on channel n to the CA7.
+        Bits [14:0] correspond to channels 0-14.
+        Writing this register is a pulse; it does not hold state.
+      byte_offset: 0x18
+      fieldset: IPC_CHANNELS
+
+    - name: STATUS
+      description: >
+        IPC Status Register (offset 0x28). Read-only.
+        Each bit indicates a pending channel:
+          - Bit set by CA7 write → bit is pending for CM3 to handle.
+          - Bit set by CM3 TRIG  → still waiting for CA7 acknowledgement.
+        Read STATUS before TRIG to check if a send would be busy.
+      byte_offset: 0x28
+      fieldset: IPC_CHANNELS
+
+    - name: CLEAR
+      description: >
+        IPC Clear Register (offset 0x2C). Write-only.
+        Write the STATUS value (or BIT(n)) to acknowledge received
+        CA7→CM3 interrupts. Clears the corresponding STATUS bits.
+      byte_offset: 0x2C
+      fieldset: IPC_CHANNELS
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/IPC_CHANNELS:
+  description: >
+    IPC 15-channel bitmask. Bit n corresponds to IPC channel n (n = 0..14).
+  fields:
+    - name: CH
+      description: >
+        IPC channel bitmask (bits [14:0]).
+        Bit 0 = channel 0 (IRQ 182); bit 14 = channel 14 (IRQ 196).
+      bit_offset: 0
+      bit_size: 15

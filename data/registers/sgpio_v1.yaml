@@ -1,0 +1,257 @@
+# ASPEED Serial GPIO Master (SGPIO) registers.
+#
+# The SGPIO master is integrated within the GPIO controller block.
+# It uses 4 dedicated pins (SGPMCLK, SGPMLD, SGPMO, SGPMI) to shift
+# serial GPIO data to/from external shift registers (74LV595/74LV165 style).
+#
+# Physical pins:
+#   SGPMCLK (output) — master shift clock
+#   SGPMLD  (output) — parallel load strobe
+#   SGPMO   (output) — serial data out
+#   SGPMI   (input)  — serial data in
+#
+# Up to 128 output + 128 input bits across 16 GPIO groups (ABCD through MNOP).
+# PIN_COUNT in SGPIO_CTRL selects how many bytes to shift per cycle (1–16 = 8–128 bits).
+#
+# The SGPIO base address is inside the GPIO controller at offset 0x500.
+# GPIO base (AST1060): 0x7E78_0000, so SGPIO registers start at 0x7E78_0500.
+# This block is modeled at offset 0 within the SGPIO peripheral instance.
+#
+# Interrupt trigger decode (TYPE1, TYPE2, TYPE0 bits):
+#   TYPE1=0, TYPE2=0, TYPE0=0 → Falling-edge
+#   TYPE1=0, TYPE2=0, TYPE0=1 → Rising-edge
+#   TYPE1=0, TYPE2=1         → Dual-edge
+#   TYPE1=1, TYPE0=0         → Level-low
+#   TYPE1=1, TYPE0=1         → Level-high
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 22 – GPIO Controller (SGPIO section, GPIO500–GPIO5A8)
+
+block/SGPIO:
+  description: >
+    ASPEED Serial GPIO Master (SGPIO).
+    Embedded in the GPIO controller at base offset 0x500 (AST1060 GPIO base: 0x7E780000).
+    Instance base for this block: 0x7E780500.
+    Up to 128 output + 128 input bits via 4 serial pins.
+  items:
+    # ── Group ABCD (bytes 0–3 of shift register) ─────────────────────────────
+    - name: ABCD_DATA
+      description: >
+        Serial GPIO ABCD data value register (GPIO500).
+        Output data: bits[7:0]=A, bits[15:8]=B, bits[23:16]=C, bits[31:24]=D.
+        Also receives captured input data from SGPMI on each shift cycle.
+      byte_offset: 0x000
+      fieldset: SGPIO32
+
+    - name: ABCD_IRQ_EN
+      description: >
+        Serial GPIO ABCD interrupt enable (GPIO504).
+        Per-bit: 1=enable interrupt for that pin.
+      byte_offset: 0x004
+      fieldset: SGPIO32
+
+    - name: ABCD_IRQ_SENS0
+      description: >
+        Serial GPIO ABCD interrupt sensitivity type 0 (GPIO508).
+        Per-bit: 0=falling-edge or level-low, 1=rising-edge or level-high.
+      byte_offset: 0x008
+      fieldset: SGPIO32
+
+    - name: ABCD_IRQ_SENS1
+      description: >
+        Serial GPIO ABCD interrupt sensitivity type 1 (GPIO50C).
+        Per-bit: 0=edge trigger, 1=level trigger.
+      byte_offset: 0x00C
+      fieldset: SGPIO32
+
+    - name: ABCD_IRQ_SENS2
+      description: >
+        Serial GPIO ABCD interrupt sensitivity type 2 (GPIO510).
+        Per-bit: 0=single-edge or level, 1=dual-edge trigger.
+      byte_offset: 0x010
+      fieldset: SGPIO32
+
+    - name: ABCD_IRQ_STATUS
+      description: >
+        Serial GPIO ABCD interrupt status (GPIO514). Write-1-to-clear per bit.
+        1=interrupt pending for that pin.
+      byte_offset: 0x014
+      fieldset: SGPIO32
+
+    - name: ABCD_WDT_TOL
+      description: >
+        Serial GPIO ABCD WDT reset tolerant (GPIO518).
+        Per-bit: 1=preserve output data through WDT reset, 0=cleared by WDT.
+      byte_offset: 0x018
+      fieldset: SGPIO32
+
+    # ── Group EFGH (bytes 4–7) ────────────────────────────────────────────────
+    - name: EFGH_DATA
+      description: Serial GPIO EFGH data (GPIO51C). E=bits[7:0], F=[15:8], G=[23:16], H=[31:24].
+      byte_offset: 0x01C
+      fieldset: SGPIO32
+    - name: EFGH_IRQ_EN
+      description: Serial GPIO EFGH interrupt enable (GPIO520).
+      byte_offset: 0x020
+      fieldset: SGPIO32
+    - name: EFGH_IRQ_SENS0
+      description: Serial GPIO EFGH interrupt sensitivity type 0 (GPIO524).
+      byte_offset: 0x024
+      fieldset: SGPIO32
+    - name: EFGH_IRQ_SENS1
+      description: Serial GPIO EFGH interrupt sensitivity type 1 (GPIO528).
+      byte_offset: 0x028
+      fieldset: SGPIO32
+    - name: EFGH_IRQ_SENS2
+      description: Serial GPIO EFGH interrupt sensitivity type 2 (GPIO52C).
+      byte_offset: 0x02C
+      fieldset: SGPIO32
+    - name: EFGH_IRQ_STATUS
+      description: Serial GPIO EFGH interrupt status (GPIO530). Write-1-to-clear.
+      byte_offset: 0x030
+      fieldset: SGPIO32
+    - name: EFGH_WDT_TOL
+      description: Serial GPIO EFGH WDT reset tolerant (GPIO534).
+      byte_offset: 0x034
+      fieldset: SGPIO32
+
+    # ── Group IJKL (bytes 8–11) ───────────────────────────────────────────────
+    - name: IJKL_DATA
+      description: Serial GPIO IJKL data (GPIO538). I=bits[7:0], J=[15:8], K=[23:16], L=[31:24].
+      byte_offset: 0x038
+      fieldset: SGPIO32
+    - name: IJKL_IRQ_EN
+      description: Serial GPIO IJKL interrupt enable (GPIO53C).
+      byte_offset: 0x03C
+      fieldset: SGPIO32
+    - name: IJKL_IRQ_SENS0
+      description: Serial GPIO IJKL interrupt sensitivity type 0 (GPIO540).
+      byte_offset: 0x040
+      fieldset: SGPIO32
+    - name: IJKL_IRQ_SENS1
+      description: Serial GPIO IJKL interrupt sensitivity type 1 (GPIO544).
+      byte_offset: 0x044
+      fieldset: SGPIO32
+    - name: IJKL_IRQ_SENS2
+      description: Serial GPIO IJKL interrupt sensitivity type 2 (GPIO548).
+      byte_offset: 0x048
+      fieldset: SGPIO32
+    - name: IJKL_IRQ_STATUS
+      description: Serial GPIO IJKL interrupt status (GPIO54C). Write-1-to-clear.
+      byte_offset: 0x04C
+      fieldset: SGPIO32
+    - name: IJKL_WDT_TOL
+      description: Serial GPIO IJKL WDT reset tolerant (GPIO550).
+      byte_offset: 0x050
+      fieldset: SGPIO32
+
+    # ── Global SGPIO control and input mask ───────────────────────────────────
+    - name: SGPIO_CTRL
+      description: >
+        Serial GPIO master configuration register (GPIO554).
+        Controls enable, PIN_COUNT (bytes to shift per cycle: 1–16 = 8–128 bits),
+        and CLK_DIV (clock divider for SGPMCLK = PCLK / (2 × (CLK_DIV + 1))).
+      byte_offset: 0x054
+      fieldset: SGPIO_CTRL
+
+    - name: ABCD_INPUT_MASK
+      description: >
+        Serial GPIO ABCD input mask (GPIO558).
+        Per-bit: 1=freeze that bit's captured input (do not update from shift register).
+      byte_offset: 0x058
+      fieldset: SGPIO32
+
+    - name: EFGH_INPUT_MASK
+      description: Serial GPIO EFGH input mask (GPIO55C).
+      byte_offset: 0x05C
+      fieldset: SGPIO32
+
+    - name: IJKL_INPUT_MASK
+      description: Serial GPIO IJKL input mask (GPIO560).
+      byte_offset: 0x060
+      fieldset: SGPIO32
+
+    - name: MNOP_INPUT_MASK
+      description: Serial GPIO MNOP input mask (GPIO564).
+      byte_offset: 0x064
+      fieldset: SGPIO32
+
+    # ── Data read registers (read-only mirrors of last shifted-out value) ─────
+    - name: ABCD_DATA_READ
+      description: Serial GPIO ABCD data read (GPIO570). Read-only mirror of last ABCD_DATA driven.
+      byte_offset: 0x070
+      fieldset: SGPIO32
+    - name: EFGH_DATA_READ
+      description: Serial GPIO EFGH data read (GPIO574). Read-only mirror of EFGH_DATA.
+      byte_offset: 0x074
+      fieldset: SGPIO32
+    - name: IJKL_DATA_READ
+      description: Serial GPIO IJKL data read (GPIO578). Read-only mirror of IJKL_DATA.
+      byte_offset: 0x078
+      fieldset: SGPIO32
+    - name: MNOP_DATA_READ
+      description: Serial GPIO MNOP data read (GPIO57C). Read-only mirror of MNOP_DATA.
+      byte_offset: 0x07C
+      fieldset: SGPIO32
+
+    # ── Group MNOP (bytes 12–15) ──────────────────────────────────────────────
+    # Note: gap at 0x080–0x08C (not documented).
+    - name: MNOP_DATA
+      description: Serial GPIO MNOP data (GPIO590). M=bits[7:0], N=[15:8], O=[23:16], P=[31:24].
+      byte_offset: 0x090
+      fieldset: SGPIO32
+    - name: MNOP_IRQ_EN
+      description: Serial GPIO MNOP interrupt enable (GPIO594).
+      byte_offset: 0x094
+      fieldset: SGPIO32
+    - name: MNOP_IRQ_SENS0
+      description: Serial GPIO MNOP interrupt sensitivity type 0 (GPIO598).
+      byte_offset: 0x098
+      fieldset: SGPIO32
+    - name: MNOP_IRQ_SENS1
+      description: Serial GPIO MNOP interrupt sensitivity type 1 (GPIO59C).
+      byte_offset: 0x09C
+      fieldset: SGPIO32
+    - name: MNOP_IRQ_SENS2
+      description: Serial GPIO MNOP interrupt sensitivity type 2 (GPIO5A0).
+      byte_offset: 0x0A0
+      fieldset: SGPIO32
+    - name: MNOP_IRQ_STATUS
+      description: Serial GPIO MNOP interrupt status (GPIO5A4). Write-1-to-clear.
+      byte_offset: 0x0A4
+      fieldset: SGPIO32
+    - name: MNOP_WDT_TOL
+      description: Serial GPIO MNOP WDT reset tolerant (GPIO5A8).
+      byte_offset: 0x0A8
+      fieldset: SGPIO32
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/SGPIO32:
+  description: >
+    Generic 32-bit Serial GPIO register. Each bit corresponds to one serial GPIO pin.
+    Bits [7:0]=group_A/E/I/M, [15:8]=group_B/F/J/N, [23:16]=group_C/G/K/O, [31:24]=group_D/H/L/P.
+  fields:
+    - name: PINS
+      description: Per-pin bitmask.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SGPIO_CTRL:
+  description: Serial GPIO master configuration register.
+  fields:
+    - name: SGPIO_EN
+      description: Serial GPIO master enable. 0=disabled, 1=enabled.
+      bit_offset: 0
+      bit_size: 1
+    - name: PIN_COUNT
+      description: >
+        Number of serial GPIO bytes to shift per cycle (1–16 = 8–128 bits).
+        Values outside 1–16 are forbidden.
+        Clock period = PCLK × 2 × (CLK_DIV + 1).
+      bit_offset: 6
+      bit_size: 5
+    - name: CLK_DIV
+      description: SGPMCLK clock divider. Clock period = PCLK period × 2 × (CLK_DIV + 1).
+      bit_offset: 16
+      bit_size: 16

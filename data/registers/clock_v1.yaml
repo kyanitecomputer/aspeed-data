@@ -1,0 +1,355 @@
+# AST2600 SCU clock-gating and PLL registers.
+#
+# The CLOCK peripheral base is the SCU base: 0x7E6E_2000 (CM3 view).
+# Offsets are SCU register offsets.
+#
+# Sources:
+#   ast2600.md    v1.6   SCU080/084/090/094 – Clock Stop Control
+#   ast2600.md    v1.6   SCU200/210         – HPLL / APLL parameters
+#   ast2600.md    v1.6   SCU300/310/314     – Clock selection
+#   Zephyr: drivers/clock_control/clock_control_ast26xx.c
+#   Zephyr: include/zephyr/dt-bindings/clock/ast26xx_clock.h
+
+block/CLOCK:
+  description: >
+    AST2600 SCU clock-gating and PLL registers.
+    Base: 0x7E6E_2000 (CM3 view = SCU base).
+  items:
+    - name: CLK_STOP0_SET
+      description: >
+        Clock Stop Control Group 0 – Set Register (SCU080).
+        Write 1 to any bit to STOP (gate) the corresponding clock.
+        Write 0 has no effect.  Bits 0–31 match ASPEED_CLK_GRP_0_OFFSET.
+      byte_offset: 0x080
+      fieldset: CLK_STOP0
+
+    - name: CLK_STOP0_CLR
+      description: >
+        Clock Stop Control Group 0 – Clear Register (SCU084).
+        Write 1 to any bit to START (un-gate) the corresponding clock.
+        Write 0 has no effect.  Same bit assignment as CLK_STOP0_SET.
+      byte_offset: 0x084
+      fieldset: CLK_STOP0
+
+    - name: CLK_STOP1_SET
+      description: >
+        Clock Stop Control Group 1 – Set Register (SCU090).
+        Write 1 to STOP the corresponding clock. Bits 0–30 map to
+        ASPEED_CLK_GRP_1_OFFSET+0 through ASPEED_CLK_GRP_1_OFFSET+30.
+      byte_offset: 0x090
+      fieldset: CLK_STOP1
+
+    - name: CLK_STOP1_CLR
+      description: >
+        Clock Stop Control Group 1 – Clear Register (SCU094).
+        Write 1 to START the corresponding clock.
+      byte_offset: 0x094
+      fieldset: CLK_STOP1
+
+    - name: APLL_PARAM
+      description: >
+        APLL Parameter Register (SCU210).
+        Controls the Audio PLL frequency: f_APLL = 25 MHz × (M+1) / ((N+1) × (P+1)).
+        When BYPASS=1 the PLL is bypassed and f_APLL = 25 MHz.
+      byte_offset: 0x210
+      fieldset: PLL_PARAM
+
+    - name: CLK_SEL0
+      description: >
+        Clock Selection Register 0 (SCU300).
+        APB1 clock divider from HPLL (1200 MHz).
+        APB1 freq = 1200 MHz / ((APB1_DIV + 1) × 4).
+      byte_offset: 0x300
+      fieldset: CLK_SEL0
+
+    - name: CLK_SEL4
+      description: >
+        Clock Selection Register 4 (SCU310).
+        APB2 clock divider from HCLK (200 MHz).
+        APB2 freq = 200 MHz / ((APB2_DIV + 1) × 2).
+      byte_offset: 0x310
+      fieldset: CLK_SEL4
+
+    - name: CLK_SEL5
+      description: >
+        Clock Selection Register 5 (SCU314).
+        I3C and UART7–13 clock source selection.
+      byte_offset: 0x314
+      fieldset: CLK_SEL5
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/CLK_STOP0:
+  description: >
+    Clock Stop Control, Group 0 (SCU080 / SCU084).
+    Each bit controls one clock gate.  Writing the SET register stops the
+    clock; writing the CLR register starts it.  Bit positions match
+    ASPEED_CLK_GRP_0_OFFSET values from Zephyr ast26xx_clock.h.
+  fields:
+    - name: MCLK
+      description: Memory controller clock (MCLK).
+      bit_offset: 0
+      bit_size: 1
+    - name: ECLK
+      description: Ethernet MAC clock (ECLK).
+      bit_offset: 1
+      bit_size: 1
+    - name: GCLK
+      description: Graphics engine clock (GCLK).
+      bit_offset: 2
+      bit_size: 1
+    - name: VCLK
+      description: Video engine clock (VCLK).
+      bit_offset: 3
+      bit_size: 1
+    - name: BCLK
+      description: USB bus clock (BCLK).
+      bit_offset: 4
+      bit_size: 1
+    - name: DCLK
+      description: DP/DisplayPort clock (DCLK).
+      bit_offset: 5
+      bit_size: 1
+    - name: REF0CLK
+      description: Reference clock 0.
+      bit_offset: 6
+      bit_size: 1
+    - name: USBPORT2CLK
+      description: USB port 2 clock.
+      bit_offset: 7
+      bit_size: 1
+    # bit 8 reserved
+    - name: USBUHCICLK
+      description: USB UHCI host controller clock.
+      bit_offset: 9
+      bit_size: 1
+    - name: D1CLK
+      description: DisplayPort MN divider clock (D1CLK).
+      bit_offset: 10
+      bit_size: 1
+    # bits 11-12 reserved
+    - name: YCLK
+      description: Y/video clock.
+      bit_offset: 13
+      bit_size: 1
+    - name: USBPORT1CLK
+      description: USB port 1 clock.
+      bit_offset: 14
+      bit_size: 1
+    - name: UART5CLK
+      description: UART5 clock.
+      bit_offset: 15
+      bit_size: 1
+    # bits 16-19 reserved
+    - name: MAC1CLK
+      description: Gigabit MAC 1 clock.
+      bit_offset: 20
+      bit_size: 1
+    - name: MAC2CLK
+      description: Gigabit MAC 2 clock.
+      bit_offset: 21
+      bit_size: 1
+    # bits 22-23 reserved
+    - name: RSACLK
+      description: RSA/ECC hardware accelerator clock.
+      bit_offset: 24
+      bit_size: 1
+    - name: RVASCLK
+      description: RVAS engine clock.
+      bit_offset: 25
+      bit_size: 1
+    # bit 26 reserved
+    - name: EMMCCLK
+      description: eMMC controller clock.
+      bit_offset: 27
+      bit_size: 1
+    # bits 28-31 reserved
+
+fieldset/CLK_STOP1:
+  description: >
+    Clock Stop Control, Group 1 (SCU090 / SCU094).
+    Bit positions match ASPEED_CLK_GRP_1_OFFSET+N (subtract 32 for the bit).
+  fields:
+    - name: LCLK
+      description: LPC clock (LCLK).
+      bit_offset: 0
+      bit_size: 1
+    - name: ESPICLK
+      description: eSPI controller clock.
+      bit_offset: 1
+      bit_size: 1
+    - name: REF1CLK
+      description: Reference clock 1.
+      bit_offset: 2
+      bit_size: 1
+    # bit 3 reserved
+    - name: SDCLK
+      description: SD/SDIO controller clock.
+      bit_offset: 4
+      bit_size: 1
+    - name: LHCCLK
+      description: LPC host controller clock.
+      bit_offset: 5
+      bit_size: 1
+    # bits 6-7 reserved
+    - name: I3C0CLK
+      description: I3C controller 0 clock.
+      bit_offset: 8
+      bit_size: 1
+    - name: I3C1CLK
+      description: I3C controller 1 clock.
+      bit_offset: 9
+      bit_size: 1
+    - name: I3C2CLK
+      description: I3C controller 2 clock.
+      bit_offset: 10
+      bit_size: 1
+    - name: I3C3CLK
+      description: I3C controller 3 clock.
+      bit_offset: 11
+      bit_size: 1
+    - name: I3C4CLK
+      description: I3C controller 4 clock.
+      bit_offset: 12
+      bit_size: 1
+    - name: I3C5CLK
+      description: I3C controller 5 clock.
+      bit_offset: 13
+      bit_size: 1
+    # bits 14-15 reserved
+    - name: UART1CLK
+      description: UART1 clock.
+      bit_offset: 16
+      bit_size: 1
+    - name: UART2CLK
+      description: UART2 clock.
+      bit_offset: 17
+      bit_size: 1
+    - name: UART3CLK
+      description: UART3 clock.
+      bit_offset: 18
+      bit_size: 1
+    - name: UART4CLK
+      description: UART4 clock.
+      bit_offset: 19
+      bit_size: 1
+    - name: MAC3CLK
+      description: Gigabit MAC 3 clock.
+      bit_offset: 20
+      bit_size: 1
+    - name: MAC4CLK
+      description: Gigabit MAC 4 clock.
+      bit_offset: 21
+      bit_size: 1
+    - name: UART6CLK
+      description: UART6 clock.
+      bit_offset: 22
+      bit_size: 1
+    - name: UART7CLK
+      description: UART7 clock.
+      bit_offset: 23
+      bit_size: 1
+    - name: UART8CLK
+      description: UART8 clock.
+      bit_offset: 24
+      bit_size: 1
+    - name: UART9CLK
+      description: UART9 clock.
+      bit_offset: 25
+      bit_size: 1
+    - name: UART10CLK
+      description: UART10 clock.
+      bit_offset: 26
+      bit_size: 1
+    - name: UART11CLK
+      description: UART11 clock (SSP console UART).
+      bit_offset: 27
+      bit_size: 1
+    - name: UART12CLK
+      description: UART12 clock.
+      bit_offset: 28
+      bit_size: 1
+    - name: UART13CLK
+      description: UART13 clock.
+      bit_offset: 29
+      bit_size: 1
+    - name: FSICLK
+      description: FSI (Flexible Service Interface) clock.
+      bit_offset: 30
+      bit_size: 1
+
+fieldset/PLL_PARAM:
+  description: >
+    PLL Parameter Register layout (SCU200 = HPLL, SCU210 = APLL).
+    f_PLL = 25 MHz × (M+1) / ((N+1) × (P+1)) when BYPASS=0.
+    When BYPASS=1: f_PLL = 25 MHz (input passed through).
+    Default (reset) for APLL: bypass mode active.
+  fields:
+    - name: M
+      description: >
+        PLL M parameter (feedback divider minus 1). Range 0–8191.
+        Multiplier = M+1.
+      bit_offset: 0
+      bit_size: 13
+    - name: N
+      description: >
+        PLL N parameter (input pre-divider minus 1). Range 0–63.
+        Pre-divider = N+1.
+      bit_offset: 13
+      bit_size: 6
+    - name: P
+      description: >
+        PLL P parameter (output divider minus 1). Range 0–15.
+        Post-divider = P+1.
+      bit_offset: 19
+      bit_size: 4
+    - name: BYPASS
+      description: >
+        PLL bypass mode.
+        0 = normal PLL operation (f_out = 25 MHz × (M+1) / ((N+1) × (P+1)));
+        1 = bypass (f_out = 25 MHz clock-in).
+      bit_offset: 24
+      bit_size: 1
+
+fieldset/CLK_SEL0:
+  description: >
+    Clock Selection Register 0 (SCU300). Selects APB1 divider.
+  fields:
+    - name: APB1_DIV
+      description: >
+        APB1 clock divider selection (bits [25:23]).
+        APB1 freq = HPLL (1200 MHz) / ((APB1_DIV + 1) × 4).
+        Example: 0 → 1200/4 = 300 MHz, 1 → 1200/8 = 150 MHz, ...
+      bit_offset: 23
+      bit_size: 3
+
+fieldset/CLK_SEL4:
+  description: >
+    Clock Selection Register 4 (SCU310). Selects APB2 divider.
+  fields:
+    - name: APB2_DIV
+      description: >
+        APB2 clock divider selection (bits [11:9]).
+        APB2 freq = HCLK (200 MHz) / ((APB2_DIV + 1) × 2).
+        Example: 0 → 200/2 = 100 MHz, 1 → 200/4 = 50 MHz, ...
+      bit_offset: 9
+      bit_size: 3
+
+fieldset/CLK_SEL5:
+  description: >
+    Clock Selection Register 5 (SCU314). Selects I3C and UART7-13 clock source.
+  fields:
+    - name: I3C_CLK_APLL_DIV
+      description: >
+        I3C clock APLL divider (bits [30:28]).
+        When I3C_CLK_SRC=1: I3C freq = APLL / I3C_CLK_APLL_DIV_NUM
+        where I3C_CLK_APLL_DIV_NUM = (value == 0) ? 2 : (value + 1).
+      bit_offset: 28
+      bit_size: 3
+    - name: I3C_CLK_SRC
+      description: >
+        I3C clock source selection (bit [31]).
+        0 = HCLK (200 MHz);
+        1 = APLL divided by I3C_CLK_APLL_DIV.
+      bit_offset: 31
+      bit_size: 1

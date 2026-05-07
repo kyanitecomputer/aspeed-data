@@ -1,0 +1,350 @@
+# ASPEED AST1060 chip definition.
+#
+# The AST1060 is a standalone ARM Cortex-M4F SoC (not a BMC co-processor).
+# It communicates with a host system via SPI passthrough and I2C/I3C buses.
+# Peripheral addresses are in the CPU's native view (0x7E6xxxxx / 0x7E7xxxxx).
+#
+# Memory map:
+#   0x0000_0000 – 0x000B_FFFF : SRAM (768 KB, boot and runtime)
+#   0x8000_0000 – 0x8FFF_FFFF : FMC flash memory-mapped window (256 MB)
+#   0x9000_0000 – 0x9FFF_FFFF : SPI1 flash memory-mapped window
+#   0xB000_0000 – 0xBFFF_FFFF : SPI2 flash memory-mapped window
+#   0x7E6x_xxxx / 0x7E7x_xxxx : Peripheral registers
+#
+# Sources:
+#   ast1060v19.pdf  v1.9  November 2024
+#   ../ast1060-pac/ast1060.svd  (svd2rust-generated PAC, source of truth for IRQ numbers)
+
+name:               AST1060
+family:             ast10xx
+core:               cortex-m4f
+target:             thumbv7em-none-eabihf
+nvic_priority_bits: 4
+num_irqs:           240
+
+# ── Peripheral instances ──────────────────────────────────────────────────────
+
+peripherals:
+  # ── System Control Unit (SCU / Clock) ────────────────────────────────────
+  - name:    SCU
+    block:   clock_ast1060_v1::SCU
+    address: 0x7e6e2000
+
+  # ── Flash controllers ─────────────────────────────────────────────────────
+  - name:    FMC
+    description: Firmware Memory Controller (boot SPI), CE0-CE1
+    block:   fmc_v1::FMC
+    address: 0x7e620000
+
+  - name:    SPI1
+    description: SPI Flash Controller 1, CE0-CE1, memory window 0x9000_0000
+    block:   fmc_v1::SPI
+    address: 0x7e630000
+
+  - name:    SPI2
+    description: SPI Flash Controller 2, CE0-CE1, memory window 0xB000_0000
+    block:   fmc_v1::SPI
+    address: 0x7e640000
+
+  # ── Hash and Crypto Engine ────────────────────────────────────────────────
+  - name:    HACE
+    description: Hash and Crypto Engine (AES/DES/RC4 + SHA/MD5/HMAC)
+    block:   hace_v1::HACE
+    address: 0x7e6d0000
+
+  # ── Secure Boot Controller / OTP ─────────────────────────────────────────
+  - name:    SECURE
+    description: Secure Boot Controller and OTP engine
+    block:   secure_v1::SECURE
+    address: 0x7e6f2000
+
+  # ── GPIO ──────────────────────────────────────────────────────────────────
+  # AST1060 GPIO uses the same register layout as AST2600 gpio_v1 for ports
+  # A-U (21 ports, 149 usable pins). Ports T and U are input-only.
+  - name:    GPIO
+    description: GPIO controller (ports A-U, 149 usable pins)
+    block:   gpio_v1::GPIO
+    address: 0x7e780000
+
+  # ── Serial GPIO Master (embedded in GPIO block at +0x500) ─────────────────
+  - name:    SGPIO
+    description: Serial GPIO Master (SGPIOM), 4 groups up to 128 bits
+    block:   sgpio_v1::SGPIO
+    address: 0x7e780500
+
+  # ── Timer ─────────────────────────────────────────────────────────────────
+  - name:    TIMER
+    description: 8-channel 32-bit countdown timer
+    block:   timer_v1::TIMER
+    address: 0x7e782000
+
+  # ── UART ─────────────────────────────────────────────────────────────────
+  - name:    UART5
+    description: UART5 (16550-compatible, AST1060 debug console)
+    block:   uart_v1::UART
+    address: 0x7e784000
+
+  # ── Watchdog timers (4 instances, stride 0x80) ────────────────────────────
+  - name:    WDT1
+    block:   wdt_v1::WDT
+    address: 0x7e785000
+
+  - name:    WDT2
+    block:   wdt_v1::WDT
+    address: 0x7e785080
+
+  - name:    WDT3
+    block:   wdt_v1::WDT
+    address: 0x7e785100
+
+  - name:    WDT4
+    block:   wdt_v1::WDT
+    address: 0x7e785180
+
+  # ── UART DMA ─────────────────────────────────────────────────────────────
+  - name:    UART_DMA
+    description: UART DMA controller (UART1, UART2, UART5)
+    block:   uartdma_v1::UARTDMA
+    address: 0x7e79e000
+
+  # ── SPI Passthrough Filter / QSPI Monitor (4 instances, stride 0x1000) ───
+  - name:    SPIPF1
+    block:   spipf_v1::SPIPF
+    address: 0x7e791000
+
+  - name:    SPIPF2
+    block:   spipf_v1::SPIPF
+    address: 0x7e792000
+
+  - name:    SPIPF3
+    block:   spipf_v1::SPIPF
+    address: 0x7e793000
+
+  - name:    SPIPF4
+    block:   spipf_v1::SPIPF
+    address: 0x7e794000
+
+  # ── I3C Global ───────────────────────────────────────────────────────────
+  - name:    I3C_GLOBAL
+    description: I3C global wrapper registers (6 channels × 4 regs at 0x010-0x06C)
+    block:   i3cglobal_v1::I3CGLOBAL
+    address: 0x7e7a0000
+
+  # ── I3C instances (4 channels, stride 0x1000) ────────────────────────────
+  - name:    I3C0
+    block:   i3c_v1::I3C
+    address: 0x7e7a2000
+
+  - name:    I3C1
+    block:   i3c_v1::I3C
+    address: 0x7e7a3000
+
+  - name:    I3C2
+    block:   i3c_v1::I3C
+    address: 0x7e7a4000
+
+  - name:    I3C3
+    block:   i3c_v1::I3C
+    address: 0x7e7a5000
+
+  # ── I2C Global ────────────────────────────────────────────────────────────
+  - name:    I2C_GLOBAL
+    description: I2C/SMBus global interrupt status and clock divider
+    block:   i2cglobal_v1::I2CGLOBAL
+    address: 0x7e7b0000
+
+  # ── I2C instances (14 channels, stride 0x80, starting at base+0x80) ──────
+  - name:    I2C0
+    block:   i2c_v1::I2C
+    address: 0x7e7b0080
+
+  - name:    I2C1
+    block:   i2c_v1::I2C
+    address: 0x7e7b0100
+
+  - name:    I2C2
+    block:   i2c_v1::I2C
+    address: 0x7e7b0180
+
+  - name:    I2C3
+    block:   i2c_v1::I2C
+    address: 0x7e7b0200
+
+  - name:    I2C4
+    block:   i2c_v1::I2C
+    address: 0x7e7b0280
+
+  - name:    I2C5
+    block:   i2c_v1::I2C
+    address: 0x7e7b0300
+
+  - name:    I2C6
+    block:   i2c_v1::I2C
+    address: 0x7e7b0380
+
+  - name:    I2C7
+    block:   i2c_v1::I2C
+    address: 0x7e7b0400
+
+  - name:    I2C8
+    block:   i2c_v1::I2C
+    address: 0x7e7b0480
+
+  - name:    I2C9
+    block:   i2c_v1::I2C
+    address: 0x7e7b0500
+
+  - name:    I2C10
+    block:   i2c_v1::I2C
+    address: 0x7e7b0580
+
+  - name:    I2C11
+    block:   i2c_v1::I2C
+    address: 0x7e7b0600
+
+  - name:    I2C12
+    block:   i2c_v1::I2C
+    address: 0x7e7b0680
+
+  - name:    I2C13
+    block:   i2c_v1::I2C
+    address: 0x7e7b0700
+
+  # ── I2C pool buffers (14 channels, stride 0x20, starting at base+0xC00) ──
+  - name:    I2C0_BUF
+    description: I2C0 pool buffer SRAM (32 bytes)
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0c00
+
+  - name:    I2C1_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0c20
+
+  - name:    I2C2_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0c40
+
+  - name:    I2C3_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0c60
+
+  - name:    I2C4_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0c80
+
+  - name:    I2C5_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0ca0
+
+  - name:    I2C6_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0cc0
+
+  - name:    I2C7_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0ce0
+
+  - name:    I2C8_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0d00
+
+  - name:    I2C9_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0d20
+
+  - name:    I2C10_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0d40
+
+  - name:    I2C11_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0d60
+
+  - name:    I2C12_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0d80
+
+  - name:    I2C13_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0da0
+
+# ── Interrupt table ───────────────────────────────────────────────────────────
+#
+# Source: ast1060v19.pdf Section 8 / Table 7 (IRQ# 0–137 documented).
+# SVD cross-reference: ../ast1060-pac/ast1060.svd (authoritative IRQ numbers).
+#
+# ~45 of the 240 NVIC slots are assigned. Only named (non-reserved)
+# interrupts are listed.
+
+interrupts:
+  - { name: SRAM,            number: 0   }  # Embedded SRAM controller
+  - { name: HACE,            number: 4   }  # Hash and Crypto Engine
+  - { name: UART5,           number: 8   }  # UART5 (debug console)
+  - { name: GPIO,            number: 11  }  # GPIO controller
+  - { name: SCU,             number: 12  }  # System Control Unit
+  - { name: RTC,             number: 13  }  # RTC alarm
+
+  # IRQ 16–23: Timer 1–8
+  - { name: TIMER1,          number: 16  }
+  - { name: TIMER2,          number: 17  }
+  - { name: TIMER3,          number: 18  }
+  - { name: TIMER4,          number: 19  }
+  - { name: TIMER5,          number: 20  }
+  - { name: TIMER6,          number: 21  }
+  - { name: TIMER7,          number: 22  }
+  - { name: TIMER8,          number: 23  }
+
+  - { name: WDT,             number: 24  }  # Watchdog timer alarm
+  - { name: JTAG1_MASTER,    number: 27  }  # JTAG Master 1
+  - { name: AHBC,            number: 28  }  # AHB controller
+  - { name: FMC,             number: 39  }  # Flash Memory Controller (boot SPI)
+  - { name: GPIO2,           number: 40  }  # GPIO controller (second IRQ)
+  - { name: SCU2,            number: 41  }  # SCU (second IRQ)
+  - { name: ADC,             number: 46  }  # ADC controller
+  - { name: SGPIO_MASTER,    number: 51  }  # Serial GPIO Master
+  - { name: JTAG2_MASTER,    number: 53  }  # JTAG Master 2
+  - { name: AHBC2,           number: 55  }  # AHB controller 2
+  - { name: UART_DMA,        number: 56  }  # UART DMA engine
+  - { name: SPI1_DMA,        number: 65  }  # SPI1 DMA
+  - { name: SPI2_DMA,        number: 66  }  # SPI2 DMA
+
+  # IRQ 87–90: QSPI Monitor / SPI Passthrough Filter 1–4
+  - { name: SPIPF1,          number: 87  }
+  - { name: SPIPF2,          number: 88  }
+  - { name: SPIPF3,          number: 89  }
+  - { name: SPIPF4,          number: 90  }
+
+  # IRQ 102–105: I3C 0–3
+  - { name: I3C0,            number: 102 }
+  - { name: I3C1,            number: 103 }
+  - { name: I3C2,            number: 104 }
+  - { name: I3C3,            number: 105 }
+
+  # IRQ 110–123: I2C/SMBus 0–13
+  - { name: I2C0,            number: 110 }
+  - { name: I2C1,            number: 111 }
+  - { name: I2C2,            number: 112 }
+  - { name: I2C3,            number: 113 }
+  - { name: I2C4,            number: 114 }
+  - { name: I2C5,            number: 115 }
+  - { name: I2C6,            number: 116 }
+  - { name: I2C7,            number: 117 }
+  - { name: I2C8,            number: 118 }
+  - { name: I2C9,            number: 119 }
+  - { name: I2C10,           number: 120 }
+  - { name: I2C11,           number: 121 }
+  - { name: I2C12,           number: 122 }
+  - { name: I2C13,           number: 123 }
+
+  - { name: SMBUS_FILTER,    number: 127 }  # SMBus filter controller
+  - { name: SMBUS_MAILBOX,   number: 128 }  # SMBus mailbox
+
+  # IRQ 130–137: GPIO direct interrupts (8 pins with dedicated NVIC lines)
+  - { name: GPIO_DIRECT0,    number: 130 }
+  - { name: GPIO_DIRECT1,    number: 131 }
+  - { name: GPIO_DIRECT2,    number: 132 }
+  - { name: GPIO_DIRECT3,    number: 133 }
+  - { name: GPIO_DIRECT4,    number: 134 }
+  - { name: GPIO_DIRECT5,    number: 135 }
+  - { name: GPIO_DIRECT6,    number: 136 }
+  - { name: GPIO_DIRECT7,    number: 137 }

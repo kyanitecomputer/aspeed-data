@@ -1,0 +1,864 @@
+# ASPEED I2C/SMBus per-channel registers — New Register Mode.
+#
+# Per-channel base: 0x7E7B_0000 + 0x80 + (N × 0x80) for channel N (0–13).
+# Instance stride: 0x80 (128 bytes).
+#
+# New register mode must be enabled in I2CG0C[2]=1 before using these registers.
+# New clock divider mode (I2CG0C[1]=1) is recommended.
+#
+# Register layout (new mode, offsets relative to channel base):
+#   I2CC00  0x00  Function control (master+slave enable, modes, HS, SDA/SCL drive)
+#   I2CC04  0x04  Clock and AC timing control
+#   I2CC08  0x08  Byte buffer + bus state (shared for TX/RX in byte mode)
+#   I2CC0C  0x0C  Pool buffer control (shared master+slave)
+#   I2CM10  0x10  Master interrupt enable
+#   I2CM14  0x14  Master interrupt status (write-1-to-clear)
+#   I2CM18  0x18  Master command register
+#   I2CM1C  0x1C  Master DMA transfer length
+#   I2CS20  0x20  Slave interrupt enable
+#   I2CS24  0x24  Slave interrupt status (write-1-to-clear)
+#   I2CS28  0x28  Slave command register
+#   I2CS2C  0x2C  Slave DMA transfer length
+#   I2CM30  0x30  Master DMA TX buffer base address
+#   I2CM34  0x34  Master DMA RX buffer base address
+#   I2CS38  0x38  Slave DMA TX buffer base address
+#   I2CS3C  0x3C  Slave DMA RX buffer base address
+#   I2CS40  0x40  Slave device address (up to 3 addresses)
+#   I2CM48  0x48  Master DMA actual length status (offset 0x44 not documented)
+#   I2CS4C  0x4C  Slave DMA actual length status
+#   I2CC50  0x50  Current DMA address (read-only status)
+#   I2CC54  0x54  Current DMA remaining length (read-only status)
+#
+# Transfer modes:
+#   Byte mode: use I2CC08[15:8] (TX) and I2CC08[7:0] (RX); 1 byte at a time.
+#   Pool mode: use per-channel I2CBUFF SRAM (32 bytes max); see i2cbuff_v1.yaml.
+#   DMA mode: use SDRAM buffers via I2CM30/34 or I2CS38/3C (up to 4096 bytes).
+#   Pool and DMA are mutually exclusive per channel.
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 27 – I2C/SMBus (I2CCxx/I2CMxx/I2CSxx registers)
+
+block/I2C:
+  description: >
+    ASPEED I2C/SMBus per-channel registers (new register mode).
+    Base: 0x7E7B_0000 + 0x80 + (N × 0x80) for channel N (0–13).
+    Requires I2CG0C[2]=1 (new register mode) to be enabled globally.
+  items:
+    - name: FUNC_CTRL
+      description: >
+        Master/slave function control register (I2CC00).
+        Enables master and/or slave function, selects operating modes.
+        Clearing both ENBL_MASTER_FN and ENBL_SLAVE_FN simultaneously resets
+        all state machines and clears interrupt status registers.
+      byte_offset: 0x00
+      fieldset: I2C_FUNC_CTRL
+
+    - name: CLK_TIMING
+      description: >
+        Master/slave clock and AC timing control register (I2CC04).
+        Sets SCL frequency, data hold time, and timeout.
+        SCL frequency = FreqBase / (tCKLow + tCKHigh).
+      byte_offset: 0x04
+      fieldset: I2C_CLK_TIMING
+
+    - name: TX_RX_BUF
+      description: >
+        Master/slave byte buffer and bus state register (I2CC08).
+        Upper 16 bits: bus state (read-only).
+        Lower 16 bits: TX byte buffer [15:8], RX byte buffer [7:0].
+        Valid only in byte mode (pool and DMA modes bypass this register).
+      byte_offset: 0x08
+      fieldset: I2C_TX_RX_BUF
+
+    - name: POOL_CTRL
+      description: >
+        Master/slave pool buffer control register (I2CC0C).
+        Shared between master and slave — only one may use pool at a time.
+        Pool and DMA modes are mutually exclusive.
+      byte_offset: 0x0C
+      fieldset: I2C_POOL_CTRL
+
+    - name: MASTER_IRQ_CTRL
+      description: >
+        Master interrupt enable register (I2CM10).
+        In packet operation mode, only ENBL_PKT_CMD_DONE_INT and/or
+        ENBL_SMBUS_ALERT_INT need enabling; all other bits have no effect.
+      byte_offset: 0x10
+      fieldset: I2C_MASTER_IRQ_CTRL
+
+    - name: MASTER_IRQ_STATUS
+      description: >
+        Master interrupt status register (I2CM14). Write-1-to-clear.
+        In packet mode, clearing PKT_CMD_DONE_STS also clears bits[6:0,13:12,18:17].
+      byte_offset: 0x14
+      fieldset: I2C_MASTER_IRQ_STATUS
+
+    - name: MASTER_CMD
+      description: >
+        Master command and control register (I2CM18).
+        Step mode: set START_CMD first (highest priority), then TX_CMD or RX_CMD,
+        then STOP_CMD. Hardware auto-clears each command bit when executed.
+        Packet mode: set ENBL_MASTER_PKT_OP plus TARGET_ADDR.
+        Bit[31] (W1T_CTRL) allows write-1-to-set without read-modify-write.
+      byte_offset: 0x18
+      fieldset: I2C_MASTER_CMD
+
+    - name: MASTER_DMA_LEN
+      description: >
+        Master DMA transfer length register (I2CM1C).
+        Configure before enabling DMA TX or RX.
+        Bits[31] and [15] (W1T) allow updating TX and RX lengths independently.
+      byte_offset: 0x1C
+      fieldset: I2C_DMA_LEN
+
+    - name: SLAVE_IRQ_CTRL
+      description: >
+        Slave interrupt enable register (I2CS20).
+        In packet mode, only ENBL_PKT_CMD_DONE_INT and/or
+        ENBL_SLAVE_ADDR_NACKED_INT need enabling.
+      byte_offset: 0x20
+      fieldset: I2C_SLAVE_IRQ_CTRL
+
+    - name: SLAVE_IRQ_STATUS
+      description: >
+        Slave interrupt status register (I2CS24). Write-1-to-clear.
+        In packet mode, clearing PKT_CMD_DONE_STS also clears bits[0,2,4:5,7,15,17].
+        Software must clear bits[2:0] after setting new commands.
+      byte_offset: 0x24
+      fieldset: I2C_SLAVE_IRQ_STATUS
+
+    - name: SLAVE_CMD
+      description: >
+        Slave command and control register (I2CS28).
+        Enables slave packet operation, sets active slave address, controls
+        buffer selection, and issues transmit command.
+        Bit[31] (W1T_CTRL) allows write-1-to-set without read-modify-write.
+      byte_offset: 0x28
+      fieldset: I2C_SLAVE_CMD
+
+    - name: SLAVE_DMA_LEN
+      description: >
+        Slave DMA transfer length register (I2CS2C).
+        For slave RX, length may be set ≥ actual transfer (master may stop early).
+      byte_offset: 0x2C
+      fieldset: I2C_DMA_LEN
+
+    - name: MASTER_DMA_TX_BASE
+      description: >
+        Master DMA transmit buffer base address in SDRAM (I2CM30).
+        Configure before enabling master DMA TX. Hardware increments during transfer.
+      byte_offset: 0x30
+      fieldset: I2C_DMA_BASE_ADDR
+
+    - name: MASTER_DMA_RX_BASE
+      description: >
+        Master DMA receive buffer base address in SDRAM (I2CM34).
+      byte_offset: 0x34
+      fieldset: I2C_DMA_BASE_ADDR
+
+    - name: SLAVE_DMA_TX_BASE
+      description: >
+        Slave DMA transmit buffer base address in SDRAM (I2CS38).
+      byte_offset: 0x38
+      fieldset: I2C_DMA_BASE_ADDR
+
+    - name: SLAVE_DMA_RX_BASE
+      description: >
+        Slave DMA receive buffer base address in SDRAM (I2CS3C).
+      byte_offset: 0x3C
+      fieldset: I2C_DMA_BASE_ADDR
+
+    - name: SLAVE_ADDR
+      description: >
+        Slave device address register (I2CS40).
+        Up to three 7-bit slave addresses. Address range mode (I2CC00[9]=1):
+        SLAVE_ADDR1 ≤ incoming address ≤ SLAVE_ADDR2.
+      byte_offset: 0x40
+      fieldset: I2C_SLAVE_ADDR
+
+    # 0x44: not documented (reserved gap between I2CS40 and I2CM48)
+
+    - name: MASTER_DMA_STATUS
+      description: >
+        Master DMA actual transfer length status (I2CM48).
+        Read-only; write clears to 0. Also cleared by master packet operation
+        start and by DMA start (TX and RX cleared independently).
+      byte_offset: 0x48
+      fieldset: I2C_DMA_STATUS
+
+    - name: SLAVE_DMA_STATUS
+      description: >
+        Slave DMA actual transfer length status (I2CS4C).
+        Read-only; write clears to 0.
+      byte_offset: 0x4C
+      fieldset: I2C_DMA_STATUS
+
+    - name: CUR_DMA_ADDR
+      description: >
+        Current DMA operating address (I2CC50). Read-only.
+        Increments during DMA transfer.
+      byte_offset: 0x50
+      fieldset: I2C_CUR_DMA_ADDR
+
+    - name: CUR_DMA_LEN
+      description: >
+        Current DMA remaining length (I2CC54). Read-only.
+        Decrements during DMA transfer.
+      byte_offset: 0x54
+      fieldset: I2C_CUR_DMA_LEN
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/I2C_FUNC_CTRL:
+  description: I2C/SMBus function control register (I2CC00).
+  fields:
+    - name: ENBL_MASTER_FN
+      description: Enable master function. Clearing both master and slave resets state machines.
+      bit_offset: 0
+      bit_size: 1
+    - name: ENBL_SLAVE_FN
+      description: Enable slave function. Can coexist with master.
+      bit_offset: 1
+      bit_size: 1
+    - name: ENBL_RESPOND_GEN_CALL
+      description: Respond to I2C/SMBus General Call Address (0x00).
+      bit_offset: 2
+      bit_size: 1
+    - name: ENBL_RESPOND_ARP_HOST
+      description: Respond to SMBus ARP Host Address (0b0001_000).
+      bit_offset: 3
+      bit_size: 1
+    - name: ENBL_RESPOND_ALERT_ADDR
+      description: Respond to SMBus Alert Response Address (0b0001_100).
+      bit_offset: 4
+      bit_size: 1
+    - name: ENBL_RESPOND_DEFAULT_ADDR
+      description: Respond to I2C Default Address (0b1100_001).
+      bit_offset: 5
+      bit_size: 1
+    - name: ENBL_HIGH_SPEED_MODE
+      description: >
+        Enable High Speed master mode (3.4 Mbps).
+        Requires buffer or DMA; clock from I2CC04[19:12] with baseclk 0.
+      bit_offset: 6
+      bit_size: 1
+    - name: ENBL_SCL_DRIVE_HIGH_1T
+      description: >
+        Drive SCL actively high for 1 base clock, then tri-state (master only).
+        Supports higher transfer rates; disallows slave clock stretching.
+      bit_offset: 7
+      bit_size: 1
+    - name: ENBL_SDA_DRIVE_HIGH_1T
+      description: Drive SDA actively high for 1 PCLK cycle, then tri-state.
+      bit_offset: 8
+      bit_size: 1
+    - name: ENBL_SLAVE_ADDR_RANGE
+      description: >
+        Slave address range mode.
+        0 = exact match on addr1 and addr2.
+        1 = match if addr1 ≤ incoming ≤ addr2.
+      bit_offset: 9
+      bit_size: 1
+    - name: ENBL_SCL_DIRECT_DRIVE
+      description: >
+        SCL direct drive mode (master only, no clock stretching allowed).
+        0 = open-drain. 1 = actively drive SCL.
+      bit_offset: 14
+      bit_size: 1
+    - name: DIS_MULTI_MASTER
+      description: >
+        Disable multi-master capability (no arbitration loss detection).
+        0 = multi-master. 1 = single-master.
+      bit_offset: 15
+      bit_size: 1
+    - name: ENBL_MASTER_AUTO_SDA_RECOVERY
+      description: >
+        Master auto SDA lock recovery (single-master only).
+        Generates clock pulses to recover SDA if locked before START.
+      bit_offset: 16
+      bit_size: 1
+    - name: ENBL_BUS_AUTORELEASE_TIMEOUT
+      description: >
+        Release bus on SCL-low, SDA-low, or slave inactive timeout.
+        Requires timeout set in I2CC04[28:24]. Invalid in packet mode.
+      bit_offset: 17
+      bit_size: 1
+    - name: MASTER_PKT_RETRY_COUNT
+      description: "Master packet operation retry count. 0=none, 1=1 retry, 2=2 retries, 3=3 retries."
+      bit_offset: 18
+      bit_size: 2
+
+fieldset/I2C_CLK_TIMING:
+  description: I2C/SMBus clock and AC timing control register (I2CC04).
+  fields:
+    - name: BASE_CLK_DIV
+      description: >
+        Base clock divisor selection.
+        Old mode: 0=PCLK/1, 1=PCLK/2, ..., 15=PCLK/32768.
+        New mode: 0=PCLK/1, 1–3=PCLK/base_divider_1..3, 4=1MHz,
+        5=baseclk4/2, ..., 15=baseclk4/2048.
+      bit_offset: 0
+      bit_size: 4
+    - name: TOUT_BASE_CLK_DIV
+      description: >
+        Timeout base clock divisor.
+        Old mode: 00=PCLK/16384, 01=PCLK/65536, 10=PCLK/262144, 11=PCLK/1048576.
+        New mode: 00=baseclk4/256, 01=baseclk4/1024, 10=baseclk4/4096, 11=baseclk4/8192.
+      bit_offset: 8
+      bit_size: 2
+    - name: THDDAT
+      description: >
+        Data hold time (tHDDAT) in base clock units.
+        Master: 0=1, 1=2, 2=3, 3=4. Slave: 0=0, 1=1, 2=2, 3=3.
+      bit_offset: 10
+      bit_size: 2
+    - name: TCKLOW
+      description: >
+        Master SCL clock-low pulse width (tCKLow) in base clock units.
+        0–2 = no guarantee. 3=4 clocks. 15=16 clocks.
+      bit_offset: 12
+      bit_size: 4
+    - name: TCKIGH
+      description: >
+        Master SCL clock-high pulse width (tCKHigh) in base clock units.
+        0–2 = no guarantee. 3=4 clocks. 15=16 clocks.
+      bit_offset: 16
+      bit_size: 4
+    - name: TCKIGH_MIN
+      description: >
+        Master SCL clock-high minimum pulse width (tCKHighMin) in base clock units.
+        Hardware samples SCL feedback and extends high if needed. Must be ≤ tCKHigh.
+      bit_offset: 20
+      bit_size: 4
+    - name: TIMEOUT_TIMER
+      description: >
+        SCL-low / SDA-low / slave-active timeout (N × timeout base clock period).
+        0 = no timeout. 1–31 = N × timeout base period.
+      bit_offset: 24
+      bit_size: 5
+
+fieldset/I2C_TX_RX_BUF:
+  description: I2C/SMBus byte transmit/receive buffer and bus state (I2CC08).
+  fields:
+    - name: TX_BYTE_BUF
+      description: Transmit byte buffer (byte mode only). Write byte to send.
+      bit_offset: 0
+      bit_size: 8
+    - name: RX_BYTE_BUF
+      description: Receive byte buffer (byte mode only). Read received byte.
+      bit_offset: 8
+      bit_size: 8
+    - name: BUS_BUSY
+      description: "Bus busy. 0=idle. 1=busy (transaction in progress or idle timing not met)."
+      bit_offset: 16
+      bit_size: 1
+    - name: SDA_LINE_STATE
+      description: Sampled SDA line state.
+      bit_offset: 17
+      bit_size: 1
+    - name: SCL_LINE_STATE
+      description: Sampled SCL line state.
+      bit_offset: 18
+      bit_size: 1
+    - name: XFER_STATE
+      description: >
+        Transfer mode state machine.
+        0x0=IDLE, 0x8=MACTIVE, 0x9=MSTART, 0xA=MSTARTR, 0xB=MSTOP,
+        0xC=MTXD, 0xD=MRXACK, 0xE=MRXD, 0xF=MTXACK,
+        0x1=SWAIT, 0x4=SRXD, 0x5=STXACK, 0x6=STXD, 0x7=SRXACK, 0x3=RECOVER.
+      bit_offset: 19
+      bit_size: 4
+    - name: XFER_TIMING_STAGE
+      description: "Transfer timing stage. 0=T0, 1=T1, 2=T2, 3=T3."
+      bit_offset: 23
+      bit_size: 2
+    - name: SCL_OUTPUT
+      description: SCL output value.
+      bit_offset: 25
+      bit_size: 1
+    - name: SCL_OUTPUT_EN
+      description: SCL output enable.
+      bit_offset: 26
+      bit_size: 1
+    - name: SDA_OUTPUT
+      description: SDA output value.
+      bit_offset: 27
+      bit_size: 1
+    - name: SDA_OUTPUT_EN
+      description: SDA output enable.
+      bit_offset: 28
+      bit_size: 1
+    - name: XFER_DATA_DIR
+      description: >
+        Transfer data direction.
+        0=IDLE, 1=WAIT, 4=MTX, 5=MRX, 6=STX, 7=SRX.
+      bit_offset: 29
+      bit_size: 3
+
+fieldset/I2C_POOL_CTRL:
+  description: I2C/SMBus pool buffer control register (I2CC0C).
+  fields:
+    - name: BUF_ORGANIZATION
+      description: >
+        Pool buffer organization.
+        0 = all 32 bytes for TX or RX.
+        1 = lower 16 bytes TX, upper 16 bytes RX.
+      bit_offset: 0
+      bit_size: 1
+    - name: TX_DATA_BYTE_COUNT
+      description: Transmit pool buffer byte count. Value N = N+1 bytes (0=1, 31=32).
+      bit_offset: 8
+      bit_size: 5
+    - name: RX_POOL_BUF_SIZE
+      description: >
+        Receive pool buffer size. Value N = N+1 bytes (0=1, 31=32).
+        For slave: defines max receive size. For master: receive byte count.
+      bit_offset: 16
+      bit_size: 5
+    - name: ACTUAL_RX_POOL_BUF_SIZE
+      description: Actual received bytes in pool buffer (0–32). Write clears to 0.
+      bit_offset: 24
+      bit_size: 6
+
+fieldset/I2C_MASTER_IRQ_CTRL:
+  description: Master interrupt enable register (I2CM10).
+  fields:
+    - name: ENBL_TX_ACK_INT
+      description: Enable transmit ended with ACK interrupt.
+      bit_offset: 0
+      bit_size: 1
+    - name: ENBL_TX_NACK_INT
+      description: Enable transmit ended with NACK interrupt.
+      bit_offset: 1
+      bit_size: 1
+    - name: ENBL_RX_DONE_INT
+      description: Enable receive done interrupt.
+      bit_offset: 2
+      bit_size: 1
+    - name: ENBL_ARB_LOSS_INT
+      description: Enable arbitration loss interrupt.
+      bit_offset: 3
+      bit_size: 1
+    - name: ENBL_NORMAL_STOP_INT
+      description: Enable normal Stop condition interrupt.
+      bit_offset: 4
+      bit_size: 1
+    - name: ENBL_ABN_START_STOP_INT
+      description: Enable abnormal Start/Stop detection interrupt.
+      bit_offset: 5
+      bit_size: 1
+    - name: ENBL_SCL_TIMEOUT_INT
+      description: Enable SCL clock-low timeout interrupt.
+      bit_offset: 6
+      bit_size: 1
+    - name: ENBL_SMBUS_ALERT_INT
+      description: Enable SMBus device alert interrupt (independent of packet done).
+      bit_offset: 12
+      bit_size: 1
+    - name: ENBL_BUS_RECOVER_DONE_INT
+      description: Enable bus recover done interrupt.
+      bit_offset: 13
+      bit_size: 1
+    - name: ENBL_SDA_TIMEOUT_INT
+      description: Enable SDA data-low timeout interrupt.
+      bit_offset: 14
+      bit_size: 1
+    - name: ENBL_PKT_CMD_DONE_INT
+      description: >
+        Enable packet command done interrupt.
+        In packet mode, only this and/or ENBL_SMBUS_ALERT_INT are needed.
+      bit_offset: 16
+      bit_size: 1
+
+fieldset/I2C_MASTER_IRQ_STATUS:
+  description: Master interrupt status register (I2CM14). Write-1-to-clear.
+  fields:
+    - name: TX_ACK_STS
+      description: Transmit ended with ACK.
+      bit_offset: 0
+      bit_size: 1
+    - name: TX_NACK_STS
+      description: Transmit ended with NACK.
+      bit_offset: 1
+      bit_size: 1
+    - name: RX_DONE_STS
+      description: Receive done. Must be cleared to enable next receive.
+      bit_offset: 2
+      bit_size: 1
+    - name: ARB_LOSS_STS
+      description: Master arbitration loss.
+      bit_offset: 3
+      bit_size: 1
+    - name: NORMAL_STOP_STS
+      description: Normal Stop condition detected.
+      bit_offset: 4
+      bit_size: 1
+    - name: ABN_START_STOP_STS
+      description: Abnormal Start/Stop condition detected.
+      bit_offset: 5
+      bit_size: 1
+    - name: SCL_TIMEOUT_STS
+      description: SCL clock-low timeout.
+      bit_offset: 6
+      bit_size: 1
+    - name: SMBUS_ALERT_STS
+      description: SMBus device alert (independent of packet command).
+      bit_offset: 12
+      bit_size: 1
+    - name: BUS_RECOVER_DONE_STS
+      description: Bus recover done.
+      bit_offset: 13
+      bit_size: 1
+    - name: SDA_TIMEOUT_STS
+      description: SDA data-low timeout.
+      bit_offset: 14
+      bit_size: 1
+    - name: PKT_CMD_DONE_STS
+      description: >
+        Packet command done. Clearing also clears bits[6:0,13:12,18:17].
+      bit_offset: 16
+      bit_size: 1
+    - name: PKT_CMD_FAIL_STS
+      description: Packet command fail (detail in bits[1,3,5,6,14,15,18]).
+      bit_offset: 17
+      bit_size: 1
+    - name: PKT_CMD_TIMEOUT_STS
+      description: Packet command timeout.
+      bit_offset: 18
+      bit_size: 1
+    - name: PKT_OP_STATE
+      description: >
+        Packet operation state machine (read-only).
+        0=IDLE, 1=STARTH, 2=STARTW, 3=STARTR, 4=TXMCODE, 5=TXAW, 6=TXAR,
+        8=INIT, 9=TXD, 10=RXD, 11=STOP, 12=RETRY, 13=FAIL, 14=WAIT, 15=PASS.
+      bit_offset: 28
+      bit_size: 4
+
+fieldset/I2C_MASTER_CMD:
+  description: Master command register (I2CM18).
+  fields:
+    - name: MASTER_START_CMD
+      description: >
+        Issue Start/Repeated-Start (highest priority).
+        Hardware clears when Start is issued.
+        Only effective when master enabled and bus idle.
+      bit_offset: 0
+      bit_size: 1
+    - name: MASTER_TX_CMD
+      description: Transmit data from buffer (2nd priority). Hardware clears when buffer empty.
+      bit_offset: 1
+      bit_size: 1
+    - name: MASTER_RX_CMD
+      description: Receive data into buffer (3rd priority). Hardware clears when done or terminated.
+      bit_offset: 3
+      bit_size: 1
+    - name: MASTER_RX_LAST
+      description: "Last receive flag. 0=ACK after last byte. 1=NACK after last byte."
+      bit_offset: 4
+      bit_size: 1
+    - name: MASTER_STOP_CMD
+      description: Issue Stop (4th priority). Hardware clears when Stop is issued.
+      bit_offset: 5
+      bit_size: 1
+    - name: ENBL_MASTER_TX_POOL
+      description: Enable master transmit pool buffer.
+      bit_offset: 6
+      bit_size: 1
+    - name: ENBL_MASTER_RX_POOL
+      description: Enable master receive pool buffer.
+      bit_offset: 7
+      bit_size: 1
+    - name: ENBL_MASTER_TX_DMA
+      description: Enable master transmit DMA. Configure I2CM30/I2CM1C first.
+      bit_offset: 8
+      bit_size: 1
+    - name: ENBL_MASTER_RX_DMA
+      description: Enable master receive DMA. TX and RX DMA cannot be active simultaneously.
+      bit_offset: 9
+      bit_size: 1
+    - name: ENBL_BUS_RECOVER_CMD
+      description: >
+        Issue bus recover command. SCL must be high; state machine must be IDLE.
+        Generates 1–8 SCL pulses to release SDA.
+      bit_offset: 11
+      bit_size: 1
+    - name: SCL_O_GPIO
+      description: SCL GPIO output value (valid only when both master and slave disabled).
+      bit_offset: 12
+      bit_size: 1
+    - name: SCL_OE_GPIO
+      description: SCL GPIO output enable.
+      bit_offset: 13
+      bit_size: 1
+    - name: SDA_O_GPIO
+      description: SDA GPIO output value.
+      bit_offset: 14
+      bit_size: 1
+    - name: SDA_OE_GPIO
+      description: SDA GPIO output enable.
+      bit_offset: 15
+      bit_size: 1
+    - name: ENBL_MASTER_PKT_OP
+      description: >
+        Enable master packet operation mode.
+        Hardware auto-issues S→Aw→TxD→Sr→Ar→RxD→P with retry and SDA recovery.
+      bit_offset: 16
+      bit_size: 1
+    - name: HS_MASTER_CODE_LSB
+      description: High Speed mode master code bits [2:0] (for 0b00001xxx). Packet mode only.
+      bit_offset: 17
+      bit_size: 3
+    - name: TARGET_ADDR
+      description: Target device address for packet operation mode (7-bit).
+      bit_offset: 24
+      bit_size: 7
+    - name: W1T_CTRL
+      description: Write-1 control. When set, register write only sets bits (no clear).
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/I2C_DMA_LEN:
+  description: >
+    DMA transfer length register (I2CM1C / I2CS2C).
+    Bits[31] and [15] (W1T) allow updating RX and TX lengths independently.
+    Length value N = N+1 bytes transferred (0=1 byte, 4095=4096 bytes).
+  fields:
+    - name: DMA_TX_LEN
+      description: DMA TX buffer length (0=1 byte, 4095=4096 bytes).
+      bit_offset: 0
+      bit_size: 12
+    - name: DMA_TX_LEN_WE
+      description: Write-1 enable for TX length field (write-1-to-apply independently).
+      bit_offset: 15
+      bit_size: 1
+    - name: DMA_RX_LEN
+      description: DMA RX buffer length (0=1 byte, 4095=4096 bytes).
+      bit_offset: 16
+      bit_size: 12
+    - name: DMA_RX_LEN_WE
+      description: Write-1 enable for RX length field.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/I2C_SLAVE_IRQ_CTRL:
+  description: Slave interrupt enable register (I2CS20).
+  fields:
+    - name: ENBL_TX_ACK_INT
+      description: Enable transmit ended with ACK interrupt.
+      bit_offset: 0
+      bit_size: 1
+    - name: ENBL_RX_DONE_INT
+      description: Enable receive done interrupt.
+      bit_offset: 2
+      bit_size: 1
+    - name: ENBL_NORMAL_STOP_INT
+      description: Enable normal Stop condition interrupt.
+      bit_offset: 4
+      bit_size: 1
+    - name: ENBL_ABN_START_STOP_INT
+      description: Enable abnormal Start/Stop detection interrupt.
+      bit_offset: 5
+      bit_size: 1
+    - name: ENBL_SLAVE_INACTIVE_TIMEOUT_INT
+      description: Enable slave inactive timeout interrupt (state machine stuck in slave-active).
+      bit_offset: 15
+      bit_size: 1
+    - name: ENBL_PKT_CMD_DONE_INT
+      description: Enable slave packet command done interrupt.
+      bit_offset: 16
+      bit_size: 1
+    - name: ENBL_SLAVE_ADDR_NACKED_INT
+      description: >
+        Enable slave address matched-but-NACKed interrupt.
+        Valid in packet mode with auto-NACK enabled.
+      bit_offset: 17
+      bit_size: 1
+
+fieldset/I2C_SLAVE_IRQ_STATUS:
+  description: Slave interrupt status register (I2CS24). Write-1-to-clear.
+  fields:
+    - name: TX_ACK_STS
+      description: Transmit ended with ACK.
+      bit_offset: 0
+      bit_size: 1
+    - name: TX_NACK_STS
+      description: Transmit ended with NACK. Also raises NORMAL_STOP_STS.
+      bit_offset: 1
+      bit_size: 1
+    - name: RX_DONE_STS
+      description: Receive done.
+      bit_offset: 2
+      bit_size: 1
+    - name: RX_DONE_WITH_NACK
+      description: Receive done ended with NACK returned (read-only; clears with NORMAL_STOP_STS).
+      bit_offset: 3
+      bit_size: 1
+    - name: NORMAL_STOP_STS
+      description: Normal Stop condition (Stop during RX, or NACK during TX).
+      bit_offset: 4
+      bit_size: 1
+    - name: ABN_START_STOP_STS
+      description: Abnormal Start/Stop condition detected.
+      bit_offset: 5
+      bit_size: 1
+    - name: SLAVE_ADDR_MATCH_STS
+      description: Slave address received and matched.
+      bit_offset: 7
+      bit_size: 1
+    - name: SLAVE_INACTIVE_TIMEOUT_STS
+      description: Slave inactive timeout.
+      bit_offset: 15
+      bit_size: 1
+    - name: PKT_CMD_DONE_STS
+      description: >
+        Slave packet command done. Clearing also clears bits[0,2,4:5,7,15,17].
+      bit_offset: 16
+      bit_size: 1
+    - name: PKT_CMD_FAIL_STS
+      description: Slave packet command fail.
+      bit_offset: 17
+      bit_size: 1
+    - name: CUR_ACTIVE_SLAVE_ADDR
+      description: "Current active slave address. 0=addr1, 1=addr2, 2=addr3."
+      bit_offset: 18
+      bit_size: 2
+    - name: SLAVE_ADDR1_NACKED
+      description: Slave address 1 was NACKed.
+      bit_offset: 20
+      bit_size: 1
+    - name: SLAVE_ADDR2_NACKED
+      description: Slave address 2 was NACKed.
+      bit_offset: 21
+      bit_size: 1
+    - name: SLAVE_ADDR3_NACKED
+      description: Slave address 3 was NACKed.
+      bit_offset: 22
+      bit_size: 1
+    - name: CUR_SLAVE_PARKING_STS
+      description: "Current slave parking status. 0=idle, 1=waiting for RX buf, 2=waiting for TX buf."
+      bit_offset: 24
+      bit_size: 2
+    - name: SLAVE_ADDR_RXD_PENDING
+      description: Previous slave DMA receive not yet processed; address match pending.
+      bit_offset: 29
+      bit_size: 1
+    - name: LAST_SLAVE_ADDR_MATCH
+      description: "Last slave address that matched. 0=addr1, 1=addr2, 2=addr3."
+      bit_offset: 30
+      bit_size: 2
+
+fieldset/I2C_SLAVE_CMD:
+  description: Slave command register (I2CS28).
+  fields:
+    - name: SLAVE_TX_CMD
+      description: Issue slave transmit command. Hardware clears when buffer empty or bus contention.
+      bit_offset: 2
+      bit_size: 1
+    - name: SLAVE_RX_LAST
+      description: "Slave receive last. 0=ACK. 1=NACK after last byte."
+      bit_offset: 4
+      bit_size: 1
+    - name: ENBL_SLAVE_TX_POOL
+      description: Enable slave transmit pool buffer.
+      bit_offset: 6
+      bit_size: 1
+    - name: ENBL_SLAVE_RX_POOL
+      description: Enable slave receive pool buffer.
+      bit_offset: 7
+      bit_size: 1
+    - name: ENBL_SLAVE_TX_DMA
+      description: Enable slave transmit DMA.
+      bit_offset: 8
+      bit_size: 1
+    - name: ENBL_SLAVE_RX_DMA
+      description: Enable slave receive DMA.
+      bit_offset: 9
+      bit_size: 1
+    - name: ENBL_SLAVE_ALERT_SIG
+      description: Issue SMBus slave alert. Hardware clears after address-matched packet received.
+      bit_offset: 10
+      bit_size: 1
+    - name: ENBL_AUTO_NACK_ACTIVE_ADDR
+      description: Auto-NACK when active-address buffer not ready (packet mode, suggested).
+      bit_offset: 14
+      bit_size: 1
+    - name: ENBL_AUTO_NACK_NON_ACTIVE_ADDR
+      description: Auto-NACK to non-active address at address phase (packet mode).
+      bit_offset: 15
+      bit_size: 1
+    - name: ENBL_SLAVE_PKT_OP
+      description: Enable slave packet operation mode. Disables byte mode.
+      bit_offset: 16
+      bit_size: 1
+    - name: ACTIVE_ADDR_SEL
+      description: "Active address for packet operation. 0=addr1, 1=addr2, 2=addr3, 3=all."
+      bit_offset: 17
+      bit_size: 2
+    - name: W1T_CTRL
+      description: Write-1 control. When set, register write only sets bits (no clear).
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/I2C_DMA_BASE_ADDR:
+  description: DMA buffer base address in SDRAM (I2CM30/34/I2CS38/3C). Hardware increments during transfer.
+  fields:
+    - name: SDRAM_BASE_ADDR
+      description: SDRAM DMA buffer base address (bits [30:0]).
+      bit_offset: 0
+      bit_size: 31
+
+fieldset/I2C_SLAVE_ADDR:
+  description: Slave device address register (I2CS40). Up to three 7-bit slave addresses.
+  fields:
+    - name: SLAVE_ADDR1
+      description: Slave device address 1 (7-bit).
+      bit_offset: 0
+      bit_size: 7
+    - name: ENBL_SLAVE_ADDR1
+      description: Enable slave address 1.
+      bit_offset: 7
+      bit_size: 1
+    - name: SLAVE_ADDR2
+      description: Slave device address 2 (7-bit). Upper bound in address range mode.
+      bit_offset: 8
+      bit_size: 7
+    - name: ENBL_SLAVE_ADDR2
+      description: Enable slave address 2.
+      bit_offset: 15
+      bit_size: 1
+    - name: SLAVE_ADDR3
+      description: Slave device address 3 (7-bit).
+      bit_offset: 16
+      bit_size: 7
+    - name: ENBL_SLAVE_ADDR3
+      description: Enable slave address 3.
+      bit_offset: 23
+      bit_size: 1
+
+fieldset/I2C_DMA_STATUS:
+  description: DMA actual transfer length status (I2CM48 / I2CS4C). Write clears to 0.
+  fields:
+    - name: DMA_TX_ACTUAL_LEN
+      description: DMA TX actual bytes transferred.
+      bit_offset: 0
+      bit_size: 13
+    - name: DMA_RX_ACTUAL_LEN
+      description: DMA RX actual bytes transferred.
+      bit_offset: 16
+      bit_size: 13
+
+fieldset/I2C_CUR_DMA_ADDR:
+  description: Current DMA operating address (I2CC50). Read-only; increments during transfer.
+  fields:
+    - name: CUR_ADDR
+      description: Current DMA address counter.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/I2C_CUR_DMA_LEN:
+  description: Current DMA remaining length (I2CC54). Read-only; decrements during transfer.
+  fields:
+    - name: CUR_LEN
+      description: Remaining DMA bytes.
+      bit_offset: 0
+      bit_size: 12

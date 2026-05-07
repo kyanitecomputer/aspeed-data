@@ -1,0 +1,176 @@
+# AST2700 CM4F General-Purpose Registers (GPR) bank.
+#
+# 32 × 32-bit GPRs at CM4F addresses 0x5000_0000–0x5000_007C,
+# plus an AHB page-select register (S_PAGE) at 0x5000_0080.
+#
+# These registers are unique to the AST2700 CM4F private bus.
+# No equivalent on AST2600.
+#
+# The GPR bank allows the CM4F to communicate status/config to the CA35
+# without using IPC. The S_PAGE register selects which 512 KB AHB page is
+# mapped into the CM4F 32-bit address space for DMA access.
+#
+# Sources:
+#   ast2700_ssp.pdf v0.1h  Section 3.4 – GPR registers
+#   ast2700_tsp.pdf v0.1f  Section 3.4 – same layout
+
+block/GPR:
+  description: >
+    AST2700 CM4F General-Purpose Register bank.
+    Base: 0x5000_0000 (CM4F private bus).
+    32 GPRs at 0x00–0x7C plus S_PAGE at 0x80.
+  items:
+    - name: GPR0
+      description: General-Purpose Register 0.
+      byte_offset: 0x00
+      fieldset: GPR_REG
+    - name: GPR1
+      description: General-Purpose Register 1.
+      byte_offset: 0x04
+      fieldset: GPR_REG
+    - name: GPR2
+      description: General-Purpose Register 2.
+      byte_offset: 0x08
+      fieldset: GPR_REG
+    - name: GPR3
+      description: General-Purpose Register 3.
+      byte_offset: 0x0C
+      fieldset: GPR_REG
+    - name: GPR4
+      description: General-Purpose Register 4.
+      byte_offset: 0x10
+      fieldset: GPR_REG
+    - name: GPR5
+      description: General-Purpose Register 5.
+      byte_offset: 0x14
+      fieldset: GPR_REG
+    - name: GPR6
+      description: General-Purpose Register 6.
+      byte_offset: 0x18
+      fieldset: GPR_REG
+    - name: GPR7
+      description: General-Purpose Register 7.
+      byte_offset: 0x1C
+      fieldset: GPR_REG
+    - name: GPR8
+      description: General-Purpose Register 8.
+      byte_offset: 0x20
+      fieldset: GPR_REG
+    - name: GPR9
+      description: General-Purpose Register 9.
+      byte_offset: 0x24
+      fieldset: GPR_REG
+    - name: GPR10
+      description: General-Purpose Register 10.
+      byte_offset: 0x28
+      fieldset: GPR_REG
+    - name: GPR11
+      description: General-Purpose Register 11.
+      byte_offset: 0x2C
+      fieldset: GPR_REG
+    - name: GPR12
+      description: General-Purpose Register 12.
+      byte_offset: 0x30
+      fieldset: GPR_REG
+    - name: GPR13
+      description: General-Purpose Register 13.
+      byte_offset: 0x34
+      fieldset: GPR_REG
+    - name: GPR14
+      description: General-Purpose Register 14.
+      byte_offset: 0x38
+      fieldset: GPR_REG
+    - name: GPR15
+      description: General-Purpose Register 15.
+      byte_offset: 0x3C
+      fieldset: GPR_REG
+    - name: GPR16
+      description: General-Purpose Register 16.
+      byte_offset: 0x40
+      fieldset: GPR_REG
+    - name: GPR17
+      description: General-Purpose Register 17.
+      byte_offset: 0x44
+      fieldset: GPR_REG
+    - name: GPR18
+      description: General-Purpose Register 18.
+      byte_offset: 0x48
+      fieldset: GPR_REG
+    - name: GPR19
+      description: General-Purpose Register 19.
+      byte_offset: 0x4C
+      fieldset: GPR_REG
+    - name: GPR20
+      description: General-Purpose Register 20.
+      byte_offset: 0x50
+      fieldset: GPR_REG
+    - name: GPR21
+      description: General-Purpose Register 21.
+      byte_offset: 0x54
+      fieldset: GPR_REG
+    - name: GPR22
+      description: General-Purpose Register 22.
+      byte_offset: 0x58
+      fieldset: GPR_REG
+    - name: GPR23
+      description: General-Purpose Register 23.
+      byte_offset: 0x5C
+      fieldset: GPR_REG
+    - name: GPR24
+      description: General-Purpose Register 24.
+      byte_offset: 0x60
+      fieldset: GPR_REG
+    - name: GPR25
+      description: General-Purpose Register 25.
+      byte_offset: 0x64
+      fieldset: GPR_REG
+    - name: GPR26
+      description: General-Purpose Register 26.
+      byte_offset: 0x68
+      fieldset: GPR_REG
+    - name: GPR27
+      description: General-Purpose Register 27.
+      byte_offset: 0x6C
+      fieldset: GPR_REG
+    - name: GPR28
+      description: General-Purpose Register 28.
+      byte_offset: 0x70
+      fieldset: GPR_REG
+    - name: GPR29
+      description: General-Purpose Register 29.
+      byte_offset: 0x74
+      fieldset: GPR_REG
+    - name: GPR30
+      description: General-Purpose Register 30.
+      byte_offset: 0x78
+      fieldset: GPR_REG
+    - name: GPR31
+      description: General-Purpose Register 31.
+      byte_offset: 0x7C
+      fieldset: GPR_REG
+
+    - name: S_PAGE
+      description: >
+        AHB Page Select Register (0x80).
+        Selects which 512 KB page of the AHB address space is accessible
+        for DMA operations by the CM4F.
+      byte_offset: 0x80
+      fieldset: S_PAGE_REG
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/GPR_REG:
+  description: General-purpose 32-bit read/write register.
+  fields:
+    - name: VALUE
+      description: Register value (32-bit, software-defined meaning).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/S_PAGE_REG:
+  description: AHB page select register. Selects 512 KB AHB page for CM4F DMA.
+  fields:
+    - name: PAGE
+      description: AHB page index (bits [31:0]; effective bits hardware-defined).
+      bit_offset: 0
+      bit_size: 32

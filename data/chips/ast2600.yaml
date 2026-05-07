@@ -1,0 +1,267 @@
+# ASPEED AST2600 chip definition for the Secondary Service Processor (SSP).
+#
+# The SSP is an ARM Cortex-M3 r2p1 coprocessor embedded in the AST2600 BMC
+# SoC.  It runs alongside the primary CA7 processor.  All addresses below are
+# in the CM3 view: BMC address 0x1eXX_XXXX → CM3 address 0x7eXX_XXXX.
+#
+# Sources:
+#   ast2600_ssp.md  v0.1f  Section 3 – Registers
+#   ast2600_ssp.md  v0.1f  Section 5 – SSP Interrupt Mapping
+#   ast2600.md      v1.6   Register maps for each peripheral
+#   Zephyr:  soc/aspeed/ast26xx/Kconfig.defconfig.ast2600
+
+name:               AST2600
+family:             ast26xx
+core:               cortex-m3
+target:             thumbv7m-none-eabi
+nvic_priority_bits: 3   # 8 priority levels (bits [7:5] of NVIC priority byte)
+num_irqs:           240  # Total NVIC lines; datasheet documents up to IRQ 196
+
+# ── Peripheral instances ──────────────────────────────────────────────────────
+#
+# Format:
+#   name:    Rust identifier used for the peripheral constant in the PAC.
+#   block:   "<yaml_file_stem>::<block_name>" — identifies the register block.
+#   address: Base address in CM3 view (0x7eXX_XXXX).
+#
+# Peripheral entries are added here as their register YAML files are written.
+# Tasks 8–17 each add one or more entries.
+
+peripherals:
+  # Task 2 / Task 3: SSP coprocessor control (SCU base 0x7e6e2000 + 0xA00)
+  - name:    SSP
+    block:   ssp_v1::SSP
+    address: 0x7e6e2a00
+
+  # Task 8: SCU clock-gating and PLL registers
+  - name:    CLOCK
+    block:   clock_v1::CLOCK
+    address: 0x7e6e2000
+
+  # Task 9: UART11 — 16550 UART (SSP console, 115200 baud, IRQ 62)
+  - name:    UART11
+    block:   uart_v1::UART
+    address: 0x7e790500
+
+  # Task 12: IPC — 15-channel doorbell mailbox (IRQs 182–196)
+  - name:    IPC
+    block:   ipc_v1::IPC
+    address: 0x7e6c0000
+
+  # Task 14: GPIO — 208-pin parallel GPIO controller (IRQ 40)
+  - name:    GPIO
+    block:   gpio_v1::GPIO
+    address: 0x7e780000
+
+  # Task 16: WDT0 — Watchdog timer 0 + software reboot (IRQ 24)
+  - name:    WDT0
+    block:   wdt_v1::WDT
+    address: 0x7e785000
+
+  # Task 17: TIMER — 8 × 32-bit countdown timers (IRQs 16–23)
+  - name:    TIMER
+    block:   timer_v1::TIMER
+    address: 0x7e782000
+
+# ── Interrupt table ───────────────────────────────────────────────────────────
+#
+# Source: ast2600_ssp.md v0.1f Section 5 (Exception# 16–212 = IRQ# 0–196).
+#
+# Only named (non-reserved) interrupts are listed.  Gaps in the numbering are
+# handled by the PAC generator (the cortex-m-rt interrupt enum allows gaps).
+#
+# Naming rules (all caps, underscores, valid Rust identifiers):
+#   - Single-unit peripherals: PERIPHERAL   (e.g. GPIO, ADC, LPC)
+#   - Indexed:                 PERIPH_N     (e.g. UART1, I2C0, IPC0)
+#   - Compound descriptions:   WORD_WORD    (e.g. PWM_TACHO, MAC_PHY0)
+
+interrupts:
+  # IRQ 0–15: Core peripherals and miscellaneous
+  - { name: SDRAM,          number: 0   }  # DRAM controller
+  # 1: Reserved (level 2 interrupt controller)
+  - { name: MAC1,           number: 2   }  # Gigabit Ethernet MAC 1
+  - { name: MAC2,           number: 3   }  # Gigabit Ethernet MAC 2
+  - { name: HACE,           number: 4   }  # Hash and Crypto Engine
+  - { name: USB2_HUB_HOST,  number: 5   }  # USB 2.0 Virtual Hub / Host
+  - { name: XDMA,           number: 6   }  # X-DMA engine
+  - { name: VIDEO_ENGINE,   number: 7   }  # Video capture / compression
+  - { name: UART5,          number: 8   }  # UART5 (ARM console, high-speed)
+  - { name: USB_HID_HOST2,  number: 9   }  # USB 1.1 HID / USB2.0 Host2 / USB2.0 Device
+  - { name: USB1_HOST,      number: 10  }  # USB 1.1 Host
+  - { name: GPIO18,         number: 11  }  # 1.8 V GPIO controller
+  - { name: SCU,            number: 12  }  # System Control Unit
+  - { name: RTC,            number: 13  }  # RTC alarm
+  - { name: GRAPHICS_CRT,   number: 14  }  # Graphics / CRT controller
+  - { name: EMMC,           number: 15  }  # eMMC controller
+
+  # IRQ 16–23: Hardware timers
+  - { name: TIMER1,         number: 16  }
+  - { name: TIMER2,         number: 17  }
+  - { name: TIMER3,         number: 18  }
+  - { name: TIMER4,         number: 19  }
+  - { name: TIMER5,         number: 20  }
+  - { name: TIMER6,         number: 21  }
+  - { name: TIMER7,         number: 22  }
+  - { name: TIMER8,         number: 23  }
+
+  # IRQ 24–30: Miscellaneous controllers
+  - { name: WDT,            number: 24  }  # Watchdog timer alarm
+  - { name: GRAPHICS_2D,    number: 25  }  # 2D graphics engine
+  - { name: MCTP,           number: 26  }  # MCTP controller
+  - { name: JTAG1_MASTER,   number: 27  }  # JTAG Master 1
+  - { name: AHBC,           number: 28  }  # AHB controller
+  - { name: PCIE_BRIDGE_T,  number: 29  }  # AHB-to-PCIe Bridge T
+  - { name: DISPLAYPORT,    number: 30  }  # DisplayPort controller
+  # 31: Reserved
+
+  # IRQ 32–46: More peripherals
+  - { name: MAC3,           number: 32  }
+  - { name: MAC4,           number: 33  }
+  # 34: Reserved
+  - { name: LPC,            number: 35  }  # LPC (Low Pin Count) controller
+  # 36–37: Reserved
+  - { name: PECI,           number: 38  }  # PECI (Platform Environment Control Interface)
+  - { name: FMC,            number: 39  }  # Flash Memory Controller / SPI master
+  - { name: GPIO,           number: 40  }  # GPIO controller (3.3 V)
+  - { name: SCU2,           number: 41  }  # SCU interrupt 2
+  - { name: ESPI,           number: 42  }  # eSPI controller
+  - { name: SD_SDIO,        number: 43  }  # SD / SDIO controller
+  - { name: PWM_TACHO,      number: 44  }  # PWM and Tachometer controller
+  - { name: SYS_WAKEUP,     number: 45  }  # System wakeup control
+  - { name: ADC,            number: 46  }  # Analog-to-Digital Converter
+
+  # IRQ 47–65: UARTs, SGPIO, JTAG2, DMA
+  - { name: UART1,          number: 47  }
+  - { name: UART2,          number: 48  }
+  - { name: UART3,          number: 49  }
+  - { name: UART4,          number: 50  }
+  - { name: SGPIO_MASTER,   number: 51  }  # Serial GPIO Master
+  - { name: SGPIO_SLAVE,    number: 52  }  # Serial GPIO Slave
+  - { name: JTAG2_MASTER,   number: 53  }  # JTAG Master 2
+  - { name: MAILBOX,        number: 54  }  # Mailbox controller
+  - { name: AHBC2,          number: 55  }  # AHB controller 2
+  - { name: UART_DMA,       number: 56  }  # UART DMA engine (UDMA)
+  - { name: UART6,          number: 57  }
+  - { name: UART7,          number: 58  }
+  - { name: UART8,          number: 59  }
+  - { name: UART9,          number: 60  }
+  - { name: UART10,         number: 61  }
+  - { name: UART11,         number: 62  }  # SSP console UART
+  - { name: UART12,         number: 63  }
+  - { name: UART13,         number: 64  }
+  - { name: SPI_DMA,        number: 65  }  # SPI DMA engine
+  # 66: Reserved
+  - { name: FGB,            number: 67  }  # Frame grabber
+  # 68–96: Reserved
+
+  # IRQ 97–99: Frame grabber IRQs, HOST2BMC
+  - { name: FGB_FIQ,        number: 97  }
+  - { name: FGB_INTR,       number: 98  }
+  - { name: HOST2BMC,       number: 99  }  # Host-to-BMC bridge interrupt
+
+  # IRQ 100–109: FSI, I3C
+  - { name: FSI1,           number: 100 }  # FSI (Flexible Service Interface) 1
+  - { name: FSI2,           number: 101 }  # FSI 2
+  - { name: I3C0,           number: 102 }
+  - { name: I3C1,           number: 103 }
+  - { name: I3C2,           number: 104 }
+  - { name: I3C3,           number: 105 }
+  - { name: I3C4,           number: 106 }
+  - { name: I3C5,           number: 107 }
+  - { name: I3C6,           number: 108 }
+  - { name: I3C7,           number: 109 }
+
+  # IRQ 110–125: I2C (16 controllers)
+  - { name: I2C0,           number: 110 }
+  - { name: I2C1,           number: 111 }
+  - { name: I2C2,           number: 112 }
+  - { name: I2C3,           number: 113 }
+  - { name: I2C4,           number: 114 }
+  - { name: I2C5,           number: 115 }
+  - { name: I2C6,           number: 116 }
+  - { name: I2C7,           number: 117 }
+  - { name: I2C8,           number: 118 }
+  - { name: I2C9,           number: 119 }
+  - { name: I2C10,          number: 120 }
+  - { name: I2C11,          number: 121 }
+  - { name: I2C12,          number: 122 }
+  - { name: I2C13,          number: 123 }
+  - { name: I2C14,          number: 124 }
+  - { name: I2C15,          number: 125 }
+
+  # IRQ 126–129: Ethernet PHY link
+  - { name: MAC_PHY0,       number: 126 }
+  - { name: MAC_PHY1,       number: 127 }
+  - { name: MAC_PHY2,       number: 128 }
+  - { name: MAC_PHY3,       number: 129 }
+
+  # IRQ 130–137: GPIO direct interrupts (8 pins with dedicated IRQ lines)
+  - { name: GPIO_DIRECT0,   number: 130 }
+  - { name: GPIO_DIRECT1,   number: 131 }
+  - { name: GPIO_DIRECT2,   number: 132 }
+  - { name: GPIO_DIRECT3,   number: 133 }
+  - { name: GPIO_DIRECT4,   number: 134 }
+  - { name: GPIO_DIRECT5,   number: 135 }
+  - { name: GPIO_DIRECT6,   number: 136 }
+  - { name: GPIO_DIRECT7,   number: 137 }
+
+  # IRQ 138–148: IPMI KCS, BT, VUART
+  - { name: KCS1,           number: 138 }  # KCS (Keyboard Controller Style) IBF
+  - { name: KCS2,           number: 139 }
+  - { name: KCS3,           number: 140 }
+  - { name: KCS4,           number: 141 }
+  - { name: KCS5,           number: 142 }
+  - { name: BT,             number: 143 }  # Block Transfer (IPMI BT channel)
+  - { name: KCS7,           number: 144 }
+  - { name: SNOOP_PW,       number: 145 }  # Port-80 snoop
+  - { name: POST_CODE_FIFO, number: 146 }  # Post-code FIFO
+  - { name: VUART1,         number: 147 }  # Virtual UART 1
+  - { name: VUART2,         number: 148 }  # Virtual UART 2
+  # 149–158: Reserved
+
+  # IRQ 159–168: Security, bridges
+  - { name: FWSPIWP_N,      number: 159 }  # Inverted FWSPIWP# pin
+  - { name: ECC_RSA,        number: 160 }  # ECC / RSA hardware engine
+  - { name: BOOT_EMMC,      number: 161 }  # Boot-from-eMMC engine
+  - { name: INTERNAL_BRIDGE,number: 162 }  # Internal AHB bridge
+  - { name: RVAS_VGA,       number: 163 }  # RVAS / VGA interrupt
+  - { name: PCIE_LPC,       number: 164 }  # PCIe LPC controller
+  - { name: LPC_MAILBOX,    number: 165 }  # LPC mailbox
+  - { name: LPC_SWC,        number: 166 }  # LPC SWC
+  - { name: PCIE_BRIDGE_L,  number: 167 }  # AHB-to-PCIe Bridge L
+  - { name: PCIE_BRIDGE_H,  number: 168 }  # AHB-to-PCIe Bridge H
+  # 169: Reserved
+
+  # IRQ 170–181: PCIe LPC multiplexed interrupt lines
+  - { name: PCIE_LPC1,      number: 170 }
+  - { name: PCIE_LPC2,      number: 171 }
+  - { name: PCIE_LPC3,      number: 172 }
+  - { name: PCIE_LPC4,      number: 173 }
+  - { name: PCIE_LPC5,      number: 174 }
+  - { name: PCIE_LPC6,      number: 175 }
+  - { name: PCIE_LPC7,      number: 176 }
+  - { name: PCIE_LPC8,      number: 177 }
+  - { name: PCIE_LPC9,      number: 178 }
+  - { name: PCIE_LPC10,     number: 179 }
+  - { name: PCIE_LPC11,     number: 180 }
+  - { name: PCIE_LPC12,     number: 181 }
+
+  # IRQ 182–196: CA7→CM3 Inter-Processor Communication (IPC) channels
+  # Triggered by the CA7 writing to the IPC TRIG register at 0x7e6c0028.
+  # Cleared by the CM3 writing to CLEAR at 0x7e6c002c.
+  - { name: IPC0,           number: 182 }
+  - { name: IPC1,           number: 183 }
+  - { name: IPC2,           number: 184 }
+  - { name: IPC3,           number: 185 }
+  - { name: IPC4,           number: 186 }
+  - { name: IPC5,           number: 187 }
+  - { name: IPC6,           number: 188 }
+  - { name: IPC7,           number: 189 }
+  - { name: IPC8,           number: 190 }
+  - { name: IPC9,           number: 191 }
+  - { name: IPC10,          number: 192 }
+  - { name: IPC11,          number: 193 }
+  - { name: IPC12,          number: 194 }
+  - { name: IPC13,          number: 195 }
+  - { name: IPC14,          number: 196 }
+  # IRQ 197–239: Unconnected / reserved (num_irqs = 240 per Zephyr Kconfig)

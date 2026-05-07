@@ -1,0 +1,436 @@
+# AST1060 System Control Unit (SCU) registers.
+#
+# Base: 0x7E6E_2000 (AST1060).
+# Protection key: write 0x1688A8A8 to SCU000 or SCU010 to unlock.
+#
+# Key differences from AST2600 clock_v1.yaml:
+# - Only two functional clock stop bits in SCU080 (HACE clock, SRAM clock)
+# - Only five functional clock stop bits in SCU090 (I3C0-3, RSA/ECC, REFCLK)
+# - H-PLL at SCU200/SCU204 (AST2600 also at 0x200/204 but different defaults)
+# - PCLK divider in SCU310[11:8] (AST2600 uses SCU300[25:23])
+# - UART5 clock source in SCU310[4] (not SCU310[5:0] as in AST2600)
+# - CM4F memory base at SCUA14, limits at SCUA18 (instruction) / SCUA1C (data)
+# - CM4F cache: SCUA50 (cacheable area), SCUA54 (invalidation), SCUA58 (function)
+# - No video/USB/MAC/LPC/I2C clock stops (those are AST2600-specific)
+#
+# Clock stop register semantics (SET/CLEAR pair):
+#   Write 1 to SCU080 to STOP a clock (disable peripheral).
+#   Write 1 to SCU084 to CLEAR (un-stop = enable the clock).
+#   Same for SCU090/SCU094.
+#
+# Clock enable sequence (from datasheet):
+#   1. Assert reset (SCU050 bit = 1)
+#   2. Delay 100 µs
+#   3. Un-stop clock (write 1 to SCU084/SCU094)
+#   4. Delay 10 ms
+#   5. Deassert reset (write 1 to SCU054)
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 17 – System Control Unit (SCU) (SCU000–SCUA58)
+
+block/SCU:
+  description: >
+    AST1060 System Control Unit (SCU).
+    Base: 0x7E6E_2000. Protection key: write 0x1688A8A8 to SCU000.
+    Controls clock gating, resets, H-PLL, PCLK divider, and CM4F memory map.
+  items:
+    # ── Protection and identification ─────────────────────────────────────────
+    - name: PROT_KEY
+      description: >
+        Protection key register (SCU000). Write 0x1688A8A8 to unlock all SCU registers.
+        Write any other value to lock. Readback: 1=unlocked, 0=locked.
+      byte_offset: 0x000
+      fieldset: SCU_PROT_KEY
+
+    - name: SILICON_REV
+      description: >
+        Silicon revision ID (SCU004). Read-only.
+        AST1060-A1: 0xA0010000. AST1060-A2: 0xA0030000.
+      byte_offset: 0x004
+      fieldset: SCU_SILICON_REV
+
+    - name: PROT_KEY2
+      description: >
+        Protection key register 2 (SCU010). Identical to SCU000.
+        Dual-key structure — both keys must be written to unlock.
+      byte_offset: 0x010
+      fieldset: SCU_PROT_KEY
+
+    - name: SILICON_REV2
+      description: Silicon revision ID 2 (SCU014). Identical to SCU004.
+      byte_offset: 0x014
+      fieldset: SCU_SILICON_REV
+
+    # ── Module reset control ──────────────────────────────────────────────────
+    - name: RESET_CTRL1_SET
+      description: >
+        Module reset control set 1 (SCU040). RW1S: write 1 to assert reset.
+        Write 1 to SCU044 to deassert. Main functional bit: bit 0 (SRAM controller).
+        Keep all other bits at reset value (most are reserved=1).
+      byte_offset: 0x040
+      fieldset: SCU_RESET1
+
+    - name: RESET_CTRL1_CLR
+      description: Module reset control clear 1 (SCU044). Write 1 to deassert corresponding SCU040 reset.
+      byte_offset: 0x044
+      fieldset: SCU_RESET1
+
+    - name: RESET_CTRL2_SET
+      description: >
+        Module reset control set 2 (SCU050). RW1S.
+        Key bits: I3C0-3 (bits 8-11), I3C DMA (bit 7), I2C/SMBus (bit 2),
+        ADC (bit 23), JTAG1 (bit 26), UART1-4 (bits 28-31).
+        0=running, 1=held in reset (default for most peripherals).
+      byte_offset: 0x050
+      fieldset: SCU_RESET2
+
+    - name: RESET_CTRL2_CLR
+      description: Module reset control clear 2 (SCU054). Write 1 to deassert corresponding SCU050 reset.
+      byte_offset: 0x054
+      fieldset: SCU_RESET2
+
+    # ── Clock stop control (functional bits only documented here) ─────────────
+    - name: CLKSTOP1_SET
+      description: >
+        Clock stop control set 1 (SCU080). RW1S: write 1 to STOP a clock.
+        Write 1 to SCU084 to un-stop (enable) a clock.
+        Init: 0xFFFF7F8A — most bits reserved=1 (pre-stopped).
+        Functional bits: [13]=HACE YCLK (stopped by default), [0]=SRAM MCLK (running).
+      byte_offset: 0x080
+      fieldset: SCU_CLKSTOP1
+
+    - name: CLKSTOP1_CLR
+      description: >
+        Clock stop control clear 1 (SCU084). Write 1 to un-stop (enable) a clock.
+        Mirrors SCU080 bit positions.
+      byte_offset: 0x084
+      fieldset: SCU_CLKSTOP1
+
+    - name: CLKSTOP2_SET
+      description: >
+        Clock stop control set 2 (SCU090). RW1S.
+        Init: 0xFFF0FFF0 — most bits reserved=1.
+        Functional bits: [11]=I3C3CLK, [10]=I3C2CLK, [9]=I3C1CLK, [8]=I3C0CLK,
+        [6]=RSA/ECC clock, [2]=REFCLK (all stopped by default except REFCLK).
+      byte_offset: 0x090
+      fieldset: SCU_CLKSTOP2
+
+    - name: CLKSTOP2_CLR
+      description: Clock stop control clear 2 (SCU094). Write 1 to un-stop a clock.
+      byte_offset: 0x094
+      fieldset: SCU_CLKSTOP2
+
+    # ── H-PLL ────────────────────────────────────────────────────────────────
+    - name: HPLL_PARAM
+      description: >
+        H-PLL parameter register (SCU200).
+        Output frequency = CLKIN(25 MHz) × (M+1) / (N+1) / (P+1).
+        Default: M=0x77(119), N=2, P=0 → 25 × 120/3/1 = 1000 MHz.
+      byte_offset: 0x200
+      fieldset: SCU_HPLL_PARAM
+
+    - name: HPLL_EXT
+      description: >
+        H-PLL extended parameter (SCU204).
+        Bandwidth adjustment: NB = BWADJ + 1. Default 0x31=49 → NB=50.
+        Recommended: NB = (M+1)/2.
+      byte_offset: 0x204
+      fieldset: SCU_HPLL_EXT
+
+    # ── Clock selection and dividers ──────────────────────────────────────────
+    - name: CLK_SEL4
+      description: >
+        Clock selection register 4 (SCU310).
+        PCLK divider: bits[11:8] — 0=HPLL/2 (default), 1=HPLL/4, ..., 15=HPLL/32.
+        UART5 clock: bit[4] — 0=24 MHz/13 ≈ 1.846 MHz, 1=192 MHz/13 ≈ 14.769 MHz.
+        I3C clock source: bit[31] — 0=HPLL, 1=480 MHz.
+        I3C clock divider: bits[30:28] — ÷2 to ÷8 (100=÷5 default).
+      byte_offset: 0x310
+      fieldset: SCU_CLK_SEL4
+
+    # ── CM4F memory map registers ─────────────────────────────────────────────
+    - name: CM4F_MEM_BASE
+      description: >
+        CM4F memory base address register (SCUA14).
+        Configures the physical base address of the CM4F's SRAM window.
+        Can only be changed while CM4F is in reset (SCU050[RST_bit]=1).
+        Default 0x00000000 (SRAM at physical 0x0).
+      byte_offset: 0xA14
+      fieldset: SCU_CM4F_ADDR
+
+    - name: CM4F_IMEM_LIMIT
+      description: >
+        CM4F instruction memory address limit register (SCUA18).
+        Upper bound of the instruction fetch window.
+        Default 0x20000000.
+      byte_offset: 0xA18
+      fieldset: SCU_CM4F_ADDR
+
+    - name: CM4F_DMEM_LIMIT
+      description: >
+        CM4F data memory address limit register (SCUA1C).
+        Upper bound of the data access window.
+        Default 0x20000000.
+      byte_offset: 0xA1C
+      fieldset: SCU_CM4F_ADDR
+
+    # ── CM4F cache control ────────────────────────────────────────────────────
+    - name: CM4F_CACHE_AREA
+      description: >
+        CM4F cacheable area declaration (SCUA50).
+        Bit N=1: the 32 MB region starting at base + N×32 MB is cacheable.
+        Default 0xFFFFFFFF (all regions cacheable).
+      byte_offset: 0xA50
+      fieldset: SCU_CACHE_AREA
+
+    - name: CM4F_CACHE_INVAL
+      description: >
+        CM4F cache invalidation control (SCUA54).
+        Write to trigger cache invalidation.
+      byte_offset: 0xA54
+      fieldset: SCU_CACHE_INVAL
+
+    - name: CM4F_CACHE_FUNC
+      description: >
+        CM4F cache function control register (SCUA58).
+        Bit[0]=cache enable (I+D combined). Default 0x1 (cache enabled).
+      byte_offset: 0xA58
+      fieldset: SCU_CACHE_FUNC
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/SCU_PROT_KEY:
+  description: SCU protection key. Write 0x1688A8A8 to unlock.
+  fields:
+    - name: KEY
+      description: "Write 0x1688A8A8 to unlock; any other value locks. Readback: 1=unlocked, 0=locked."
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SCU_SILICON_REV:
+  description: Silicon revision ID (read-only).
+  fields:
+    - name: BACKWARD_COMPAT
+      description: Backward compatibility field.
+      bit_offset: 0
+      bit_size: 8
+    - name: CHIP_BONDING
+      description: Chip bonding option (product differentiation).
+      bit_offset: 8
+      bit_size: 8
+    - name: HW_REVISION_ID
+      description: "Hardware revision: 0=A0, 1=A1, 3=A2, ..."
+      bit_offset: 16
+      bit_size: 8
+    - name: CHIP_CLASS
+      description: Chip class marker (always 0xA0 for AST1060).
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/SCU_RESET1:
+  description: >
+    Module reset control 1 (SCU040/SCU044). Most bits are reserved (keep at 1).
+    Only bit 0 (SRAM controller reset) is user-controllable.
+  fields:
+    - name: RST_SRAM_CTRL
+      description: >
+        SRAM controller reset. 1=reset asserted (async). Use with extreme caution.
+        Asserting while executing from SRAM will hang the processor.
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/SCU_RESET2:
+  description: >
+    Module reset control 2 (SCU050/SCU054).
+    1=held in reset (default for most peripherals). Write 1 to SCU054 to deassert.
+  fields:
+    - name: RST_I2C_SMBUS
+      description: Reset all I2C/SMBus controllers.
+      bit_offset: 2
+      bit_size: 1
+    - name: RST_I3C_DMA
+      description: Reset I3C DMA controller.
+      bit_offset: 7
+      bit_size: 1
+    - name: RST_I3C0
+      description: Reset I3C0 controller.
+      bit_offset: 8
+      bit_size: 1
+    - name: RST_I3C1
+      description: Reset I3C1 controller.
+      bit_offset: 9
+      bit_size: 1
+    - name: RST_I3C2
+      description: Reset I3C2 controller.
+      bit_offset: 10
+      bit_size: 1
+    - name: RST_I3C3
+      description: Reset I3C3 controller.
+      bit_offset: 11
+      bit_size: 1
+    - name: RST_ADC
+      description: Reset ADC controller.
+      bit_offset: 23
+      bit_size: 1
+    - name: RST_JTAG1
+      description: Reset JTAG Master 1.
+      bit_offset: 26
+      bit_size: 1
+    - name: RST_UART1
+      description: Reset UART1.
+      bit_offset: 28
+      bit_size: 1
+    - name: RST_UART2
+      description: Reset UART2.
+      bit_offset: 29
+      bit_size: 1
+    - name: RST_UART3
+      description: Reset UART3.
+      bit_offset: 30
+      bit_size: 1
+    - name: RST_UART4
+      description: Reset UART4.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SCU_CLKSTOP1:
+  description: >
+    Clock stop control 1 (SCU080 set / SCU084 clear).
+    Write 1 to SCU080 to stop; write 1 to SCU084 to un-stop.
+    Only bits 13 and 0 are functional; all others are reserved=1 (pre-stopped).
+  fields:
+    - name: STOP_SRAM_MCLK
+      description: Stop SRAM controller MCLK. 0=running (default), 1=stopped.
+      bit_offset: 0
+      bit_size: 1
+    - name: STOP_HACE_YCLK
+      description: Stop HACE (Hash & Crypto Engine) YCLK. 0=running, 1=stopped (default).
+      bit_offset: 13
+      bit_size: 1
+
+fieldset/SCU_CLKSTOP2:
+  description: >
+    Clock stop control 2 (SCU090 set / SCU094 clear).
+    Functional bits: I3C0-3 clocks (bits 8-11), RSA/ECC clock (bit 6), REFCLK (bit 2).
+    All stopped by default except REFCLK. Reserved bits must keep at 1.
+  fields:
+    - name: STOP_REFCLK
+      description: Stop REFCLK. 0=running (default), 1=stopped. Keep at 0.
+      bit_offset: 2
+      bit_size: 1
+    - name: STOP_RSA_ECC_CLK
+      description: Stop RSA/ECC engine clock. 0=running, 1=stopped (default).
+      bit_offset: 6
+      bit_size: 1
+    - name: STOP_I3C0CLK
+      description: Stop I3C0 controller clock. 0=running, 1=stopped (default).
+      bit_offset: 8
+      bit_size: 1
+    - name: STOP_I3C1CLK
+      description: Stop I3C1 controller clock. 0=running, 1=stopped (default).
+      bit_offset: 9
+      bit_size: 1
+    - name: STOP_I3C2CLK
+      description: Stop I3C2 controller clock. 0=running, 1=stopped (default).
+      bit_offset: 10
+      bit_size: 1
+    - name: STOP_I3C3CLK
+      description: Stop I3C3 controller clock. 0=running, 1=stopped (default).
+      bit_offset: 11
+      bit_size: 1
+
+fieldset/SCU_HPLL_PARAM:
+  description: >
+    H-PLL parameter register. Output = 25 MHz × (M+1) / (N+1) / (P+1).
+    Default M=0x77, N=2, P=0 → 1000 MHz.
+  fields:
+    - name: HPLL_M
+      description: H-PLL numerator (multiply factor = M+1). Default 0x77 (×120).
+      bit_offset: 0
+      bit_size: 13
+    - name: HPLL_N
+      description: H-PLL denominator (divide = N+1). Default 2 (÷3).
+      bit_offset: 13
+      bit_size: 6
+    - name: HPLL_P
+      description: H-PLL post-divider (divide = P+1 for P>0, ÷1 for P=0). Default 0 (÷1).
+      bit_offset: 19
+      bit_size: 4
+    - name: HPLL_OFF
+      description: Power down H-PLL.
+      bit_offset: 23
+      bit_size: 1
+    - name: HPLL_BYPASS
+      description: Bypass H-PLL (output = CLKIN directly).
+      bit_offset: 24
+      bit_size: 1
+    - name: HPLL_RESET
+      description: Assert H-PLL reset (output undefined while asserted).
+      bit_offset: 25
+      bit_size: 1
+
+fieldset/SCU_HPLL_EXT:
+  description: H-PLL extended parameter — bandwidth adjustment.
+  fields:
+    - name: HPLL_BWADJ
+      description: "Bandwidth adjustment word. NB = BWADJ + 1. Recommended: NB = (M+1)/2."
+      bit_offset: 0
+      bit_size: 12
+
+fieldset/SCU_CLK_SEL4:
+  description: Clock selection register 4 (SCU310) — PCLK divider, UART5 clock source, I3C clock.
+  fields:
+    - name: UART5_CLK_SRC
+      description: "UART5 clock source: 0=24 MHz÷13 ≈ 1.846 MHz, 1=192 MHz÷13 ≈ 14.769 MHz."
+      bit_offset: 4
+      bit_size: 1
+    - name: PCLK_DIV
+      description: >
+        APB bus PCLK divider. PCLK = HPLL / (2 × (N+1)) where N = this field.
+        0=HPLL/2, 1=HPLL/4, 2=HPLL/6, ..., 15=HPLL/32. Default 0 (HPLL/2 = 500 MHz).
+      bit_offset: 8
+      bit_size: 4
+    - name: I3C_CLK_DIV
+      description: "I3C clock divider applied to source: 0=÷2, 1=÷2, 2=÷3, 3=÷4, 4=÷5 (default), 5=÷6, 6=÷7, 7=÷8."
+      bit_offset: 28
+      bit_size: 3
+    - name: I3C_CLK_SRC
+      description: "I3C clock source: 0=HPLL (default), 1=480 MHz."
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SCU_CM4F_ADDR:
+  description: CM4F memory window address register (base or limit).
+  fields:
+    - name: ADDR
+      description: >
+        Memory window address (physical). For base: start of SRAM region.
+        For instruction/data limit: upper bound (exclusive) of respective access window.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SCU_CACHE_AREA:
+  description: >
+    CM4F cacheable area declaration (SCUA50).
+    Each bit N=1 declares that the 32 MB region at (base + N×32 MB) is cacheable.
+  fields:
+    - name: CACHEABLE_REGIONS
+      description: Cacheable region bitmask (one bit per 32 MB region).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SCU_CACHE_INVAL:
+  description: CM4F cache invalidation control (SCUA54).
+  fields:
+    - name: INVAL
+      description: Write to trigger cache invalidation (exact encoding per datasheet).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SCU_CACHE_FUNC:
+  description: CM4F cache function control register (SCUA58).
+  fields:
+    - name: CACHE_EN
+      description: Cache enable (combined I+D). 0=disabled, 1=enabled.
+      bit_offset: 0
+      bit_size: 1

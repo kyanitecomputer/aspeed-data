@@ -1,0 +1,297 @@
+# ASPEED UART DMA Controller (UDMA) registers.
+#
+# Base: 0x7E79_E000 (AST1060).
+# Supports UART1, UART2, and UART5 DMA channels (channels 3/4 are
+# implied by the address stride but not documented in the datasheet).
+#
+# Operation:
+#   TX: Software writes TX write pointer to advance data into the ring buffer;
+#       hardware advances TX read pointer as UART consumes bytes.
+#   RX: Hardware writes RX write pointer as bytes arrive from UART;
+#       software reads data and advances RX read pointer.
+#
+# Buffer size selection (TX_CTRL/RX_CTRL[1:0]): 1KB / 4KB / 16KB / 64KB.
+# Interrupt on TX: fires when TX buffer becomes empty (transmitter drained).
+# Interrupt on RX: fires when RX buffer becomes full.
+#
+# Per-channel register block layout (stride 0x20, starting at 0x040):
+#   +0x00: TX read pointer (hardware-managed, read-only)
+#   +0x04: TX write pointer (software-managed, read-write)
+#   +0x08: TX DMA buffer base address (physical, 4-byte aligned)
+#   +0x0C: TX control (timeout enable, buffer size)
+#   +0x10: RX read pointer (software-managed, read-write)
+#   +0x14: RX write pointer (hardware-managed, read-only)
+#   +0x18: RX DMA buffer base address (physical, 4-byte aligned)
+#   +0x1C: RX control (full mode, timeout enable, buffer size)
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 28 – UART DMA (UDMA)
+
+block/UARTDMA:
+  description: >
+    ASPEED UART DMA Controller.
+    Base: 0x7E79_E000. Supports UART1, UART2, and UART5.
+  items:
+    # ── Global registers ──────────────────────────────────────────────────────
+    - name: TX_ENABLE
+      description: >
+        UART TX DMA enable register (UDMA000).
+        Set bit to enable DMA TX for the corresponding UART channel.
+      byte_offset: 0x000
+      fieldset: UDMA_CHAN_BITS
+
+    - name: RX_ENABLE
+      description: >
+        UART RX DMA enable register (UDMA004).
+        Set bit to enable DMA RX for the corresponding UART channel.
+      byte_offset: 0x004
+      fieldset: UDMA_CHAN_BITS
+
+    - name: TIMEOUT_TIMER
+      description: >
+        DMA timeout timer (UDMA00C).
+        If a DMA transfer stalls for longer than this period, a timeout event occurs.
+        Unit: PCLK cycles × 14400.
+      byte_offset: 0x00C
+      fieldset: UDMA_TIMEOUT
+
+    - name: TX_RESET
+      description: >
+        UART TX DMA reset register (UDMA020).
+        Write 1 to reset DMA TX state for the corresponding UART channel.
+        Returns to 0 when reset completes.
+      byte_offset: 0x020
+      fieldset: UDMA_CHAN_BITS
+
+    - name: RX_RESET
+      description: >
+        UART RX DMA reset register (UDMA024).
+        Write 1 to reset DMA RX state for the corresponding UART channel.
+      byte_offset: 0x024
+      fieldset: UDMA_CHAN_BITS
+
+    - name: TX_IRQ_ENABLE
+      description: >
+        TX DMA interrupt enable register (UDMA030).
+        TX interrupt fires when TX buffer becomes empty (transmitter drained).
+      byte_offset: 0x030
+      fieldset: UDMA_CHAN_BITS
+
+    - name: TX_IRQ_STATUS
+      description: >
+        TX DMA interrupt status register (UDMA034). Write-1-to-clear.
+        Bit set when TX DMA buffer empties for the corresponding UART.
+      byte_offset: 0x034
+      fieldset: UDMA_CHAN_BITS
+
+    - name: RX_IRQ_ENABLE
+      description: >
+        RX DMA interrupt enable register (UDMA038).
+        RX interrupt fires when RX buffer becomes full.
+      byte_offset: 0x038
+      fieldset: UDMA_CHAN_BITS
+
+    - name: RX_IRQ_STATUS
+      description: >
+        RX DMA interrupt status register (UDMA03C). Write-1-to-clear.
+        Bit set when RX DMA buffer fills for the corresponding UART.
+      byte_offset: 0x03C
+      fieldset: UDMA_CHAN_BITS
+
+    # ── UART1 per-channel registers (offsets 0x040–0x05C) ────────────────────
+    - name: UART1_TX_RDPTR
+      description: UART1 TX DMA read pointer (UDMA040, hardware-managed, read-only).
+      byte_offset: 0x040
+      fieldset: UDMA_PTR
+
+    - name: UART1_TX_WRPTR
+      description: UART1 TX DMA write pointer (UDMA044, software-managed).
+      byte_offset: 0x044
+      fieldset: UDMA_PTR
+
+    - name: UART1_TX_BASE
+      description: UART1 TX DMA buffer base address (UDMA048, physical, 4-byte aligned).
+      byte_offset: 0x048
+      fieldset: UDMA_BUF_BASE
+
+    - name: UART1_TX_CTRL
+      description: UART1 TX DMA control — timeout enable and buffer size (UDMA04C).
+      byte_offset: 0x04C
+      fieldset: UDMA_TX_CTRL
+
+    - name: UART1_RX_RDPTR
+      description: UART1 RX DMA read pointer (UDMA050, software-managed).
+      byte_offset: 0x050
+      fieldset: UDMA_PTR
+
+    - name: UART1_RX_WRPTR
+      description: UART1 RX DMA write pointer (UDMA054, hardware-managed, read-only).
+      byte_offset: 0x054
+      fieldset: UDMA_PTR
+
+    - name: UART1_RX_BASE
+      description: UART1 RX DMA buffer base address (UDMA058, physical, 4-byte aligned).
+      byte_offset: 0x058
+      fieldset: UDMA_BUF_BASE
+
+    - name: UART1_RX_CTRL
+      description: UART1 RX DMA control — full mode, timeout enable, buffer size (UDMA05C).
+      byte_offset: 0x05C
+      fieldset: UDMA_RX_CTRL
+
+    # ── UART2 per-channel registers (offsets 0x060–0x07C) ────────────────────
+    - name: UART2_TX_RDPTR
+      description: UART2 TX DMA read pointer (UDMA060, hardware-managed, read-only).
+      byte_offset: 0x060
+      fieldset: UDMA_PTR
+
+    - name: UART2_TX_WRPTR
+      description: UART2 TX DMA write pointer (UDMA064, software-managed).
+      byte_offset: 0x064
+      fieldset: UDMA_PTR
+
+    - name: UART2_TX_BASE
+      description: UART2 TX DMA buffer base address (UDMA068).
+      byte_offset: 0x068
+      fieldset: UDMA_BUF_BASE
+
+    - name: UART2_TX_CTRL
+      description: UART2 TX DMA control (UDMA06C).
+      byte_offset: 0x06C
+      fieldset: UDMA_TX_CTRL
+
+    - name: UART2_RX_RDPTR
+      description: UART2 RX DMA read pointer (UDMA070, software-managed).
+      byte_offset: 0x070
+      fieldset: UDMA_PTR
+
+    - name: UART2_RX_WRPTR
+      description: UART2 RX DMA write pointer (UDMA074, hardware-managed, read-only).
+      byte_offset: 0x074
+      fieldset: UDMA_PTR
+
+    - name: UART2_RX_BASE
+      description: UART2 RX DMA buffer base address (UDMA078).
+      byte_offset: 0x078
+      fieldset: UDMA_BUF_BASE
+
+    - name: UART2_RX_CTRL
+      description: UART2 RX DMA control (UDMA07C).
+      byte_offset: 0x07C
+      fieldset: UDMA_RX_CTRL
+
+    # ── UART5 per-channel registers (offsets 0x0C0–0x0DC) ────────────────────
+    - name: UART5_TX_RDPTR
+      description: UART5 TX DMA read pointer (UDMA0C0, hardware-managed, read-only).
+      byte_offset: 0x0C0
+      fieldset: UDMA_PTR
+
+    - name: UART5_TX_WRPTR
+      description: UART5 TX DMA write pointer (UDMA0C4, software-managed).
+      byte_offset: 0x0C4
+      fieldset: UDMA_PTR
+
+    - name: UART5_TX_BASE
+      description: UART5 TX DMA buffer base address (UDMA0C8).
+      byte_offset: 0x0C8
+      fieldset: UDMA_BUF_BASE
+
+    - name: UART5_TX_CTRL
+      description: UART5 TX DMA control (UDMA0CC).
+      byte_offset: 0x0CC
+      fieldset: UDMA_TX_CTRL
+
+    - name: UART5_RX_RDPTR
+      description: UART5 RX DMA read pointer (UDMA0D0, software-managed).
+      byte_offset: 0x0D0
+      fieldset: UDMA_PTR
+
+    - name: UART5_RX_WRPTR
+      description: UART5 RX DMA write pointer (UDMA0D4, hardware-managed, read-only).
+      byte_offset: 0x0D4
+      fieldset: UDMA_PTR
+
+    - name: UART5_RX_BASE
+      description: UART5 RX DMA buffer base address (UDMA0D8).
+      byte_offset: 0x0D8
+      fieldset: UDMA_BUF_BASE
+
+    - name: UART5_RX_CTRL
+      description: UART5 RX DMA control (UDMA0DC).
+      byte_offset: 0x0DC
+      fieldset: UDMA_RX_CTRL
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/UDMA_CHAN_BITS:
+  description: >
+    Per-UART channel enable/reset/IRQ bitmask.
+    Bit 0=UART1, bit 1=UART2, bit 4=UART5.
+  fields:
+    - name: UART1
+      description: UART1 DMA channel.
+      bit_offset: 0
+      bit_size: 1
+    - name: UART2
+      description: UART2 DMA channel.
+      bit_offset: 1
+      bit_size: 1
+    - name: UART5
+      description: UART5 DMA channel.
+      bit_offset: 4
+      bit_size: 1
+
+fieldset/UDMA_TIMEOUT:
+  description: DMA timeout timer value.
+  fields:
+    - name: TIMEOUT
+      description: "Timeout threshold (unit: PCLK cycles × 14400)."
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/UDMA_PTR:
+  description: DMA ring buffer pointer (TX read / TX write / RX read / RX write).
+  fields:
+    - name: PTR
+      description: Ring buffer pointer (byte offset within buffer, 16-bit).
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/UDMA_BUF_BASE:
+  description: DMA ring buffer physical base address (4-byte aligned).
+  fields:
+    - name: BASE_ADDR
+      description: Physical base address bits[31:2] (4-byte aligned).
+      bit_offset: 2
+      bit_size: 30
+
+fieldset/UDMA_TX_CTRL:
+  description: TX DMA control register.
+  fields:
+    - name: TX_BUF_SIZE
+      description: "TX ring buffer size: 0=1 KB, 1=4 KB, 2=16 KB, 3=64 KB."
+      bit_offset: 0
+      bit_size: 2
+    - name: TX_TIMEOUT_EN
+      description: Enable TX DMA timeout.
+      bit_offset: 4
+      bit_size: 1
+
+fieldset/UDMA_RX_CTRL:
+  description: RX DMA control register.
+  fields:
+    - name: RX_BUF_SIZE
+      description: "RX ring buffer size: 0=1 KB, 1=4 KB, 2=16 KB, 3=64 KB."
+      bit_offset: 0
+      bit_size: 2
+    - name: RX_TIMEOUT_EN
+      description: Enable RX DMA timeout.
+      bit_offset: 4
+      bit_size: 1
+    - name: RX_FULL_MODE
+      description: >
+        RX buffer full definition.
+        0=Ring buffer: full when RDPTR == WRPTR - 1.
+        1=Single buffer: full when WRPTR wraps to start.
+      bit_offset: 5
+      bit_size: 1

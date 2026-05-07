@@ -1,0 +1,196 @@
+# ASPEED I2C/SMBus Global Control registers.
+#
+# Global base: 0x7E7B_0000 (AST1060; same on AST2600).
+# Covers interrupt status aggregation and global clock/mode configuration.
+#
+# There are two register modes selectable via I2CG0C[2]:
+#   0 = Old register mode  (I2CDxx per-channel registers)
+#   1 = New register mode  (I2CCxx/I2CMxx/I2CSxx — recommended; used by i2c_v1.yaml)
+#
+# There are two clock divider modes selectable via I2CG0C[1]:
+#   0 = Old mode  (per-channel BASE_CLK_DIV selects power-of-2 PCLK divisors)
+#   1 = New mode  (I2CG10 defines four programmable base clock divisors)
+#
+# Interrupt routing modes via I2CG0C[3]:
+#   0 = Master and slave interrupts merged into I2CG00
+#   1 = Master interrupts in I2CG00; slave interrupts in I2CG04
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 27 – I2C/SMBus (I2CG00–I2CG10)
+
+block/I2CGLOBAL:
+  description: >
+    ASPEED I2C/SMBus global control registers.
+    Base: 0x7E7B_0000.
+  items:
+    - name: IRQ_STATUS
+      description: >
+        Master (or merged master+slave) interrupt status (I2CG00). Read-only.
+        Bit N-1 is set when device N has a pending interrupt.
+        When I2CG0C[3]=0 (default), both master and slave interrupts aggregate here.
+        When I2CG0C[3]=1, only master interrupts appear here.
+        No write-clear needed; clear at the device channel interrupt register.
+      byte_offset: 0x00
+      fieldset: I2CG_IRQ_STATUS
+
+    - name: SLAVE_IRQ_STATUS
+      description: >
+        Slave interrupt status (I2CG04). Read-only.
+        Valid only when I2CG0C[3]=1 (separate master/slave mode).
+        Bit N-1 is set when device N has a pending slave interrupt.
+      byte_offset: 0x04
+      fieldset: I2CG_IRQ_STATUS
+
+    - name: GLOBAL_CTRL
+      description: >
+        Global control register (I2CG0C).
+        Controls register mode, clock divider mode, interrupt routing, and
+        bus-recovery turnaround delay.
+      byte_offset: 0x0C
+      fieldset: I2CG_GLOBAL_CTRL
+
+    - name: CLK_DIV
+      description: >
+        New-mode clock divider control register (I2CG10).
+        Valid when I2CG0C[1]=1 (new clock divider mode).
+        Defines four base clock divisors used by per-channel I2CC04[3:0] selection.
+        Divisor value N: effective divisor = N/2 + 0.5 (0x00=÷1, 0x01=÷1.5, ...,
+        0xFF=÷128.5).
+      byte_offset: 0x10
+      fieldset: I2CG_CLK_DIV
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/I2CG_IRQ_STATUS:
+  description: >
+    I2C/SMBus global interrupt status (I2CG00 / I2CG04).
+    Bit N-1 set = device N has a pending interrupt.
+    Read-only — clear at the individual channel's interrupt status register.
+  fields:
+    - name: DEV1_INT
+      description: Device 1 interrupt pending.
+      bit_offset: 0
+      bit_size: 1
+    - name: DEV2_INT
+      description: Device 2 interrupt pending.
+      bit_offset: 1
+      bit_size: 1
+    - name: DEV3_INT
+      description: Device 3 interrupt pending.
+      bit_offset: 2
+      bit_size: 1
+    - name: DEV4_INT
+      description: Device 4 interrupt pending.
+      bit_offset: 3
+      bit_size: 1
+    - name: DEV5_INT
+      description: Device 5 interrupt pending.
+      bit_offset: 4
+      bit_size: 1
+    - name: DEV6_INT
+      description: Device 6 interrupt pending.
+      bit_offset: 5
+      bit_size: 1
+    - name: DEV7_INT
+      description: Device 7 interrupt pending.
+      bit_offset: 6
+      bit_size: 1
+    - name: DEV8_INT
+      description: Device 8 interrupt pending.
+      bit_offset: 7
+      bit_size: 1
+    - name: DEV9_INT
+      description: Device 9 interrupt pending.
+      bit_offset: 8
+      bit_size: 1
+    - name: DEV10_INT
+      description: Device 10 interrupt pending.
+      bit_offset: 9
+      bit_size: 1
+    - name: DEV11_INT
+      description: Device 11 interrupt pending.
+      bit_offset: 10
+      bit_size: 1
+    - name: DEV12_INT
+      description: Device 12 interrupt pending.
+      bit_offset: 11
+      bit_size: 1
+    - name: DEV13_INT
+      description: Device 13 interrupt pending.
+      bit_offset: 12
+      bit_size: 1
+    - name: DEV14_INT
+      description: Device 14 interrupt pending.
+      bit_offset: 13
+      bit_size: 1
+    - name: DEV15_INT
+      description: Device 15 interrupt pending.
+      bit_offset: 14
+      bit_size: 1
+    - name: DEV16_INT
+      description: Device 16 interrupt pending.
+      bit_offset: 15
+      bit_size: 1
+
+fieldset/I2CG_GLOBAL_CTRL:
+  description: I2C/SMBus global control register (I2CG0C).
+  fields:
+    - name: CLK_DIVIDER_MODE
+      description: >
+        Clock divider mode selection.
+        0 = old mode (per-channel PCLK power-of-2 divisors).
+        1 = new mode (I2CG10 programmable base clock divisors — recommended).
+      bit_offset: 1
+      bit_size: 1
+    - name: REG_MODE
+      description: >
+        Per-channel register mode selection.
+        0 = old mode (I2CDxx registers).
+        1 = new mode (I2CCxx/I2CMxx/I2CSxx — recommended; used by i2c_v1).
+      bit_offset: 2
+      bit_size: 1
+    - name: SEPARATE_MASTER_SLAVE_INTS
+      description: >
+        Master/slave interrupt separation.
+        0 = merged: all device interrupts in I2CG00.
+        1 = separated: master in I2CG00, slave in I2CG04.
+      bit_offset: 3
+      bit_size: 1
+    - name: SLAVE_PKT_RX_FULL_ACTION
+      description: >
+        Slave packet mode: action when RX buffer is full.
+        0 = issue packet-done interrupt and pull SCL low (halt transfer).
+        1 = expect Repeated-Start or Stop; NACK if more data follows.
+      bit_offset: 4
+      bit_size: 1
+    - name: MASTER_TURNAROUND_DELAY
+      description: >
+        Master transmit-to-receive turnaround delay in base clock cycles.
+        0 = no delay. 1–15 = delay N base clock cycles.
+        Applied in master packet operation mode only.
+      bit_offset: 8
+      bit_size: 4
+
+fieldset/I2CG_CLK_DIV:
+  description: >
+    I2C/SMBus new-mode clock divisor register (I2CG10).
+    Valid when I2CG0C[1]=1 (new clock divider mode).
+    Four 8-bit fields, each setting a base clock divisor.
+    Effective divisor = value/2 + 0.5 (0x00=÷1, 0xFF=÷128.5).
+  fields:
+    - name: BASE_CLK1_DIV
+      description: Base clock 1 divisor (PCLK ÷ (N/2 + 0.5)).
+      bit_offset: 0
+      bit_size: 8
+    - name: BASE_CLK2_DIV
+      description: Base clock 2 divisor.
+      bit_offset: 8
+      bit_size: 8
+    - name: BASE_CLK3_DIV
+      description: Base clock 3 divisor.
+      bit_offset: 16
+      bit_size: 8
+    - name: BASE_CLK4_DIV
+      description: Base clock 4 divisor.
+      bit_offset: 24
+      bit_size: 8

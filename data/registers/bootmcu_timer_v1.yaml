@@ -1,0 +1,90 @@
+# AST2700 BootMCU 64-bit countdown timer.
+#
+# One instance at 0x14C36000 on the IO-die, visible to the BootMCU (RV32IMC).
+# The timer counts up continuously at 1 MHz and fires an alarm interrupt when
+# COUNT reaches ALARM.  Writing to ALARM_L/H also clears TMR_CTRL.INTR_STS.
+#
+# Interrupt: IRQ 7 from riscv,cpu-intc (machine timer interrupt, MTIP).
+#
+# Sources:
+#   Zephyr drivers/timer/ast2700_bootmcu_timer.c
+#   Zephyr dts/riscv/aspeed/ast27xx.dtsi  (systick @ 0x14C36000, interrupts = <7 0>)
+
+block/TIMER:
+  description: >
+    AST2700 BootMCU 64-bit free-running timer with alarm interrupt.
+    Clocked at 1 MHz; INTR_STS is cleared by writing ALARM_L and ALARM_H.
+    Base address: 0x14C36000 (IO-die, BootMCU view).
+  items:
+    - name: COUNT_L
+      description: Counter low 32 bits (read-only, free-running).
+      byte_offset: 0x00
+      access: Read
+
+    - name: COUNT_H
+      description: Counter high 32 bits (read-only, free-running).
+      byte_offset: 0x04
+      access: Read
+
+    - name: ALARM_L
+      description: >
+        Alarm compare value — low 32 bits.
+        Writing this register also clears TMR_CTRL.INTR_STS.
+      byte_offset: 0x08
+
+    - name: ALARM_H
+      description: >
+        Alarm compare value — high 32 bits.
+        Writing this register also clears TMR_CTRL.INTR_STS.
+      byte_offset: 0x0C
+
+    - name: CTRL
+      description: >
+        Timer control and interrupt status register.
+        Bits written 1 in this register set the corresponding function.
+        Use CTRL_CLR to clear bits.
+      byte_offset: 0x10
+      fieldset: CTRL
+
+    - name: CTRL_CLR
+      description: >
+        Write-1-clear mirror of CTRL.
+        Write 1 to a bit to clear the corresponding CTRL bit.
+        Example: write TMR_CTRL_EN to stop the timer.
+      byte_offset: 0x14
+      fieldset: CTRL
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/CTRL:
+  description: Timer control register (used for both CTRL and CTRL_CLR).
+  fields:
+    - name: EN
+      description: >
+        Timer enable.
+        1 = timer counting enabled.
+        Write to CTRL_CLR to stop.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: RESET_EN
+      description: >
+        Reset-on-alarm enable.
+        1 = counter resets to 0 when ALARM is reached.
+      bit_offset: 3
+      bit_size: 1
+
+    - name: COUNT_CLR
+      description: >
+        Counter clear (self-clearing).
+        Write 1 to reset the 64-bit counter to 0.
+      bit_offset: 4
+      bit_size: 1
+
+    - name: INTR_STS
+      description: >
+        Interrupt status.
+        Set when COUNT reaches ALARM.
+        Cleared by writing ALARM_L or ALARM_H (not by writing CTRL_CLR).
+      bit_offset: 16
+      bit_size: 1

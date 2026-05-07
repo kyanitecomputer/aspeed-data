@@ -1,0 +1,1243 @@
+# ASPEED Firmware SPI Memory Controller (FMC/BSPI) registers.
+#
+# Base: 0x7E62_0000 (AST1060).
+# Memory-mapped SPI flash window: 0x0000_0000 (boot) and 0x8000_0000.
+# Two chip-enables: CE0 (primary boot flash), CE1 (secondary).
+#
+# The FMC and SPI1/SPI2 controllers share the same register layout.
+# FMC-specific additions (not present in SPI1/SPI2):
+#   0x050  AUTO_SOFT_RST_CTRL  — auto 0x66/0x99 after watchdog reset
+#   0x060  WDT1_CTRL           — 2s WDT, toggles CE0 3B↔4B address mode on timeout
+#   0x064  WDT2_CTRL           — alternate boot WDT (CE swap on timeout)
+#   0x068  WDT2_RELOAD         — WDT2 reload value
+#   0x06C  WDT2_RESTART        — write 0x4755 to restart WDT2
+#   0x0C8  WRITE_ADDR_FILTER7  — 7th write address filter range (FMC only)
+#   0x0CC  WRITE_ADDR_FILTER8  — 8th write address filter range (FMC only)
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 13 – Firmware SPI Memory Controller (BSPI)
+
+block/FMC:
+  description: >
+    ASPEED Firmware SPI Memory Controller (FMC/BSPI).
+    Base: 0x7E62_0000. Two chip-enables (CE0 = boot flash, CE1 = secondary).
+    Flash memory mapped at 0x0000_0000 and 0x8000_0000.
+  items:
+    - name: CE_TYPE
+      description: CE type / flash configuration. Controls per-CE flash type and default write enable.
+      byte_offset: 0x000
+      fieldset: FMC_CE_TYPE
+
+    - name: CE_CTRL
+      description: CE control — minimum inactive timing (tCSH) and 4-byte address mode.
+      byte_offset: 0x004
+      fieldset: SPI_CE_CTRL
+
+    - name: IRQ_CTRL
+      description: Interrupt control and status — DMA done, command abort, write protect.
+      byte_offset: 0x008
+      fieldset: SPI_IRQ_CTRL
+
+    - name: CMD_CTRL
+      description: Command control — address and data byte lane enable/disable.
+      byte_offset: 0x00C
+      fieldset: SPI_CMD_CTRL
+
+    - name: CE0_CTRL
+      description: CE0 control — I/O mode, clock, SPI command, dummy cycles, access mode.
+      byte_offset: 0x010
+      fieldset: SPI_CE_N_CTRL
+
+    - name: CE1_CTRL
+      description: CE1 control (same layout as CE0_CTRL).
+      byte_offset: 0x014
+      fieldset: SPI_CE_N_CTRL
+
+    - name: CE0_ADDR_RANGE
+      description: CE0 address decoding range (start/end bits[27:19] in 512 KB units).
+      byte_offset: 0x030
+      fieldset: SPI_ADDR_RANGE
+
+    - name: CE1_ADDR_RANGE
+      description: CE1 address decoding range.
+      byte_offset: 0x034
+      fieldset: SPI_ADDR_RANGE
+
+    - name: AUTO_SOFT_RST_CTRL
+      description: >
+        Auto soft-reset after watchdog. When enabled, hardware issues 0x66→0x99
+        after WDT reset to restore SPI volatile configuration bits.
+      byte_offset: 0x050
+      fieldset: FMC_SOFT_RST
+
+    - name: DUMMY_CYCLE_DATA
+      description: Data output during head of dummy cycles (shared by all CEs).
+      byte_offset: 0x054
+      fieldset: SPI_DUMMY_DATA
+
+    - name: WDT1_CTRL
+      description: >
+        WDT1 — address mode detection watchdog (2s timeout).
+        On timeout, resets CPU and toggles CE0 between 3B/4B address mode.
+        Stops after 2 toggles. Used to auto-detect flash address mode.
+      byte_offset: 0x060
+      fieldset: FMC_WDT1
+
+    - name: WDT2_CTRL
+      description: >
+        WDT2 — alternate boot watchdog.
+        On timeout, firmware switches boot flash source (CE0↔CE1 or primary↔alternate
+        depending on ABR mode). Set BOOT_SRC_SEL to indicate current selection.
+      byte_offset: 0x064
+      fieldset: FMC_WDT2
+
+    - name: WDT2_RELOAD
+      description: >
+        WDT2 timer reload value (unit: 0.1 s). Default 0xE0 = 22 s.
+        Firmware must restart within this time by writing 0x4755 to WDT2_RESTART.
+      byte_offset: 0x068
+      fieldset: FMC_WDT2_RELOAD
+
+    - name: WDT2_RESTART
+      description: Write 0x4755 to reload and restart WDT2 countdown.
+      byte_offset: 0x06C
+      fieldset: FMC_WDT2_RESTART
+
+    - name: DMA_BUF_MODE_LEN
+      description: DMA FIFO buffer mode length in 4-byte units (0x40 = full 256 bytes).
+      byte_offset: 0x07C
+      fieldset: SPI_DMA_BUF_LEN
+
+    - name: DMA_CTRL
+      description: DMA control/status — direction, buffer/memory mode, checksum, enable.
+      byte_offset: 0x080
+      fieldset: FMC_DMA_CTRL
+
+    - name: DMA_FLASH_ADDR
+      description: DMA flash-side start address (4-byte aligned).
+      byte_offset: 0x084
+      fieldset: SPI_DMA_FLASH_ADDR
+
+    - name: DMA_RAM_ADDR
+      description: DMA DRAM/SRAM-side start address (4-byte aligned, memory mode only).
+      byte_offset: 0x088
+      fieldset: SPI_DMA_RAM_ADDR
+
+    - name: DMA_LEN
+      description: DMA transfer length in bytes (counts down during transfer).
+      byte_offset: 0x08C
+      fieldset: SPI_DMA_LEN
+
+    - name: DMA_CHECKSUM
+      description: Running 32-bit checksum over flash read data (reset when DMA disabled).
+      byte_offset: 0x090
+      fieldset: SPI_DMA_CHECKSUM
+
+    - name: CE0_READ_TIMING
+      description: CE0 SPI flash read timing compensation (per-HCLK-divisor input delay).
+      byte_offset: 0x094
+      fieldset: SPI_READ_TIMING
+
+    - name: CE1_READ_TIMING
+      description: CE1 SPI flash read timing compensation.
+      byte_offset: 0x098
+      fieldset: SPI_READ_TIMING
+
+    - name: CMD_FILTER_CTRL
+      description: Command filter control — enable per-CE and always-allow read commands.
+      byte_offset: 0x0A0
+      fieldset: SPI_CMD_FILTER_CTRL
+
+    - name: WRITE_FILTER_CTRL
+      description: Write address filter mode per filter entry (2 bits each, up to 8 filters).
+      byte_offset: 0x0A4
+      fieldset: FMC_WRITE_FILTER_CTRL
+
+    - name: LOCK_SRST
+      description: Register lock control — bits lock corresponding registers until SRST#.
+      byte_offset: 0x0A8
+      fieldset: SPI_LOCK_CTRL
+
+    - name: LOCK_WDT
+      description: Register lock control — bits lock corresponding registers until WDT reset.
+      byte_offset: 0x0AC
+      fieldset: SPI_LOCK_CTRL
+
+    - name: WRITE_ADDR_FILTER1
+      description: Write address filter #1 range (lower/upper bound in bits[27:12]).
+      byte_offset: 0x0B0
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER2
+      description: Write address filter #2 range.
+      byte_offset: 0x0B4
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER3
+      description: Write address filter #3 range.
+      byte_offset: 0x0B8
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER4
+      description: Write address filter #4 range.
+      byte_offset: 0x0BC
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER5
+      description: Write address filter #5 range.
+      byte_offset: 0x0C0
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER6
+      description: Write address filter #6 range.
+      byte_offset: 0x0C4
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER7
+      description: Write address filter #7 range (FMC only).
+      byte_offset: 0x0C8
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER8
+      description: Write address filter #8 range (FMC only).
+      byte_offset: 0x0CC
+      fieldset: SPI_WRITE_FILTER
+
+    # 0x100-0x14C: 20 Fully Qualified Command (FQCD) table entries
+    - name: FQCD0
+      description: "Fully Qualified Command table entry 0 (predefined: EN4B — enter 4-byte mode)."
+      byte_offset: 0x100
+      fieldset: SPI_FQCD
+    - name: FQCD1
+      description: "FQCD entry 1 (predefined: EX4B — exit 4-byte mode)."
+      byte_offset: 0x104
+      fieldset: SPI_FQCD
+    - name: FQCD2
+      description: "FQCD entry 2 (predefined: EQIO — enter QPI mode)."
+      byte_offset: 0x108
+      fieldset: SPI_FQCD
+    - name: FQCD3
+      description: "FQCD entry 3 (predefined: RSTQIO — reset/exit QPI mode)."
+      byte_offset: 0x10C
+      fieldset: SPI_FQCD
+    - name: FQCD4
+      description: FQCD entry 4 — general purpose.
+      byte_offset: 0x110
+      fieldset: SPI_FQCD
+    - name: FQCD5
+      description: FQCD entry 5 — general purpose.
+      byte_offset: 0x114
+      fieldset: SPI_FQCD
+    - name: FQCD6
+      description: FQCD entry 6 — general purpose.
+      byte_offset: 0x118
+      fieldset: SPI_FQCD
+    - name: FQCD7
+      description: FQCD entry 7 — general purpose.
+      byte_offset: 0x11C
+      fieldset: SPI_FQCD
+    - name: FQCD8
+      description: FQCD entry 8 — general purpose.
+      byte_offset: 0x120
+      fieldset: SPI_FQCD
+    - name: FQCD9
+      description: FQCD entry 9 — general purpose.
+      byte_offset: 0x124
+      fieldset: SPI_FQCD
+    - name: FQCD10
+      description: FQCD entry 10 — general purpose.
+      byte_offset: 0x128
+      fieldset: SPI_FQCD
+    - name: FQCD11
+      description: FQCD entry 11 — general purpose.
+      byte_offset: 0x12C
+      fieldset: SPI_FQCD
+    - name: FQCD12
+      description: FQCD entry 12 — general purpose.
+      byte_offset: 0x130
+      fieldset: SPI_FQCD
+    - name: FQCD13
+      description: FQCD entry 13 — general purpose.
+      byte_offset: 0x134
+      fieldset: SPI_FQCD
+    - name: FQCD14
+      description: FQCD entry 14 — general purpose.
+      byte_offset: 0x138
+      fieldset: SPI_FQCD
+    - name: FQCD15
+      description: FQCD entry 15 — general purpose.
+      byte_offset: 0x13C
+      fieldset: SPI_FQCD
+    - name: FQCD16
+      description: FQCD entry 16 — general purpose.
+      byte_offset: 0x140
+      fieldset: SPI_FQCD
+    - name: FQCD17
+      description: FQCD entry 17 — general purpose.
+      byte_offset: 0x144
+      fieldset: SPI_FQCD
+    - name: FQCD18
+      description: FQCD entry 18 — general purpose.
+      byte_offset: 0x148
+      fieldset: SPI_FQCD
+    - name: FQCD19
+      description: "FQCD entry 19 (predefined: WREAR — write extended address register)."
+      byte_offset: 0x14C
+      fieldset: SPI_FQCD
+
+    # 0x150-0x17C: 12 Address Qualified Command (AQCD) table entries
+    - name: AQCD0
+      description: "Address Qualified Command entry 0 (predefined: page program 0x02, read 0xXX)."
+      byte_offset: 0x150
+      fieldset: FMC_AQCD
+    - name: AQCD1
+      description: "AQCD entry 1 (predefined: sector erase 0xD8)."
+      byte_offset: 0x154
+      fieldset: FMC_AQCD
+    - name: AQCD2
+      description: AQCD entry 2 — general purpose.
+      byte_offset: 0x158
+      fieldset: FMC_AQCD
+    - name: AQCD3
+      description: AQCD entry 3 — general purpose.
+      byte_offset: 0x15C
+      fieldset: FMC_AQCD
+    - name: AQCD4
+      description: AQCD entry 4 — general purpose.
+      byte_offset: 0x160
+      fieldset: FMC_AQCD
+    - name: AQCD5
+      description: AQCD entry 5 — general purpose.
+      byte_offset: 0x164
+      fieldset: FMC_AQCD
+    - name: AQCD6
+      description: AQCD entry 6 — general purpose.
+      byte_offset: 0x168
+      fieldset: FMC_AQCD
+    - name: AQCD7
+      description: AQCD entry 7 — general purpose.
+      byte_offset: 0x16C
+      fieldset: FMC_AQCD
+    - name: AQCD8
+      description: AQCD entry 8 — general purpose.
+      byte_offset: 0x170
+      fieldset: FMC_AQCD
+    - name: AQCD9
+      description: AQCD entry 9 — general purpose.
+      byte_offset: 0x174
+      fieldset: FMC_AQCD
+    - name: AQCD10
+      description: AQCD entry 10 — general purpose.
+      byte_offset: 0x178
+      fieldset: FMC_AQCD
+    - name: AQCD11
+      description: AQCD entry 11 — general purpose.
+      byte_offset: 0x17C
+      fieldset: FMC_AQCD
+
+# ── SPI1/SPI2 controller block ────────────────────────────────────────────────
+# Same IP as FMC, without boot-specific WDT/soft-reset registers and
+# with DMA arbitration request/grant bits in DMA_CTRL.
+
+block/SPI:
+  description: >
+    ASPEED SPI Flash Controller (SPI1 at 0x7E63_0000, SPI2 at 0x7E64_0000).
+    Two chip-enables per instance. Memory windows: SPI1=0x9000_0000, SPI2=0xB000_0000.
+    Same IP as FMC; no boot WDT/soft-reset; DMA requires arbitration via DMA_CTRL.
+  items:
+    - name: CE_TYPE
+      description: CE type and default write enable configuration.
+      byte_offset: 0x000
+      fieldset: SPI_CE_TYPE
+
+    - name: CE_CTRL
+      description: CE control — tCSH timing and 4-byte address mode selection.
+      byte_offset: 0x004
+      fieldset: SPI_CE_CTRL
+
+    - name: IRQ_CTRL
+      description: Interrupt control and status.
+      byte_offset: 0x008
+      fieldset: SPI_IRQ_CTRL
+
+    - name: CMD_CTRL
+      description: Command control — address and data byte lane enable/disable.
+      byte_offset: 0x00C
+      fieldset: SPI_CMD_CTRL
+
+    - name: CE0_CTRL
+      description: CE0 control — I/O mode, clock, SPI command, dummy cycles, access mode.
+      byte_offset: 0x010
+      fieldset: SPI_CE_N_CTRL
+
+    - name: CE1_CTRL
+      description: CE1 control (same layout as CE0_CTRL).
+      byte_offset: 0x014
+      fieldset: SPI_CE_N_CTRL
+
+    - name: CE0_ADDR_RANGE
+      description: CE0 address decoding range (start/end bits[27:20] in 1 MB units).
+      byte_offset: 0x030
+      fieldset: SPI_ADDR_RANGE
+
+    - name: CE1_ADDR_RANGE
+      description: CE1 address decoding range.
+      byte_offset: 0x034
+      fieldset: SPI_ADDR_RANGE
+
+    - name: DUMMY_CYCLE_DATA
+      description: Data output during head of dummy cycles.
+      byte_offset: 0x054
+      fieldset: SPI_DUMMY_DATA
+
+    - name: DMA_BUF_MODE_LEN
+      description: DMA FIFO buffer mode length in 4-byte units.
+      byte_offset: 0x07C
+      fieldset: SPI_DMA_BUF_LEN
+
+    - name: DMA_CTRL
+      description: >
+        DMA control/status. SPI requires DMA arbitration:
+        write 0xAEED_0000 to bit[31] to request, wait for bit[30]=1 (granted).
+        Release with 0xDEEA_0000 after DMA completes.
+      byte_offset: 0x080
+      fieldset: SPI_DMA_CTRL
+
+    - name: DMA_FLASH_ADDR
+      description: DMA flash-side start address.
+      byte_offset: 0x084
+      fieldset: SPI_DMA_FLASH_ADDR
+
+    - name: DMA_RAM_ADDR
+      description: DMA DRAM/SRAM-side start address.
+      byte_offset: 0x088
+      fieldset: SPI_DMA_RAM_ADDR
+
+    - name: DMA_LEN
+      description: DMA transfer length in bytes.
+      byte_offset: 0x08C
+      fieldset: SPI_DMA_LEN
+
+    - name: DMA_CHECKSUM
+      description: Running 32-bit checksum over flash read data.
+      byte_offset: 0x090
+      fieldset: SPI_DMA_CHECKSUM
+
+    - name: CE0_READ_TIMING
+      description: CE0 read timing compensation (per-HCLK-divisor input delay).
+      byte_offset: 0x094
+      fieldset: SPI_READ_TIMING
+
+    - name: CE1_READ_TIMING
+      description: CE1 read timing compensation.
+      byte_offset: 0x098
+      fieldset: SPI_READ_TIMING
+
+    - name: CMD_FILTER_CTRL
+      description: Command filter control.
+      byte_offset: 0x0A0
+      fieldset: SPI_CMD_FILTER_CTRL
+
+    - name: WRITE_FILTER_CTRL
+      description: Write address filter mode (6 filters for SPI vs 8 for FMC).
+      byte_offset: 0x0A4
+      fieldset: SPI_WRITE_FILTER_CTRL
+
+    - name: LOCK_SRST
+      description: Register lock until SRST#.
+      byte_offset: 0x0A8
+      fieldset: SPI_LOCK_CTRL
+
+    - name: LOCK_WDT
+      description: Register lock until WDT reset.
+      byte_offset: 0x0AC
+      fieldset: SPI_LOCK_CTRL
+
+    - name: WRITE_ADDR_FILTER1
+      description: Write address filter #1 range.
+      byte_offset: 0x0B0
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER2
+      description: Write address filter #2 range.
+      byte_offset: 0x0B4
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER3
+      description: Write address filter #3 range.
+      byte_offset: 0x0B8
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER4
+      description: Write address filter #4 range.
+      byte_offset: 0x0BC
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER5
+      description: Write address filter #5 range.
+      byte_offset: 0x0C0
+      fieldset: SPI_WRITE_FILTER
+
+    - name: WRITE_ADDR_FILTER6
+      description: Write address filter #6 range (last for SPI; FMC has 7 and 8 additionally).
+      byte_offset: 0x0C4
+      fieldset: SPI_WRITE_FILTER
+
+    - name: FQCD0
+      description: "FQCD entry 0 (predefined: EN4B — enter 4-byte mode)."
+      byte_offset: 0x100
+      fieldset: SPI_FQCD
+    - name: FQCD1
+      description: "FQCD entry 1 (predefined: EX4B)."
+      byte_offset: 0x104
+      fieldset: SPI_FQCD
+    - name: FQCD2
+      description: "FQCD entry 2 (predefined: EQIO)."
+      byte_offset: 0x108
+      fieldset: SPI_FQCD
+    - name: FQCD3
+      description: "FQCD entry 3 (predefined: RSTQIO)."
+      byte_offset: 0x10C
+      fieldset: SPI_FQCD
+    - name: FQCD4
+      description: FQCD entry 4 — general purpose.
+      byte_offset: 0x110
+      fieldset: SPI_FQCD
+    - name: FQCD5
+      description: FQCD entry 5 — general purpose.
+      byte_offset: 0x114
+      fieldset: SPI_FQCD
+    - name: FQCD6
+      description: FQCD entry 6 — general purpose.
+      byte_offset: 0x118
+      fieldset: SPI_FQCD
+    - name: FQCD7
+      description: FQCD entry 7 — general purpose.
+      byte_offset: 0x11C
+      fieldset: SPI_FQCD
+    - name: FQCD8
+      description: FQCD entry 8 — general purpose.
+      byte_offset: 0x120
+      fieldset: SPI_FQCD
+    - name: FQCD9
+      description: FQCD entry 9 — general purpose.
+      byte_offset: 0x124
+      fieldset: SPI_FQCD
+    - name: FQCD10
+      description: FQCD entry 10 — general purpose.
+      byte_offset: 0x128
+      fieldset: SPI_FQCD
+    - name: FQCD11
+      description: FQCD entry 11 — general purpose.
+      byte_offset: 0x12C
+      fieldset: SPI_FQCD
+    - name: FQCD12
+      description: FQCD entry 12 — general purpose.
+      byte_offset: 0x130
+      fieldset: SPI_FQCD
+    - name: FQCD13
+      description: FQCD entry 13 — general purpose.
+      byte_offset: 0x134
+      fieldset: SPI_FQCD
+    - name: FQCD14
+      description: FQCD entry 14 — general purpose.
+      byte_offset: 0x138
+      fieldset: SPI_FQCD
+    - name: FQCD15
+      description: FQCD entry 15 — general purpose.
+      byte_offset: 0x13C
+      fieldset: SPI_FQCD
+    - name: FQCD16
+      description: FQCD entry 16 — general purpose.
+      byte_offset: 0x140
+      fieldset: SPI_FQCD
+    - name: FQCD17
+      description: FQCD entry 17 — general purpose.
+      byte_offset: 0x144
+      fieldset: SPI_FQCD
+    - name: FQCD18
+      description: FQCD entry 18 — general purpose.
+      byte_offset: 0x148
+      fieldset: SPI_FQCD
+    - name: FQCD19
+      description: "FQCD entry 19 (predefined: WREAR)."
+      byte_offset: 0x14C
+      fieldset: SPI_FQCD
+
+    - name: AQCD0
+      description: AQCD entry 0.
+      byte_offset: 0x150
+      fieldset: SPI_AQCD
+    - name: AQCD1
+      description: AQCD entry 1.
+      byte_offset: 0x154
+      fieldset: SPI_AQCD
+    - name: AQCD2
+      description: AQCD entry 2.
+      byte_offset: 0x158
+      fieldset: SPI_AQCD
+    - name: AQCD3
+      description: AQCD entry 3 — general purpose.
+      byte_offset: 0x15C
+      fieldset: SPI_AQCD
+    - name: AQCD4
+      description: AQCD entry 4 — general purpose.
+      byte_offset: 0x160
+      fieldset: SPI_AQCD
+    - name: AQCD5
+      description: AQCD entry 5 — general purpose.
+      byte_offset: 0x164
+      fieldset: SPI_AQCD
+    - name: AQCD6
+      description: AQCD entry 6 — general purpose.
+      byte_offset: 0x168
+      fieldset: SPI_AQCD
+    - name: AQCD7
+      description: AQCD entry 7 — general purpose.
+      byte_offset: 0x16C
+      fieldset: SPI_AQCD
+    - name: AQCD8
+      description: AQCD entry 8 — general purpose.
+      byte_offset: 0x170
+      fieldset: SPI_AQCD
+    - name: AQCD9
+      description: AQCD entry 9 — general purpose.
+      byte_offset: 0x174
+      fieldset: SPI_AQCD
+    - name: AQCD10
+      description: AQCD entry 10 — general purpose.
+      byte_offset: 0x178
+      fieldset: SPI_AQCD
+    - name: AQCD11
+      description: AQCD entry 11 — general purpose.
+      byte_offset: 0x17C
+      fieldset: SPI_AQCD
+
+# ── Shared fieldsets ───────────────────────────────────────────────────────────
+
+fieldset/FMC_CE_TYPE:
+  description: FMC CE type — flash type selection and default write enable.
+  fields:
+    - name: CE0_FLASH_TYPE
+      description: "CE0 flash type: 10=SPI flash (read-only, always 0b10)."
+      bit_offset: 0
+      bit_size: 2
+    - name: CE1_FLASH_TYPE
+      description: "CE1 flash type: 10=SPI flash (read-only)."
+      bit_offset: 2
+      bit_size: 2
+    - name: CE0_DEFAULT_WRITE
+      description: "CE0 default write enable: 0=write disabled, 1=write enabled."
+      bit_offset: 16
+      bit_size: 1
+    - name: CE1_DEFAULT_WRITE
+      description: "CE1 default write enable: 0=write disabled, 1=write enabled."
+      bit_offset: 17
+      bit_size: 1
+
+fieldset/SPI_CE_TYPE:
+  description: SPI CE configuration — default write enable per chip-enable.
+  fields:
+    - name: CE0_DEFAULT_WRITE
+      description: "CE0 default write enable: 0=write disabled, 1=write enabled."
+      bit_offset: 16
+      bit_size: 1
+    - name: CE1_DEFAULT_WRITE
+      description: "CE1 default write enable: 0=write disabled, 1=write enabled."
+      bit_offset: 17
+      bit_size: 1
+
+fieldset/SPI_CE_CTRL:
+  description: CE control — minimum inactive timing and address mode.
+  fields:
+    - name: CE0_ADDR_MODE
+      description: "CE0 address mode: 0=3-byte (≤16 MB), 1=4-byte (>16 MB)."
+      bit_offset: 0
+      bit_size: 1
+    - name: CE1_ADDR_MODE
+      description: "CE1 address mode: 0=3-byte, 1=4-byte."
+      bit_offset: 1
+      bit_size: 1
+    - name: CE0_4B_CMD_SEL
+      description: "CE0 4-byte address auto-read command: 0=0x03, 1=0x13."
+      bit_offset: 4
+      bit_size: 1
+    - name: CE1_4B_CMD_SEL
+      description: "CE1 4-byte address auto-read command: 0=0x03, 1=0x13."
+      bit_offset: 5
+      bit_size: 1
+    - name: CE0_TCSH
+      description: "CE0 minimum inactive time (tCSH): 0=16×HCLK, 1=24×HCLK, 2=32×HCLK, 3=40×HCLK."
+      bit_offset: 8
+      bit_size: 2
+    - name: CE1_TCSH
+      description: CE1 minimum inactive time (tCSH), same encoding as CE0.
+      bit_offset: 10
+      bit_size: 2
+
+fieldset/SPI_IRQ_CTRL:
+  description: SPI/FMC interrupt control and status register.
+  fields:
+    - name: WR_PROT_IE
+      description: Write-protect interrupt enable.
+      bit_offset: 1
+      bit_size: 1
+    - name: CMD_ABORT_IE
+      description: Command abort interrupt enable.
+      bit_offset: 2
+      bit_size: 1
+    - name: DMA_IE
+      description: DMA completion interrupt enable.
+      bit_offset: 3
+      bit_size: 1
+    - name: DMA_BUF_FIFO_IE
+      description: DMA FIFO full/empty interrupt enable.
+      bit_offset: 4
+      bit_size: 1
+    - name: WR_PROT_STATUS
+      description: Write to protected address detected. Write 1 to clear.
+      bit_offset: 9
+      bit_size: 1
+    - name: CMD_ABORT_STATUS
+      description: Command filtered/aborted. Write 1 to clear.
+      bit_offset: 10
+      bit_size: 1
+    - name: DMA_STATUS
+      description: DMA finished (1=done). Cleared when DMA disabled.
+      bit_offset: 11
+      bit_size: 1
+    - name: DMA_BUF_FIFO_EMPTY
+      description: DMA buffer FIFO empty.
+      bit_offset: 12
+      bit_size: 1
+    - name: DMA_BUF_FIFO_FULL
+      description: DMA buffer FIFO full.
+      bit_offset: 13
+      bit_size: 1
+
+fieldset/SPI_CMD_CTRL:
+  description: Command control — byte lane enable/disable for address and data phases.
+  fields:
+    - name: DATA_BYTE_DISABLE
+      description: Data byte lane disable bitmask (bit N=1 → disable byte N of 4-byte access).
+      bit_offset: 0
+      bit_size: 4
+    - name: ADDR_BYTE_DISABLE
+      description: Address byte lane disable (4-byte mode only; bit N=1 → disable byte N).
+      bit_offset: 4
+      bit_size: 4
+
+fieldset/SPI_CE_N_CTRL:
+  description: Per-CE SPI control — I/O mode, clock frequency, command byte, dummy cycles, access mode.
+  fields:
+    - name: CMD_MODE
+      description: "SPI command mode: 0=Auto-Read, 1=Normal-Read, 2=Normal-Write, 3=User-Mode."
+      bit_offset: 0
+      bit_size: 2
+    - name: CE_STOP
+      description: Write 1 to immediately deactivate CE#. In User-Mode, CE# stays low until set.
+      bit_offset: 2
+      bit_size: 1
+    - name: BIT_ORDER
+      description: "Bit order: 0=MSB first (standard), 1=LSB first."
+      bit_offset: 5
+      bit_size: 1
+    - name: DUMMY_CYCLES_LO
+      description: Dummy cycles before data phase, low 2 bits. Combined with DUMMY_CYCLES_HI.
+      bit_offset: 6
+      bit_size: 2
+    - name: CLK_FREQ_SEL
+      description: SPI clock frequency within base clock period (see datasheet Table 13.5).
+      bit_offset: 8
+      bit_size: 4
+    - name: DISABLE_CMD_MERGE
+      description: Disable read command merging (performance penalty, but guarantees fresh data).
+      bit_offset: 12
+      bit_size: 1
+    - name: DUMMY_CYCLES_HI
+      description: "Dummy cycles high bit. Combined with DUMMY_CYCLES_LO[1:0]: total = {HI, LO}."
+      bit_offset: 14
+      bit_size: 1
+    - name: SPI_CMD
+      description: SPI command byte for Normal-Read or Normal-Write CMD phase.
+      bit_offset: 16
+      bit_size: 8
+    - name: BASE_CLK_SEL
+      description: "SPI base clock (tBaseClk): 0=0×HCLK, 1=16×HCLK, 2=32×HCLK, ..., 15=240×HCLK."
+      bit_offset: 24
+      bit_size: 4
+    - name: IO_MODE
+      description: >
+        SPI I/O mode: 0=single-bit; 2=dual-data-only; 3=dual incl. addr+dummy;
+        4=quad-data-only; 5=quad incl. addr+dummy; 8+=QPI (quad all phases).
+      bit_offset: 28
+      bit_size: 4
+
+fieldset/SPI_ADDR_RANGE:
+  description: CE address decoding range (start/end address in decoded space).
+  fields:
+    - name: START_ADDR
+      description: CE start address bits[31:16] (lower bound).
+      bit_offset: 0
+      bit_size: 16
+    - name: END_ADDR
+      description: CE end address bits[31:16] (upper bound). CE disabled when start=end.
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/FMC_SOFT_RST:
+  description: FMC auto soft-reset after WDT.
+  fields:
+    - name: SOFT_RST_EN
+      description: >
+        Enable auto soft-reset: issue 0x66→0x99 after watchdog reset to restore
+        SPI volatile bits. 0=disabled, 1=enabled.
+      bit_offset: 0
+      bit_size: 1
+    - name: WAIT_WIP_IDLE
+      description: Wait for WIP=0 (read status 0x05) before allowing code access after WDT reset.
+      bit_offset: 1
+      bit_size: 1
+    - name: SOFT_RST_QPI_MODE
+      description: QPI mode active when soft-reset command was generated (read-only).
+      bit_offset: 2
+      bit_size: 1
+    - name: SPI_STATUS_REG
+      description: Latest SPI status register readback value (WIP check, read-only).
+      bit_offset: 8
+      bit_size: 8
+
+fieldset/SPI_DUMMY_DATA:
+  description: Data output during dummy cycles (shared by all CEs).
+  fields:
+    - name: DUMMY_CYCLE_DATA
+      description: Byte output during head of dummy cycle.
+      bit_offset: 0
+      bit_size: 8
+
+fieldset/FMC_WDT1:
+  description: FMC WDT1 — address mode detection watchdog (2s, toggles CE0 3B↔4B).
+  fields:
+    - name: WDT_ENABLE
+      description: Enable WDT1. Timeout is hardware-fixed at 2 seconds.
+      bit_offset: 0
+      bit_size: 1
+    - name: WDT_EVENT_CNT
+      description: Watchdog timeout event counter (read-only; clear by writing bits[31:24]=0xEA).
+      bit_offset: 8
+      bit_size: 4
+
+fieldset/FMC_WDT2:
+  description: FMC WDT2 — alternate boot watchdog.
+  fields:
+    - name: WDT_ENABLE
+      description: Enable WDT2.
+      bit_offset: 0
+      bit_size: 1
+    - name: BOOT_SRC_SEL
+      description: "Boot flash source: 0=primary, 1=alternate. Set by WDT2 timeout or FWSPIABR# pin."
+      bit_offset: 4
+      bit_size: 1
+    - name: SINGLE_CHIP_BOOT_SRC
+      description: Single-chip boot mode source select indicator (read-only).
+      bit_offset: 5
+      bit_size: 1
+    - name: ABR_MODE
+      description: "Alternate Boot Mode from OTP: 0=2-chip mode, 1=1-chip mode (read-only)."
+      bit_offset: 6
+      bit_size: 1
+    - name: WDT_EVENT_CNT
+      description: WDT2 timeout event counter (clear by writing bits[31:24]=0xEA).
+      bit_offset: 8
+      bit_size: 8
+
+fieldset/FMC_WDT2_RELOAD:
+  description: FMC WDT2 reload value (unit 0.1 s; default 0xE0=22 s).
+  fields:
+    - name: RELOAD_VALUE
+      description: "Reload value (unit: 0.1 s). Firmware must restart WDT within this time."
+      bit_offset: 0
+      bit_size: 13
+    - name: WDT_COUNTER
+      description: Current counter value (read-only, counts down).
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/FMC_WDT2_RESTART:
+  description: Write 0x4755 to reload counter from WDT2_RELOAD and restart countdown.
+  fields:
+    - name: RESTART_KEY
+      description: Write 0x4755 to restart WDT2.
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/SPI_DMA_BUF_LEN:
+  description: DMA FIFO buffer mode length in 4-byte units (0x40=full 256 bytes).
+  fields:
+    - name: FIFO_LEN
+      description: FIFO length in 4-byte units. RW when DMA disabled; RO (live) when enabled.
+      bit_offset: 0
+      bit_size: 7
+
+fieldset/FMC_DMA_CTRL:
+  description: FMC DMA control (no arbitration required for FMC).
+  fields:
+    - name: DMA_ENABLE
+      description: Enable DMA. Clear to 0 after each DMA cycle to allow next cycle.
+      bit_offset: 0
+      bit_size: 1
+    - name: DMA_DIR
+      description: "DMA direction: 0=read (flash→memory), 1=write (memory→flash)."
+      bit_offset: 1
+      bit_size: 1
+    - name: CHECKSUM_ONLY
+      description: Checksum mode — accumulate checksum without moving data (read only).
+      bit_offset: 2
+      bit_size: 1
+    - name: CAL_MODE
+      description: Calibration mode — use CAL_CLK_FREQ and CAL_READ_DELAY instead of CE settings.
+      bit_offset: 3
+      bit_size: 1
+    - name: BUF_MODE
+      description: "DMA buffer mode: 0=memory mode (DRAM↔flash), 1=FIFO mode (FIFO↔flash)."
+      bit_offset: 4
+      bit_size: 1
+    - name: CAL_READ_DELAY
+      description: Calibration read data input delay (valid when CAL_MODE=1).
+      bit_offset: 8
+      bit_size: 8
+    - name: CAL_CLK_FREQ
+      description: Calibration SPI clock frequency (valid when CAL_MODE=1).
+      bit_offset: 16
+      bit_size: 4
+
+fieldset/SPI_DMA_CTRL:
+  description: >
+    SPI DMA control with arbitration. Write 0xAEED_0000 to bit[31] to request;
+    wait for bit[30] grant. Release with 0xDEEA_0000 after completion.
+  fields:
+    - name: DMA_ENABLE
+      description: Enable DMA. Clear to 0 after each cycle.
+      bit_offset: 0
+      bit_size: 1
+    - name: DMA_DIR
+      description: "DMA direction: 0=read, 1=write."
+      bit_offset: 1
+      bit_size: 1
+    - name: CHECKSUM_ONLY
+      description: Checksum accumulation only (no data movement).
+      bit_offset: 2
+      bit_size: 1
+    - name: CAL_MODE
+      description: Calibration mode.
+      bit_offset: 3
+      bit_size: 1
+    - name: BUF_MODE
+      description: "DMA buffer mode: 0=memory, 1=FIFO."
+      bit_offset: 4
+      bit_size: 1
+    - name: CAL_READ_DELAY
+      description: Calibration read delay.
+      bit_offset: 8
+      bit_size: 8
+    - name: CAL_CLK_FREQ
+      description: Calibration clock frequency.
+      bit_offset: 16
+      bit_size: 4
+    - name: DMA_GRANT
+      description: DMA arbitration granted (read-only). Poll until 1 before starting DMA.
+      bit_offset: 30
+      bit_size: 1
+    - name: DMA_REQUEST
+      description: DMA arbitration request. Write 0xAEED to upper 16 bits to request; 0xDEEA to release.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SPI_DMA_FLASH_ADDR:
+  description: DMA flash-side address (4-byte aligned).
+  fields:
+    - name: FLASH_ADDR
+      description: Flash-side start address bits[27:2] (4-byte aligned). Updates during transfer.
+      bit_offset: 2
+      bit_size: 26
+
+fieldset/SPI_DMA_RAM_ADDR:
+  description: DMA DRAM/SRAM-side address (4-byte aligned, memory mode only).
+  fields:
+    - name: DRAM_ADDR
+      description: Memory-side start address bits[31:2]. Updates during transfer.
+      bit_offset: 2
+      bit_size: 30
+
+fieldset/SPI_DMA_LEN:
+  description: DMA transfer length in bytes (counts down during transfer).
+  fields:
+    - name: DMA_LEN
+      description: Transfer length (0=1 byte, max=32 MB).
+      bit_offset: 0
+      bit_size: 25
+
+fieldset/SPI_DMA_CHECKSUM:
+  description: Running 32-bit checksum (reset when DMA disabled).
+  fields:
+    - name: CHECKSUM
+      description: Accumulated checksum over flash read data.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SPI_READ_TIMING:
+  description: >
+    Per-CE SPI read timing compensation. Four 8-bit groups, one per HCLK divisor
+    (HCLK/2, /3, /4, /5). Each group: DI_DELAY_FINE[7:4], DI_DELAY_EN[3], HCLK_DELAY[2:0].
+  fields:
+    - name: HCLK2_TIMING
+      description: Timing compensation for SPICLK=HCLK/2 (DI_DELAY_FINE+EN+HCLK_DELAY).
+      bit_offset: 0
+      bit_size: 8
+    - name: HCLK3_TIMING
+      description: Timing compensation for SPICLK=HCLK/3.
+      bit_offset: 8
+      bit_size: 8
+    - name: HCLK4_TIMING
+      description: Timing compensation for SPICLK=HCLK/4.
+      bit_offset: 16
+      bit_size: 8
+    - name: HCLK5_TIMING
+      description: Timing compensation for SPICLK=HCLK/5.
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/SPI_CMD_FILTER_CTRL:
+  description: Command filter control.
+  fields:
+    - name: CE0_CMD_FILTER_EN
+      description: Enable command filter for CE0 (only FQCD/AQCD list commands allowed).
+      bit_offset: 0
+      bit_size: 1
+    - name: CE1_CMD_FILTER_EN
+      description: Enable command filter for CE1.
+      bit_offset: 1
+      bit_size: 1
+    - name: ALLOW_READ_CMDS
+      description: Always allow 0x03 and 0x13 auto-read commands in FQCD list.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/FMC_WRITE_FILTER_CTRL:
+  description: >
+    Write address filter mode control for FMC (8 filters × 2 bits each).
+    Each 2-bit field: 0=NOP, 1=Read-only, 2=Write-only, 3=Access disabled.
+  fields:
+    - name: FILTER1_MODE
+      description: Write address filter #1 mode.
+      bit_offset: 0
+      bit_size: 2
+    - name: FILTER2_MODE
+      description: Write address filter #2 mode.
+      bit_offset: 2
+      bit_size: 2
+    - name: FILTER3_MODE
+      description: Write address filter #3 mode.
+      bit_offset: 4
+      bit_size: 2
+    - name: FILTER4_MODE
+      description: Write address filter #4 mode.
+      bit_offset: 6
+      bit_size: 2
+    - name: FILTER5_MODE
+      description: Write address filter #5 mode.
+      bit_offset: 8
+      bit_size: 2
+    - name: FILTER6_MODE
+      description: Write address filter #6 mode.
+      bit_offset: 10
+      bit_size: 2
+    - name: FILTER7_MODE
+      description: Write address filter #7 mode (FMC only).
+      bit_offset: 12
+      bit_size: 2
+    - name: FILTER8_MODE
+      description: Write address filter #8 mode (FMC only).
+      bit_offset: 14
+      bit_size: 2
+
+fieldset/SPI_WRITE_FILTER_CTRL:
+  description: Write address filter mode control for SPI (6 filters × 2 bits each).
+  fields:
+    - name: FILTER1_MODE
+      description: Write address filter #1 mode (0=NOP, 1=RO, 2=WO, 3=disabled).
+      bit_offset: 0
+      bit_size: 2
+    - name: FILTER2_MODE
+      description: Write address filter #2 mode.
+      bit_offset: 2
+      bit_size: 2
+    - name: FILTER3_MODE
+      description: Write address filter #3 mode.
+      bit_offset: 4
+      bit_size: 2
+    - name: FILTER4_MODE
+      description: Write address filter #4 mode.
+      bit_offset: 6
+      bit_size: 2
+    - name: FILTER5_MODE
+      description: Write address filter #5 mode.
+      bit_offset: 8
+      bit_size: 2
+    - name: FILTER6_MODE
+      description: Write address filter #6 mode.
+      bit_offset: 10
+      bit_size: 2
+
+fieldset/SPI_LOCK_CTRL:
+  description: >
+    Register lock control (write-1-only; cleared only by SRST# or WDT reset).
+    Set bits permanently lock corresponding register groups.
+  fields:
+    - name: LOCK_CE_TYPE
+      description: Lock CE type register.
+      bit_offset: 0
+      bit_size: 1
+    - name: LOCK_CE_CTRL
+      description: Lock CE control register (tCSH, address mode).
+      bit_offset: 1
+      bit_size: 1
+    - name: LOCK_CE0_CTRL
+      description: Lock CE0 control register.
+      bit_offset: 2
+      bit_size: 1
+    - name: LOCK_CE1_CTRL
+      description: Lock CE1 control register.
+      bit_offset: 3
+      bit_size: 1
+    - name: LOCK_CE0_RANGE
+      description: Lock CE0 address range register.
+      bit_offset: 5
+      bit_size: 1
+    - name: LOCK_CE1_RANGE
+      description: Lock CE1 address range register.
+      bit_offset: 6
+      bit_size: 1
+    - name: LOCK_TIMING
+      description: Lock read timing compensation registers.
+      bit_offset: 8
+      bit_size: 1
+    - name: LOCK_CMD_FILTER
+      description: Lock command filter registers and FQCD/AQCD tables.
+      bit_offset: 9
+      bit_size: 1
+    - name: LOCK_FILTER
+      description: Lock write address filter registers.
+      bit_offset: 10
+      bit_size: 1
+
+fieldset/SPI_WRITE_FILTER:
+  description: Write address filter range (lower/upper bounds in bits[27:12] of flash address).
+  fields:
+    - name: LOWER_BOUND
+      description: Segment lower bound address bits[27:12].
+      bit_offset: 0
+      bit_size: 16
+    - name: UPPER_BOUND
+      description: Segment upper bound address bits[27:12].
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/SPI_FQCD:
+  description: >
+    Fully Qualified Command table entry.
+    bit[31]=enable, bits[15:8]=cmd_hi (2nd byte), bits[7:0]=cmd_lo (1st byte).
+  fields:
+    - name: CMD_LO
+      description: Command byte (low / 1st byte).
+      bit_offset: 0
+      bit_size: 8
+    - name: CMD_HI
+      description: Command byte (high / 2nd byte, for dual-byte commands).
+      bit_offset: 8
+      bit_size: 8
+    - name: ENTRY_EN
+      description: Enable this FQCD entry.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/FMC_AQCD:
+  description: >
+    FMC Address Qualified Command table entry. Three command bytes with
+    per-command read/write enable and 4-byte address mode flag.
+    Each 2-bit CMD_SETTING: 0=disabled, 1=read, 2=write, 3=read+write.
+  fields:
+    - name: CMD1
+      description: Command #1 byte.
+      bit_offset: 0
+      bit_size: 8
+    - name: CMD2
+      description: Command #2 byte.
+      bit_offset: 8
+      bit_size: 8
+    - name: CMD3
+      description: Command #3 byte.
+      bit_offset: 16
+      bit_size: 8
+    - name: ADDR_MODE_4B
+      description: "Address mode: 0=3-byte, 1=4-byte."
+      bit_offset: 24
+      bit_size: 1
+    - name: CMD1_SETTING
+      description: CMD1 operation mode (0=disabled, 1=read, 2=write, 3=R+W).
+      bit_offset: 26
+      bit_size: 2
+    - name: CMD2_SETTING
+      description: CMD2 operation mode.
+      bit_offset: 28
+      bit_size: 2
+    - name: CMD3_SETTING
+      description: CMD3 operation mode.
+      bit_offset: 30
+      bit_size: 2
+
+fieldset/SPI_AQCD:
+  description: >
+    SPI Address Qualified Command table entry. Three command bytes with
+    individual read/write enable bits and 4-byte address mode flag.
+  fields:
+    - name: CMD0
+      description: Command #0 byte.
+      bit_offset: 0
+      bit_size: 8
+    - name: CMD1
+      description: Command #1 byte.
+      bit_offset: 8
+      bit_size: 8
+    - name: CMD2
+      description: Command #2 byte.
+      bit_offset: 16
+      bit_size: 8
+    - name: ADDR_MODE_4B
+      description: "Address mode: 0=3-byte, 1=4-byte."
+      bit_offset: 24
+      bit_size: 1
+    - name: CMD0_READ_EN
+      description: Enable CMD0 for read operations.
+      bit_offset: 26
+      bit_size: 1
+    - name: CMD0_WRITE_EN
+      description: Enable CMD0 for write operations.
+      bit_offset: 27
+      bit_size: 1
+    - name: CMD1_READ_EN
+      description: Enable CMD1 for read operations.
+      bit_offset: 28
+      bit_size: 1
+    - name: CMD1_WRITE_EN
+      description: Enable CMD1 for write operations.
+      bit_offset: 29
+      bit_size: 1
+    - name: CMD2_READ_EN
+      description: Enable CMD2 for read operations.
+      bit_offset: 30
+      bit_size: 1
+    - name: CMD2_WRITE_EN
+      description: Enable CMD2 for write operations.
+      bit_offset: 31
+      bit_size: 1

@@ -1,0 +1,135 @@
+# AST2700 BootMCU IPC1 data-channel bus.
+#
+# Base address: 0x14C39000 (IO-die, BootMCU view).
+#
+# Structure: 4 sub-channels at stride 0x200.
+#   Sub-channel 0 (0x000): BootMCU ↔ secure CA35
+#   Sub-channel 1 (0x200): BootMCU ↔ non-secure CA35
+#   Sub-channel 2 (0x400): BootMCU ↔ SSP
+#   Sub-channel 3 (0x600): BootMCU ↔ TSP
+#
+# Each sub-channel is split into two halves of 0x100 bytes:
+#   RX half: sub-channel base + 0x000  (the remote peer's TX)
+#   TX half: sub-channel base + 0x100  (this side's TX)
+#
+# Each half supports 4 message IDs (0–3).  A message ID carries a 32-byte
+# payload in its DATA registers and is triggered/acknowledged via TRIG/STATUS.
+#
+# Zephyr usage: polling (ipm_bootmcu.c uses a thread + k_msleep, no IRQ).
+#
+# Sources:
+#   Zephyr drivers/ipm/ipm_bootmcu.c
+#   Zephyr dts/riscv/aspeed/ast27xx.dtsi  (ipc1 bus @ 0x14C39000)
+
+block/CHAN:
+  description: >
+    One half (TX or RX) of an IPC1 sub-channel.
+    TX half is at sub-channel_base + 0x100; RX half at sub-channel_base + 0x000.
+    Each half supports 4 message IDs (0–3).
+  items:
+    - name: TRIG
+      description: >
+        Message trigger register.
+        Write BIT(id) to dispatch a message with the given ID to the remote peer.
+        The corresponding bit in STATUS is set on the remote side.
+      byte_offset: 0x00
+      fieldset: ID_MASK
+
+    - name: ENABLE
+      description: >
+        Per-ID receive enable mask.
+        Write BIT(id) to enable reception of messages with that ID.
+        Only enabled IDs set STATUS bits.
+      byte_offset: 0x04
+      fieldset: ID_MASK
+
+    - name: STATUS
+      description: >
+        Pending message status.
+        Bit n is set when a message with ID n has been received and not yet consumed.
+        Write BIT(id) to clear (acknowledge) after reading the payload.
+      byte_offset: 0x08
+      fieldset: ID_MASK
+
+    - name: DATA0
+      description: >
+        32-byte payload for message ID 0 (8 × 32-bit words).
+        The transmitter writes here before triggering; the receiver reads here
+        after detecting STATUS[0].
+      byte_offset: 0x10
+      array:
+        len: 8
+        stride: 4
+
+    - name: DATA1
+      description: 32-byte payload for message ID 1 (8 × 32-bit words).
+      byte_offset: 0x30
+      array:
+        len: 8
+        stride: 4
+
+    - name: DATA2
+      description: 32-byte payload for message ID 2 (8 × 32-bit words).
+      byte_offset: 0x50
+      array:
+        len: 8
+        stride: 4
+
+    - name: DATA3
+      description: 32-byte payload for message ID 3 (Caliptra/reserved).
+      byte_offset: 0x70
+      array:
+        len: 8
+        stride: 4
+
+block/SUBCHAN:
+  description: >
+    One IPC1 sub-channel consisting of an RX half and a TX half.
+    RX half (remote peer's TX) is at offset 0x000.
+    TX half (this side's TX) is at offset 0x100.
+  items:
+    - name: RX
+      description: Receive half — read incoming messages from the remote peer.
+      byte_offset: 0x000
+      block: CHAN
+
+    - name: TX
+      description: Transmit half — write outgoing messages to the remote peer.
+      byte_offset: 0x100
+      block: CHAN
+
+block/IPC1:
+  description: >
+    AST2700 BootMCU IPC1 bus — 4 sub-channels at stride 0x200.
+    Sub-channel index: 0=secure-CA35, 1=non-secure-CA35, 2=SSP, 3=TSP.
+    Base address: 0x14C39000 (IO-die, BootMCU view).
+  items:
+    - name: CH
+      description: Sub-channels 0–3 (stride 0x200 each).
+      byte_offset: 0x000
+      array:
+        len: 4
+        stride: 0x200
+      block: SUBCHAN
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/ID_MASK:
+  description: 4-bit mask, one bit per message ID (IDs 0–3).
+  fields:
+    - name: ID0
+      description: Message ID 0.
+      bit_offset: 0
+      bit_size: 1
+    - name: ID1
+      description: Message ID 1.
+      bit_offset: 1
+      bit_size: 1
+    - name: ID2
+      description: Message ID 2.
+      bit_offset: 2
+      bit_size: 1
+    - name: ID3
+      description: Message ID 3 (Caliptra/reserved).
+      bit_offset: 3
+      bit_size: 1

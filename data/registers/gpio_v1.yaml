@@ -1,0 +1,489 @@
+# AST2600 GPIO controller registers (3.3 V GPIO, 208 pins).
+#
+# GPIO base (CM3 view): 0x7E78_0000.
+# 26 GPIO ports (A–Z), 8 pins each, organised into 7 "groups-of-4":
+#   group0: ports A/B/C/D (pins 0–31)
+#   group1: ports E/F/G/H (pins 32–63)
+#   group2: ports I/J/K/L (pins 64–95)
+#   group3: ports M/N/O/P (pins 96–127)
+#   group4: ports Q/R/S/T (pins 128–159)
+#   group5: ports U/V/W/X (pins 160–191)
+#   group6: ports Y/Z     (pins 192–207, only 16 pins)
+#
+# The register map is NOT a simple uniform array. Groups 0 and 1 have their
+# int/status registers contiguous with data/dir at 0x000 and 0x020.
+# Groups 2-6 have data/dir registers scattered and int registers offset.
+# All offsets are verified against the Zephyr gpio_aspeed.h struct layout.
+#
+# Index register (0x2AC): command-based interface for per-pin configuration.
+#   Write: {index_data[24:20], index_type[19:16], 0[15:13], index_cmd[12],
+#           0[11:8], index_number[7:0]}
+#   index_type: 0=DATA, 1=DIR, 2=INTERRUPT, 3=DEBOUNCE, 4=TOLERANCE,
+#               5=CMD_SRC, 6=INPUT_MASK
+#   For INTERRUPT: index_data = {int_type[4:1], int_enable[0]}
+#     int_type: 0=FALLING_EDGE, 1=RISING_EDGE, 2=LEVEL_LOW,
+#               3=LEVEL_HIGH, 4=DUAL_EDGE
+#
+# Command source selection (0x2D0): selects which bus master can control GPIO.
+#   SSP master index = 6 (ASPEED_GPIO_SEL_SSP).
+#
+# Sources:
+#   ast2600.md v1.6  Chapter 42 – GPIO (GPIO000–GPIO47C, GPIO800+)
+#   Zephyr: drivers/gpio/gpio_aspeed.h  (gpio_register_t layout, offsets)
+#   Zephyr: drivers/gpio/gpio_aspeed.c  (interrupt type encoding)
+
+block/GPIO:
+  description: >
+    AST2600 3.3 V GPIO controller (208 pins, ports A–Z).
+    Base: 0x7E78_0000 (CM3 view).
+  items:
+    # ── Group 0: A/B/C/D ─────────────────────────────────────────────────────
+    - name: G0_DATA
+      description: Group 0 (A/B/C/D) Data Value Register (GPIO000).
+      byte_offset: 0x000
+      fieldset: GPIO32
+    - name: G0_DIR
+      description: Group 0 (A/B/C/D) Direction Register (GPIO004). 1=output.
+      byte_offset: 0x004
+      fieldset: GPIO32
+    - name: G0_INT_EN
+      description: Group 0 (A/B/C/D) Interrupt Enable Register (GPIO008).
+      byte_offset: 0x008
+      fieldset: GPIO32
+    - name: G0_INT_TYPE0
+      description: Group 0 Interrupt Sensitivity Type 0 (GPIO00C).
+      byte_offset: 0x00C
+      fieldset: GPIO32
+    - name: G0_INT_TYPE1
+      description: Group 0 Interrupt Sensitivity Type 1 (GPIO010).
+      byte_offset: 0x010
+      fieldset: GPIO32
+    - name: G0_INT_TYPE2
+      description: Group 0 Interrupt Sensitivity Type 2 (GPIO014).
+      byte_offset: 0x014
+      fieldset: GPIO32
+    - name: G0_INT_STATUS
+      description: Group 0 (A/B/C/D) Interrupt Status Register (GPIO018). RW1C.
+      byte_offset: 0x018
+      fieldset: GPIO32
+    - name: G0_RESET_TOL
+      description: Group 0 WDT Reset Tolerant Register (GPIO01C).
+      byte_offset: 0x01C
+      fieldset: GPIO32
+
+    # ── Group 1: E/F/G/H ─────────────────────────────────────────────────────
+    - name: G1_DATA
+      description: Group 1 (E/F/G/H) Data Value Register (GPIO020).
+      byte_offset: 0x020
+      fieldset: GPIO32
+    - name: G1_DIR
+      description: Group 1 (E/F/G/H) Direction Register (GPIO024).
+      byte_offset: 0x024
+      fieldset: GPIO32
+    - name: G1_INT_EN
+      description: Group 1 (E/F/G/H) Interrupt Enable Register (GPIO028).
+      byte_offset: 0x028
+      fieldset: GPIO32
+    - name: G1_INT_TYPE0
+      description: Group 1 Interrupt Sensitivity Type 0 (GPIO02C).
+      byte_offset: 0x02C
+      fieldset: GPIO32
+    - name: G1_INT_TYPE1
+      description: Group 1 Interrupt Sensitivity Type 1 (GPIO030).
+      byte_offset: 0x030
+      fieldset: GPIO32
+    - name: G1_INT_TYPE2
+      description: Group 1 Interrupt Sensitivity Type 2 (GPIO034).
+      byte_offset: 0x034
+      fieldset: GPIO32
+    - name: G1_INT_STATUS
+      description: Group 1 (E/F/G/H) Interrupt Status Register (GPIO038). RW1C.
+      byte_offset: 0x038
+      fieldset: GPIO32
+    - name: G1_RESET_TOL
+      description: Group 1 WDT Reset Tolerant Register (GPIO03C).
+      byte_offset: 0x03C
+      fieldset: GPIO32
+
+    # ── Command sources for groups 0 and 1 ───────────────────────────────────
+    - name: G0_CMD_SRC0
+      description: >
+        Group 0 (A/B/C/D) Command Source Register 0 (GPIO060).
+        Each bit is bit 0 of the 2-bit command source for that pin.
+        {CMD_SRC1[n], CMD_SRC0[n]}: 0b00=ARM, 0b10=SSP.
+      byte_offset: 0x060
+      fieldset: GPIO32
+    - name: G0_CMD_SRC1
+      description: Group 0 Command Source Register 1 (GPIO064). Bit 1 of each 2-bit source.
+      byte_offset: 0x064
+      fieldset: GPIO32
+    - name: G1_CMD_SRC0
+      description: Group 1 (E/F/G/H) Command Source Register 0 (GPIO068).
+      byte_offset: 0x068
+      fieldset: GPIO32
+    - name: G1_CMD_SRC1
+      description: Group 1 Command Source Register 1 (GPIO06C).
+      byte_offset: 0x06C
+      fieldset: GPIO32
+
+    # ── Group 2: I/J/K/L (data/dir separated from int registers) ─────────────
+    - name: G2_DATA
+      description: Group 2 (I/J/K/L) Data Value Register (GPIO070).
+      byte_offset: 0x070
+      fieldset: GPIO32
+    - name: G2_DIR
+      description: Group 2 (I/J/K/L) Direction Register (GPIO074).
+      byte_offset: 0x074
+      fieldset: GPIO32
+    - name: G2_CMD_SRC0
+      description: Group 2 (I/J/K/L) Command Source Register 0 (GPIO090).
+      byte_offset: 0x090
+      fieldset: GPIO32
+    - name: G2_CMD_SRC1
+      description: Group 2 Command Source Register 1 (GPIO094).
+      byte_offset: 0x094
+      fieldset: GPIO32
+    - name: G2_INT_EN
+      description: Group 2 (I/J/K/L) Interrupt Enable Register (GPIO098).
+      byte_offset: 0x098
+      fieldset: GPIO32
+    - name: G2_INT_TYPE0
+      description: Group 2 Interrupt Sensitivity Type 0 (GPIO09C).
+      byte_offset: 0x09C
+      fieldset: GPIO32
+    - name: G2_INT_TYPE1
+      description: Group 2 Interrupt Sensitivity Type 1 (GPIO0A0).
+      byte_offset: 0x0A0
+      fieldset: GPIO32
+    - name: G2_INT_TYPE2
+      description: Group 2 Interrupt Sensitivity Type 2 (GPIO0A4).
+      byte_offset: 0x0A4
+      fieldset: GPIO32
+    - name: G2_INT_STATUS
+      description: Group 2 (I/J/K/L) Interrupt Status Register (GPIO0A8). RW1C.
+      byte_offset: 0x0A8
+      fieldset: GPIO32
+    - name: G2_RESET_TOL
+      description: Group 2 WDT Reset Tolerant Register (GPIO0AC).
+      byte_offset: 0x0AC
+      fieldset: GPIO32
+
+    # ── Data read registers (all groups, read-only latched input) ─────────────
+    - name: G0_DATA_READ
+      description: Group 0 (A/B/C/D) Data Read Register (GPIO0C0). Input state.
+      byte_offset: 0x0C0
+      fieldset: GPIO32
+    - name: G1_DATA_READ
+      description: Group 1 (E/F/G/H) Data Read Register (GPIO0C4).
+      byte_offset: 0x0C4
+      fieldset: GPIO32
+    - name: G2_DATA_READ
+      description: Group 2 (I/J/K/L) Data Read Register (GPIO0C8).
+      byte_offset: 0x0C8
+      fieldset: GPIO32
+    - name: G3_DATA_READ
+      description: Group 3 (M/N/O/P) Data Read Register (GPIO0CC).
+      byte_offset: 0x0CC
+      fieldset: GPIO32
+    - name: G4_DATA_READ
+      description: Group 4 (Q/R/S/T) Data Read Register (GPIO0D0).
+      byte_offset: 0x0D0
+      fieldset: GPIO32
+    - name: G5_DATA_READ
+      description: Group 5 (U/V/W/X) Data Read Register (GPIO0D4).
+      byte_offset: 0x0D4
+      fieldset: GPIO32
+    - name: G6_DATA_READ
+      description: Group 6 (Y/Z) Data Read Register (GPIO0D8). Only bits [15:0] valid.
+      byte_offset: 0x0D8
+      fieldset: GPIO32
+
+    # ── Group 3: M/N/O/P ─────────────────────────────────────────────────────
+    - name: G3_DATA
+      description: Group 3 (M/N/O/P) Data Value Register (GPIO078).
+      byte_offset: 0x078
+      fieldset: GPIO32
+    - name: G3_DIR
+      description: Group 3 (M/N/O/P) Direction Register (GPIO07C).
+      byte_offset: 0x07C
+      fieldset: GPIO32
+    - name: G3_CMD_SRC0
+      description: Group 3 (M/N/O/P) Command Source Register 0 (GPIO0E0).
+      byte_offset: 0x0E0
+      fieldset: GPIO32
+    - name: G3_CMD_SRC1
+      description: Group 3 Command Source Register 1 (GPIO0E4).
+      byte_offset: 0x0E4
+      fieldset: GPIO32
+    - name: G3_INT_EN
+      description: Group 3 (M/N/O/P) Interrupt Enable Register (GPIO0E8).
+      byte_offset: 0x0E8
+      fieldset: GPIO32
+    - name: G3_INT_TYPE0
+      description: Group 3 Interrupt Sensitivity Type 0 (GPIO0EC).
+      byte_offset: 0x0EC
+      fieldset: GPIO32
+    - name: G3_INT_TYPE1
+      description: Group 3 Interrupt Sensitivity Type 1 (GPIO0F0).
+      byte_offset: 0x0F0
+      fieldset: GPIO32
+    - name: G3_INT_TYPE2
+      description: Group 3 Interrupt Sensitivity Type 2 (GPIO0F4).
+      byte_offset: 0x0F4
+      fieldset: GPIO32
+    - name: G3_INT_STATUS
+      description: Group 3 (M/N/O/P) Interrupt Status Register (GPIO0F8). RW1C.
+      byte_offset: 0x0F8
+      fieldset: GPIO32
+    - name: G3_RESET_TOL
+      description: Group 3 WDT Reset Tolerant Register (GPIO0FC).
+      byte_offset: 0x0FC
+      fieldset: GPIO32
+
+    # ── Group 4: Q/R/S/T ─────────────────────────────────────────────────────
+    - name: G4_DATA
+      description: Group 4 (Q/R/S/T) Data Value Register (GPIO080).
+      byte_offset: 0x080
+      fieldset: GPIO32
+    - name: G4_DIR
+      description: Group 4 (Q/R/S/T) Direction Register (GPIO084).
+      byte_offset: 0x084
+      fieldset: GPIO32
+    - name: G4_CMD_SRC0
+      description: Group 4 (Q/R/S/T) Command Source Register 0 (GPIO110).
+      byte_offset: 0x110
+      fieldset: GPIO32
+    - name: G4_CMD_SRC1
+      description: Group 4 Command Source Register 1 (GPIO114).
+      byte_offset: 0x114
+      fieldset: GPIO32
+    - name: G4_INT_EN
+      description: Group 4 (Q/R/S/T) Interrupt Enable Register (GPIO118).
+      byte_offset: 0x118
+      fieldset: GPIO32
+    - name: G4_INT_TYPE0
+      description: Group 4 Interrupt Sensitivity Type 0 (GPIO11C).
+      byte_offset: 0x11C
+      fieldset: GPIO32
+    - name: G4_INT_TYPE1
+      description: Group 4 Interrupt Sensitivity Type 1 (GPIO120).
+      byte_offset: 0x120
+      fieldset: GPIO32
+    - name: G4_INT_TYPE2
+      description: Group 4 Interrupt Sensitivity Type 2 (GPIO124).
+      byte_offset: 0x124
+      fieldset: GPIO32
+    - name: G4_INT_STATUS
+      description: Group 4 (Q/R/S/T) Interrupt Status Register (GPIO128). RW1C.
+      byte_offset: 0x128
+      fieldset: GPIO32
+    - name: G4_RESET_TOL
+      description: Group 4 WDT Reset Tolerant Register (GPIO12C).
+      byte_offset: 0x12C
+      fieldset: GPIO32
+
+    # ── Group 5: U/V/W/X ─────────────────────────────────────────────────────
+    - name: G5_DATA
+      description: Group 5 (U/V/W/X) Data Value Register (GPIO088).
+      byte_offset: 0x088
+      fieldset: GPIO32
+    - name: G5_DIR
+      description: Group 5 (U/V/W/X) Direction Register (GPIO08C).
+      byte_offset: 0x08C
+      fieldset: GPIO32
+    - name: G5_CMD_SRC0
+      description: Group 5 (U/V/W/X) Command Source Register 0 (GPIO140).
+      byte_offset: 0x140
+      fieldset: GPIO32
+    - name: G5_CMD_SRC1
+      description: Group 5 Command Source Register 1 (GPIO144).
+      byte_offset: 0x144
+      fieldset: GPIO32
+    - name: G5_INT_EN
+      description: Group 5 (U/V/W/X) Interrupt Enable Register (GPIO148).
+      byte_offset: 0x148
+      fieldset: GPIO32
+    - name: G5_INT_TYPE0
+      description: Group 5 Interrupt Sensitivity Type 0 (GPIO14C).
+      byte_offset: 0x14C
+      fieldset: GPIO32
+    - name: G5_INT_TYPE1
+      description: Group 5 Interrupt Sensitivity Type 1 (GPIO150).
+      byte_offset: 0x150
+      fieldset: GPIO32
+    - name: G5_INT_TYPE2
+      description: Group 5 Interrupt Sensitivity Type 2 (GPIO154).
+      byte_offset: 0x154
+      fieldset: GPIO32
+    - name: G5_INT_STATUS
+      description: Group 5 (U/V/W/X) Interrupt Status Register (GPIO158). RW1C.
+      byte_offset: 0x158
+      fieldset: GPIO32
+    - name: G5_RESET_TOL
+      description: Group 5 WDT Reset Tolerant Register (GPIO15C).
+      byte_offset: 0x15C
+      fieldset: GPIO32
+
+    # ── Group 6: Y/Z (16 pins) ────────────────────────────────────────────────
+    - name: G6_DATA
+      description: Group 6 (Y/Z) Data Value Register (GPIO1E0). Only bits [15:0] valid.
+      byte_offset: 0x1E0
+      fieldset: GPIO32
+    - name: G6_DIR
+      description: Group 6 (Y/Z) Direction Register (GPIO1E4).
+      byte_offset: 0x1E4
+      fieldset: GPIO32
+    - name: G6_CMD_SRC0
+      description: Group 6 (Y/Z) Command Source Register 0 (GPIO170).
+      byte_offset: 0x170
+      fieldset: GPIO32
+    - name: G6_CMD_SRC1
+      description: Group 6 Command Source Register 1 (GPIO174).
+      byte_offset: 0x174
+      fieldset: GPIO32
+    - name: G6_INT_EN
+      description: Group 6 (Y/Z) Interrupt Enable Register (GPIO178).
+      byte_offset: 0x178
+      fieldset: GPIO32
+    - name: G6_INT_TYPE0
+      description: Group 6 Interrupt Sensitivity Type 0 (GPIO17C).
+      byte_offset: 0x17C
+      fieldset: GPIO32
+    - name: G6_INT_TYPE1
+      description: Group 6 Interrupt Sensitivity Type 1 (GPIO180).
+      byte_offset: 0x180
+      fieldset: GPIO32
+    - name: G6_INT_TYPE2
+      description: Group 6 Interrupt Sensitivity Type 2 (GPIO184).
+      byte_offset: 0x184
+      fieldset: GPIO32
+    - name: G6_INT_STATUS
+      description: Group 6 (Y/Z) Interrupt Status Register (GPIO188). RW1C.
+      byte_offset: 0x188
+      fieldset: GPIO32
+    - name: G6_RESET_TOL
+      description: Group 6 WDT Reset Tolerant Register (GPIO18C).
+      byte_offset: 0x18C
+      fieldset: GPIO32
+
+    # ── Input mask registers ──────────────────────────────────────────────────
+    - name: G0_INPUT_MASK
+      description: Group 0 (A/B/C/D) Input Mask Register (GPIO1D0).
+      byte_offset: 0x1D0
+      fieldset: GPIO32
+    - name: G1_INPUT_MASK
+      description: Group 1 (E/F/G/H) Input Mask Register (GPIO1D4).
+      byte_offset: 0x1D4
+      fieldset: GPIO32
+    - name: G2_INPUT_MASK
+      description: Group 2 (I/J/K/L) Input Mask Register (GPIO0B8).
+      byte_offset: 0x0B8
+      fieldset: GPIO32
+    - name: G3_INPUT_MASK
+      description: Group 3 (M/N/O/P) Input Mask Register (GPIO108).
+      byte_offset: 0x108
+      fieldset: GPIO32
+    - name: G4_INPUT_MASK
+      description: Group 4 (Q/R/S/T) Input Mask Register (GPIO138).
+      byte_offset: 0x138
+      fieldset: GPIO32
+    - name: G5_INPUT_MASK
+      description: Group 5 (U/V/W/X) Input Mask Register (GPIO168).
+      byte_offset: 0x168
+      fieldset: GPIO32
+    - name: G6_INPUT_MASK
+      description: Group 6 (Y/Z) Input Mask Register (GPIO198).
+      byte_offset: 0x198
+      fieldset: GPIO32
+
+    # ── Index register and command source selector ────────────────────────────
+    - name: INDEX
+      description: >
+        GPIO Index Register (GPIO2AC).
+        Command-based interface for per-pin configuration.
+        bits [7:0]   = pin number (0–207)
+        bit  [12]    = command (0=write, 1=read)
+        bits [19:16] = type (0=DATA, 1=DIR, 2=INTERRUPT, 3=DEBOUNCE,
+                             4=TOLERANCE, 5=CMD_SRC, 6=INPUT_MASK)
+        bits [24:20] = data (for INTERRUPT: bit0=int_enable,
+                             bits[4:1]=int_type 0=FALL 1=RISE 2=LOW 3=HIGH 4=BOTH)
+      byte_offset: 0x2AC
+      fieldset: GPIO_INDEX
+
+    - name: CMD_SRC_SEL
+      description: >
+        GPIO Command Source Selection Register (GPIO2D0).
+        Assigns a bus master index to each of the 5 master slots.
+        SSP master number = 6 (ASPEED_GPIO_SEL_SSP).
+        Configure to allow SSP to write GPIO via CMD_SRC registers.
+      byte_offset: 0x2D0
+      fieldset: GPIO_CMD_SRC_SEL
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/GPIO32:
+  description: >
+    Generic 32-bit GPIO register (data, direction, interrupt enable/status,
+    reset tolerant, command source, input mask, data read).
+    Each bit corresponds to one GPIO pin within the group.
+  fields:
+    - name: PINS
+      description: Per-pin bitmask. Bit 0 = port_A pin 0 (or first port in group).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/GPIO_INDEX:
+  description: GPIO Index Register (GPIO2AC). Command-based per-pin control.
+  fields:
+    - name: INDEX_NUMBER
+      description: Pin number (0–207).
+      bit_offset: 0
+      bit_size: 8
+    - name: INDEX_CMD
+      description: Command direction. 0=write, 1=read.
+      bit_offset: 12
+      bit_size: 1
+    - name: INDEX_TYPE
+      description: >
+        Operation type:
+        0=DATA, 1=DIR, 2=INTERRUPT, 3=DEBOUNCE, 4=TOLERANCE,
+        5=CMD_SRC, 6=INPUT_MASK.
+      bit_offset: 16
+      bit_size: 4
+    - name: INDEX_DATA
+      description: >
+        Data for the operation. For INTERRUPT: bit0=enable,
+        bits[4:1]=type (0=fall, 1=rise, 2=level_low, 3=level_high, 4=both).
+      bit_offset: 20
+      bit_size: 5
+
+fieldset/GPIO_CMD_SRC_SEL:
+  description: >
+    GPIO Command Source Selection (GPIO2D0).
+    Five 5-bit fields selecting the bus master index for each slot.
+    SSP = master index 6 (ASPEED_GPIO_SEL_SSP).
+  fields:
+    - name: MST1
+      description: Master 1 bus ID selection (bits [4:0]).
+      bit_offset: 0
+      bit_size: 5
+    - name: MST2
+      description: Master 2 bus ID selection (bits [9:5]).
+      bit_offset: 5
+      bit_size: 5
+    - name: MST3
+      description: Master 3 bus ID selection (bits [14:10]).
+      bit_offset: 10
+      bit_size: 5
+    - name: MST4
+      description: Master 4 bus ID selection (bits [19:15]).
+      bit_offset: 15
+      bit_size: 5
+    - name: MST5
+      description: Master 5 bus ID selection (bits [24:20]).
+      bit_offset: 20
+      bit_size: 5
+    - name: LOCK
+      description: Lock this register (1 = write-protect until next reset).
+      bit_offset: 31
+      bit_size: 1

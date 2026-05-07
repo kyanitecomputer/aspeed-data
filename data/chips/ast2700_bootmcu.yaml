@@ -1,0 +1,70 @@
+# ASPEED AST2700 BootMCU chip definition.
+#
+# The BootMCU is a lowRISC ibex RV32IMC core on the AST2700 IO-die.
+# It runs alongside the CA35 + SSP/TSP complex and handles early boot
+# security (Caliptra integration, OTP, secure measurements).
+#
+# CPU: RV32IMC + Zicsr + Zifencei  (ibex, no FPU, no cache)
+# RAM: 4 MB DRAM at 0x80000000 (loaded by ROM from SPI flash)
+# Flash (storage): SPI FMC, memory-mapped at 0x20000000
+# Execution: firmware runs from DRAM (CONFIG_XIP is not set in Zephyr)
+#
+# Address translation (DMA):
+#   virt >= 0x80000000  →  phys = (virt & ~0x80000000) | 0x4_0000_0000
+#   virt <  0x80000000  →  phys = virt  (1:1)
+#
+# Interrupt notes:
+#   The ibex core exposes 16 fast external interrupt lines (NUM_IRQS=16).
+#   The system timer uses machine timer interrupt (MTIP, IRQ 7 from hlic),
+#   which is handled by riscv-rt's _machine_timer hook, NOT through the
+#   external interrupt dispatch table.
+#   UART12 and IPC1 use polling in Zephyr; no external IRQs assigned.
+#
+# Sources:
+#   Zephyr dts/riscv/aspeed/ast27xx.dtsi
+#   Zephyr soc/aspeed/ast27xx/Kconfig.defconfig.bootmcu
+#   Zephyr drivers/timer/ast2700_bootmcu_timer.c
+#   Zephyr drivers/ipm/ipm_bootmcu.c
+#   AST2700 datasheet v0.3 (ast2700v03.md)
+
+name:   AST2700_BOOTMCU
+family: ast27xx
+core:   rv32imc
+target: riscv32imc-unknown-none-elf
+arch:   riscv
+num_irqs: 16
+# nvic_priority_bits: absent — not applicable for RISC-V
+
+# ── Peripheral instances ──────────────────────────────────────────────────────
+
+peripherals:
+  # 64-bit free-running timer at 1 MHz (machine timer interrupt, MTIP)
+  - name:    TIMER
+    block:   bootmcu_timer_v1::TIMER
+    address: 0x14C36000
+    description: "AST2700 BootMCU 64-bit timer @ 1 MHz (IRQ 7, MTIP)"
+
+  # WDT0 — same core register layout as AST2600/AST1060 wdt_v1
+  - name:    WDT0
+    block:   wdt_v1::WDT
+    address: 0x14C37000
+    description: "AST2700 G7 watchdog timer 0"
+
+  # UART12 — 16550-compatible, 4-byte register stride (reg-shift=2)
+  # uart_v1.yaml already uses 4-byte stride; no new YAML needed.
+  - name:    UART12
+    block:   uart_v1::UART
+    address: 0x14C33B00
+    description: "UART12 (16550, 4-byte stride, 1846153 Hz clock)"
+
+  # IPC1 — BootMCU data-channel bus (polling)
+  - name:    IPC1
+    block:   ipc1_v1::IPC1
+    address: 0x14C39000
+    description: "IPC1 data-channel bus (4 sub-channels, polling)"
+
+# ── Interrupt table ───────────────────────────────────────────────────────────
+# Only external interrupts (routed via MEIP) are listed here.
+# Machine timer interrupt (MTIP) is handled by riscv-rt separately.
+# Currently no peripherals use external IRQs; list is intentionally empty.
+interrupts: []

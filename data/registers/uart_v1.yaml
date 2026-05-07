@@ -1,0 +1,327 @@
+# Standard 16550-compatible UART registers (32-bit word spacing).
+#
+# The UART11 base address (CM3 view) is 0x7E79_0500.
+# All registers are at 4-byte (word) stride, even though the hardware
+# is byte-wide.  Only bits [7:0] of each 32-bit word carry data.
+#
+# DLAB aliasing:
+#   Offsets 0x00 and 0x04 are aliased by LCR[DLAB]:
+#     DLAB=0: 0x00 = RBR (read) / THR (write), 0x04 = IER
+#     DLAB=1: 0x00 = DLL (baud divisor low),   0x04 = DLH (baud divisor high)
+#   The PAC models the DLAB=0 view.  HAL code sets LCR[DLAB]=1, writes
+#   DLL/DLH to the same offsets via raw pointer, then clears LCR[DLAB]=0.
+#
+# FCR/IIR aliasing:
+#   Offset 0x08 is write→FCR, read→IIR.
+#   The PAC register is named FCR_IIR.  Reads return IIR bits; writes
+#   configure the FIFO.  HAL code interprets the returned value as IIR.
+#
+# Sources:
+#   ast2600.md v1.6  Chapter 8 – UART (16550-compatible)
+#   National Semiconductor PC16550D datasheet
+
+block/UART:
+  description: >
+    16550-compatible UART register block.
+    Base address: UART11 at 0x7E79_0500 (CM3 view).
+    All registers at 4-byte stride; only bits [7:0] carry data.
+  items:
+    - name: RBR_THR
+      description: >
+        Receiver Buffer Register (read, DLAB=0) / Transmit Holding Register
+        (write, DLAB=0) / Baud Divisor Low byte (DLAB=1).
+        Read: received byte.  Write: byte to transmit.
+        DLAB=1 access handled in HAL code via raw pointer.
+      byte_offset: 0x00
+      fieldset: DATA8
+
+    - name: IER
+      description: >
+        Interrupt Enable Register (DLAB=0) / Baud Divisor High byte (DLAB=1).
+        DLAB=1 access handled in HAL code via raw pointer.
+      byte_offset: 0x04
+      fieldset: IER
+
+    - name: FCR_IIR
+      description: >
+        FIFO Control Register (write) / Interrupt Identification Register (read).
+        Reads return IIR; writes configure FIFO via FCR fields.
+        FCR is write-only; IIR is read-only.
+      byte_offset: 0x08
+      fieldset: FCR_IIR
+
+    - name: LCR
+      description: Line Control Register. Controls data format and DLAB.
+      byte_offset: 0x0C
+      fieldset: LCR
+
+    - name: MCR
+      description: Modem Control Register.
+      byte_offset: 0x10
+      fieldset: MCR
+
+    - name: LSR
+      description: Line Status Register. TX/RX status flags.
+      byte_offset: 0x14
+      fieldset: LSR
+
+    - name: MSR
+      description: Modem Status Register.
+      byte_offset: 0x18
+      fieldset: MSR
+
+    - name: SCR
+      description: Scratch Register. Read/write with no hardware effect.
+      byte_offset: 0x1C
+      fieldset: DATA8
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/DATA8:
+  description: 8-bit data register (RBR/THR and SCR share this layout).
+  fields:
+    - name: DATA
+      description: Data byte (bits [7:0]).
+      bit_offset: 0
+      bit_size: 8
+
+fieldset/IER:
+  description: Interrupt Enable Register (DLAB=0).
+  fields:
+    - name: ERBFI
+      description: >
+        Enable Received Data Available Interrupt.
+        1 = generate IRQ when RBR has received data (LSR.DR=1) or
+        FIFO reaches trigger level.
+      bit_offset: 0
+      bit_size: 1
+    - name: ETBEI
+      description: >
+        Enable Transmitter Holding Register Empty Interrupt.
+        1 = generate IRQ when THR is empty (LSR.THRE=1).
+      bit_offset: 1
+      bit_size: 1
+    - name: ELSI
+      description: >
+        Enable Receiver Line Status Interrupt.
+        1 = generate IRQ on OE/PE/FE/BI errors (LSR bits 1-4).
+      bit_offset: 2
+      bit_size: 1
+    - name: EDSSI
+      description: >
+        Enable Modem Status Interrupt.
+        1 = generate IRQ on CTS/DSR/RI/DCD changes (MSR bits 0-3).
+      bit_offset: 3
+      bit_size: 1
+
+fieldset/FCR_IIR:
+  description: >
+    FIFO Control Register (write) / Interrupt Identification Register (read).
+    Write access configures FIFO; read access returns interrupt status.
+  fields:
+    - name: FIFOE_OR_IP
+      description: >
+        Write (FCR): FIFO Enable.  1 = enable TX and RX FIFOs; clearing
+        this bit resets both FIFOs.
+        Read (IIR): Interrupt Pending (active-low).  0 = interrupt pending.
+      bit_offset: 0
+      bit_size: 1
+    - name: RFIFOR_OR_IID1
+      description: >
+        Write (FCR): Receiver FIFO Reset.  Write 1 to flush RX FIFO.
+        Read (IIR): Interrupt ID bit 1.
+      bit_offset: 1
+      bit_size: 1
+    - name: XFIFOR_OR_IID2
+      description: >
+        Write (FCR): Transmitter FIFO Reset.  Write 1 to flush TX FIFO.
+        Read (IIR): Interrupt ID bit 2.
+      bit_offset: 2
+      bit_size: 1
+    - name: DMA_OR_IID3
+      description: >
+        Write (FCR): DMA mode select.  0 = mode 0; 1 = mode 1.
+        Read (IIR): Interrupt ID bit 3 (FIFO timeout indicator on 16550D).
+      bit_offset: 3
+      bit_size: 1
+    - name: TX_TRIG
+      description: >
+        Write (FCR): TX FIFO trigger threshold.
+        00=empty; 01=2 bytes; 10=quarter full; 11=half full.
+      bit_offset: 4
+      bit_size: 2
+    - name: RX_TRIG
+      description: >
+        Write (FCR): RX FIFO trigger threshold.
+        00=1 byte; 01=quarter full; 10=half full; 11=2 from full.
+        Read (IIR): FIFO enabled status bits [7:6] (11=FIFOs enabled).
+      bit_offset: 6
+      bit_size: 2
+
+fieldset/LCR:
+  description: Line Control Register.
+  fields:
+    - name: WLS
+      description: >
+        Word Length Select.
+        00=5 bits; 01=6 bits; 10=7 bits; 11=8 bits.
+      bit_offset: 0
+      bit_size: 2
+    - name: STB
+      description: >
+        Stop Bits.
+        0 = 1 stop bit;
+        1 = 2 stop bits (or 1.5 for 5-bit words).
+      bit_offset: 2
+      bit_size: 1
+    - name: PEN
+      description: Parity Enable. 1 = enable parity generation/checking.
+      bit_offset: 3
+      bit_size: 1
+    - name: EPS
+      description: >
+        Even Parity Select (when PEN=1).
+        0 = odd parity; 1 = even parity.
+      bit_offset: 4
+      bit_size: 1
+    - name: SP
+      description: >
+        Stick Parity.
+        1 = parity bit forced to 0 (EPS=1) or 1 (EPS=0).
+      bit_offset: 5
+      bit_size: 1
+    - name: BC
+      description: >
+        Break Control.
+        1 = force TX line to spacing (break) state.
+      bit_offset: 6
+      bit_size: 1
+    - name: DLAB
+      description: >
+        Divisor Latch Access Bit.
+        1 = offsets 0x00 and 0x04 address DLL/DLH (baud rate divisor);
+        0 = offsets 0x00 and 0x04 address RBR/THR and IER.
+        Clear to 0 after configuring baud rate.
+      bit_offset: 7
+      bit_size: 1
+
+fieldset/MCR:
+  description: Modem Control Register.
+  fields:
+    - name: DTR
+      description: Data Terminal Ready output (active-low nDTR pin).
+      bit_offset: 0
+      bit_size: 1
+    - name: RTS
+      description: Request To Send output (active-low nRTS pin).
+      bit_offset: 1
+      bit_size: 1
+    - name: OUT1
+      description: Output 1 (general-purpose output, active-low).
+      bit_offset: 2
+      bit_size: 1
+    - name: OUT2
+      description: >
+        Output 2 (active-low). On PC hardware this gates the interrupt;
+        on ASPEED UARTs it must be set to 1 to enable interrupts.
+      bit_offset: 3
+      bit_size: 1
+    - name: LOOP
+      description: >
+        Internal loopback mode.
+        1 = TX connected to RX internally; modem lines looped.
+      bit_offset: 4
+      bit_size: 1
+
+fieldset/LSR:
+  description: Line Status Register. Read-only status bits.
+  fields:
+    - name: DR
+      description: >
+        Data Ready.
+        1 = at least one character is in the RX buffer / RX FIFO.
+      bit_offset: 0
+      bit_size: 1
+    - name: OE
+      description: >
+        Overrun Error.
+        1 = a new character arrived before the previous was read.
+        Cleared by reading LSR.
+      bit_offset: 1
+      bit_size: 1
+    - name: PE
+      description: >
+        Parity Error.
+        1 = received character has wrong parity.
+        Cleared by reading LSR.
+      bit_offset: 2
+      bit_size: 1
+    - name: FE
+      description: >
+        Framing Error.
+        1 = received character has no valid stop bit.
+        Cleared by reading LSR.
+      bit_offset: 3
+      bit_size: 1
+    - name: BI
+      description: >
+        Break Interrupt.
+        1 = RX line has been held at 0 (spacing) for more than one character time.
+        Cleared by reading LSR.
+      bit_offset: 4
+      bit_size: 1
+    - name: THRE
+      description: >
+        Transmitter Holding Register Empty.
+        1 = THR is empty; safe to write next byte (or FIFO below threshold).
+      bit_offset: 5
+      bit_size: 1
+    - name: TEMT
+      description: >
+        Transmitter Empty.
+        1 = both THR and transmitter shift register are empty.
+      bit_offset: 6
+      bit_size: 1
+    - name: FIFOERR
+      description: >
+        FIFO data error (FIFO mode only).
+        1 = at least one PE/FE/BI error is present in the RX FIFO.
+        Cleared when the erroneous byte is read out.
+      bit_offset: 7
+      bit_size: 1
+
+fieldset/MSR:
+  description: Modem Status Register. CTS/DSR/RI/DCD change and current state.
+  fields:
+    - name: DCTS
+      description: Delta CTS – CTS changed since last MSR read.
+      bit_offset: 0
+      bit_size: 1
+    - name: DDSR
+      description: Delta DSR – DSR changed since last MSR read.
+      bit_offset: 1
+      bit_size: 1
+    - name: TERI
+      description: Trailing Edge Ring Indicator – RI went from active to inactive.
+      bit_offset: 2
+      bit_size: 1
+    - name: DDCD
+      description: Delta DCD – DCD changed since last MSR read.
+      bit_offset: 3
+      bit_size: 1
+    - name: CTS
+      description: Clear To Send (complement of nCTS input).
+      bit_offset: 4
+      bit_size: 1
+    - name: DSR
+      description: Data Set Ready (complement of nDSR input).
+      bit_offset: 5
+      bit_size: 1
+    - name: RI
+      description: Ring Indicator (complement of nRI input).
+      bit_offset: 6
+      bit_size: 1
+    - name: DCD
+      description: Data Carrier Detect (complement of nDCD input).
+      bit_offset: 7
+      bit_size: 1

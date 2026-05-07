@@ -1,0 +1,291 @@
+# ASPEED I3C global wrapper registers.
+#
+# Base: 0x7E7A_0000 (AST1060).
+# Six I3C channels, 4 registers each at stride 0x10, starting at 0x010.
+# Channels 1-4 have SDA pull-up control bits; channels 5-6 do not.
+#
+# Per-channel register layout (offsets relative to global base):
+#   0x10 + (N-1)*0x10 : I3CNReg0  — PHY: CDR, de-glitch, SDA pull-ups (ch1-4 only)
+#   0x14 + (N-1)*0x10 : I3CNReg1  — Slave identity (static addr, inst_id, mode)
+#   0x18 + (N-1)*0x10 : I3CNDbg1  — Debug signals (read-only)
+#   0x1C + (N-1)*0x10 : I3CNDbg2  — Debug: IO levels and FSM state
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 29 – I3C Controller (I3CGlobal section)
+
+block/I3CGLOBAL:
+  description: >
+    ASPEED I3C global wrapper registers.
+    Base: 0x7E7A_0000. Six channels, 4 registers each starting at offset 0x010.
+  items:
+    # ── Channel 1 ────────────────────────────────────────────────────────────
+    - name: CH1_PHY
+      description: I3C Channel 1 PHY control (SDA pull-ups, CDR, de-glitch).
+      byte_offset: 0x010
+      fieldset: I3CG_PHY_PULLUP
+    - name: CH1_SLV
+      description: I3C Channel 1 slave identity (static addr, instance ID, mode).
+      byte_offset: 0x014
+      fieldset: I3CG_SLAVE_ID
+    - name: CH1_DBG1
+      description: I3C Channel 1 debug signals (read-only).
+      byte_offset: 0x018
+      fieldset: I3CG_DBG1
+    - name: CH1_DBG2
+      description: I3C Channel 1 debug IO and FSM (read-only).
+      byte_offset: 0x01C
+      fieldset: I3CG_DBG2
+
+    # ── Channel 2 ────────────────────────────────────────────────────────────
+    - name: CH2_PHY
+      description: I3C Channel 2 PHY control.
+      byte_offset: 0x020
+      fieldset: I3CG_PHY_PULLUP
+    - name: CH2_SLV
+      description: I3C Channel 2 slave identity.
+      byte_offset: 0x024
+      fieldset: I3CG_SLAVE_ID
+    - name: CH2_DBG1
+      description: I3C Channel 2 debug signals.
+      byte_offset: 0x028
+      fieldset: I3CG_DBG1
+    - name: CH2_DBG2
+      description: I3C Channel 2 debug IO and FSM.
+      byte_offset: 0x02C
+      fieldset: I3CG_DBG2
+
+    # ── Channel 3 ────────────────────────────────────────────────────────────
+    - name: CH3_PHY
+      description: I3C Channel 3 PHY control.
+      byte_offset: 0x030
+      fieldset: I3CG_PHY_PULLUP
+    - name: CH3_SLV
+      description: I3C Channel 3 slave identity.
+      byte_offset: 0x034
+      fieldset: I3CG_SLAVE_ID
+    - name: CH3_DBG1
+      description: I3C Channel 3 debug signals.
+      byte_offset: 0x038
+      fieldset: I3CG_DBG1
+    - name: CH3_DBG2
+      description: I3C Channel 3 debug IO and FSM.
+      byte_offset: 0x03C
+      fieldset: I3CG_DBG2
+
+    # ── Channel 4 ────────────────────────────────────────────────────────────
+    - name: CH4_PHY
+      description: I3C Channel 4 PHY control.
+      byte_offset: 0x040
+      fieldset: I3CG_PHY_PULLUP
+    - name: CH4_SLV
+      description: I3C Channel 4 slave identity.
+      byte_offset: 0x044
+      fieldset: I3CG_SLAVE_ID
+    - name: CH4_DBG1
+      description: I3C Channel 4 debug signals.
+      byte_offset: 0x048
+      fieldset: I3CG_DBG1
+    - name: CH4_DBG2
+      description: I3C Channel 4 debug IO and FSM.
+      byte_offset: 0x04C
+      fieldset: I3CG_DBG2
+
+    # ── Channel 5 (no SDA pull-up control) ───────────────────────────────────
+    - name: CH5_PHY
+      description: I3C Channel 5 PHY control (no SDA pull-up bits).
+      byte_offset: 0x050
+      fieldset: I3CG_PHY_NO_PULLUP
+    - name: CH5_SLV
+      description: I3C Channel 5 slave identity.
+      byte_offset: 0x054
+      fieldset: I3CG_SLAVE_ID
+    - name: CH5_DBG1
+      description: I3C Channel 5 debug signals.
+      byte_offset: 0x058
+      fieldset: I3CG_DBG1
+    - name: CH5_DBG2
+      description: I3C Channel 5 debug IO and FSM.
+      byte_offset: 0x05C
+      fieldset: I3CG_DBG2
+
+    # ── Channel 6 (no SDA pull-up control) ───────────────────────────────────
+    - name: CH6_PHY
+      description: I3C Channel 6 PHY control (no SDA pull-up bits).
+      byte_offset: 0x060
+      fieldset: I3CG_PHY_NO_PULLUP
+    - name: CH6_SLV
+      description: I3C Channel 6 slave identity.
+      byte_offset: 0x064
+      fieldset: I3CG_SLAVE_ID
+    - name: CH6_DBG1
+      description: I3C Channel 6 debug signals.
+      byte_offset: 0x068
+      fieldset: I3CG_DBG1
+    - name: CH6_DBG2
+      description: I3C Channel 6 debug IO and FSM.
+      byte_offset: 0x06C
+      fieldset: I3CG_DBG2
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/I3CG_PHY_PULLUP:
+  description: >
+    I3C global PHY register — channels 1-4 (with SDA pull-up control).
+    Controls CDR enable, de-glitch counts, and on-chip SDA pull-up resistors.
+  fields:
+    - name: DG_SDA_FMAX
+      description: De-glitch SDA falling edge max count (4 bits).
+      bit_offset: 0
+      bit_size: 4
+    - name: DG_SDA_RMAX
+      description: De-glitch SDA rising edge max count (4 bits).
+      bit_offset: 4
+      bit_size: 4
+    - name: DG_SCL_FMAX
+      description: De-glitch SCL falling edge max count (4 bits).
+      bit_offset: 8
+      bit_size: 4
+    - name: DG_SCL_RMAX
+      description: De-glitch SCL rising edge max count (4 bits).
+      bit_offset: 12
+      bit_size: 4
+    - name: CDR_DLYMAX
+      description: CDR maximum delay count (8 bits).
+      bit_offset: 16
+      bit_size: 8
+    - name: CDR_EN_DG
+      description: CDR enable for DG path.
+      bit_offset: 24
+      bit_size: 1
+    - name: CDR_EN_MASK
+      description: CDR enable mask.
+      bit_offset: 25
+      bit_size: 1
+    - name: SDA_PULLUP_EN_2K
+      description: Enable 2 KΩ on-chip SDA pull-up resistor.
+      bit_offset: 28
+      bit_size: 1
+    - name: SDA_PULLUP_EN_750
+      description: >
+        Enable 750 Ω on-chip SDA pull-up resistor.
+        If both 2K and 750 enabled → effective 2K ∥ 750 Ω ≈ 577 Ω.
+        If neither → no on-chip pull-up (external only).
+      bit_offset: 29
+      bit_size: 1
+
+fieldset/I3CG_PHY_NO_PULLUP:
+  description: >
+    I3C global PHY register — channels 5-6 (no SDA pull-up control).
+    Same as I3CG_PHY_PULLUP but bits [29:28] are reserved.
+  fields:
+    - name: DG_SDA_FMAX
+      description: De-glitch SDA falling edge max count.
+      bit_offset: 0
+      bit_size: 4
+    - name: DG_SDA_RMAX
+      description: De-glitch SDA rising edge max count.
+      bit_offset: 4
+      bit_size: 4
+    - name: DG_SCL_FMAX
+      description: De-glitch SCL falling edge max count.
+      bit_offset: 8
+      bit_size: 4
+    - name: DG_SCL_RMAX
+      description: De-glitch SCL rising edge max count.
+      bit_offset: 12
+      bit_size: 4
+    - name: CDR_DLYMAX
+      description: CDR maximum delay count.
+      bit_offset: 16
+      bit_size: 8
+    - name: CDR_EN_DG
+      description: CDR enable for DG path.
+      bit_offset: 24
+      bit_size: 1
+    - name: CDR_EN_MASK
+      description: CDR enable mask.
+      bit_offset: 25
+      bit_size: 1
+
+fieldset/I3CG_SLAVE_ID:
+  description: >
+    I3C global slave identity register.
+    Configures slave static address, instance ID, and operating mode.
+    Only valid when channel is in slave mode.
+  fields:
+    - name: MODE_I2C
+      description: "Slave bus mode: 0=I3C mode, 1=I2C mode."
+      bit_offset: 0
+      bit_size: 1
+    - name: SLV_TEST_MODE
+      description: Slave test mode enable.
+      bit_offset: 1
+      bit_size: 1
+    - name: ACT_MODE
+      description: Slave activity mode for GETSTATUS CCC response.
+      bit_offset: 2
+      bit_size: 2
+    - name: PENDING_INT
+      description: Pending interrupt info for GETSTATUS CCC response.
+      bit_offset: 4
+      bit_size: 4
+    - name: STATIC_ADDR
+      description: Slave static address (7-bit). Used for SETDASA.
+      bit_offset: 8
+      bit_size: 7
+    - name: STATIC_ADDR_EN
+      description: Slave static address valid enable.
+      bit_offset: 15
+      bit_size: 1
+    - name: INST_ID
+      description: Slave instance ID (for GETPID response).
+      bit_offset: 16
+      bit_size: 4
+
+fieldset/I3CG_DBG1:
+  description: I3C global debug signals register 1 (read-only).
+  fields:
+    - name: DEBUG
+      description: Debug signal bits [31:0] (content varies by master/slave mode).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/I3CG_DBG2:
+  description: I3C global debug register 2 — IO levels and FSM state (read-only).
+  fields:
+    - name: CTRL_EN
+      description: Controller enable status.
+      bit_offset: 0
+      bit_size: 1
+    - name: SCL_OE
+      description: SCL output enable.
+      bit_offset: 16
+      bit_size: 1
+    - name: SCL_OUT
+      description: SCL output value.
+      bit_offset: 17
+      bit_size: 1
+    - name: SCL_PULLUP_EN
+      description: SCL pull-up enable.
+      bit_offset: 18
+      bit_size: 1
+    - name: SCL_IN
+      description: SCL input level.
+      bit_offset: 19
+      bit_size: 1
+    - name: SDA_OE
+      description: SDA output enable.
+      bit_offset: 20
+      bit_size: 1
+    - name: SDA_OUT
+      description: SDA output value.
+      bit_offset: 21
+      bit_size: 1
+    - name: SDA_PULLUP_EN
+      description: SDA pull-up enable.
+      bit_offset: 22
+      bit_size: 1
+    - name: SDA_IN
+      description: SDA input level.
+      bit_offset: 23
+      bit_size: 1

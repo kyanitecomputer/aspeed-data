@@ -1,0 +1,327 @@
+# AST2600 Secondary Service Processor (SSP) coprocessor control registers.
+# ** AST2600-SPECIFIC — see ssp_v2.yaml for AST2700 SSP/TSP **
+#
+# These registers reside in the SCU (System Control Unit) at SCU offsets
+# 0xA00–0xA48.  Accessed from the CM3 side at 0x7E6E_2A00–0x7E6E_2A48.
+#
+# When this block is instantiated in the chip YAML, its base address is the
+# SCU base (0x7E6E_2000) + 0xA00 = 0x7E6E_2A00.  Offsets within the block
+# are therefore relative to SCUA00.
+#
+# Sources:
+#   ast2600_ssp.md  v0.1f  Section 3 – SSP Registers
+#   ast2600_ssp.md  v0.1f  Section 4 – Cache Controller
+#   ast2600.md      v1.6   CM3 Coprocessor registers (SCUA00–SCUA48)
+#
+# ── Key differences vs ssp_v2.yaml (AST2700) ─────────────────────────────────
+#
+# 1. BASE ADDRESS: AST2600 SSP = SCU+0xA00 (0x7E6E_2A00)
+#                  AST2700 SSP = SCU0+0x120 (0x72C0_2120)
+#                  AST2700 TSP = SCU0+0x160 (0x72C0_2160)
+#
+# 2. CTRL register: AST2600 has only EN[0] + RESET[1].
+#                   AST2700 adds DEBUG_EN[2], SRAM_SLEEP[5], SRAM_DEEP_SLEEP[6],
+#                   SRAM_SHUTDOWN[7].
+#
+# 3. CACHE_FUNC (SCUA48 here, SCU138/SCU178 on AST2700) — INCOMPATIBLE LAYOUT:
+#      AST2600: CACHE_EN[0] (combined I+D), DCACHE_CLEAR[1], ICACHE_CLEAR[2],
+#               CCM_EN[10], CCM_SYS_OWN[11], IRQ fields [12:14] and [24:30].
+#      AST2700: DCACHE_EN[0], ICACHE_EN[1] (separate!), DCACHE_CLEAR[2],
+#               ICACHE_CLEAR[3], DCACHE_PREFETCH_CLEAR[4], ICACHE_PREFETCH_CLEAR[5].
+#               CCM and IRQ monitoring bits are absent.
+#
+# 4. CACHE_AREA: AST2600 has ONE register (SCUA40) controlling both I- and D-bus
+#                cacheable areas.
+#                AST2700 SSP has TWO registers: SCU12C (I-bus) + SCU130 (D-bus).
+#                AST2700 TSP has TWO registers: SCU16C (I-bus) + SCU170 (D-bus).
+#
+# 5. MEMORY MAP: AST2600 uses a single base register (SCUA04) + two limit registers
+#                (SCUA08, SCUA0C) for I/D upper bounds.
+#                AST2700 uses 6 registers defining THREE regions:
+#                  TCM:   SCU140 (start), SCU144 (size), physically at 0x10800000
+#                  SRAM:  SCU148 (start), SCU14C (size), remapped via SCU124
+#                  DRAM:  SCU150 (start), SCU154 (size), remapped via SCU128
+#                No separate I/D memory limit registers.
+#
+# 6. GPR bank: AST2700 adds 32 general-purpose registers + S_PAGE at 0x50000000
+#              (local to the CM4F private bus). No equivalent on AST2600.
+#              These will be described in gpr_v1.yaml.
+
+# ── Register block ────────────────────────────────────────────────────────────
+
+block/SSP:
+  description: >
+    CM3 coprocessor control registers.
+    Base address: SCU + 0xA00  (CM3 view: 0x7E6E_2A00).
+  items:
+    - name: CTRL
+      description: CM3 Coprocessor Control Register (SCUA00)
+      byte_offset: 0x00
+      fieldset: CTRL
+
+    - name: MEM_BASE
+      description: CM3 Memory Base Address Register (SCUA04)
+      byte_offset: 0x04
+      fieldset: MEM_BASE
+
+    - name: IMEM_LIMIT
+      description: CM3 Instruction Memory Address Limit Register (SCUA08)
+      byte_offset: 0x08
+      fieldset: MEM_LIMIT
+
+    - name: DMEM_LIMIT
+      description: CM3 Data Memory Address Limit Register (SCUA0C)
+      byte_offset: 0x0C
+      fieldset: MEM_LIMIT
+
+    # 0x10–0x3C: reserved
+
+    - name: CACHE_AREA
+      description: CM3 Cacheable Area Declaration Register (SCUA40)
+      byte_offset: 0x40
+      fieldset: CACHE_AREA
+
+    - name: CACHE_INVAL
+      description: CM3 Cache Invalidation Control Register (SCUA44)
+      byte_offset: 0x44
+      fieldset: CACHE_INVAL
+
+    - name: CACHE_FUNC
+      description: CM3 Cache Function Control Register (SCUA48)
+      byte_offset: 0x48
+      fieldset: CACHE_FUNC
+
+# ── Fieldsets ─────────────────────────────────────────────────────────────────
+
+fieldset/CTRL:
+  description: CM3 Coprocessor Control (SCUA00). Reset value 0x0.
+  fields:
+    - name: EN
+      description: >
+        CM3 Coprocessor Enable.
+        0 = disabled (also forces the CM3 into reset);
+        1 = enabled.
+        Hold disabled for ≥1 µs before re-enabling.
+        Programming sequence: disable → configure MEM_BASE/limits/cache
+        → release reset → enable.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: RESET
+      description: >
+        CM3 Coprocessor Reset.
+        0 = normal operation;
+        1 = reset asserted (active-high).
+        When EN=0 the CM3 is also forced into reset regardless of this bit.
+        Hold for ≥1 µs.  Release reset before asserting EN.
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/MEM_BASE:
+  description: >
+    CM3 Memory Base Address (SCUA04). Reset value 0x0.
+    Modify only while CM3 is in reset (CTRL.RESET=1 or CTRL.EN=0).
+  fields:
+    - name: BASE
+      description: >
+        Physical DRAM base address bits [31:20].
+        CM3 virtual address 0x0000_0000 maps to this 1 MB-aligned
+        physical address.  The CA7-to-CM3 address window is
+        CM3 [0x0000_0000, 0x1FFF_FFFF] ↔ phys [BASE, BASE+512 MB).
+      bit_offset: 20
+      bit_size: 12
+
+fieldset/MEM_LIMIT:
+  description: >
+    CM3 Instruction or Data Memory Address Limit (SCUA08 / SCUA0C).
+    Both registers share this layout.  Reset value 0x0.
+    Modify only while CM3 is in reset (CTRL.RESET=1 or CTRL.EN=0).
+  fields:
+    - name: LIMIT
+      description: >
+        Physical DRAM upper-bound address bits [31:20].
+        Accesses at or above this 1 MB-aligned boundary are rejected
+        by the hardware access-checker (generates an IRQ; see CACHE_FUNC).
+      bit_offset: 20
+      bit_size: 12
+
+fieldset/CACHE_AREA:
+  description: >
+    CM3 Cacheable Area Declaration (SCUA40). Reset value 0xFFFF_FFFF.
+    Modify only while CM3 is in reset (CTRL.RESET=1 or CTRL.EN=0).
+  fields:
+    - name: REGION
+      description: >
+        Cacheable region bitmask (32 bits × 16 MB per bit).
+        Bit 0  → CM3 0x0000_0000–0x00FF_FFFF cacheable when set.
+        Bit 31 → CM3 0x1F00_0000–0x1FFF_FFFF cacheable when set.
+        Non-cached accesses bypass the cache controller and go directly
+        to DRAM.  The CM3 non-cached DMA region (typically at 0x0100_0000,
+        bit 1) must be kept clear so IPC shared-memory coherency is
+        maintained without explicit invalidation.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/CACHE_INVAL:
+  description: >
+    CM3 Cache Invalidation Control (SCUA44). Reset value 0x0.
+    Write-protocol (per datasheet): write 0 to the register first,
+    then write the target address + trigger bit together.
+    The cache is write-through, so only invalidation (not flush) is needed.
+  fields:
+    - name: ICACHE_ADDR
+      description: >
+        I-cache line address for targeted invalidation.
+        11-bit LSB of the cache line address (each cache line is 32 B,
+        so bits [15:5] of the virtual address; hardware ignores [4:0]).
+        Write together with ICACHE_EN=1.
+      bit_offset: 0
+      bit_size: 11
+
+    - name: ICACHE_EN
+      description: >
+        I-cache line invalidation trigger.
+        Write 1 to invalidate the instruction-cache line identified by
+        ICACHE_ADDR.  Self-clearing (reads back 0 after invalidation).
+        Datasheet protocol: write 0x0000 first, then write
+        {ICACHE_EN=1, ICACHE_ADDR=<line>} in a single write.
+      bit_offset: 15
+      bit_size: 1
+
+    - name: DCACHE_ADDR
+      description: >
+        D-cache line address for targeted invalidation.
+        11-bit LSB of the cache line address.
+        Corresponds to register bits [26:16].
+        Write together with DCACHE_EN=1.
+      bit_offset: 16
+      bit_size: 11
+
+    - name: DCACHE_EN
+      description: >
+        D-cache line invalidation trigger.
+        Write 1 to invalidate the data-cache line identified by DCACHE_ADDR.
+        Self-clearing (reads back 0 after invalidation).
+        Datasheet protocol: write 0x0000_0000 first, then write
+        {DCACHE_EN=1, DCACHE_ADDR=<line>} in a single write.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/CACHE_FUNC:
+  description: >
+    CM3 Cache Function Control (SCUA48). Reset value 0x0.
+    4 KB I-cache + 4 KB D-cache, 32-byte line size, 2-way set-associative,
+    write-through (no dirty state; only invalidation, no flush needed).
+  fields:
+    - name: CACHE_EN
+      description: >
+        Cache enable.
+        0 = I-cache and D-cache disabled (all accesses go to DRAM);
+        1 = both caches active.
+        Must configure CACHE_AREA before enabling.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: DCACHE_CLEAR
+      description: >
+        D-cache bulk clear (one-shot).
+        Write sequence: write 0 first, then write 1.
+        Hardware clears all D-cache entries and resets this bit to 0.
+        Do not use while CM3 is executing; intended for startup/shutdown.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: ICACHE_CLEAR
+      description: >
+        I-cache bulk clear (one-shot).
+        Write sequence: write 0 first, then write 1.
+        Hardware clears all I-cache entries and resets this bit to 0.
+        Do not use while CM3 is executing.
+      bit_offset: 2
+      bit_size: 1
+
+    - name: CCM_EN
+      description: >
+        Closely-coupled memory (CCM) mode enable.
+        Enables 4 KB × 2 internal SRAM as CM3 I-bus/D-bus tightly
+        coupled memory.  Programming sequence:
+          1. Set CCM_SYS_OWN=1 so CA7 can write code to 0x1A00_0000.
+          2. CA7 writes firmware to 0x1A00_0000–0x1A03_FFFF.
+          3. Set CCM_EN=1.
+          4. Clear CCM_SYS_OWN=0 to hand SRAM ownership to CM3.
+        Modify only while CM3 is in reset.
+      bit_offset: 10
+      bit_size: 1
+
+    - name: CCM_SYS_OWN
+      description: >
+        CCM master select.
+        0 = CM3 I/D-bus owns the tightly coupled SRAM;
+        1 = system bus (CA7 and other AHB masters) owns the SRAM.
+        Modify only while CM3 is in reset.
+      bit_offset: 11
+      bit_size: 1
+
+    - name: IRQ_EN
+      description: >
+        IRQ enable for CM3 address-range monitoring.
+        When set, out-of-range accesses on I-bus/D-bus/S-bus generate an
+        interrupt to the CA7.
+      bit_offset: 12
+      bit_size: 1
+
+    - name: IRQ_MASK
+      description: >
+        IRQ mask for address-range monitoring.
+        1 = suppress the interrupt (raw flags still set in IRQ_RAW_*).
+      bit_offset: 13
+      bit_size: 1
+
+    - name: IRQ_CLEAR
+      description: >
+        Write 1 to clear the address-monitoring IRQ status flags
+        (IRQ_RAW_IBUS, IRQ_RAW_DBUS, IRQ_RAW_SBUS).
+      bit_offset: 14
+      bit_size: 1
+
+    - name: IRQ_RAW_IBUS
+      description: >
+        Raw IRQ flag (read-only): CM3 instruction-bus (I-bus) access was
+        outside the range defined by MEM_BASE / IMEM_LIMIT.
+        Cleared by writing IRQ_CLEAR=1.
+      bit_offset: 24
+      bit_size: 1
+
+    - name: IRQ_RAW_DBUS
+      description: >
+        Raw IRQ flag (read-only): CM3 data-bus (D-bus) access was outside
+        the range defined by MEM_BASE / DMEM_LIMIT.
+        Cleared by writing IRQ_CLEAR=1.
+      bit_offset: 25
+      bit_size: 1
+
+    - name: IRQ_RAW_SBUS
+      description: >
+        Raw IRQ flag (read-only): CM3 system-bus (S-bus) access was outside
+        the AHB bridge window 0x6000_0000–0xE000_0000.
+        Cleared by writing IRQ_CLEAR=1.
+      bit_offset: 26
+      bit_size: 1
+
+    - name: IRQ_IBUS
+      description: >
+        Masked IRQ (read-only): IRQ_RAW_IBUS AND NOT IRQ_MASK AND IRQ_EN.
+      bit_offset: 28
+      bit_size: 1
+
+    - name: IRQ_DBUS
+      description: >
+        Masked IRQ (read-only): IRQ_RAW_DBUS AND NOT IRQ_MASK AND IRQ_EN.
+      bit_offset: 29
+      bit_size: 1
+
+    - name: IRQ_SBUS
+      description: >
+        Masked IRQ (read-only): IRQ_RAW_SBUS AND NOT IRQ_MASK AND IRQ_EN.
+      bit_offset: 30
+      bit_size: 1

@@ -1,0 +1,33 @@
+[package]
+name        = "aspeed-data-gen"
+version     = "0.1.0"
+edition     = "2021"
+description = "ASPEED SoC register definitions and PAC generator (host tool)"
+repository  = "https://github.com/kyanitecomputer/aspeed-data"
+publish     = false
+
+[[bin]]
+name = "aspeed-data-gen"
+path = "src/main.rs"
+
+[dependencies]
+# Register description IR and Rust PAC code generator.
+# Used as a library: chiptool::ir, chiptool::generate, chiptool::transform.
+chiptool = { path = "../../chiptool" }
+
+# YAML parsing for chip + register definition files.
+serde      = { version = "1", features = ["derive"] }
+serde_yaml = "=0.9.34-deprecated"
+
+# Ordered map for deterministic generated output.
+indexmap = { version = "2", features = ["serde"] }
+
+# Error propagation in the generator binary.
+anyhow = "1"
+
+# Formatting generated Rust source before writing.
+prettyplease = "0.2"
+syn          = { version = "2", features = ["full"] }
+
+# Directory traversal to find data files.
+walkdir = "2"

@@ -1,0 +1,100 @@
+# AST2400 ColdFire coprocessor control registers.
+#
+# Variant 2: 5 segments of 2 MB each (vs. 9 segments of 64 KB in v1).
+# The ENDIAN_SWAP control bit moves to bit[31] (vs. bit[0] in v1).
+# No instruction cache (CACHE_CTRL register absent).
+#
+# Physical address (BMC view): SCU base 0x1E6E2000 + 0x100 = 0x1E6E2100.
+# ColdFire virtual address (default segment map): 0x2E2100.
+#
+# Segment mapping:
+#   Each segment covers a 2 MB (0x200000-byte) window in the 24-bit
+#   ColdFire address space, mapped to a 2 MB-aligned BMC address.
+#   SEG0: CF 0x000000–0x1FFFFF
+#   SEG1: CF 0x200000–0x3FFFFF
+#   SEG2: CF 0x400000–0x5FFFFF
+#   SEG3: CF 0x600000–0x7FFFFF
+#   SEG4: CF 0x800000–0x9FFFFF
+#
+# Sources:
+#   AST2400 datasheet (ast2400v14): Chapter 5 – SCU (registers SCU100–SCU114)
+
+block/COPROC:
+  description: >
+    AST2400 ColdFire coprocessor control registers (SCU offset 0x100).
+    Physical base (BMC): 0x1E6E2100. ColdFire virtual (default map): 0x2E2100.
+    5 segment registers, each mapping a 2 MB ColdFire window to BMC space.
+    ENDIAN_SWAP at bit[31] (differs from coproc_v1 which uses bit[0]).
+  items:
+    - name: CTRL
+      description: >
+        ColdFire Coprocessor Control Register (SCU100).
+        Controls enable and reset of the ColdFire core.
+      byte_offset: 0x00
+      fieldset: COPROC_CTRL
+
+    - name: SEG0_BASE
+      description: >
+        Segment 0 Base Register (SCU104).
+        Maps ColdFire 0x000000–0x1FFFFF to a 2 MB-aligned BMC address.
+      byte_offset: 0x04
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG1_BASE
+      description: Segment 1 Base Register (SCU108). Maps ColdFire 0x200000–0x3FFFFF.
+      byte_offset: 0x08
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG2_BASE
+      description: Segment 2 Base Register (SCU10C). Maps ColdFire 0x400000–0x5FFFFF.
+      byte_offset: 0x0C
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG3_BASE
+      description: Segment 3 Base Register (SCU110). Maps ColdFire 0x600000–0x7FFFFF.
+      byte_offset: 0x10
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG4_BASE
+      description: Segment 4 Base Register (SCU114). Maps ColdFire 0x800000–0x9FFFFF.
+      byte_offset: 0x14
+      fieldset: COPROC_SEG_BASE
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/COPROC_CTRL:
+  description: ColdFire Coprocessor Control Register (SCU100) — AST2400 variant.
+  fields:
+    - name: EN
+      description: >
+        ColdFire Enable.
+        0 = coprocessor held in reset;
+        1 = released, may execute.
+      bit_offset: 0
+      bit_size: 1
+    - name: RESET
+      description: >
+        ColdFire Software Reset.
+        Write 1 to assert; 0 to release.
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/COPROC_SEG_BASE:
+  description: >
+    Segment Base Register — maps a 2 MB ColdFire window to BMC address space.
+    BASE[30:21] is bits [30:21] of the 32-bit BMC target (2 MB-aligned).
+    ENDIAN_SWAP at bit[31] swaps byte order for this window.
+  fields:
+    - name: BASE
+      description: >
+        BMC target address bits [30:21] (2 MB-aligned, 10 bits).
+        Example: to map to BMC 0x1E600000, set BASE = (0x1E600000 >> 21) = 0xF3.
+      bit_offset: 21
+      bit_size: 10
+    - name: ENDIAN_SWAP
+      description: >
+        Byte-endian swap for this segment.
+        0 = no swap; 1 = byte-swap (big-endian ColdFire to little-endian BMC).
+        Note: this bit is at position 31 (MSB), unlike coproc_v1 where it is bit 0.
+      bit_offset: 31
+      bit_size: 1

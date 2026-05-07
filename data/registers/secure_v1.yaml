@@ -1,0 +1,716 @@
+# ASPEED Secure Boot Controller (SB) registers.
+#
+# Base: 0x7E6F_2000 (AST1060).
+# Covers:
+#   - OTP access (read/write/compare via command trigger)
+#   - OTP readback registers (QRR, QSR, QMR, OTPTRAP, silicon revision)
+#   - Secure boot status (key number, boot SPI status, revision registers)
+#   - RSA and ECC engine control and interrupt
+#   - SBMCU DMA and secure crypto engine (DMA-driven AES/hash for secure boot)
+#   - Vault key staging registers (two 256-bit keys; write-only)
+#   - Image digest and ECC public key readback arrays
+#
+# The protection key (SEC00) uses a different value from the SCU protection key:
+#   write 0x349f138a to unlock; any other value locks.
+#
+# The vault keys (SEC900-93C) are write-only staging registers for HACE.
+# Select which vault key HACE uses via SEC80C[0].
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 31 – Secure Boot Controller (SB)
+
+block/SECURE:
+  description: >
+    ASPEED Secure Boot Controller (SB) and OTP engine.
+    Base: 0x7E6F_2000. Covers OTP access, secure boot status, RSA/ECC engine,
+    SBMCU DMA, vault key staging, and image digest readback.
+  items:
+    # ── Protection and OTP access ─────────────────────────────────────────────
+    - name: PROT_KEY
+      description: >
+        Protection key (SEC00). Write 0x349f138a to unlock SB registers.
+        Write any other value to lock. Readback: 1=unlocked, 0=locked.
+      byte_offset: 0x000
+      fieldset: SB_PROT_KEY
+
+    - name: OTP_CMD_TRIG
+      description: >
+        OTP command trigger (SEC04). Write command code to execute OTP operation:
+        0x23b1e361=dual-DW read, 0x23b1e362=mode-register write,
+        0x23b1e363=quad-DW compare, 0x23b1e364=program, 0x23b1e365=precharge.
+      byte_offset: 0x004
+      fieldset: SB_OTP_CMD
+
+    - name: OTP_TIMING
+      description: OTP access timing (SEC08). Read/write cycle times in 40 ns units.
+      byte_offset: 0x008
+      fieldset: SB_OTP_TIMING
+
+    - name: OTP_ADDR
+      description: OTP memory address for read/write/compare (SEC10).
+      byte_offset: 0x010
+      fieldset: SB_OTP_ADDR
+
+    - name: ENGINE_STATUS
+      description: >
+        Secure engine status register (SEC14). Read-only.
+        OTP controller idle, RSA/ECC ready, secure boot status flags.
+      byte_offset: 0x014
+      fieldset: SB_ENGINE_STATUS
+
+    - name: OTP_PGM_STATUS
+      description: OTP programming status (SEC18). Read-only. Write protection state.
+      byte_offset: 0x018
+      fieldset: SB_OTP_PGM_STATUS
+
+    # ── OTP compare data registers ────────────────────────────────────────────
+    - name: OTP_CMP_DATA1
+      description: OTP compare data word 1 / read result [31:0] (SEC20).
+      byte_offset: 0x020
+      fieldset: SB_DATA32
+
+    - name: OTP_CMP_DATA2
+      description: OTP compare data word 2 [63:32] (SEC24).
+      byte_offset: 0x024
+      fieldset: SB_DATA32
+
+    - name: OTP_CMP_DATA3
+      description: OTP compare data word 3 [95:64] (SEC28).
+      byte_offset: 0x028
+      fieldset: SB_DATA32
+
+    - name: OTP_CMP_DATA4
+      description: OTP compare data word 4 [127:96] (SEC2C, read-only).
+      byte_offset: 0x02C
+      fieldset: SB_DATA32
+
+    # ── OTP readback registers ────────────────────────────────────────────────
+    - name: OTPTRAP_LO
+      description: OTP strap bits [31:0] readback (SEC30, read-only).
+      byte_offset: 0x030
+      fieldset: SB_DATA32
+
+    - name: OTPTRAP_HI
+      description: OTP strap bits [63:32] readback (SEC34, read-only).
+      byte_offset: 0x034
+      fieldset: SB_DATA32
+
+    - name: OTP_QRR
+      description: OTP Quality Repair Register readback (SEC38, read-only).
+      byte_offset: 0x038
+      fieldset: SB_DATA32
+
+    - name: OTP_QSR
+      description: OTP Quality Status Register readback (SEC40, read-only).
+      byte_offset: 0x040
+      fieldset: SB_DATA32
+
+    - name: OTP_QMR
+      description: OTP Quality Mask Register readback (SEC44, read-only).
+      byte_offset: 0x044
+      fieldset: SB_DATA32
+
+    - name: OTP_QMRAB
+      description: OTP QMRA [15:0] and QMRB [31:16] readback (SEC48, read-only).
+      byte_offset: 0x048
+      fieldset: SB_DATA32
+
+    # ── Protection range and internal control ─────────────────────────────────
+    - name: EXTRA_PGM_PROT
+      description: Extra OTP programming protection range (SEC50). Increasing only.
+      byte_offset: 0x050
+      fieldset: SB_PROT_RANGE
+
+    - name: EXTRA_RD_PROT
+      description: Extra OTP read protection range (SEC54). Increasing only.
+      byte_offset: 0x054
+      fieldset: SB_PROT_RANGE
+
+    # ── Revision and boot status registers ───────────────────────────────────
+    - name: HW_REV1
+      description: HW Revision Register 1 / OTPCFG10 (SEC60). Loaded by SB engine; write-protected after load.
+      byte_offset: 0x060
+      fieldset: SB_DATA32
+
+    - name: HW_REV2
+      description: HW Revision Register 2 / OTPCFG11 (SEC64).
+      byte_offset: 0x064
+      fieldset: SB_DATA32
+
+    - name: SW_REV1
+      description: SW Revision Register 1 / SBH10 (SEC68). From secure boot header offset 0x10.
+      byte_offset: 0x068
+      fieldset: SB_DATA32
+
+    - name: SW_REV2
+      description: SW Revision Register 2 / SBH14 (SEC6C). From secure boot header offset 0x14.
+      byte_offset: 0x06C
+      fieldset: SB_DATA32
+
+    - name: SPI_BOOT_STATUS
+      description: Secure boot SPI check status (SEC70).
+      byte_offset: 0x070
+      fieldset: SB_SPI_BOOT_STATUS
+
+    - name: SB_KEY_NUM
+      description: Secure boot key number used and image encryption status (SEC78).
+      byte_offset: 0x078
+      fieldset: SB_KEY_NUM
+
+    # ── Software ECC control ──────────────────────────────────────────────────
+    - name: SW_ECC_CTRL
+      description: Software ECC disable control (SEC88). For failure analysis only.
+      byte_offset: 0x088
+      fieldset: SB_SW_ECC
+
+    # ── RSA and ECC engine ────────────────────────────────────────────────────
+    - name: RSA_CTRL
+      description: RSA engine controller (SECB0). Set modulus and exponent bit widths before firing.
+      byte_offset: 0x0B0
+      fieldset: SB_RSA_CTRL
+
+    - name: ECC_CTRL
+      description: ECC engine controller (SECB4). Enable ECC and ECDSA-384.
+      byte_offset: 0x0B4
+      fieldset: SB_ECC_CTRL
+
+    - name: ENGINE_TRIG
+      description: RSA/ECC engine trigger (SECBC). Write 1 to fire respective engine.
+      byte_offset: 0x0BC
+      fieldset: SB_ENGINE_TRIG
+
+    - name: ENGINE_IRQ_CTRL
+      description: RSA/ECC engine interrupt enable (SECC0).
+      byte_offset: 0x0C0
+      fieldset: SB_ENGINE_IRQ
+
+    - name: ENGINE_IRQ_STATUS
+      description: RSA/ECC engine interrupt status (SECC4). Write 1 to clear.
+      byte_offset: 0x0C4
+      fieldset: SB_ENGINE_IRQ
+
+    # ── SBMCU DMA and secure crypto engine ───────────────────────────────────
+    - name: DMA_ENABLE
+      description: Secure boot DMA enable (SEC800). Write 1 to trigger DMA (SBMCU use only).
+      byte_offset: 0x800
+      fieldset: SB_ONBIT
+
+    - name: VAULT_KEY_CTRL
+      description: >
+        Vault key control (SEC80C).
+        Select which of two vault keys HACE uses.
+        Lock vault key write access and selection.
+      byte_offset: 0x80C
+      fieldset: SB_VAULT_KEY_CTRL
+
+    - name: DIGEST_STATUS
+      description: Secure boot digest check busy status (SEC814).
+      byte_offset: 0x814
+      fieldset: SB_DIGEST_STATUS
+
+    - name: DIGEST_RESULT
+      description: Secure boot digest check pass/fail result (SEC810).
+      byte_offset: 0x810
+      fieldset: SB_DIGEST_RESULT
+
+    - name: SCE_ENABLE
+      description: >
+        Secure crypto engine enable (SEC820). When enabled, the open HACE engine
+        is disabled. Write 1 to enable (SBMCU use only).
+      byte_offset: 0x820
+      fieldset: SB_ONBIT
+
+    - name: DMA_SRC_ADDR
+      description: Secure boot DMA source address (SEC840, 4-byte aligned).
+      byte_offset: 0x840
+      fieldset: SB_DMA_ADDR
+
+    - name: DMA_DST_ADDR
+      description: Secure boot DMA destination address (SEC844, 4-byte aligned).
+      byte_offset: 0x844
+      fieldset: SB_DMA_ADDR
+
+    - name: DMA_SIZE
+      description: Secure boot DMA transfer size in bytes (SEC848, max 128 KB-1).
+      byte_offset: 0x848
+      fieldset: SB_DMA_SIZE
+
+    - name: HASH_FIRE
+      description: Secure boot hash engine fire trigger (SEC85C). Write any value to start.
+      byte_offset: 0x85C
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_FIRE
+      description: Secure boot crypto engine fire trigger (SEC87C). Write any value to start.
+      byte_offset: 0x87C
+      fieldset: SB_DATA32
+
+    # ── Crypto key buffer (128-bit data, 256-bit key staging) ─────────────────
+    - name: CRYPTO_DATA0
+      description: Secure crypto input data bits [31:0] (SEC880, write-only).
+      byte_offset: 0x880
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_DATA1
+      description: Secure crypto input data bits [63:32] (SEC884, write-only).
+      byte_offset: 0x884
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_DATA2
+      description: Secure crypto input data bits [95:64] (SEC888, write-only).
+      byte_offset: 0x888
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_DATA3
+      description: Secure crypto input data bits [127:96] (SEC88C, write-only).
+      byte_offset: 0x88C
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_KEY0
+      description: Secure crypto key / IV bits [31:0] (SEC8A0, write-only).
+      byte_offset: 0x8A0
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_KEY1
+      description: Secure crypto key / IV bits [63:32] (SEC8A4, write-only).
+      byte_offset: 0x8A4
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_KEY2
+      description: Secure crypto key / IV bits [95:64] (SEC8A8, write-only).
+      byte_offset: 0x8A8
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_KEY3
+      description: Secure crypto key / IV bits [127:96] (SEC8AC, write-only).
+      byte_offset: 0x8AC
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_KEY4
+      description: Secure crypto key bits [159:128] (SEC8B0, write-only).
+      byte_offset: 0x8B0
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_KEY5
+      description: Secure crypto key bits [191:160] (SEC8B4, write-only).
+      byte_offset: 0x8B4
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_KEY6
+      description: Secure crypto key bits [223:192] (SEC8B8, write-only).
+      byte_offset: 0x8B8
+      fieldset: SB_DATA32
+
+    - name: CRYPTO_KEY7
+      description: Secure crypto key bits [255:224] (SEC8BC, write-only).
+      byte_offset: 0x8BC
+      fieldset: SB_DATA32
+
+    # ── Vault key staging registers (write-only) ──────────────────────────────
+    - name: VAULT_KEY1_W0
+      description: First vault key bits [31:0] (SEC900, write-only).
+      byte_offset: 0x900
+      fieldset: SB_DATA32
+    - name: VAULT_KEY1_W1
+      description: First vault key bits [63:32] (SEC904, write-only).
+      byte_offset: 0x904
+      fieldset: SB_DATA32
+    - name: VAULT_KEY1_W2
+      description: First vault key bits [95:64] (SEC908, write-only).
+      byte_offset: 0x908
+      fieldset: SB_DATA32
+    - name: VAULT_KEY1_W3
+      description: First vault key bits [127:96] (SEC90C, write-only).
+      byte_offset: 0x90C
+      fieldset: SB_DATA32
+    - name: VAULT_KEY1_W4
+      description: First vault key bits [159:128] (SEC910, write-only).
+      byte_offset: 0x910
+      fieldset: SB_DATA32
+    - name: VAULT_KEY1_W5
+      description: First vault key bits [191:160] (SEC914, write-only).
+      byte_offset: 0x914
+      fieldset: SB_DATA32
+    - name: VAULT_KEY1_W6
+      description: First vault key bits [223:192] (SEC918, write-only).
+      byte_offset: 0x918
+      fieldset: SB_DATA32
+    - name: VAULT_KEY1_W7
+      description: First vault key bits [255:224] (SEC91C, write-only).
+      byte_offset: 0x91C
+      fieldset: SB_DATA32
+
+    - name: VAULT_KEY2_W0
+      description: Second vault key bits [31:0] (SEC920, write-only).
+      byte_offset: 0x920
+      fieldset: SB_DATA32
+    - name: VAULT_KEY2_W1
+      description: Second vault key bits [63:32] (SEC924, write-only).
+      byte_offset: 0x924
+      fieldset: SB_DATA32
+    - name: VAULT_KEY2_W2
+      description: Second vault key bits [95:64] (SEC928, write-only).
+      byte_offset: 0x928
+      fieldset: SB_DATA32
+    - name: VAULT_KEY2_W3
+      description: Second vault key bits [127:96] (SEC92C, write-only).
+      byte_offset: 0x92C
+      fieldset: SB_DATA32
+    - name: VAULT_KEY2_W4
+      description: Second vault key bits [159:128] (SEC930, write-only).
+      byte_offset: 0x930
+      fieldset: SB_DATA32
+    - name: VAULT_KEY2_W5
+      description: Second vault key bits [191:160] (SEC934, write-only).
+      byte_offset: 0x934
+      fieldset: SB_DATA32
+    - name: VAULT_KEY2_W6
+      description: Second vault key bits [223:192] (SEC938, write-only).
+      byte_offset: 0x938
+      fieldset: SB_DATA32
+    - name: VAULT_KEY2_W7
+      description: Second vault key bits [255:224] (SEC93C, write-only).
+      byte_offset: 0x93C
+      fieldset: SB_DATA32
+
+    # ── Image digest readback (16 × 4B = 64 B) ───────────────────────────────
+    - name: IMG_DIGEST0
+      description: Image digest readback word 0 (SEC980).
+      byte_offset: 0x980
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST1
+      description: Image digest readback word 1 (SEC984).
+      byte_offset: 0x984
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST2
+      description: Image digest readback word 2 (SEC988).
+      byte_offset: 0x988
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST3
+      description: Image digest readback word 3 (SEC98C).
+      byte_offset: 0x98C
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST4
+      description: Image digest readback word 4 (SEC990).
+      byte_offset: 0x990
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST5
+      description: Image digest readback word 5 (SEC994).
+      byte_offset: 0x994
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST6
+      description: Image digest readback word 6 (SEC998).
+      byte_offset: 0x998
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST7
+      description: Image digest readback word 7 (SEC99C).
+      byte_offset: 0x99C
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST8
+      description: Image digest readback word 8 (SEC9A0).
+      byte_offset: 0x9A0
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST9
+      description: Image digest readback word 9 (SEC9A4).
+      byte_offset: 0x9A4
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST10
+      description: Image digest readback word 10 (SEC9A8).
+      byte_offset: 0x9A8
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST11
+      description: Image digest readback word 11 (SEC9AC).
+      byte_offset: 0x9AC
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST12
+      description: Image digest readback word 12 (SEC9B0).
+      byte_offset: 0x9B0
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST13
+      description: Image digest readback word 13 (SEC9B4).
+      byte_offset: 0x9B4
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST14
+      description: Image digest readback word 14 (SEC9B8).
+      byte_offset: 0x9B8
+      fieldset: SB_DATA32
+    - name: IMG_DIGEST15
+      description: Image digest readback word 15 (SEC9BC).
+      byte_offset: 0x9BC
+      fieldset: SB_DATA32
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/SB_PROT_KEY:
+  description: Secure Boot protection key.
+  fields:
+    - name: KEY
+      description: "Write 0x349f138a to unlock. Readback: 1=unlocked, 0=locked."
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SB_OTP_CMD:
+  description: OTP command trigger. Write magic code to execute OTP operation.
+  fields:
+    - name: CMD
+      description: >
+        Command code: 0x23b1e361=dual-DW read, 0x23b1e362=mode-reg write,
+        0x23b1e363=quad-DW compare, 0x23b1e364=program, 0x23b1e365=precharge.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SB_OTP_TIMING:
+  description: "OTP access timing (units: 40 ns)."
+  fields:
+    - name: WR_CYCLE
+      description: OTP write cycle time.
+      bit_offset: 0
+      bit_size: 16
+    - name: WR_WAIT
+      description: OTP write wait time.
+      bit_offset: 16
+      bit_size: 8
+    - name: RD_CYCLE
+      description: OTP read cycle time.
+      bit_offset: 24
+      bit_size: 4
+
+fieldset/SB_OTP_ADDR:
+  description: OTP memory address.
+  fields:
+    - name: OTP_ADDR
+      description: OTP address for read/write/compare operations.
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/SB_ENGINE_STATUS:
+  description: Secure engine status (SEC14, read-only).
+  fields:
+    - name: OTP_CMP_PASS
+      description: OTP quad-DW compare result (1=pass).
+      bit_offset: 0
+      bit_size: 1
+    - name: OTP_MEM_IDLE
+      description: OTP memory idle (0=busy, 1=idle).
+      bit_offset: 1
+      bit_size: 1
+    - name: OTP_CTL_IDLE
+      description: OTP controller idle (0=busy, 1=idle).
+      bit_offset: 2
+      bit_size: 1
+    - name: OTP_CP_READY
+      description: OTP internal charge pump ready.
+      bit_offset: 3
+      bit_size: 1
+    - name: RSA_READY
+      description: RSA engine ready (0=busy, 1=ready).
+      bit_offset: 4
+      bit_size: 1
+    - name: UART_BOOT
+      description: "Boot mode: 0=SPI/eMMC, 1=UART."
+      bit_offset: 5
+      bit_size: 1
+    - name: SB_MODE
+      description: Secure boot mode enabled.
+      bit_offset: 6
+      bit_size: 1
+    - name: LOW_SEC_KEY
+      description: Low security key mode enabled.
+      bit_offset: 7
+      bit_size: 1
+    - name: OTP_PGM_PROT_FLAG
+      description: OTP address is write-protected.
+      bit_offset: 8
+      bit_size: 1
+    - name: OTP_PGM_PROT
+      description: Last OTP program was write-protected.
+      bit_offset: 9
+      bit_size: 1
+    - name: CRYPTO_BUSY
+      description: Secure crypto engine busy.
+      bit_offset: 10
+      bit_size: 1
+    - name: CRYPTO_KEY_DONE
+      description: Crypto key expansion done.
+      bit_offset: 11
+      bit_size: 1
+
+fieldset/SB_OTP_PGM_STATUS:
+  description: OTP programming status (SEC18, read-only).
+  fields:
+    - name: OTP_ADDR_PROT
+      description: OTP address not writable.
+      bit_offset: 0
+      bit_size: 1
+    - name: OTP_PGM_PROT
+      description: Last OTP program was write-protected.
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/SB_DATA32:
+  description: Generic 32-bit data register.
+  fields:
+    - name: DATA
+      description: 32-bit data value.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SB_PROT_RANGE:
+  description: Extra OTP protection range register (increasing only writes allowed).
+  fields:
+    - name: PROT_RANGE
+      description: Protection range in OTP configuration region units.
+      bit_offset: 0
+      bit_size: 6
+    - name: WR_PROT
+      description: Write-protect this register (sticky, software-settable).
+      bit_offset: 6
+      bit_size: 1
+
+fieldset/SB_SPI_BOOT_STATUS:
+  description: Secure boot SPI check status (SEC70).
+  fields:
+    - name: SPI_BOOT_STS
+      description: "SPI boot check status: 0=initial/during/disabled, 1=failed, 3=passed."
+      bit_offset: 0
+      bit_size: 2
+    - name: WR_PROT
+      description: Write-protect this register (sticky).
+      bit_offset: 2
+      bit_size: 1
+
+fieldset/SB_KEY_NUM:
+  description: Secure boot key number and encryption status (SEC78).
+  fields:
+    - name: KEY_NUM
+      description: OTP key number used for successful secure boot (0-7).
+      bit_offset: 0
+      bit_size: 3
+    - name: IMG_ENC_EN
+      description: Image encryption was enabled on successful boot.
+      bit_offset: 3
+      bit_size: 1
+    - name: WR_PROT
+      description: Write-protect this register (sticky).
+      bit_offset: 8
+      bit_size: 1
+
+fieldset/SB_SW_ECC:
+  description: Software ECC disable control (SEC88). For failure analysis only.
+  fields:
+    - name: ECC_DIS_USER
+      description: Disable ECC for user OTP region.
+      bit_offset: 0
+      bit_size: 1
+    - name: ECC_DIS_SECURE
+      description: Disable ECC for secure OTP region.
+      bit_offset: 1
+      bit_size: 1
+    - name: WR_PROT
+      description: Write-protect this register (sticky).
+      bit_offset: 2
+      bit_size: 1
+
+fieldset/SB_RSA_CTRL:
+  description: RSA engine controller (SECB0). Configure before triggering via ENGINE_TRIG.
+  fields:
+    - name: RSA_MOD_BITS
+      description: RSA modulus bit number (e.g. 1024, 2048, 3072, 4096).
+      bit_offset: 0
+      bit_size: 14
+    - name: RSA_EXP_BITS
+      description: RSA exponent bit number (e.g. 1 for F4=65537).
+      bit_offset: 16
+      bit_size: 14
+
+fieldset/SB_ECC_CTRL:
+  description: ECC engine controller (SECB4).
+  fields:
+    - name: ECC_EN
+      description: Enable ECC engine.
+      bit_offset: 0
+      bit_size: 1
+    - name: ECDSA384_EN
+      description: Enable ECDSA-384 engine.
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/SB_ENGINE_TRIG:
+  description: RSA/ECC engine trigger (SECBC, write-1-to-trigger).
+  fields:
+    - name: RSA_TRIG
+      description: Write 1 to start RSA engine computation.
+      bit_offset: 0
+      bit_size: 1
+    - name: ECC_TRIG
+      description: Write 1 to start ECC engine computation.
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/SB_ENGINE_IRQ:
+  description: RSA/ECC engine interrupt enable/status (SECC0/SECC4).
+  fields:
+    - name: RSA_INT
+      description: RSA engine ready interrupt enable (SECC0) or status (SECC4, write 1 to clear).
+      bit_offset: 0
+      bit_size: 1
+    - name: ECC_INT
+      description: ECC engine ready interrupt enable (SECC0) or status (SECC4, write 1 to clear).
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/SB_ONBIT:
+  description: Single-bit trigger register (write 1 to bit 0 to activate).
+  fields:
+    - name: ENABLE
+      description: Write 1 to trigger/enable.
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/SB_VAULT_KEY_CTRL:
+  description: Vault key selection and write protection (SEC80C).
+  fields:
+    - name: VKEY_SEL
+      description: "Vault key select for HACE: 0=first key (SEC900-91C), 1=second key (SEC920-93C)."
+      bit_offset: 0
+      bit_size: 1
+    - name: VKEY_WR_PROT
+      description: Write-protect vault key staging registers (sticky).
+      bit_offset: 1
+      bit_size: 1
+    - name: VKEY_SEL_PROT
+      description: Write-protect VKEY_SEL (sticky).
+      bit_offset: 2
+      bit_size: 1
+
+fieldset/SB_DIGEST_STATUS:
+  description: Secure boot digest check status (SEC814).
+  fields:
+    - name: DIGEST_BUSY
+      description: "Digest check state: 0=idle, 1=busy."
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/SB_DIGEST_RESULT:
+  description: Secure boot digest check result (SEC810). Valid when SEC814[0]=0.
+  fields:
+    - name: DIGEST_PASS
+      description: "Digest check result: 0=failed, 1=passed."
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/SB_DMA_ADDR:
+  description: Secure boot DMA address (4-byte aligned).
+  fields:
+    - name: ADDR
+      description: DMA address bits[31:2] (4-byte aligned).
+      bit_offset: 2
+      bit_size: 30
+
+fieldset/SB_DMA_SIZE:
+  description: Secure boot DMA transfer size in bytes (max 128 KB - 1).
+  fields:
+    - name: DMA_SIZE
+      description: Transfer size in bytes.
+      bit_offset: 0
+      bit_size: 17

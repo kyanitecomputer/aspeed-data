@@ -1,0 +1,35 @@
+[package]
+name        = "aspeed-pac"
+version     = "0.1.0"
+edition     = "2021"
+description = "Generated Peripheral Access Crate for ASPEED AST10xx/AST26xx/AST27xx SoC families"
+repository  = "https://github.com/kyanitecomputer/aspeed-data"
+publish     = false
+
+# ── Chip selection ─────────────────────────────────────────────────────────────
+# Exactly one chip feature must be enabled.
+[features]
+ast1060         = []   # ASPEED AST1060       — ARM Cortex-M4F standalone SoC
+ast2600         = []   # ASPEED AST2600       — ARM Cortex-M3, 200 MHz
+ast2700         = []   # ASPEED AST2700       — (alias, deprecated; use ast2700-ssp)
+ast2700-ssp     = []   # ASPEED AST2700 SSP   — ARM Cortex-M4F (SCU0+0x120)
+ast2700-tsp     = []   # ASPEED AST2700 TSP   — ARM Cortex-M4F (SCU0+0x160)
+ast2700-bootmcu = ["dep:riscv"]  # ASPEED AST2700 BootMCU — RV32IMC (ibex)
+
+# Enable interrupt vector table + cortex_m_rt::interrupt re-export (ARM chips).
+rt = ["dep:cortex-m-rt"]
+
+# Enables defmt::Format derives on the generated Interrupt enum.
+defmt = ["dep:defmt"]
+
+[dependencies]
+# Required by the generated ARM interrupt enum (InterruptNumber trait impl).
+cortex-m = { version = "0.7" }
+
+# Optional: exposes the __INTERRUPTS vector table and #[interrupt] attribute.
+cortex-m-rt = { version = "0.7", optional = true }
+
+# Required by the generated RISC-V interrupt enum (ExternalInterruptNumber impl).
+riscv = { version = "0.12", optional = true }
+
+defmt = { version = "0.3", optional = true }

@@ -1,0 +1,4 @@
+[toolchain]
+channel    = "nightly-2026-04-01"
+# No embedded targets — this repo only runs the host-side generator binary.
+components = ["rustfmt", "clippy"]

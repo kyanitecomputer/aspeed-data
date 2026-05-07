@@ -1,0 +1,65 @@
+# ASPEED AST2700 Tertiary Service Processor (TSP) chip definition.
+#
+# The TSP is a second ARM Cortex-M4F coprocessor in the AST2700 SoC.
+# It is symmetric with the SSP (same register layout) but uses a different
+# SCU0 offset: SCU0+0x160 = 0x72C0_2160.
+#
+# Sources:
+#   ast2700_tsp.pdf v0.1f
+
+name:               AST2700_TSP
+family:             ast27xx
+core:               cortex-m4f
+target:             thumbv7em-none-eabihf
+nvic_priority_bits: 3
+num_irqs:           240
+
+# ── Peripheral instances ──────────────────────────────────────────────────────
+
+peripherals:
+  # TSP coprocessor control (SCU0 + 0x160)
+  - name:    SSP
+    block:   ssp_v2::SSP
+    address: 0x72c02160
+
+  # GPR bank (CM4F private bus — same base as SSP)
+  - name:    GPR
+    block:   gpr_v1::GPR
+    address: 0x50000000
+
+# ── Interrupt table ───────────────────────────────────────────────────────────
+# Same NVIC topology as AST2700 SSP. TSP IRQ routing via same cascaded INTC.
+
+interrupts:
+  - { name: TIMER1,         number: 16  }
+  - { name: TIMER2,         number: 17  }
+  - { name: TIMER3,         number: 18  }
+  - { name: TIMER4,         number: 19  }
+  - { name: TIMER5,         number: 20  }
+  - { name: TIMER6,         number: 21  }
+  - { name: TIMER7,         number: 22  }
+  - { name: TIMER8,         number: 23  }
+  - { name: WDT,            number: 24  }
+  - { name: GPIO,           number: 40  }
+  - { name: UART1,          number: 47  }
+  - { name: UART2,          number: 48  }
+  - { name: UART3,          number: 49  }
+  - { name: UART4,          number: 50  }
+  - { name: UART5,          number: 51  }
+  - { name: UART6,          number: 52  }
+  - { name: UART7,          number: 53  }
+  - { name: UART8,          number: 54  }
+  - { name: INTC0,          number: 160 }
+  - { name: INTC1,          number: 161 }
+  - { name: INTC2,          number: 162 }
+  - { name: INTC3,          number: 163 }
+  - { name: INTC4,          number: 164 }
+  - { name: INTC5,          number: 165 }
+  # Legacy IPC (BMC↔TSP 7 channels)
+  - { name: IPC_TSP0,       number: 151 }
+  - { name: IPC_TSP1,       number: 152 }
+  - { name: IPC_TSP2,       number: 153 }
+  - { name: IPC_TSP3,       number: 154 }
+  - { name: IPC_TSP4,       number: 155 }
+  - { name: IPC_TSP5,       number: 156 }
+  - { name: IPC_TSP6,       number: 157 }

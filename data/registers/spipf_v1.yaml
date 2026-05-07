@@ -1,0 +1,548 @@
+# ASPEED SPI Passthrough Filter / QSPI Monitor (SPIPF) registers.
+#
+# 4 instances, stride 0x1000:
+#   SPIPF1: 0x7E79_1000
+#   SPIPF2: 0x7E79_2000
+#   SPIPF3: 0x7E79_3000
+#   SPIPF4: 0x7E79_4000
+#
+# The SPIPF monitors SPI bus transactions from an external SPI master (e.g. BMC host)
+# and either passes them through or blocks them based on configurable filters:
+#
+# 1. Command Filter (allow-command table): 32 entries. Only command opcodes present
+#    in enabled entries are allowed. Up to 4 entries (0/1/2/3) have predefined
+#    semantics (EN4B, EX4B, EQIO, RSTQIO); others are fully general-purpose.
+#    Entry 19 (0x0FC) has predefined meaning for WREAR. Enabling GENERIC bit
+#    on entries 0-3 and 19 converts them to fully general purpose.
+#
+# 2. Address Filter (write-address table): 512 entries × 1 bit per 16 KB region.
+#    A write is allowed only if the target address falls in an enabled region.
+#    The same physical memory holds either Write Disable or Read Enable table,
+#    selected by writing a magic byte to ENGINE_CTRL[31:24].
+#
+# Passthrough / block: A blocked transaction may either append one extra clock
+# or deassert CS early, depending on BLOCK_MODE bit. A block FIFO captures
+# blocked transactions for inspection.
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 32 – QSPI Monitor Controller (SPIPF)
+
+block/SPIPF:
+  description: >
+    ASPEED SPI Passthrough Filter / QSPI Monitor (SPIPF).
+    4 instances, base = 0x7E791000, stride = 0x1000.
+    Monitors SPI bus traffic and filters commands/addresses.
+  items:
+    - name: ENGINE_CTRL
+      description: >
+        Engine control register (SPIPF000).
+        Enable/disable filter and passthrough, select SPI mode,
+        configure block behavior, FIFO management, debounce, and
+        address table selection (write 0x57/'W' or 0x52/'R' to bits[31:24]).
+      byte_offset: 0x000
+      fieldset: SPIPF_ENGINE_CTRL
+
+    - name: IRQ_CTRL
+      description: >
+        Interrupt enable and status register (SPIPF004).
+        Enable interrupts for read-block, write-block, and command-block events.
+        Write 1 to clear status bits.
+      byte_offset: 0x004
+      fieldset: SPIPF_IRQ
+
+    - name: EAR
+      description: >
+        Extended Address Register readback (SPIPF008, read-only).
+        Current EAR value as received from SPI master.
+        Used for 4-byte address decoding when EAR-based addressing is active.
+      byte_offset: 0x008
+      fieldset: SPIPF_EAR
+
+    - name: BLOCK_FIFO_DATA
+      description: >
+        Blocked transaction FIFO read port (SPIPF00C, read-only).
+        Each read pops one 32-bit entry from the FIFO.
+        BLOCK_FIFO_LEN in ENGINE_CTRL shows current occupancy.
+      byte_offset: 0x00C
+      fieldset: SPIPF_FIFO_DATA
+
+    - name: DMA_BASE
+      description: Block-log DMA buffer base address (SPIPF010, 4-byte aligned).
+      byte_offset: 0x010
+      fieldset: SPIPF_DMA_BASE
+
+    - name: DMA_SIZE
+      description: Block-log DMA buffer size and enable (SPIPF014).
+      byte_offset: 0x014
+      fieldset: SPIPF_DMA_SIZE
+
+    - name: DMA_WRPTR
+      description: Block-log DMA write pointer (SPIPF018, hardware-managed, read-only).
+      byte_offset: 0x018
+      fieldset: SPIPF_DMA_WRPTR
+
+    - name: WRITE_DISABLE
+      description: >
+        Write disable register (SPIPF07C). All fields are write-1-only (sticky lock).
+        Once set, the corresponding register is permanently write-locked until reset.
+      byte_offset: 0x07C
+      fieldset: SPIPF_WRITE_DISABLE
+
+    # ── Command table — 32 entries × 4 bytes ─────────────────────────────────
+    # Predefined entries: 0=EN4B, 1=EX4B, 2=EQIO, 3=RSTQIO, 19=WREAR.
+    # Setting GENERIC bit on entries 0-3 or 19 makes them fully general purpose.
+    - name: CMD_TABLE0
+      description: "Command table entry 0 (predefined: EN4B — enter 4-byte address mode)."
+      byte_offset: 0x080
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE1
+      description: "Command table entry 1 (predefined: EX4B — exit 4-byte mode)."
+      byte_offset: 0x084
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE2
+      description: "Command table entry 2 (predefined: EQIO — enter QPI mode)."
+      byte_offset: 0x088
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE3
+      description: "Command table entry 3 (predefined: RSTQIO — exit QPI mode)."
+      byte_offset: 0x08C
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE4
+      description: Command table entry 4 — general purpose.
+      byte_offset: 0x090
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE5
+      description: Command table entry 5 — general purpose.
+      byte_offset: 0x094
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE6
+      description: Command table entry 6 — general purpose.
+      byte_offset: 0x098
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE7
+      description: Command table entry 7 — general purpose.
+      byte_offset: 0x09C
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE8
+      description: Command table entry 8 — general purpose.
+      byte_offset: 0x0A0
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE9
+      description: Command table entry 9 — general purpose.
+      byte_offset: 0x0A4
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE10
+      description: Command table entry 10 — general purpose.
+      byte_offset: 0x0A8
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE11
+      description: Command table entry 11 — general purpose.
+      byte_offset: 0x0AC
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE12
+      description: Command table entry 12 — general purpose.
+      byte_offset: 0x0B0
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE13
+      description: Command table entry 13 — general purpose.
+      byte_offset: 0x0B4
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE14
+      description: Command table entry 14 — general purpose.
+      byte_offset: 0x0B8
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE15
+      description: Command table entry 15 — general purpose.
+      byte_offset: 0x0BC
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE16
+      description: Command table entry 16 — general purpose.
+      byte_offset: 0x0C0
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE17
+      description: Command table entry 17 — general purpose.
+      byte_offset: 0x0C4
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE18
+      description: Command table entry 18 — general purpose.
+      byte_offset: 0x0C8
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE19
+      description: "Command table entry 19 (predefined: WREAR — write extended address register)."
+      byte_offset: 0x0CC
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE20
+      description: Command table entry 20 — general purpose.
+      byte_offset: 0x0D0
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE21
+      description: Command table entry 21 — general purpose.
+      byte_offset: 0x0D4
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE22
+      description: Command table entry 22 — general purpose.
+      byte_offset: 0x0D8
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE23
+      description: Command table entry 23 — general purpose.
+      byte_offset: 0x0DC
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE24
+      description: Command table entry 24 — general purpose.
+      byte_offset: 0x0E0
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE25
+      description: Command table entry 25 — general purpose.
+      byte_offset: 0x0E4
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE26
+      description: Command table entry 26 — general purpose.
+      byte_offset: 0x0E8
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE27
+      description: Command table entry 27 — general purpose.
+      byte_offset: 0x0EC
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE28
+      description: Command table entry 28 — general purpose.
+      byte_offset: 0x0F0
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE29
+      description: Command table entry 29 — general purpose.
+      byte_offset: 0x0F4
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE30
+      description: Command table entry 30 — general purpose.
+      byte_offset: 0x0F8
+      fieldset: SPIPF_CMD_ENTRY
+    - name: CMD_TABLE31
+      description: Command table entry 31 — general purpose.
+      byte_offset: 0x0FC
+      fieldset: SPIPF_CMD_ENTRY
+
+    # ── Address filter table — 512 entries × 4 bytes ─────────────────────────
+    # Each 32-bit entry controls 32 × 16 KB regions.
+    # Bit N of entry M controls flash region: (M*32 + N) * 16 KB.
+    # The same physical memory is selected as Write Disable or Read Enable
+    # by writing magic byte 0x57 or 0x52 to ENGINE_CTRL[31:24].
+    # Only the first few entries (covering the first few MB of flash) are
+    # documented here explicitly; higher entries follow the same pattern.
+    - name: ADDR_TABLE0
+      description: Address table entry 0 — controls flash regions 0x0000_0000 to 0x0007_FFFF (512 KB, 1 bit per 16 KB).
+      byte_offset: 0x100
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE1
+      description: Address table entry 1 — regions 0x0008_0000 to 0x000F_FFFF.
+      byte_offset: 0x104
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE2
+      description: Address table entry 2 — regions 0x0010_0000 to 0x0017_FFFF.
+      byte_offset: 0x108
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE3
+      description: Address table entry 3 — regions 0x0018_0000 to 0x001F_FFFF.
+      byte_offset: 0x10C
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE4
+      description: Address table entry 4 — regions 0x0020_0000 to 0x0027_FFFF.
+      byte_offset: 0x110
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE5
+      description: Address table entry 5 — regions 0x0028_0000 to 0x002F_FFFF.
+      byte_offset: 0x114
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE6
+      description: Address table entry 6 — regions 0x0030_0000 to 0x0037_FFFF.
+      byte_offset: 0x118
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE7
+      description: Address table entry 7 — regions 0x0038_0000 to 0x003F_FFFF.
+      byte_offset: 0x11C
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE8
+      description: Address table entry 8 — regions 0x0040_0000 to 0x0047_FFFF.
+      byte_offset: 0x120
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE9
+      description: Address table entry 9 — regions 0x0048_0000 to 0x004F_FFFF.
+      byte_offset: 0x124
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE10
+      description: Address table entry 10 — regions 0x0050_0000 to 0x0057_FFFF.
+      byte_offset: 0x128
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE11
+      description: Address table entry 11 — regions 0x0058_0000 to 0x005F_FFFF.
+      byte_offset: 0x12C
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE12
+      description: Address table entry 12 — regions 0x0060_0000 to 0x0067_FFFF.
+      byte_offset: 0x130
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE13
+      description: Address table entry 13 — regions 0x0068_0000 to 0x006F_FFFF.
+      byte_offset: 0x134
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE14
+      description: Address table entry 14 — regions 0x0070_0000 to 0x0077_FFFF.
+      byte_offset: 0x138
+      fieldset: SPIPF_ADDR_TABLE
+    - name: ADDR_TABLE15
+      description: Address table entry 15 — regions 0x0078_0000 to 0x007F_FFFF.
+      byte_offset: 0x13C
+      fieldset: SPIPF_ADDR_TABLE
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/SPIPF_ENGINE_CTRL:
+  description: SPIPF engine control register.
+  fields:
+    - name: SINGLE_BIT_PT
+      description: Enable single-bit (SingleIO) SPI passthrough.
+      bit_offset: 0
+      bit_size: 1
+    - name: MULTI_BIT_PT
+      description: Enable multi-bit (Dual/Quad IO) SPI passthrough.
+      bit_offset: 1
+      bit_size: 1
+    - name: FILTER_EN
+      description: Enable command and address filter function.
+      bit_offset: 2
+      bit_size: 1
+    - name: SPI_MODE
+      description: SPI protocol mode selection.
+      bit_offset: 4
+      bit_size: 2
+    - name: ADDR_TBL_SEL
+      description: "Address table currently selected (read-only): 0=Write table, 1=Read table."
+      bit_offset: 6
+      bit_size: 1
+    - name: BLOCK_MODE
+      description: "How blocked transactions terminate: 0=deassert CS early, 1=append extra clock."
+      bit_offset: 7
+      bit_size: 1
+    - name: BLOCK_FIFO_CLR
+      description: Write 1 to flush block FIFO.
+      bit_offset: 8
+      bit_size: 1
+    - name: DRIVE_MODE
+      description: "DataOut drive timing: 0=before CS low, 1=after CS low."
+      bit_offset: 10
+      bit_size: 1
+    - name: BLOCK_FIFO_MODE
+      description: "Block FIFO overrun: 0=keep oldest (stop when full), 1=keep latest (overwrite)."
+      bit_offset: 11
+      bit_size: 1
+    - name: DEBOUNCE_CK
+      description: Enable debounce on SPI CK input.
+      bit_offset: 16
+      bit_size: 1
+    - name: DEBOUNCE_CS
+      description: Enable debounce on SPI CS input.
+      bit_offset: 17
+      bit_size: 1
+    - name: DEBOUNCE_DI0
+      description: Enable debounce on DataIn[0].
+      bit_offset: 18
+      bit_size: 1
+    - name: DEBOUNCE_DI1
+      description: Enable debounce on DataIn[1].
+      bit_offset: 19
+      bit_size: 1
+    - name: DEBOUNCE_DI2
+      description: Enable debounce on DataIn[2].
+      bit_offset: 20
+      bit_size: 1
+    - name: DEBOUNCE_DI3
+      description: Enable debounce on DataIn[3].
+      bit_offset: 21
+      bit_size: 1
+    - name: SW_RESET
+      description: Software engine reset (1=reset, 0=normal). Self-clearing.
+      bit_offset: 15
+      bit_size: 1
+    - name: BLOCK_FIFO_LEN
+      description: Current number of entries in block FIFO (read-only).
+      bit_offset: 24
+      bit_size: 3
+    - name: ADDR_TBL_SEL_WRITE
+      description: >
+        Write magic byte here to select address table:
+        0x57='W' → Write Disable table; 0x52='R' → Read Enable table.
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/SPIPF_IRQ:
+  description: SPIPF interrupt enable and status register.
+  fields:
+    - name: IRQ_ST_CMD_BLK
+      description: Command blocked interrupt status (write 1 to clear).
+      bit_offset: 0
+      bit_size: 1
+    - name: IRQ_ST_WRITE_BLK
+      description: Write command blocked interrupt status (write 1 to clear).
+      bit_offset: 1
+      bit_size: 1
+    - name: IRQ_ST_READ_BLK
+      description: Read command blocked interrupt status (write 1 to clear).
+      bit_offset: 2
+      bit_size: 1
+    - name: IRQ_EN_CMD_BLK
+      description: Enable interrupt on command block event.
+      bit_offset: 16
+      bit_size: 1
+    - name: IRQ_EN_WRITE_BLK
+      description: Enable interrupt on write-command block event.
+      bit_offset: 17
+      bit_size: 1
+    - name: IRQ_EN_READ_BLK
+      description: Enable interrupt on read-command block event.
+      bit_offset: 18
+      bit_size: 1
+
+fieldset/SPIPF_EAR:
+  description: Current Extended Address Register value (read-only, 8-bit).
+  fields:
+    - name: EAR
+      description: Current EAR value as received from SPI master.
+      bit_offset: 0
+      bit_size: 8
+
+fieldset/SPIPF_FIFO_DATA:
+  description: Block FIFO data (read-only; each read pops one entry).
+  fields:
+    - name: DATA
+      description: Blocked transaction data entry.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SPIPF_DMA_BASE:
+  description: Block-log DMA buffer base address (4-byte aligned).
+  fields:
+    - name: DMA_BASE_ADDR
+      description: DMA buffer base address bits[31:2].
+      bit_offset: 2
+      bit_size: 30
+
+fieldset/SPIPF_DMA_SIZE:
+  description: Block-log DMA buffer size and enable.
+  fields:
+    - name: DMA_SIZE
+      description: DMA buffer size in log entries.
+      bit_offset: 0
+      bit_size: 19
+    - name: DMA_EN
+      description: Enable block-log DMA.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SPIPF_DMA_WRPTR:
+  description: Block-log DMA write pointer (hardware-managed, read-only).
+  fields:
+    - name: DMA_WRPTR
+      description: Current DMA write pointer (log entry index).
+      bit_offset: 0
+      bit_size: 18
+
+fieldset/SPIPF_WRITE_DISABLE:
+  description: Write disable register (all fields write-1-only, sticky lock).
+  fields:
+    - name: WR_DIS_CTRL
+      description: Lock ENGINE_CTRL (SPIPF000).
+      bit_offset: 0
+      bit_size: 1
+    - name: WR_DIS_IRQ
+      description: Lock IRQ register (SPIPF004).
+      bit_offset: 1
+      bit_size: 1
+    - name: WR_DIS_EAR
+      description: Lock EAR register (SPIPF008).
+      bit_offset: 2
+      bit_size: 1
+    - name: WR_DIS_DMA_BASE
+      description: Lock DMA base register (SPIPF010).
+      bit_offset: 4
+      bit_size: 1
+    - name: WR_DIS_DMA_SIZE
+      description: Lock DMA size register (SPIPF014).
+      bit_offset: 5
+      bit_size: 1
+    - name: WR_DIS_WRITE_ADDR_TBL
+      description: Lock write address table (SPIPFWA).
+      bit_offset: 30
+      bit_size: 1
+    - name: WR_DIS_READ_ADDR_TBL
+      description: Lock read address table (SPIPFRA).
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SPIPF_CMD_ENTRY:
+  description: >
+    Command table entry. Controls which SPI commands are allowed through the filter.
+    Each entry specifies a command opcode plus access type, address mode, dummy cycles,
+    data width, and erase size ceiling.
+  fields:
+    - name: COMMAND
+      description: SPI command opcode to allow.
+      bit_offset: 0
+      bit_size: 8
+    - name: ADDR_WIDTH
+      description: "Address phase bit width: 0=no address, 1=1-bit, 2=dual, 3=quad."
+      bit_offset: 8
+      bit_size: 2
+    - name: ADDR_MASK
+      description: "Address byte count: 0=none, 1=1B, 2=2B, 3=3B, 4=4B."
+      bit_offset: 10
+      bit_size: 3
+    - name: ERASE_SIZE
+      description: "Max erase size: 0=not erase, 1=≤4KB, 2=≤8KB, 3=≤16KB, 4=≤32KB, 5=≤64KB, 6=≤128KB, 7=≤256KB."
+      bit_offset: 13
+      bit_size: 3
+    - name: DUMMY_CYCLES
+      description: Number of dummy cycles between address and data phases.
+      bit_offset: 16
+      bit_size: 6
+    - name: LOCK
+      description: Lock this entry against modification.
+      bit_offset: 23
+      bit_size: 1
+    - name: DATA_WIDTH
+      description: "Data phase bit width: 0=no data, 1=1-bit, 2=dual, 3=quad."
+      bit_offset: 24
+      bit_size: 2
+    - name: MEM_CMD
+      description: Command accesses flash memory array.
+      bit_offset: 26
+      bit_size: 1
+    - name: READ_CMD
+      description: Command is a read type.
+      bit_offset: 27
+      bit_size: 1
+    - name: WRITE_CMD
+      description: Command is a write type.
+      bit_offset: 28
+      bit_size: 1
+    - name: GENERIC
+      description: Generic mode — overrides predefined command slot meaning for entries 0-3,19.
+      bit_offset: 29
+      bit_size: 1
+    - name: VALID
+      description: Entry is active (command allowed).
+      bit_offset: 30
+      bit_size: 1
+    - name: VALID_ONCE
+      description: Entry is active for exactly one transaction; auto-cleared after seen.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SPIPF_ADDR_TABLE:
+  description: >
+    Address filter table entry (32 bits = 32 × 16 KB regions).
+    Bit N controls the flash region at offset (entry_index * 32 + N) * 16 KB.
+    In Write Disable table: bit=1 blocks writes to that region.
+    In Read Enable table: bit=1 allows reads from that region.
+  fields:
+    - name: REGIONS
+      description: Bitmask of 16 KB flash regions (bit N = region N within this entry).
+      bit_offset: 0
+      bit_size: 32

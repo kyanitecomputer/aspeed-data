@@ -1,0 +1,169 @@
+# AST2600 Watchdog Timer (WDT) registers.
+#
+# WDT0 base (CM3 view): 0x7E78_5000.
+# The AST2600 has 8 watchdog timer instances at stride 0x40.
+# This file models the register layout shared by all instances.
+#
+# Timer unit: 1 µs (the counter counts at 1 MHz regardless of PCLK).
+# Default reload: 0x014F_B180 = ~22 seconds.
+#
+# Software reboot:
+#   Write 0x3FFF_FF1 to SW_RESET_MASK1 (WDT28).
+#   Write 0xAEED_F123 to SW_RESET_CTRL (WDT24) to trigger.
+#
+# Sources:
+#   ast2600.md v1.6  Chapter 46 – Watchdog Timer (WDT00–WDT2C)
+#   Zephyr: soc/aspeed/ast26xx/soc.c  (sys_arch_reboot)
+#   Zephyr: drivers/watchdog/wdt_aspeed.c
+
+block/WDT:
+  description: >
+    ASPEED Watchdog Timer register block (shared IP: AST2600, AST1060).
+    AST2600 instance 0 base: 0x7E78_5000, stride: 0x40.
+    AST1060 instance 0 base: 0x7E78_5000, stride: 0x80 (4 instances).
+    Registers 0x00-0x28 are identical across both SoCs.
+  items:
+    - name: STATUS
+      description: >
+        Counter Status Register (WDT00). Read-only.
+        Current down-counter value in microseconds.
+        Loaded from RELOAD on reset or restart (0x4755 write to RESTART).
+        Counts down to 0 when WDT is enabled.
+        Default / power-on value: 0x014F_B180 (~22 s).
+      byte_offset: 0x00
+      fieldset: WDT_COUNTER
+
+    - name: RELOAD
+      description: >
+        Counter Reload Value Register (WDT04).
+        Value loaded into STATUS on reset or when 0x4755 is written
+        to the RESTART register.  Units: microseconds.
+        Default: 0x014F_B180 (~22 s).
+      byte_offset: 0x04
+      fieldset: WDT_COUNTER
+
+    - name: RESTART
+      description: >
+        Counter Restart Register (WDT08). Write-only trigger.
+        Write 0x4755 to reload STATUS from RELOAD and restart the counter
+        (provided CTRL.WDT_EN=1).  Any other write value is ignored.
+      byte_offset: 0x08
+      fieldset: WDT_RESTART
+
+    - name: CTRL
+      description: >
+        Control Register (WDT0C).
+        Configures reset mode, interrupt, and enable.
+        Default: 0x0010 (WDT_EN=0, RST_SYS=1 = SOC reset mode).
+      byte_offset: 0x0C
+      fieldset: WDT_CTRL
+
+    - name: SW_RESET_CTRL
+      description: >
+        Software Mode Reset Control Register (WDT24).
+        Write 0xAEED_F123 to trigger an immediate software-mode SOC reset
+        (after setting SW_RESET_MASK1 to select which blocks to reset).
+        This bit clears automatically after reset.
+      byte_offset: 0x24
+      fieldset: WDT_SW_RESET_CTRL
+
+    - name: SW_RESET_MASK1
+      description: >
+        Software Mode Reset Mask Register #1 (WDT28).
+        Each bit enables the corresponding subsystem to be reset when
+        SW_RESET_CTRL is triggered.
+        Zephyr uses 0x3FFF_FF1 to reset most subsystems.
+      byte_offset: 0x28
+      fieldset: WDT_SW_RESET_MASK1
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/WDT_COUNTER:
+  description: 32-bit counter / reload value (WDT00 and WDT04 share this layout).
+  fields:
+    - name: VALUE
+      description: Counter value in microseconds.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/WDT_RESTART:
+  description: Counter Restart Register (WDT08).
+  fields:
+    - name: KEY
+      description: >
+        Write 0x4755 to reload and restart the counter.
+        Read returns 0 (write-only hardware).
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/WDT_CTRL:
+  description: WDT Control Register (WDT0C).
+  fields:
+    - name: WDT_EN
+      description: >
+        WDT Enable.
+        0 = disabled (counter holds current value);
+        1 = enabled (counter counts down).
+      bit_offset: 0
+      bit_size: 1
+    - name: RST_SYS
+      description: >
+        Reset system after timeout.
+        0 = disabled;
+        1 = assert SoC / CPU reset when counter reaches 0.
+        Must clear WDT10[0] before enabling this bit.
+      bit_offset: 1
+      bit_size: 1
+    - name: RST_MODE
+      description: >
+        Reset system mode (bits [6:5]).
+        00 = SOC system reset (gated by reset mask registers);
+        01 = Full chip reset;
+        1x = CPU/FMC only (firmware reboot, no peripheral reset).
+      bit_offset: 5
+      bit_size: 2
+    - name: WDT_EXT
+      description: >
+        External signal enable after timeout.
+        1 = pulse generated on an external output pin.
+      bit_offset: 27
+      bit_size: 1
+    - name: WDT_INTR
+      description: >
+        Interrupt before timeout.
+        1 = generate interrupt when counter reaches pre-timeout value
+        (set in CTRL bits [31:10]).
+      bit_offset: 28
+      bit_size: 1
+    - name: WDT_RESET_BY_SOC
+      description: >
+        Allow SOC-level reset to reset this WDT instance.
+        0 = only SRST# or full-chip reset can reset this WDT;
+        1 = SOC system reset also resets this WDT.
+      bit_offset: 4
+      bit_size: 1
+
+fieldset/WDT_SW_RESET_CTRL:
+  description: Software Mode Reset Control Register (WDT24).
+  fields:
+    - name: TRIGGER
+      description: >
+        Write 0xAEEDF123 to fire a software-mode SOC reset immediately.
+        After reset this bit clears to 0 automatically.
+        Only SOC reset mode is supported for software-triggered resets.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/WDT_SW_RESET_MASK1:
+  description: >
+    Software Mode Reset Mask Register #1 (WDT28).
+    Each bit enables (1) or disables (0) the reset of the corresponding
+    subsystem when SW_RESET_CTRL is triggered.
+  fields:
+    - name: MASK
+      description: >
+        Subsystem reset enable bitmask.
+        Zephyr sets 0x03FF_FFF1 to reset the standard set of subsystems
+        (ARM, SDRAM, AHB bridges, coprocessor, SOC controllers, USB, etc.).
+      bit_offset: 0
+      bit_size: 32

@@ -1,0 +1,410 @@
+# ASPEED Hash and Crypto Engine (HACE) registers.
+#
+# Base: 0x7E6D_0000 (AST1060).
+# Two independent engines that can operate in cascade mode:
+#   - Hash Engine: MD5, SHA-1, SHA-224/256, SHA-384/512/512-224/512-256, HMAC
+#   - Crypto Engine: AES-128/192/256 (ECB/CBC/CFB/OFB/CTR/GCM), DES/3DES, RC4
+#
+# Cascade mode: engines can be chained — crypto-first-hash-second or vice versa.
+# Command Queue: DMA-driven command queue (DRAM-based, up to 32 entries).
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 18 – Hash and Crypto Engine (HACE)
+
+block/HACE:
+  description: >
+    ASPEED Hash and Crypto Engine (HACE).
+    Base: 0x7E6D_0000. Two cascadeable engines: Hash (SHA/MD5/HMAC) and
+    Crypto (AES/DES/3DES/RC4/AES-GCM).
+  items:
+    # ── Crypto Engine registers ───────────────────────────────────────────────
+    - name: CRYPTO_SRC
+      description: >
+        Crypto data source base address (HACE00).
+        Direct access mode: byte-aligned address [30:0].
+        Scatter-gather mode: 8-byte aligned SG list address [30:3].
+        In cascade (Hash→Crypto): must equal HASH_SRC.
+      byte_offset: 0x00
+      fieldset: HACE_DMA_ADDR
+
+    - name: CRYPTO_DST
+      description: >
+        Crypto data destination base address (HACE04).
+        Direct access: byte-aligned [30:0]. SG mode: [30:3].
+        In cascade (Crypto→Hash): must equal HASH_SRC.
+      byte_offset: 0x04
+      fieldset: HACE_DMA_ADDR
+
+    - name: CRYPTO_CTX
+      description: >
+        Crypto context buffer base address (HACE08). 8-byte aligned [30:3].
+        Holds IV, keys, and intermediate state. Hardware loads before and
+        saves after algorithm execution unless disabled.
+      byte_offset: 0x08
+      fieldset: HACE_DMA_ADDR
+
+    - name: CRYPTO_DATA_LEN
+      description: >
+        Crypto data length in bytes (HACE0C). Bits[27:0], max 256 MB-1.
+        In cascade mode must equal HASH_DATA_LEN.
+        0 is valid only for AES-GCM (zero-length confidential data).
+      byte_offset: 0x0C
+      fieldset: HACE_DATA_LEN
+
+    - name: CRYPTO_CMD
+      description: >
+        Crypto engine command register (HACE10).
+        Select engine (AES/DES/RC4), algorithm, mode, direction, key source,
+        cascade mode, DMA type (direct/SG), interrupt enable, and context I/O.
+      byte_offset: 0x10
+      fieldset: HACE_CRYPTO_CMD
+
+    - name: GCM_AAD_LEN
+      description: >
+        AES-GCM additional authenticated data (AAD) length in bytes (HACE14).
+        Used when CRYPTO_CMD selects AES-GCM mode (OP_MODE=101).
+      byte_offset: 0x14
+      fieldset: HACE_DATA_LEN
+
+    - name: GCM_TAG_BASE
+      description: >
+        AES-GCM authentication tag write buffer base address (HACE18).
+        Byte-aligned [30:0]. Tag is 16 bytes. Used when CRYPTO_CMD[21]=1.
+      byte_offset: 0x18
+      fieldset: HACE_DMA_ADDR
+
+    - name: HACE_STATUS
+      description: >
+        HAC engine status and interrupt register (HACE1C).
+        Interrupt flags for crypto, hash, and software tag events.
+        Engine busy status bits.
+      byte_offset: 0x1C
+      fieldset: HACE_STATUS
+
+    # ── Hash Engine registers ─────────────────────────────────────────────────
+    - name: HASH_SRC
+      description: >
+        Hash data source base address (HACE20).
+        Direct access: byte-aligned [30:0]. SG mode: 8-byte aligned [30:3].
+        Cascade: Crypto→Hash: must equal CRYPTO_DST; Hash→Crypto: equal CRYPTO_SRC.
+      byte_offset: 0x20
+      fieldset: HACE_DMA_ADDR
+
+    - name: HASH_DIGEST_BASE
+      description: >
+        Hash digest write buffer base address (HACE24). 8-byte aligned [30:3].
+        Buffer sizes: MD5=16 B, SHA-1=20 B, SHA-224/256=32 B, SHA-384/512/512-x=64 B.
+      byte_offset: 0x24
+      fieldset: HACE_DMA_ADDR
+
+    - name: HASH_KEY_BASE
+      description: >
+        HMAC key buffer base address (HACE28). 8-byte aligned [30:3].
+        Stores result of HMAC key calculation command.
+      byte_offset: 0x28
+      fieldset: HACE_DMA_ADDR
+
+    - name: HASH_DATA_LEN
+      description: >
+        Hash data length in bytes (HACE2C). Bits[27:0], max 256 MB-1.
+        Alignment requirements vary by algorithm and accumulative mode.
+        In cascade mode must equal CRYPTO_DATA_LEN.
+      byte_offset: 0x2C
+      fieldset: HACE_DATA_LEN
+
+    - name: HASH_CMD
+      description: >
+        Hash engine command register (HACE30).
+        Select algorithm, HMAC/accumulative mode, byte-swap, cascade mode,
+        SG or direct access, interrupt enable, first/last block indicators.
+      byte_offset: 0x30
+      fieldset: HACE_HASH_CMD
+
+    - name: HASH_PAD_LEN
+      description: >
+        Hash data padding length (HACE34).
+        Used in the padding block when in accumulative mode with last block set.
+      byte_offset: 0x34
+      fieldset: HACE_DATA_LEN
+
+    # ── Command Queue registers ───────────────────────────────────────────────
+    - name: CQ_BASE
+      description: >
+        Command Queue base address in DRAM (HACE50). 16-byte aligned [30:4].
+        Configure before enabling CQ in HACE60.
+      byte_offset: 0x50
+      fieldset: HACE_CQ_BASE
+
+    - name: CQ_END_PTR
+      description: >
+        Command Queue end pointer offset (HACE54). 16-byte aligned [11:1].
+        Defines the end of the circular CQ buffer.
+      byte_offset: 0x54
+      fieldset: HACE_CQ_PTR
+
+    - name: CQ_WRITE_PTR
+      description: Command Queue write pointer (HACE58). 8-byte aligned [11:0]. Write before enabling CQ.
+      byte_offset: 0x58
+      fieldset: HACE_CQ_RW_PTR
+
+    - name: CQ_READ_PTR
+      description: Command Queue read pointer (HACE5C). 8-byte aligned [11:0]. Read-only; hardware-managed.
+      byte_offset: 0x5C
+      fieldset: HACE_CQ_RW_PTR
+
+    - name: HACE_FEATURE
+      description: >
+        HACE feature control register (HACE60).
+        Enable DRAM command queue, set CQ data format (single vs burst),
+        select AES/DES CTR counter width, control register write source (AHB vs CQ).
+      byte_offset: 0x60
+      fieldset: HACE_FEATURE
+
+    - name: SW_TAG
+      description: >
+        Software tag register (HACE64). Write a tag value to trigger a software
+        interrupt (when HACE64[31]=1). The 28-bit SW_TAG value is stored;
+        interrupt fires when value is written. Also controls whether to wait
+        for crypto/hash idle before updating.
+      byte_offset: 0x64
+      fieldset: HACE_SW_TAG
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/HACE_DMA_ADDR:
+  description: DMA buffer base address (bit[31] reserved, bits[30:0] = address).
+  fields:
+    - name: ADDR
+      description: Buffer base address (byte or 8-byte aligned depending on register and mode).
+      bit_offset: 0
+      bit_size: 31
+
+fieldset/HACE_DATA_LEN:
+  description: Data length in bytes (bits[27:0]).
+  fields:
+    - name: LEN
+      description: Data length in bytes (max 256 MB - 1).
+      bit_offset: 0
+      bit_size: 28
+
+fieldset/HACE_CRYPTO_CMD:
+  description: Crypto engine command register (HACE10).
+  fields:
+    - name: CASCADE_MODE
+      description: "Cascade mode: 0/1=independent, 2=Crypto→Hash, 3=Hash→Crypto."
+      bit_offset: 0
+      bit_size: 2
+    - name: KEY_LEN
+      description: "AES key length: 0=128-bit, 1=192-bit, 2=256-bit. Ignored for RC4/DES."
+      bit_offset: 2
+      bit_size: 2
+    - name: OP_MODE
+      description: "AES/DES operation mode: 0=ECB, 1=CBC, 2=CFB, 3=OFB, 4=CTR, 5=AES-GCM."
+      bit_offset: 4
+      bit_size: 3
+    - name: ENC_DEC
+      description: "Direction: 0=decrypt (ciphertext→plaintext), 1=encrypt (plaintext→ciphertext)."
+      bit_offset: 7
+      bit_size: 1
+    - name: ALGO_SEL
+      description: "Algorithm: 0=AES/DES, 1=RC4."
+      bit_offset: 8
+      bit_size: 1
+    - name: DIS_CTX_SAVE
+      description: Disable context save to buffer after engine completes.
+      bit_offset: 9
+      bit_size: 1
+    - name: DIS_CTX_LOAD
+      description: Disable context load from buffer before algorithm starts.
+      bit_offset: 10
+      bit_size: 1
+    - name: DIS_RW_DATA
+      description: Disable crypto engine data I/O (context only).
+      bit_offset: 11
+      bit_size: 1
+    - name: CRYPTO_INT_EN
+      description: Enable interrupt when crypto command finishes.
+      bit_offset: 12
+      bit_size: 1
+    - name: KEY_EXP_SEL
+      description: "AES key expansion: 0=software (key in context), 1=hardware."
+      bit_offset: 13
+      bit_size: 1
+    - name: CTR_BITS
+      description: "CTR counter width: 0=AES128/DES64, 1=AES96/DES32, 2=AES64, 3=AES32."
+      bit_offset: 14
+      bit_size: 2
+    - name: ENG_SEL
+      description: "Engine: 0=AES, 1=DES."
+      bit_offset: 16
+      bit_size: 1
+    - name: TRIPLE_DES
+      description: "Triple DES: 0=single DES, 1=3DES."
+      bit_offset: 17
+      bit_size: 1
+    - name: SRC_SG
+      description: "Crypto source: 0=direct access, 1=scatter-gather list."
+      bit_offset: 18
+      bit_size: 1
+    - name: DST_SG
+      description: "Crypto destination: 0=direct access, 1=scatter-gather list."
+      bit_offset: 19
+      bit_size: 1
+    - name: MBUS_SYNC
+      description: Enable M-Bus request synchronization for Crypto Engine Idle.
+      bit_offset: 20
+      bit_size: 1
+    - name: GCM_TAG_ADDR_SEL
+      description: "AES-GCM tag write: 0=append to end of destination, 1=write to GCM_TAG_BASE."
+      bit_offset: 21
+      bit_size: 1
+    - name: GHASH_PAD_ORDER
+      description: "GHASH padding length order: 0=len(A)‖len(D), 1=len(D)‖len(A)."
+      bit_offset: 22
+      bit_size: 1
+    - name: GHASH_XOR_DIS
+      description: Disable GHASH Tag XOR with GCTR output (0=XOR enabled, 1=disabled).
+      bit_offset: 23
+      bit_size: 1
+    - name: AES_KEY_SRC
+      description: "AES key source: 0=DRAM context buffer, 1=Secure Vault Key (SEC80C)."
+      bit_offset: 24
+      bit_size: 1
+
+fieldset/HACE_STATUS:
+  description: HACE engine status and interrupt register (HACE1C).
+  fields:
+    - name: HASH_BUSY
+      description: Hash engine busy.
+      bit_offset: 0
+      bit_size: 1
+    - name: CRYPTO_BUSY
+      description: Crypto engine busy.
+      bit_offset: 1
+      bit_size: 1
+    - name: CQ_BUSY
+      description: Command queue busy.
+      bit_offset: 3
+      bit_size: 1
+    - name: HASH_INT
+      description: Hash engine done interrupt (write 1 to clear).
+      bit_offset: 9
+      bit_size: 1
+    - name: CRYPTO_INT
+      description: Crypto engine done interrupt (write 1 to clear).
+      bit_offset: 12
+      bit_size: 1
+    - name: SW_TAG_INT
+      description: Software tag interrupt — set when value written to HACE64 (write 1 to clear).
+      bit_offset: 15
+      bit_size: 1
+
+fieldset/HACE_HASH_CMD:
+  description: Hash engine command register (HACE30).
+  fields:
+    - name: CASCADE_MODE
+      description: "Cascade mode: 0/1=independent, 2=Crypto→Hash, 3=Hash→Crypto."
+      bit_offset: 0
+      bit_size: 2
+    - name: BYTE_SWAP
+      description: "Byte swapping: 1=MD5 (little-endian), 2=SHA-x (big-endian)."
+      bit_offset: 2
+      bit_size: 2
+    - name: HASH_ALGO
+      description: >
+        Hash algorithm: 0=MD5, 2=SHA-1, 4=SHA-224, 5=SHA-256, 6=SHA-512 series
+        (use SHA512_SEL for variant). Others invalid.
+      bit_offset: 4
+      bit_size: 3
+    - name: HMAC_CMD
+      description: "HMAC/accumulative: 0=digest only, 1=HMAC, 2=accumulative, 3=compute HMAC key."
+      bit_offset: 7
+      bit_size: 2
+    - name: HASH_INT_EN
+      description: Enable interrupt when hash command finishes.
+      bit_offset: 9
+      bit_size: 1
+    - name: SHA512_SEL
+      description: "SHA-512 variant (when HASH_ALGO=6): 0=SHA-512, 1=SHA-384, 2=SHA-512/256, 3=SHA-512/224."
+      bit_offset: 10
+      bit_size: 3
+    - name: ACC_FIRST
+      description: This command includes the first block (accumulative mode).
+      bit_offset: 13
+      bit_size: 1
+    - name: ACC_LAST
+      description: This command includes the last block (accumulative mode). Requires HASH_PAD_LEN set.
+      bit_offset: 14
+      bit_size: 1
+    - name: SRC_SG
+      description: "Hash source: 0=direct access, 1=scatter-gather. Must be 0 when HMAC_CMD=3."
+      bit_offset: 18
+      bit_size: 1
+    - name: MBUS_SYNC
+      description: Enable M-Bus request synchronization for Hash Engine Idle.
+      bit_offset: 20
+      bit_size: 1
+
+fieldset/HACE_CQ_BASE:
+  description: Command Queue base address in DRAM (16-byte aligned).
+  fields:
+    - name: CQ_BASE_ADDR
+      description: CQ base address bits[30:4] (16-byte aligned).
+      bit_offset: 4
+      bit_size: 27
+
+fieldset/HACE_CQ_PTR:
+  description: Command Queue end pointer (write before enabling CQ).
+  fields:
+    - name: CQ_END_PTR
+      description: CQ end pointer bits[11:1] (16-byte aligned within CQ buffer).
+      bit_offset: 1
+      bit_size: 11
+
+fieldset/HACE_CQ_RW_PTR:
+  description: Command Queue write or read pointer.
+  fields:
+    - name: CQ_PTR
+      description: CQ pointer bits[11:0] (8-byte aligned).
+      bit_offset: 0
+      bit_size: 12
+
+fieldset/HACE_FEATURE:
+  description: HACE feature control register (HACE60).
+  fields:
+    - name: CQ_EN
+      description: Enable DRAM-based Command Queue.
+      bit_offset: 31
+      bit_size: 1
+    - name: CQ_REG_WR
+      description: "Register write source: 0=AHB (normal), 1=from CQ data."
+      bit_offset: 30
+      bit_size: 1
+    - name: CQ_BURST
+      description: "CQ data format: 0=single (8 bytes), 1=burst (8/16/24/32 bytes)."
+      bit_offset: 28
+      bit_size: 1
+    - name: CTR_64BIT
+      description: "AES/DES CTR counter width: 0=32-bit, 1=64-bit."
+      bit_offset: 29
+      bit_size: 1
+
+fieldset/HACE_SW_TAG:
+  description: Software tag register (HACE64).
+  fields:
+    - name: SW_TAG
+      description: Software tag value [27:0]. Writing triggers SW_TAG_INT if enabled.
+      bit_offset: 0
+      bit_size: 28
+    - name: WAIT_HASH
+      description: Wait for hash engine idle before updating tag.
+      bit_offset: 28
+      bit_size: 1
+    - name: WAIT_CRYPTO
+      description: Wait for crypto engine idle before updating tag.
+      bit_offset: 29
+      bit_size: 1
+    - name: SW_TAG_INT_EN
+      description: Enable software tag interrupt on write to HACE64.
+      bit_offset: 31
+      bit_size: 1

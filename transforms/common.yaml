@@ -1,0 +1,15 @@
+# Common chiptool transforms applied to all ASPEED register YAMLs.
+#
+# These transforms are applied programmatically in aspeed-data-gen/src/main.rs.
+# This file documents the intended transform pipeline and serves as a reference
+# for future manual chiptool invocations.
+#
+# Usage (chiptool CLI):
+#   chiptool transform --input chip.yaml --transform transforms/common.yaml --output out.yaml
+
+transforms:
+  # Expand all `extends:` references so every block/fieldset is self-contained.
+  - ExpandExtends: {}
+
+  # Sort all collections for deterministic generated output.
+  - Sort: {}

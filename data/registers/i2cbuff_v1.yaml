@@ -1,0 +1,74 @@
+# ASPEED I2C/SMBus per-channel pool buffer SRAM.
+#
+# Each I2C channel has 32 bytes of pool buffer SRAM, accessed as
+# 8 × 32-bit word registers.
+#
+# Pool buffer base: 0x7E7B_0C00 + (N × 0x20) for channel N (0–13).
+# Instance stride: 0x20 (32 bytes).
+#
+# Organization (controlled by I2CC0C[0]):
+#   0 = all 32 bytes for TX or RX (whichever is active).
+#   1 = lower 16 bytes (BUFF[0]–BUFF[3]) for TX;
+#       upper 16 bytes (BUFF[4]–BUFF[7]) for RX.
+#
+# Constraints:
+#   - Pool and DMA modes are mutually exclusive per channel.
+#   - Only master OR slave may use the pool at one time.
+#   - Configure I2CC0C (TX count, RX size, organization) before enabling.
+#   - After receive, read I2CC0C[29:24] for actual received byte count.
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 27 – I2C/SMBus (I2C pool buffer SRAM layout)
+
+block/I2CBUFF:
+  description: >
+    ASPEED I2C/SMBus per-channel pool buffer SRAM (32 bytes = 8 × 32-bit words).
+    Base: 0x7E7B_0C00 + (N × 0x20) for channel N (0–13).
+    Organization: full 32-byte TX/RX, or split lower-16 TX / upper-16 RX via I2CC0C[0].
+  items:
+    - name: BUFF0
+      description: Pool buffer word 0 (bytes 0–3). TX data in all modes.
+      byte_offset: 0x00
+      fieldset: I2CBUFF_WORD
+    - name: BUFF1
+      description: Pool buffer word 1 (bytes 4–7).
+      byte_offset: 0x04
+      fieldset: I2CBUFF_WORD
+    - name: BUFF2
+      description: Pool buffer word 2 (bytes 8–11).
+      byte_offset: 0x08
+      fieldset: I2CBUFF_WORD
+    - name: BUFF3
+      description: >
+        Pool buffer word 3 (bytes 12–15).
+        Last TX word when I2CC0C[0]=1 (split mode); RX starts at BUFF4.
+      byte_offset: 0x0C
+      fieldset: I2CBUFF_WORD
+    - name: BUFF4
+      description: >
+        Pool buffer word 4 (bytes 16–19).
+        First RX word when I2CC0C[0]=1 (split mode).
+      byte_offset: 0x10
+      fieldset: I2CBUFF_WORD
+    - name: BUFF5
+      description: Pool buffer word 5 (bytes 20–23).
+      byte_offset: 0x14
+      fieldset: I2CBUFF_WORD
+    - name: BUFF6
+      description: Pool buffer word 6 (bytes 24–27).
+      byte_offset: 0x18
+      fieldset: I2CBUFF_WORD
+    - name: BUFF7
+      description: Pool buffer word 7 (bytes 28–31). Last word in all modes.
+      byte_offset: 0x1C
+      fieldset: I2CBUFF_WORD
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/I2CBUFF_WORD:
+  description: 32-bit pool buffer data word. Each byte holds one I2C data byte.
+  fields:
+    - name: DATA
+      description: Buffer data (4 I2C bytes packed into one 32-bit word, little-endian).
+      bit_offset: 0
+      bit_size: 32

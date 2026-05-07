@@ -1,0 +1,131 @@
+# ASPEED AST2500 ColdFire coprocessor chip definition.
+#
+# The AST2500 BMC SoC embeds a Freescale ColdFire V1 (MCF5208-compatible)
+# coprocessor alongside the main ARM926 host processor.  The ColdFire runs
+# big-endian and has a 24-bit address space.  It accesses BMC peripherals via
+# 9 programmable 64 KB segment windows mapped through the SCU.
+#
+# Default segment mapping (after ROM boot):
+#   Segments 0x20–0x2F (CF 0x200000–0x2FFFFF) → BMC 0x1E600000–0x1E6FFFFF
+#   Segments 0x30–0x3F (CF 0x300000–0x3FFFFF) → BMC 0x1E700000–0x1E7FFFFF
+#   Segments 0x80–0xFF (CF 0x800000–0xFFFFFF) → DRAM (8 MB window)
+#
+# Address translation used for peripheral addresses below:
+#   CF addr = 0x200000 + (BMC_addr - 0x1E600000)  for BMC 0x1E6xxxxx range
+#   CF addr = 0x300000 + (BMC_addr - 0x1E700000)  for BMC 0x1E7xxxxx range
+#
+# Sources:
+#   AST2500 datasheet v1.8 (ast2500v18): chapters 5 (SCU), 9 (CVIC), 8 (UART),
+#     43 (Timer), 46 (WDT), 44 (GPIO)
+#   Zephyr: boards/arm/ast2500_evb/board.cmake
+#   OpenBMC: meta-aspeed ColdFire machine definition
+
+name:    AST2500
+family:  ast25xx
+core:    coldfire-v1
+target:  m68k-none-elf
+arch:    coldfire
+num_irqs: 32
+
+# ── Peripheral instances ──────────────────────────────────────────────────────
+#
+# Addresses are ColdFire virtual addresses using the default segment map.
+# BMC physical addresses shown in comments for reference.
+
+peripherals:
+  # ColdFire coprocessor control — SCU registers SCU100–SCU128.
+  # BMC: 0x1E6E2100 → CF: 0x2E2100
+  - name:    COPROC
+    block:   coproc_v1::COPROC
+    address: 0x2E2100
+    description: "ColdFire coprocessor control (SCU100–SCU128): segment map, cache, enable"
+
+  # ColdFire VIC — interrupt controller for the ColdFire core.
+  # BMC: 0x1E6C2000 → CF: 0x2C2000
+  - name:    CVIC
+    block:   cvic_v1::CVIC
+    address: 0x2C2000
+    description: "ColdFire VIC: 32 IRQ sources, level/edge-triggered, SW-INT support"
+
+  # UART1 — 16550-compatible (coprocessor debug console, typical default)
+  # BMC: 0x1E783000 → CF: 0x383000
+  - name:    UART1
+    block:   uart_v1::UART
+    address: 0x383000
+    description: "UART1 (16550, 4-byte stride)"
+
+  # UART2
+  # BMC: 0x1E78D000 → CF: 0x38D000
+  - name:    UART2
+    block:   uart_v1::UART
+    address: 0x38D000
+    description: "UART2 (16550, 4-byte stride)"
+
+  # UART3
+  # BMC: 0x1E78E000 → CF: 0x38E000
+  - name:    UART3
+    block:   uart_v1::UART
+    address: 0x38E000
+    description: "UART3 (16550, 4-byte stride)"
+
+  # UART4
+  # BMC: 0x1E78F000 → CF: 0x38F000
+  - name:    UART4
+    block:   uart_v1::UART
+    address: 0x38F000
+    description: "UART4 (16550, 4-byte stride)"
+
+  # UART5 — often used as the primary host-side UART on AST2500
+  # BMC: 0x1E784000 → CF: 0x384000
+  - name:    UART5
+    block:   uart_v1::UART
+    address: 0x384000
+    description: "UART5 (16550, 4-byte stride)"
+
+  # Hardware timer — 8 × 32-bit countdown timers (same IP as AST2600 SSP).
+  # BMC: 0x1E782000 → CF: 0x382000
+  - name:    TIMER
+    block:   timer_v1::TIMER
+    address: 0x382000
+    description: "Hardware timer (8 × 32-bit countdown, shared IP with AST2600)"
+
+  # Watchdog timer 0 (same core register layout as AST2600).
+  # BMC: 0x1E785000 → CF: 0x385000
+  - name:    WDT
+    block:   wdt_v1::WDT
+    address: 0x385000
+    description: "Watchdog timer 0 (1 µs resolution, magic-word restart)"
+
+  # GPIO controller — parallel I/O (same base IP as AST2600 gpio_v1).
+  # BMC: 0x1E780000 → CF: 0x380000
+  - name:    GPIO
+    block:   gpio_v1::GPIO
+    address: 0x380000
+    description: "GPIO controller (208 pins, grouped in 26 × 8-pin banks)"
+
+# ── Interrupt table (CVIC, 32 sources) ───────────────────────────────────────
+#
+# The CVIC dispatches 32 interrupt sources.  The ColdFire firmware reads
+# CVIC.IRQ_STATUS to determine which source fired, then calls the handler.
+#
+# IRQ assignments below are for AST2500 ColdFire per the datasheet.
+# Reserved entries are omitted; gaps are harmless in the generated header.
+
+interrupts:
+  - { name: SW,       number: 0  }  # Software-generated interrupt (CVIC.SW_INT)
+  - { name: UART1,    number: 1  }  # UART1 RX/TX interrupt
+  - { name: UART2,    number: 2  }  # UART2 RX/TX interrupt
+  - { name: UART3,    number: 3  }  # UART3 RX/TX interrupt
+  - { name: UART4,    number: 4  }  # UART4 RX/TX interrupt
+  - { name: UART5,    number: 5  }  # UART5 RX/TX interrupt
+  - { name: WDT,      number: 6  }  # Watchdog timer overflow
+  - { name: TIMER1,   number: 7  }  # Hardware timer 1 overflow
+  - { name: TIMER2,   number: 8  }  # Hardware timer 2 overflow
+  - { name: TIMER3,   number: 9  }  # Hardware timer 3 overflow
+  - { name: TIMER4,   number: 10 }  # Hardware timer 4 overflow
+  - { name: TIMER5,   number: 11 }  # Hardware timer 5 overflow
+  - { name: GPIO,     number: 12 }  # GPIO controller interrupt
+  - { name: I2C,      number: 13 }  # I2C controller interrupt
+  - { name: ARM,      number: 14 }  # ARM→ColdFire inter-processor interrupt
+  - { name: DMA,      number: 15 }  # Internal DMA interrupt
+  # IRQs 16–31: reserved / platform-specific; extend as datasheet is verified

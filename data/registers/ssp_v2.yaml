@@ -1,0 +1,245 @@
+# AST2700 Secondary/Tertiary Service Processor (SSP/TSP) coprocessor registers.
+# ** AST2700-SPECIFIC — see ssp_v1.yaml for AST2600 SSP **
+#
+# The SSP and TSP are ARM Cortex-M4F coprocessors in the AST2700 SoC.
+# Both share the same register layout but have different SCU0 offsets:
+#
+#   SSP control block: SCU0 + 0x120  (CM4F address 0x72C0_2120)
+#   TSP control block: SCU0 + 0x160  (CM4F address 0x72C0_2160)
+#
+# Key incompatibilities vs ssp_v1.yaml (AST2600):
+#
+# 1. BASE ADDRESS: Completely different from AST2600.
+#
+# 2. CACHE_FUNC bit layout (SCU138 / SCU178) — NOT inherited from v1:
+#    Bit 0: DCACHE_EN  (separate D-cache enable, was combined in v1)
+#    Bit 1: ICACHE_EN  (separate I-cache enable, new in v2)
+#    Bit 2: DCACHE_CLEAR
+#    Bit 3: ICACHE_CLEAR
+#    Bit 4: DCACHE_PREFETCH_CLEAR
+#    Bit 5: ICACHE_PREFETCH_CLEAR
+#    (No CCM bits, no IRQ monitoring bits)
+#
+# 3. CACHE_AREA is split into TWO registers (I-bus + D-bus):
+#    SSP: SCU12C (I-bus cacheable area), SCU130 (D-bus cacheable area)
+#    TSP: SCU16C (I-bus cacheable area), SCU170 (D-bus cacheable area)
+#
+# 4. CTRL gains new bits:
+#    Bit 2: DEBUG_EN (CM4F external debug enable)
+#    Bit 5: SRAM_SLEEP
+#    Bit 6: SRAM_DEEP_SLEEP
+#    Bit 7: SRAM_SHUTDOWN
+#
+# 5. MEMORY MAP uses 8 registers for 3 windows (TCM, SRAM, DRAM):
+#    SCU124: SRAM remap base (31-bit << 4)
+#    SCU128: DRAM remap base (31-bit << 4)
+#    SCU140: TCM virtual start address
+#    SCU144: TCM virtual size
+#    SCU148: System SRAM virtual start
+#    SCU14C: System SRAM virtual size
+#    SCU150: DRAM virtual start
+#    SCU154: DRAM virtual size
+#
+# Sources:
+#   ast2700_ssp.pdf v0.1h  (SSP registers)
+#   ast2700_tsp.pdf v0.1f  (TSP registers — same layout, different base)
+#   Zephyr: soc/aspeed/ast2700/ DTS files
+
+# ── Register block ────────────────────────────────────────────────────────────
+
+block/SSP:
+  description: >
+    CM4F coprocessor control registers (AST2700 SSP/TSP).
+    SSP base: SCU0+0x120 (0x72C0_2120), TSP base: SCU0+0x160 (0x72C0_2160).
+  items:
+    - name: CTRL
+      description: CM4F Coprocessor Control Register (SCU120/SCU160).
+      byte_offset: 0x00
+      fieldset: CTRL
+
+    - name: SRAM_REMAP_BASE
+      description: >
+        System SRAM Remap Base (SCU124/SCU164).
+        Physical = field_value << 4. Maps system SRAM into CM4F virtual space.
+      byte_offset: 0x04
+      fieldset: REMAP_BASE
+
+    - name: DRAM_REMAP_BASE
+      description: >
+        DRAM Remap Base (SCU128/SCU168).
+        Physical = field_value << 4. Maps DRAM into CM4F virtual space.
+      byte_offset: 0x08
+      fieldset: REMAP_BASE
+
+    - name: ICACHE_AREA
+      description: >
+        I-Bus Cacheable Area Declaration (SCU12C/SCU16C).
+        Same 32×16 MB bitfield as AST2600 CACHE_AREA but I-bus only.
+      byte_offset: 0x0C
+      fieldset: CACHE_AREA
+
+    - name: DCACHE_AREA
+      description: >
+        D-Bus Cacheable Area Declaration (SCU130/SCU170).
+        Same 32×16 MB bitfield as AST2600 CACHE_AREA but D-bus only.
+      byte_offset: 0x10
+      fieldset: CACHE_AREA
+
+    - name: CACHE_INVAL
+      description: Cache Invalidation Control Register (SCU134/SCU174).
+      byte_offset: 0x14
+      fieldset: CACHE_INVAL
+
+    - name: CACHE_FUNC
+      description: >
+        Cache Function Control Register (SCU138/SCU178).
+        Incompatible with ssp_v1 — separate I/D enable bits, no CCM.
+      byte_offset: 0x18
+      fieldset: CACHE_FUNC
+
+    - name: TCM_VIRT_START
+      description: TCM Virtual Start Address (SCU140/SCU180).
+      byte_offset: 0x20
+      fieldset: VIRT_ADDR
+
+    - name: TCM_VIRT_SIZE
+      description: TCM Virtual Size (SCU144/SCU184).
+      byte_offset: 0x24
+      fieldset: VIRT_SIZE
+
+    - name: SRAM_VIRT_START
+      description: System SRAM Virtual Start Address (SCU148/SCU188).
+      byte_offset: 0x28
+      fieldset: VIRT_ADDR
+
+    - name: SRAM_VIRT_SIZE
+      description: System SRAM Virtual Size (SCU14C/SCU18C).
+      byte_offset: 0x2C
+      fieldset: VIRT_SIZE
+
+    - name: DRAM_VIRT_START
+      description: DRAM Virtual Start Address (SCU150/SCU190).
+      byte_offset: 0x30
+      fieldset: VIRT_ADDR
+
+    - name: DRAM_VIRT_SIZE
+      description: DRAM Virtual Size (SCU154/SCU194).
+      byte_offset: 0x34
+      fieldset: VIRT_SIZE
+
+# ── Fieldsets ─────────────────────────────────────────────────────────────────
+
+fieldset/CTRL:
+  description: CM4F Coprocessor Control Register (AST2700 v2).
+  fields:
+    - name: EN
+      description: CM4F Coprocessor Enable (0=disabled/reset, 1=enabled).
+      bit_offset: 0
+      bit_size: 1
+    - name: RESET
+      description: CM4F Coprocessor Reset (active-high).
+      bit_offset: 1
+      bit_size: 1
+    - name: DEBUG_EN
+      description: CM4F external debug enable (new in v2).
+      bit_offset: 2
+      bit_size: 1
+    - name: SRAM_SLEEP
+      description: Coprocessor SRAM sleep mode (new in v2).
+      bit_offset: 5
+      bit_size: 1
+    - name: SRAM_DEEP_SLEEP
+      description: Coprocessor SRAM deep sleep mode (new in v2).
+      bit_offset: 6
+      bit_size: 1
+    - name: SRAM_SHUTDOWN
+      description: Coprocessor SRAM shutdown mode (new in v2).
+      bit_offset: 7
+      bit_size: 1
+
+fieldset/REMAP_BASE:
+  description: >
+    Memory remap base address register.
+    Physical address = field_value << 4 (word-aligned 31-bit field).
+  fields:
+    - name: PHYS_BASE
+      description: Physical base address bits [31:4] (bits [30:0] in register, << 4 to get address).
+      bit_offset: 0
+      bit_size: 31
+
+fieldset/CACHE_AREA:
+  description: >
+    Cacheable area bitmask for one bus (I-bus or D-bus).
+    Same layout as AST2600 CACHE_AREA: 32 bits × 16 MB per bit.
+  fields:
+    - name: REGION
+      description: Cacheable region bitmask (bit N = 16 MB region starting at N×16 MB).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/CACHE_INVAL:
+  description: Cache Invalidation Control (SCU134/SCU174). Same layout as v1.
+  fields:
+    - name: ICACHE_ADDR
+      description: I-cache line address for targeted invalidation (bits [10:0]).
+      bit_offset: 0
+      bit_size: 11
+    - name: ICACHE_EN
+      description: I-cache line invalidation trigger (bit 15).
+      bit_offset: 15
+      bit_size: 1
+    - name: DCACHE_ADDR
+      description: D-cache line address for targeted invalidation (bits [26:16]).
+      bit_offset: 16
+      bit_size: 11
+    - name: DCACHE_EN
+      description: D-cache line invalidation trigger (bit 31).
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/CACHE_FUNC:
+  description: >
+    Cache Function Control Register (AST2700 v2 layout).
+    INCOMPATIBLE with ssp_v1 — bits 0-5 completely redefined.
+    No CCM or IRQ monitoring bits (those were v1 only).
+  fields:
+    - name: DCACHE_EN
+      description: D-cache enable (bit 0). Independent of I-cache.
+      bit_offset: 0
+      bit_size: 1
+    - name: ICACHE_EN
+      description: I-cache enable (bit 1). New in v2.
+      bit_offset: 1
+      bit_size: 1
+    - name: DCACHE_CLEAR
+      description: D-cache bulk clear (one-shot, bit 2).
+      bit_offset: 2
+      bit_size: 1
+    - name: ICACHE_CLEAR
+      description: I-cache bulk clear (one-shot, bit 3).
+      bit_offset: 3
+      bit_size: 1
+    - name: DCACHE_PREFETCH_CLEAR
+      description: D-cache prefetch buffer clear (one-shot, bit 4). New in v2.
+      bit_offset: 4
+      bit_size: 1
+    - name: ICACHE_PREFETCH_CLEAR
+      description: I-cache prefetch buffer clear (one-shot, bit 5). New in v2.
+      bit_offset: 5
+      bit_size: 1
+
+fieldset/VIRT_ADDR:
+  description: Virtual address for a memory window (TCM, SRAM, or DRAM).
+  fields:
+    - name: ADDR
+      description: Virtual start address (32-bit aligned).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/VIRT_SIZE:
+  description: Size of a virtual memory window.
+  fields:
+    - name: SIZE
+      description: Window size in bytes.
+      bit_offset: 0
+      bit_size: 32

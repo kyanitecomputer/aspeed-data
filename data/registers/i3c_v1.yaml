@@ -1,0 +1,1367 @@
+# DesignWare (DWC) I3C controller per-channel registers.
+#
+# Per-channel bases (AST1060):
+#   I3C0: 0x7E7A_2000
+#   I3C1: 0x7E7A_3000
+#   I3C2: 0x7E7A_4000
+#   I3C3: 0x7E7A_5000
+# Instance stride: 0x1000.
+#
+# Register layout:
+#   0x000  DEVICE_CTRL           — enable, abort, DMA, IBI policy
+#   0x004  DEVICE_ADDR           — dynamic + static address
+#   0x008  HW_CAPABILITY         — IP configuration (read-only)
+#   0x00C  CMD_QUEUE_PORT        — push 32-bit commands (write-only)
+#   0x010  RESP_QUEUE_PORT       — pop response entries (read-only)
+#   0x014  TX_DATA_PORT          — push TX FIFO data (write-only)
+#   0x014  RX_DATA_PORT          — pop RX FIFO data (read-only)
+#   0x018  IBI_QUEUE_STATUS      — pop IBI status (read-only)
+#   0x018  IBI_QUEUE_DATA        — pop IBI payload (read-only)
+#   0x01C  QUEUE_THLD_CTRL       — CmdQ/RespQ/IBI queue thresholds
+#   0x020  DATA_BUF_THLD_CTRL    — TX/RX FIFO thresholds
+#   0x024  IBI_QUEUE_CTRL        — IBI notification policy
+#   0x02C  IBI_MR_REQ_REJECT     — per-device MR rejection bitmap
+#   0x030  IBI_SIR_REQ_REJECT    — per-device SIR rejection bitmap
+#   0x034  RESET_CTRL            — software reset (queues, FIFOs, core)
+#   0x038  SLV_EVENT_CTRL        — slave event status (MWL/MRL updates, ENTAS state)
+#   0x03C  INTR_STATUS           — interrupt status (RW1C / level)
+#   0x040  INTR_STATUS_EN        — interrupt status enable mask
+#   0x044  INTR_SIGNAL_EN        — interrupt signal (pin) enable mask
+#   0x048  INTR_FORCE            — force-set interrupt status (test)
+#   0x04C  QUEUE_STATUS_LEVEL    — queue occupancy (read-only)
+#   0x050  DATA_BUF_STATUS_LEVEL — FIFO occupancy (read-only)
+#   0x054  PRESENT_STATE         — FSM state, bus ownership, SCL/SDA levels
+#   0x058  DEV_OPERATING_STATUS  — slave error bits and activity state
+#   0x05C  DEV_ADDR_TABLE_PTR    — DAT start address and depth
+#   0x060  DEV_CHAR_TABLE_PTR    — DCT start address, depth, write index
+#   0x06C  VENDOR_SPEC_REG_PTR   — vendor register start address
+#   0x070  SLV_MIPI_PID_HI       — slave Provisional ID MSB (MFG ID, type)
+#   0x074  SLV_PID_LO            — slave Provisional ID LSB (part/inst/extra)
+#   0x078  SLV_CHAR_CTRL         — slave BCR, DCR, HDR capability
+#   0x07C  SLV_MAX_LEN           — slave MRL (max read) + MWL (max write)
+#   0x080  MAX_READ_TURNAROUND   — MXDS max read turnaround (µs)
+#   0x084  MAX_DATA_SPEED        — MXDS max speed, Tsco
+#   0x08C  SLV_INTR_REQ          — slave: initiate SIR/MIR IBI
+#   0x090  SLV_TSX_SYMBL_TIMING  — TSP/TSL symbol count
+#   0x0B0  DEVICE_CTRL_EXT       — operation mode, GETACCMST ACK
+#   0x0B4  SCL_I3C_OD_TIMING     — SCL open-drain H/L counts for I3C
+#   0x0B8  SCL_I3C_PP_TIMING     — SCL push-pull H/L counts for I3C
+#   0x0BC  SCL_I2C_FM_TIMING     — SCL I2C Fast Mode H/L counts
+#   0x0C0  SCL_I2C_FMP_TIMING    — SCL I2C Fast Mode Plus H/L counts
+#   0x0C8  SCL_EXT_LCNT_TIMING   — extended SCL low counts SDR1-SDR4
+#   0x0CC  SCL_EXT_TERMN_LCNT    — HDR-TS skew + read termination low count
+#   0x0D0  SDA_HOLD_SW_DLY       — SDA hold time + PP↔OD switching delays
+#   0x0D4  BUS_FREE_TIMING       — IBI free count + master free count
+#   0x0D8  BUS_IDLE_TIMING       — bus idle count for Hot-Join
+#   0x0DC  SCL_LOW_MST_EXT_TOUT  — SCL low bus reset count
+#   0x0E0  I3C_VER_ID            — DWC version ID (ASCII, read-only)
+#   0x0E4  I3C_VER_TYPE          — DWC version type (ASCII, read-only)
+#   0x0E8  QUEUE_SIZE_CAP        — FIFO/queue depths (read-only)
+#   0x0EC  IBI_PAYLOAD_LEN       — IBI payload size (slave) + max size
+#   0x200-0x27F  DCT              — Device Characteristic Table (8 devices × 4 regs)
+#   0x280-0x29C  DAT              — Device Address Table (8 entries)
+#
+# Sources:
+#   ast1060v19.pdf  Chapter 29 – I3C Controller
+
+block/I3C:
+  description: >
+    DWC I3C per-channel registers (AST1060, 4 instances).
+    Base: 0x7E7A_2000 + N*0x1000 for instance N (0-3).
+  items:
+    - name: DEVICE_CTRL
+      description: >
+        Device control register. Enable/disable master and slave functions,
+        abort transfers, configure DMA, IBI, and addressing policies.
+      byte_offset: 0x000
+      fieldset: I3C_DEVICE_CTRL
+
+    - name: DEVICE_ADDR
+      description: >
+        Device address register. Holds dynamic address (assigned by master
+        or self-assigned for main master) and static address (slave mode).
+      byte_offset: 0x004
+      fieldset: I3C_DEVICE_ADDR
+
+    - name: HW_CAPABILITY
+      description: >
+        Hardware capability register (read-only). Reflects IP configuration:
+        supported roles, HDR modes, DMA presence, clock parameters.
+      byte_offset: 0x008
+      fieldset: I3C_HW_CAPABILITY
+
+    - name: CMD_QUEUE_PORT
+      description: >
+        Command queue port (write-only). Push 32-bit command descriptors.
+        Four formats: TC (Transfer Command, attr=0), TARG (Transfer Argument,
+        attr=1), SDA (Short Data Argument, attr=2), AAC (Address Assignment,
+        attr=3). CMD_ATTR in bits[2:0] selects format.
+      byte_offset: 0x00C
+      fieldset: I3C_CMD_PORT
+
+    - name: RESP_QUEUE_PORT
+      description: >
+        Response queue port (read-only). Pop response entries after transfer.
+        Contains error status, TID, CCC type, and data length.
+      byte_offset: 0x010
+      fieldset: I3C_RESP_PORT
+
+    - name: TX_RX_DATA_PORT
+      description: >
+        TX/RX data port. Write = push TX FIFO; read = pop RX FIFO.
+        Data must be 4-byte aligned; extra bytes at end of non-aligned
+        transfers are padding (TX) or ignored (RX).
+      byte_offset: 0x014
+      fieldset: I3C_DATA_PORT
+
+    - name: IBI_QUEUE_STATUS
+      description: >
+        IBI queue (read-only). On read, returns either IBI status word
+        (IBI_ID, DATA_LEN, ACK/NACK, LAST_STATUS) or IBI payload data.
+        Context determined by bit[24] (LAST_STATUS) of the status entry.
+      byte_offset: 0x018
+      fieldset: I3C_IBI_STATUS
+
+    - name: QUEUE_THLD_CTRL
+      description: >
+        Queue threshold control. Sets watermarks for command queue empty,
+        response queue ready, IBI status, and IBI data segment thresholds.
+      byte_offset: 0x01C
+      fieldset: I3C_QUEUE_THLD
+
+    - name: DATA_BUF_THLD_CTRL
+      description: >
+        Data buffer threshold control. Sets TX/RX FIFO watermarks that
+        trigger TX_THLD_STAT and RX_THLD_STAT interrupts, and minimum
+        fill levels before starting transfers.
+      byte_offset: 0x020
+      fieldset: I3C_DATA_BUF_THLD
+
+    - name: IBI_QUEUE_CTRL
+      description: >
+        IBI queue notification control. When NOTIFY_*_REJECTED=1, NACKed
+        Hot-Join/MR/SIR events are forwarded to the IBI FIFO with error flag.
+      byte_offset: 0x024
+      fieldset: I3C_IBI_QUEUE_CTRL
+
+    - name: IBI_MR_REQ_REJECT
+      description: >
+        Per-device Master Request rejection bitmap (master only).
+        Bit N=1: NACK MR from device N and send directed DISEC CCC.
+      byte_offset: 0x02C
+      fieldset: I3C_DEVICE_BITMAP
+
+    - name: IBI_SIR_REQ_REJECT
+      description: >
+        Per-device Slave Interrupt Request rejection bitmap (master only).
+        Bit N=1: NACK SIR from device N and send directed auto-disable DISEC.
+      byte_offset: 0x030
+      fieldset: I3C_DEVICE_BITMAP
+
+    - name: RESET_CTRL
+      description: >
+        Software reset control. Write 1 to each bit to reset the named
+        resource; bits auto-clear after reset completes (volatile).
+      byte_offset: 0x034
+      fieldset: I3C_RESET_CTRL
+
+    - name: SLV_EVENT_CTRL
+      description: >
+        Slave event control and status. Reports MWL/MRL updates from master
+        CCC, current activity state, and enabled IBI event types.
+      byte_offset: 0x038
+      fieldset: I3C_SLV_EVENT_CTRL
+
+    - name: INTR_STATUS
+      description: >
+        Interrupt status. Sticky (RW1C) bits for error/event interrupts;
+        level bits auto-clear when the condition clears (FIFO thresholds).
+      byte_offset: 0x03C
+      fieldset: I3C_INTR
+
+    - name: INTR_STATUS_EN
+      description: Interrupt status enable mask (same bit layout as INTR_STATUS).
+      byte_offset: 0x040
+      fieldset: I3C_INTR
+
+    - name: INTR_SIGNAL_EN
+      description: >
+        Interrupt signal (IRQ pin) enable mask (same bit layout as INTR_STATUS).
+        Each bit gates whether the corresponding status bit drives the IRQ pin.
+      byte_offset: 0x044
+      fieldset: I3C_INTR
+
+    - name: INTR_FORCE
+      description: >
+        Interrupt force register (write-only). Write 1 to force-set the
+        corresponding INTR_STATUS bit (for testing).
+      byte_offset: 0x048
+      fieldset: I3C_INTR
+
+    - name: QUEUE_STATUS_LEVEL
+      description: Current queue occupancy (read-only).
+      byte_offset: 0x04C
+      fieldset: I3C_QUEUE_STATUS_LEVEL
+
+    - name: DATA_BUF_STATUS_LEVEL
+      description: Current FIFO occupancy (read-only).
+      byte_offset: 0x050
+      fieldset: I3C_DATA_BUF_STATUS_LEVEL
+
+    - name: PRESENT_STATE
+      description: >
+        Current controller state (read-only). Shows whether this controller
+        is the current bus master, SCL/SDA line levels, transfer FSM state,
+        current TID, and master idle status.
+      byte_offset: 0x054
+      fieldset: I3C_PRESENT_STATE
+
+    - name: DEV_OPERATING_STATUS
+      description: >
+        Device operating status (slave mode, read-only). Reports error
+        conditions (frame error, buffer not available, data not ready,
+        overflow) and current activity mode.
+      byte_offset: 0x058
+      fieldset: I3C_DEV_OPERATING_STATUS
+
+    - name: DEV_ADDR_TABLE_PTR
+      description: Device Address Table (DAT) pointer (read-only).
+      byte_offset: 0x05C
+      fieldset: I3C_TABLE_PTR
+
+    - name: DEV_CHAR_TABLE_PTR
+      description: Device Characteristic Table (DCT) pointer and write index.
+      byte_offset: 0x060
+      fieldset: I3C_DCT_PTR
+
+    - name: SLV_MIPI_PID_HI
+      description: "Slave Provisional ID high word: MFG ID [47:33] + type selector [32]."
+      byte_offset: 0x070
+      fieldset: I3C_SLV_PID_HI
+
+    - name: SLV_PID_LO
+      description: "Slave Provisional ID low word: part ID [31:16], instance ID [15:12], extra [11:0]."
+      byte_offset: 0x074
+      fieldset: I3C_SLV_PID_LO
+
+    - name: SLV_CHAR_CTRL
+      description: Slave characteristic control (read-only). BCR, DCR, HDR capability.
+      byte_offset: 0x078
+      fieldset: I3C_SLV_CHAR
+
+    - name: SLV_MAX_LEN
+      description: Slave max read/write length (set by master via SETMRL/SETMWL CCC).
+      byte_offset: 0x07C
+      fieldset: I3C_SLV_MAX_LEN
+
+    - name: MAX_READ_TURNAROUND
+      description: MXDS max read turnaround time in microseconds (read-only, reflects input port).
+      byte_offset: 0x080
+      fieldset: I3C_MAX_RD_TURN
+
+    - name: MAX_DATA_SPEED
+      description: MXDS maximum data speed — Tsco, max read/write speeds.
+      byte_offset: 0x084
+      fieldset: I3C_MAX_DATA_SPEED
+
+    - name: SLV_INTR_REQ
+      description: >
+        Slave interrupt request (slave mode only). Write SIR=1 to initiate
+        Slave Interrupt Request IBI. MIR=1 for secondary master request.
+        IBI_STS reads completion status.
+      byte_offset: 0x08C
+      fieldset: I3C_SLV_INTR_REQ
+
+    - name: SLV_TSX_SYMBL_TIMING
+      description: TSP/TSL symbol timing. Symbol duration = count × hdr_tx_clk_period.
+      byte_offset: 0x090
+      fieldset: I3C_SLV_TSX_TIMING
+
+    - name: DEVICE_CTRL_EXT
+      description: Extended device control. Sets operation mode (master/slave) and REQMST ACK policy.
+      byte_offset: 0x0B0
+      fieldset: I3C_DEVICE_CTRL_EXT
+
+    - name: SCL_I3C_OD_TIMING
+      description: SCL open-drain timing for I3C transfers. Sets high/low period counts.
+      byte_offset: 0x0B4
+      fieldset: I3C_SCL_HILO
+
+    - name: SCL_I3C_PP_TIMING
+      description: SCL push-pull timing for I3C transfers.
+      byte_offset: 0x0B8
+      fieldset: I3C_SCL_HILO
+
+    - name: SCL_I2C_FM_TIMING
+      description: SCL timing for I2C Fast Mode (400 kHz) transfers.
+      byte_offset: 0x0BC
+      fieldset: I3C_SCL_FM
+
+    - name: SCL_I2C_FMP_TIMING
+      description: SCL timing for I2C Fast Mode Plus (1 MHz) transfers.
+      byte_offset: 0x0C0
+      fieldset: I3C_SCL_FMP
+
+    - name: SCL_EXT_LCNT_TIMING
+      description: Extended SCL low count for SDR1-SDR4 speeds (one 8-bit field per speed).
+      byte_offset: 0x0C8
+      fieldset: I3C_SCL_EXT_LCNT
+
+    - name: SCL_EXT_TERMN_LCNT
+      description: HDR-TS skew count and read termination bit low count.
+      byte_offset: 0x0CC
+      fieldset: I3C_SCL_EXT_TERMN
+
+    - name: SDA_HOLD_SW_DLY
+      description: SDA transmit hold time and PP↔OD switching delays.
+      byte_offset: 0x0D0
+      fieldset: I3C_SDA_HOLD
+
+    - name: BUS_FREE_TIMING
+      description: Bus free timing for IBI initiation (slave) and inter-transfer gap (master).
+      byte_offset: 0x0D4
+      fieldset: I3C_BUS_FREE
+
+    - name: BUS_IDLE_TIMING
+      description: Bus idle count before Hot-Join initiation (slave/non-current-master).
+      byte_offset: 0x0D8
+      fieldset: I3C_BUS_IDLE
+
+    - name: SCL_LOW_MST_EXT_TIMEOUT
+      description: Core clock count for SCL Low Bus Reset pattern generation (master).
+      byte_offset: 0x0DC
+      fieldset: I3C_SCL_LOW_TIMEOUT
+
+    - name: VER_ID
+      description: DWC I3C version ID in ASCII (read-only).
+      byte_offset: 0x0E0
+      fieldset: I3C_VERSION
+
+    - name: VER_TYPE
+      description: DWC I3C version type in ASCII (read-only).
+      byte_offset: 0x0E4
+      fieldset: I3C_VERSION
+
+    - name: QUEUE_SIZE_CAP
+      description: Queue and FIFO depth capability (read-only, reflects IP configuration).
+      byte_offset: 0x0E8
+      fieldset: I3C_QUEUE_SIZE_CAP
+
+    - name: IBI_PAYLOAD_LEN
+      description: IBI payload length — slave configurable size + hardware max size.
+      byte_offset: 0x0EC
+      fieldset: I3C_IBI_PAYLOAD_LEN
+
+    # ── Device Characteristic Table (DCT) — 8 devices × 4 registers ──────────
+    - name: DCT_DEV1_LOC1
+      description: DCT device 1 location 1 — Provisional ID bits [31:0].
+      byte_offset: 0x200
+      fieldset: I3C_DCT_PID_LO
+    - name: DCT_DEV1_LOC2
+      description: DCT device 1 location 2 — Provisional ID bits [47:32].
+      byte_offset: 0x204
+      fieldset: I3C_DCT_PID_HI
+    - name: DCT_DEV1_LOC3
+      description: DCT device 1 location 3 — BCR and DCR.
+      byte_offset: 0x208
+      fieldset: I3C_DCT_BCR_DCR
+    - name: DCT_DEV1_LOC4
+      description: DCT device 1 location 4 — assigned dynamic address.
+      byte_offset: 0x20C
+      fieldset: I3C_DCT_DYN_ADDR
+    - name: DCT_DEV2_LOC1
+      description: DCT device 2 PID[31:0].
+      byte_offset: 0x210
+      fieldset: I3C_DCT_PID_LO
+    - name: DCT_DEV2_LOC2
+      description: DCT device 2 PID[47:32].
+      byte_offset: 0x214
+      fieldset: I3C_DCT_PID_HI
+    - name: DCT_DEV2_LOC3
+      description: DCT device 2 BCR+DCR.
+      byte_offset: 0x218
+      fieldset: I3C_DCT_BCR_DCR
+    - name: DCT_DEV2_LOC4
+      description: DCT device 2 dynamic address.
+      byte_offset: 0x21C
+      fieldset: I3C_DCT_DYN_ADDR
+    - name: DCT_DEV3_LOC1
+      description: DCT device 3 PID[31:0].
+      byte_offset: 0x220
+      fieldset: I3C_DCT_PID_LO
+    - name: DCT_DEV3_LOC2
+      description: DCT device 3 PID[47:32].
+      byte_offset: 0x224
+      fieldset: I3C_DCT_PID_HI
+    - name: DCT_DEV3_LOC3
+      description: DCT device 3 BCR+DCR.
+      byte_offset: 0x228
+      fieldset: I3C_DCT_BCR_DCR
+    - name: DCT_DEV3_LOC4
+      description: DCT device 3 dynamic address.
+      byte_offset: 0x22C
+      fieldset: I3C_DCT_DYN_ADDR
+    - name: DCT_DEV4_LOC1
+      description: DCT device 4 PID[31:0].
+      byte_offset: 0x230
+      fieldset: I3C_DCT_PID_LO
+    - name: DCT_DEV4_LOC2
+      description: DCT device 4 PID[47:32].
+      byte_offset: 0x234
+      fieldset: I3C_DCT_PID_HI
+    - name: DCT_DEV4_LOC3
+      description: DCT device 4 BCR+DCR.
+      byte_offset: 0x238
+      fieldset: I3C_DCT_BCR_DCR
+    - name: DCT_DEV4_LOC4
+      description: DCT device 4 dynamic address.
+      byte_offset: 0x23C
+      fieldset: I3C_DCT_DYN_ADDR
+    - name: DCT_DEV5_LOC1
+      description: DCT device 5 PID[31:0].
+      byte_offset: 0x240
+      fieldset: I3C_DCT_PID_LO
+    - name: DCT_DEV5_LOC2
+      description: DCT device 5 PID[47:32].
+      byte_offset: 0x244
+      fieldset: I3C_DCT_PID_HI
+    - name: DCT_DEV5_LOC3
+      description: DCT device 5 BCR+DCR.
+      byte_offset: 0x248
+      fieldset: I3C_DCT_BCR_DCR
+    - name: DCT_DEV5_LOC4
+      description: DCT device 5 dynamic address.
+      byte_offset: 0x24C
+      fieldset: I3C_DCT_DYN_ADDR
+    - name: DCT_DEV6_LOC1
+      description: DCT device 6 PID[31:0].
+      byte_offset: 0x250
+      fieldset: I3C_DCT_PID_LO
+    - name: DCT_DEV6_LOC2
+      description: DCT device 6 PID[47:32].
+      byte_offset: 0x254
+      fieldset: I3C_DCT_PID_HI
+    - name: DCT_DEV6_LOC3
+      description: DCT device 6 BCR+DCR.
+      byte_offset: 0x258
+      fieldset: I3C_DCT_BCR_DCR
+    - name: DCT_DEV6_LOC4
+      description: DCT device 6 dynamic address.
+      byte_offset: 0x25C
+      fieldset: I3C_DCT_DYN_ADDR
+    - name: DCT_DEV7_LOC1
+      description: DCT device 7 PID[31:0].
+      byte_offset: 0x260
+      fieldset: I3C_DCT_PID_LO
+    - name: DCT_DEV7_LOC2
+      description: DCT device 7 PID[47:32].
+      byte_offset: 0x264
+      fieldset: I3C_DCT_PID_HI
+    - name: DCT_DEV7_LOC3
+      description: DCT device 7 BCR+DCR.
+      byte_offset: 0x268
+      fieldset: I3C_DCT_BCR_DCR
+    - name: DCT_DEV7_LOC4
+      description: DCT device 7 dynamic address.
+      byte_offset: 0x26C
+      fieldset: I3C_DCT_DYN_ADDR
+    - name: DCT_DEV8_LOC1
+      description: DCT device 8 PID[31:0].
+      byte_offset: 0x270
+      fieldset: I3C_DCT_PID_LO
+    - name: DCT_DEV8_LOC2
+      description: DCT device 8 PID[47:32].
+      byte_offset: 0x274
+      fieldset: I3C_DCT_PID_HI
+    - name: DCT_DEV8_LOC3
+      description: DCT device 8 BCR+DCR.
+      byte_offset: 0x278
+      fieldset: I3C_DCT_BCR_DCR
+    - name: DCT_DEV8_LOC4
+      description: DCT device 8 dynamic address.
+      byte_offset: 0x27C
+      fieldset: I3C_DCT_DYN_ADDR
+
+    # ── Device Address Table (DAT) — 8 entries ────────────────────────────────
+    - name: DAT_DEV1
+      description: DAT entry for device 1. Address, IBI policy, retry count.
+      byte_offset: 0x280
+      fieldset: I3C_DAT_ENTRY
+    - name: DAT_DEV2
+      description: DAT entry for device 2.
+      byte_offset: 0x284
+      fieldset: I3C_DAT_ENTRY
+    - name: DAT_DEV3
+      description: DAT entry for device 3.
+      byte_offset: 0x288
+      fieldset: I3C_DAT_ENTRY
+    - name: DAT_DEV4
+      description: DAT entry for device 4.
+      byte_offset: 0x28C
+      fieldset: I3C_DAT_ENTRY
+    - name: DAT_DEV5
+      description: DAT entry for device 5.
+      byte_offset: 0x290
+      fieldset: I3C_DAT_ENTRY
+    - name: DAT_DEV6
+      description: DAT entry for device 6.
+      byte_offset: 0x294
+      fieldset: I3C_DAT_ENTRY
+    - name: DAT_DEV7
+      description: DAT entry for device 7.
+      byte_offset: 0x298
+      fieldset: I3C_DAT_ENTRY
+    - name: DAT_DEV8
+      description: DAT entry for device 8.
+      byte_offset: 0x29C
+      fieldset: I3C_DAT_ENTRY
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/I3C_DEVICE_CTRL:
+  description: I3C device control register.
+  fields:
+    - name: I3C_BROADCAST_ADDR_INCLUDE
+      description: "Master: include 0x7E in private transfers (required for IBI arbitration)."
+      bit_offset: 0
+      bit_size: 1
+    - name: I2C_SLAVE_PRESENT
+      description: "Master: 1=legacy I2C devices present on bus (affects timing after STOP)."
+      bit_offset: 7
+      bit_size: 1
+    - name: HOT_JOIN_CTRL
+      description: "Master: 0=ACK Hot-Join; 1=NACK and send broadcast DISEC."
+      bit_offset: 8
+      bit_size: 1
+    - name: IBI_PAYLOAD_EN
+      description: "Slave: enable IBI with data payload."
+      bit_offset: 9
+      bit_size: 1
+    - name: IDLE_CNT_MULTIPLIER
+      description: "Slave: idle time multiplier for IBI timing. 0=×1, 1=×2, 2=×4, 3=×8."
+      bit_offset: 24
+      bit_size: 2
+    - name: MDB
+      description: "Slave: Mandatory Data Byte sent with IBI."
+      bit_offset: 16
+      bit_size: 8
+    - name: ADAPTIVE_I2C_I3C
+      description: "Slave: auto-detect bus mode from first transfer."
+      bit_offset: 27
+      bit_size: 1
+    - name: DMA_HANDSHAKE_EN
+      description: Enable DMA handshake interface.
+      bit_offset: 28
+      bit_size: 1
+    - name: ABORT
+      description: "Master: write 1 to abort current transfer (issues STOP after byte boundary). Auto-clears."
+      bit_offset: 29
+      bit_size: 1
+    - name: RESUME
+      description: Write 1 to resume after Halt state. Auto-clears.
+      bit_offset: 30
+      bit_size: 1
+    - name: I3C_EN
+      description: >
+        Enable controller. Master: disable waits for queues to drain + FSM idle.
+        Slave: enable waits for BUS_AVAILABLE. Read 0 when disable complete.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/I3C_DEVICE_ADDR:
+  description: I3C device address register.
+  fields:
+    - name: STATIC_ADDR
+      description: Slave static address (7-bit). Used for SETDASA response.
+      bit_offset: 0
+      bit_size: 7
+    - name: STATIC_ADDR_VALID
+      description: Slave static address valid (reflects static_addr_en input).
+      bit_offset: 15
+      bit_size: 1
+    - name: DYNAMIC_ADDR
+      description: Device dynamic address (7-bit). Set by ENTDAA/SETDASA or self-assigned.
+      bit_offset: 16
+      bit_size: 7
+    - name: DYNAMIC_ADDR_VALID
+      description: >
+        Dynamic address valid. Main master sets=1 (self-assign). Others: set by HW after ENTDAA/SETDASA.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/I3C_HW_CAPABILITY:
+  description: Hardware capability register (read-only).
+  fields:
+    - name: DEVICE_ROLE
+      description: "Configured role: 1=Master Only, 2=Prog Master-Slave, 3=Secondary Master, 4=Slave Only."
+      bit_offset: 0
+      bit_size: 3
+    - name: HDR_DDR_CAP
+      description: HDR-DDR mode supported.
+      bit_offset: 3
+      bit_size: 1
+    - name: HDR_TS_CAP
+      description: HDR-TS mode supported.
+      bit_offset: 4
+      bit_size: 1
+    - name: CLOCK_PERIOD
+      description: Reflects IC_CLK_PERIOD parameter (core clock period in ns).
+      bit_offset: 5
+      bit_size: 6
+    - name: HDR_TX_CLOCK_PERIOD
+      description: Reflects IC_HDR_TX_CLK_PERIOD parameter.
+      bit_offset: 11
+      bit_size: 6
+    - name: DMA_EN
+      description: DMA handshake interface present.
+      bit_offset: 17
+      bit_size: 1
+    - name: SLV_HJ_CAP
+      description: Slave can initiate Hot-Join.
+      bit_offset: 18
+      bit_size: 1
+    - name: SLV_IBI_CAP
+      description: Slave can initiate SIR.
+      bit_offset: 19
+      bit_size: 1
+
+fieldset/I3C_CMD_PORT:
+  description: >
+    Command queue port (write-only). Push command descriptors.
+    bits[2:0] = CMD_ATTR selects format:
+    0=Transfer Command (TC), 1=Transfer Argument (TARG),
+    2=Short Data Argument (SDA), 3=Address Assignment Command (AAC).
+  fields:
+    - name: CMD_ATTR
+      description: "Command attribute (format selector). 0=TC, 1=TARG, 2=SDA, 3=AAC."
+      bit_offset: 0
+      bit_size: 3
+    - name: DATA
+      description: Remaining 29 bits — layout varies by CMD_ATTR. See datasheet Table 29.2.
+      bit_offset: 3
+      bit_size: 29
+
+fieldset/I3C_RESP_PORT:
+  description: Response queue port (read-only). Pop one response entry per read.
+  fields:
+    - name: DL
+      description: Data length — remaining bytes (write) or actual received bytes (read); device count (AAC).
+      bit_offset: 0
+      bit_size: 16
+    - name: CCCT
+      description: CCC/HDR Header Type. Valid when TID=4'b1111.
+      bit_offset: 16
+      bit_size: 8
+    - name: TID
+      description: Transaction ID echoed from command.
+      bit_offset: 24
+      bit_size: 4
+    - name: ERR_STATUS
+      description: >
+        Error status: 0=OK, 1=CRC, 2=Parity, 3=Frame, 4=Broadcast NACK,
+        5=Addr NACK (ENTDAA), 6=RX overflow/TX underflow, 8=Aborted, 9=I2C write NACK.
+      bit_offset: 28
+      bit_size: 4
+
+fieldset/I3C_DATA_PORT:
+  description: TX/RX FIFO data port (4-byte aligned).
+  fields:
+    - name: DATA
+      description: 4 bytes of TX (write) or RX (read) data.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/I3C_IBI_STATUS:
+  description: IBI queue status/data (read-only). Returns status word or payload data.
+  fields:
+    - name: IBI_DATA_LEN
+      description: Length of IBI payload data in bytes (0 if no data).
+      bit_offset: 0
+      bit_size: 8
+    - name: IBI_ID
+      description: First byte after START = {addr[6:0], R/W}. Hot-Join has special ID.
+      bit_offset: 8
+      bit_size: 8
+    - name: LAST_STATUS
+      description: 1=this is the last status entry for this IBI (follows data entries if any).
+      bit_offset: 24
+      bit_size: 1
+    - name: ERROR
+      description: 1=error during IBI auto-command (CRC/parity, NACK, IBI buffer overflow).
+      bit_offset: 30
+      bit_size: 1
+    - name: IBI_STATUS
+      description: "IBI disposition: 0=ACK'd, 1=NACK'd."
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/I3C_QUEUE_THLD:
+  description: Queue threshold control register.
+  fields:
+    - name: CMD_EMPTY_BUF_THLD
+      description: Trigger CMD_QUEUE_READY_STAT when this many CmdQ locations are empty.
+      bit_offset: 0
+      bit_size: 8
+    - name: RESP_BUF_THLD
+      description: Trigger RESP_READY_STAT when this many RespQ entries are present.
+      bit_offset: 8
+      bit_size: 8
+    - name: IBI_DATA_THLD
+      description: IBI data segment size in DWORDs (1-31) for cut-through operation.
+      bit_offset: 16
+      bit_size: 5
+    - name: IBI_STATUS_THLD
+      description: Trigger IBI_THLD_STAT when this many IBI status entries are present.
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/I3C_DATA_BUF_THLD:
+  description: >
+    Data buffer threshold control register.
+    Encoding for each 3-bit field: 0=1, 1=4, 2=8, 3=16, 4=32, 5=64 entries.
+  fields:
+    - name: TX_EMPTY_BUF_THLD
+      description: Trigger TX_THLD_STAT when TX FIFO has this many empty locations.
+      bit_offset: 0
+      bit_size: 3
+    - name: RX_BUF_THLD
+      description: Trigger RX_THLD_STAT when RX FIFO has this many entries.
+      bit_offset: 8
+      bit_size: 3
+    - name: TX_START_THLD
+      description: Wait until TX FIFO has this many entries before starting master write.
+      bit_offset: 16
+      bit_size: 3
+    - name: RX_START_THLD
+      description: Wait until RX FIFO has this many empty locations before starting master read.
+      bit_offset: 24
+      bit_size: 3
+
+fieldset/I3C_IBI_QUEUE_CTRL:
+  description: IBI queue notification policy for rejected events.
+  fields:
+    - name: NOTIFY_HJ_REJECTED
+      description: Forward NACKed Hot-Join events to IBI FIFO with error flag.
+      bit_offset: 0
+      bit_size: 1
+    - name: NOTIFY_MR_REJECTED
+      description: Forward NACKed Master Request events to IBI FIFO with error flag.
+      bit_offset: 1
+      bit_size: 1
+    - name: NOTIFY_SIR_REJECTED
+      description: Forward NACKed SIR events to IBI FIFO with error flag.
+      bit_offset: 3
+      bit_size: 1
+
+fieldset/I3C_DEVICE_BITMAP:
+  description: Per-device bitmap (bit N = device N). Used for MR/SIR rejection.
+  fields:
+    - name: DEVICE_BITS
+      description: Per-device rejection bitmap (bit N=1 → reject/NACK device N).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/I3C_RESET_CTRL:
+  description: Software reset control. Write 1 to reset named resource; auto-clears.
+  fields:
+    - name: CORE_RST
+      description: Reset all queues and buffers.
+      bit_offset: 0
+      bit_size: 1
+    - name: CMD_QUEUE_RST
+      description: Reset command queue.
+      bit_offset: 1
+      bit_size: 1
+    - name: RESP_QUEUE_RST
+      description: Reset response queue.
+      bit_offset: 2
+      bit_size: 1
+    - name: TX_FIFO_RST
+      description: Reset TX FIFO.
+      bit_offset: 3
+      bit_size: 1
+    - name: RX_FIFO_RST
+      description: Reset RX FIFO.
+      bit_offset: 4
+      bit_size: 1
+    - name: IBI_QUEUE_RST
+      description: Reset IBI queue (master only).
+      bit_offset: 5
+      bit_size: 1
+    - name: BUS_RESET_TYPE
+      description: "Bus reset pattern type: 0=EXIT pattern, 3=SCL Low Reset pattern."
+      bit_offset: 29
+      bit_size: 2
+    - name: BUS_RESET
+      description: Initiate bus reset pattern (master only). Auto-clears when done.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/I3C_SLV_EVENT_CTRL:
+  description: Slave event control and status register.
+  fields:
+    - name: SIR_ALLOWED
+      description: SIR IBI allowed (set/cleared by master ENEC/DISEC CCC).
+      bit_offset: 0
+      bit_size: 1
+    - name: MR_ALLOWED
+      description: Master Request allowed (set/cleared by master ENEC/DISEC CCC).
+      bit_offset: 1
+      bit_size: 1
+    - name: HJ_INTR_REQ
+      description: Hot-Join interrupts allowed (set/cleared by master ENEC/DISEC CCC).
+      bit_offset: 3
+      bit_size: 1
+    - name: ACTIVITY_STATE
+      description: "Activity state from master ENTAS CCC: 0=ENTAS0, 1=ENTAS1, 2=ENTAS2, 3=ENTAS3."
+      bit_offset: 4
+      bit_size: 2
+    - name: MRL_UPDATED
+      description: SETMRL CCC received. Write 1 to clear.
+      bit_offset: 6
+      bit_size: 1
+    - name: MWL_UPDATED
+      description: SETMWL CCC received. Write 1 to clear.
+      bit_offset: 7
+      bit_size: 1
+
+fieldset/I3C_INTR:
+  description: >
+    Interrupt status/enable/signal/force register (same bit layout for all four).
+    Level bits (4,3,2,1,0) auto-clear; all others are sticky (RW1C for status).
+  fields:
+    - name: TX_THLD
+      description: TX FIFO empty locations ≥ threshold.
+      bit_offset: 0
+      bit_size: 1
+    - name: RX_THLD
+      description: RX FIFO entries ≥ threshold.
+      bit_offset: 1
+      bit_size: 1
+    - name: IBI_THLD
+      description: IBI queue entries ≥ threshold (master only).
+      bit_offset: 2
+      bit_size: 1
+    - name: CMD_QUEUE_READY
+      description: Command queue empty locations ≥ threshold.
+      bit_offset: 3
+      bit_size: 1
+    - name: RESP_READY
+      description: Response queue entries ≥ threshold.
+      bit_offset: 4
+      bit_size: 1
+    - name: TRANSFER_ABORT
+      description: Transfer aborted (master only).
+      bit_offset: 5
+      bit_size: 1
+    - name: CCC_UPDATED
+      description: Any CCC register updated by master (slave only).
+      bit_offset: 6
+      bit_size: 1
+    - name: DYN_ADDR_ASSGN
+      description: Dynamic address assigned via SETDASA or ENTDAA (slave only).
+      bit_offset: 8
+      bit_size: 1
+    - name: TRANSFER_ERR
+      description: Transfer error — see ERR_STATUS in RESP_QUEUE_PORT.
+      bit_offset: 9
+      bit_size: 1
+    - name: DEFSLV
+      description: DEFSLV CCC received.
+      bit_offset: 10
+      bit_size: 1
+    - name: READ_REQ_RECV
+      description: Master read request received while CmdQ empty (slave only).
+      bit_offset: 11
+      bit_size: 1
+    - name: IBI_UPDATED
+      description: IBI request completed and status updated (slave only).
+      bit_offset: 12
+      bit_size: 1
+    - name: BUSOWNER_UPDATED
+      description: Controller role changed (master↔slave handover).
+      bit_offset: 13
+      bit_size: 1
+    - name: BUS_RESET_DONE
+      description: SCL Low Timeout bus reset pattern complete (master only).
+      bit_offset: 15
+      bit_size: 1
+
+fieldset/I3C_QUEUE_STATUS_LEVEL:
+  description: Queue occupancy status (read-only).
+  fields:
+    - name: CMD_QUEUE_EMPTY_LOC
+      description: Number of empty locations in command queue.
+      bit_offset: 0
+      bit_size: 8
+    - name: RESP_BUF_BLR
+      description: Number of valid entries in response queue.
+      bit_offset: 8
+      bit_size: 8
+    - name: IBI_BUF_BLR
+      description: Number of valid data entries in IBI queue (master only).
+      bit_offset: 16
+      bit_size: 8
+    - name: IBI_STATUS_CNT
+      description: Number of IBI status entries in IBI queue (master only).
+      bit_offset: 24
+      bit_size: 5
+
+fieldset/I3C_DATA_BUF_STATUS_LEVEL:
+  description: FIFO occupancy status (read-only).
+  fields:
+    - name: TX_BUF_EMPTY_LOC
+      description: Number of empty locations in TX FIFO.
+      bit_offset: 0
+      bit_size: 8
+    - name: RX_BUF_BLR
+      description: Number of valid entries in RX FIFO.
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/I3C_PRESENT_STATE:
+  description: Current controller state (read-only).
+  fields:
+    - name: SCL_LINE_SIGNAL_LEVEL
+      description: Synchronized SCL input level.
+      bit_offset: 0
+      bit_size: 1
+    - name: SDA_LINE_SIGNAL_LEVEL
+      description: Synchronized SDA input level.
+      bit_offset: 1
+      bit_size: 1
+    - name: CURRENT_MASTER
+      description: 1=this controller is current bus master (owns SCL).
+      bit_offset: 2
+      bit_size: 1
+    - name: CM_TFR_STATUS
+      description: >
+        Transfer type currently executing. Master: 0=IDLE, 1=BCast_CCC_Write,
+        2=Dir_CCC_Write, 3=Dir_CCC_Read, 4=ENTDAA, 5=SETDASA, 6=Priv_I3C_SDR_Write,
+        7=Priv_I3C_SDR_Read, 8=Priv_I2C_Write, 9=Priv_I2C_Read, 10=HDR-TS_Write,
+        11=HDR-TS_Read, 12=HDR-DDR_Write, 13=HDR-DDR_Read, 14=IBI, 15=Halt.
+        Slave: 0=IDLE, 1=HJ, 2=IBI, 3=MasterWrite, 4=ReadPrefetch, 5=MasterRead, 6=Halt.
+      bit_offset: 8
+      bit_size: 6
+    - name: CM_TFR_ST_STATUS
+      description: Current master transfer FSM state (see datasheet for full encoding).
+      bit_offset: 16
+      bit_size: 6
+    - name: CMD_TID
+      description: TID of currently executing command.
+      bit_offset: 24
+      bit_size: 4
+    - name: MASTER_IDLE
+      description: 1=all queues/FIFOs empty and master FSM in IDLE.
+      bit_offset: 28
+      bit_size: 1
+
+fieldset/I3C_DEV_OPERATING_STATUS:
+  description: Device operating status (slave mode, read-only).
+  fields:
+    - name: PENDING_INTR
+      description: Reflects pending_int input port.
+      bit_offset: 0
+      bit_size: 4
+    - name: ACTIVITY_MODE
+      description: Current slave activity mode.
+      bit_offset: 6
+      bit_size: 2
+    - name: SLAVE_BUSY
+      description: Set on MRL update or error; cleared by writing RESUME=1 to DEVICE_CTRL.
+      bit_offset: 9
+      bit_size: 1
+    - name: OVERFLOW_ERR
+      description: RX overflow on master write or TX underflow on master read.
+      bit_offset: 10
+      bit_size: 1
+    - name: DATA_NOT_READY
+      description: Slave NACKed master read (CmdQ empty or threshold not met).
+      bit_offset: 11
+      bit_size: 1
+    - name: BUFFER_NOT_AVAIL
+      description: Slave NACKed master write (RX FIFO below threshold or RespQ full).
+      bit_offset: 12
+      bit_size: 1
+    - name: FRAME_ERROR
+      description: HDR-DDR/TSP/TSL frame error on private write.
+      bit_offset: 13
+      bit_size: 1
+
+fieldset/I3C_TABLE_PTR:
+  description: Device Address/Characteristic Table pointer (read-only).
+  fields:
+    - name: TABLE_START_ADDR
+      description: Start address offset of the table in the register map.
+      bit_offset: 0
+      bit_size: 16
+    - name: TABLE_DEPTH
+      description: Number of entries in the table.
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/I3C_DCT_PTR:
+  description: Device Characteristic Table pointer and current write index.
+  fields:
+    - name: TABLE_START_ADDR
+      description: Start address offset of DCT.
+      bit_offset: 0
+      bit_size: 12
+    - name: TABLE_DEPTH
+      description: Number of DCT entries (read-only).
+      bit_offset: 12
+      bit_size: 7
+    - name: PRESENT_DEV_CHAR_TABLE_INDX
+      description: Current write index into DCT (auto-increments during ENTDAA).
+      bit_offset: 19
+      bit_size: 3
+
+fieldset/I3C_SLV_PID_HI:
+  description: Slave Provisional ID high word.
+  fields:
+    - name: SLV_PID_DCR
+      description: "PID type selector (PID[32]): 0=vendor-fixed, 1=random."
+      bit_offset: 0
+      bit_size: 1
+    - name: SLV_MIPI_MFG_ID
+      description: MIPI manufacturer ID (PID[47:33]).
+      bit_offset: 1
+      bit_size: 15
+
+fieldset/I3C_SLV_PID_LO:
+  description: Slave Provisional ID low word.
+  fields:
+    - name: SLV_PID_DCR
+      description: Additional 12-bit ID (PID[11:0]).
+      bit_offset: 0
+      bit_size: 12
+    - name: SLV_INST_ID
+      description: Instance ID (PID[15:12]); reflects inst_id input.
+      bit_offset: 12
+      bit_size: 4
+    - name: SLV_PART_ID
+      description: Part ID (PID[31:16]).
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/I3C_SLV_CHAR:
+  description: Slave characteristic control (read-only). BCR, DCR, HDR capability.
+  fields:
+    - name: BCR
+      description: Bus Characteristic Register value.
+      bit_offset: 0
+      bit_size: 8
+    - name: DCR
+      description: Device Characteristic Register value.
+      bit_offset: 8
+      bit_size: 8
+    - name: HDR_CAP
+      description: "HDR capability bitmap: bit0=mode0, bit1=mode1, bit2=mode2."
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/I3C_SLV_MAX_LEN:
+  description: Slave max write/read length (set by master via SETMWL/SETMRL CCC).
+  fields:
+    - name: MWL
+      description: Max Write Length in bytes.
+      bit_offset: 0
+      bit_size: 16
+    - name: MRL
+      description: Max Read Length in bytes.
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/I3C_MAX_RD_TURN:
+  description: MXDS max read turnaround time in microseconds (read-only).
+  fields:
+    - name: MXDS_MAX_RD_TURN
+      description: Max read turnaround time (µs).
+      bit_offset: 0
+      bit_size: 24
+
+fieldset/I3C_MAX_DATA_SPEED:
+  description: MXDS maximum data speed configuration.
+  fields:
+    - name: MXDS_MAX_WR_SPEED
+      description: "Max sustained write speed: 0=12.5 MHz, 1=8 MHz, 2=6 MHz, 3=4 MHz, 4=2 MHz."
+      bit_offset: 0
+      bit_size: 3
+    - name: MXDS_MAX_RD_SPEED
+      description: Max sustained read speed (same encoding as write).
+      bit_offset: 8
+      bit_size: 3
+    - name: TSCO
+      description: "Clock-to-data turnaround: 0=8ns, 1=9ns, 2=10ns, 3=11ns, 4=12ns."
+      bit_offset: 16
+      bit_size: 3
+
+fieldset/I3C_SLV_INTR_REQ:
+  description: Slave interrupt request initiation register.
+  fields:
+    - name: SIR
+      description: Write 1 to initiate SIR IBI. Auto-clears on success.
+      bit_offset: 0
+      bit_size: 1
+    - name: SIR_CTRL
+      description: "SIR initiation mode: 0=Initiate SIR-IBI."
+      bit_offset: 1
+      bit_size: 2
+    - name: MIR
+      description: Write 1 to initiate Master Request (secondary master only).
+      bit_offset: 3
+      bit_size: 1
+    - name: IBI_STS
+      description: "IBI completion status: 1=Successful, 3=Not attempted."
+      bit_offset: 8
+      bit_size: 2
+
+fieldset/I3C_SLV_TSX_TIMING:
+  description: TSP/TSL symbol timing.
+  fields:
+    - name: SLV_TSX_SYMBL_CNT
+      description: Symbol count. Duration = count × hdr_tx_clk_period.
+      bit_offset: 0
+      bit_size: 6
+
+fieldset/I3C_DEVICE_CTRL_EXT:
+  description: Extended device control register.
+  fields:
+    - name: DEV_OPERATION_MODE
+      description: "Operation mode: 0=Master, 1=Slave. Only master role is supported."
+      bit_offset: 0
+      bit_size: 2
+    - name: REQMST_ACK_CTRL
+      description: "GETACCMST CCC response: 0=ACK, 1=NACK."
+      bit_offset: 3
+      bit_size: 1
+
+fieldset/I3C_SCL_HILO:
+  description: SCL timing — high/low period counts (one 8-bit field each).
+  fields:
+    - name: LCNT
+      description: SCL low period count (core clock periods).
+      bit_offset: 0
+      bit_size: 8
+    - name: HCNT
+      description: SCL high period count (core clock periods).
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/I3C_SCL_FM:
+  description: SCL timing for I2C Fast Mode (16-bit H/L counts).
+  fields:
+    - name: I2C_FM_LCNT
+      description: SCL FM low period count.
+      bit_offset: 0
+      bit_size: 16
+    - name: I2C_FM_HCNT
+      description: SCL FM high period count.
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/I3C_SCL_FMP:
+  description: SCL timing for I2C Fast Mode Plus (8-bit H/L counts with upper reserved).
+  fields:
+    - name: I2C_FMP_LCNT
+      description: SCL FM+ low period count.
+      bit_offset: 0
+      bit_size: 16
+    - name: I2C_FMP_HCNT
+      description: SCL FM+ high period count.
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/I3C_SCL_EXT_LCNT:
+  description: Extended SCL low count for SDR1-SDR4 speeds (one byte per speed tier).
+  fields:
+    - name: I3C_EXT_LCNT_1
+      description: Extra SCL low count for SDR1.
+      bit_offset: 0
+      bit_size: 8
+    - name: I3C_EXT_LCNT_2
+      description: Extra SCL low count for SDR2.
+      bit_offset: 8
+      bit_size: 8
+    - name: I3C_EXT_LCNT_3
+      description: Extra SCL low count for SDR3.
+      bit_offset: 16
+      bit_size: 8
+    - name: I3C_EXT_LCNT_4
+      description: Extra SCL low count for SDR4.
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/I3C_SCL_EXT_TERMN:
+  description: HDR-TS skew count and read termination bit low count.
+  fields:
+    - name: I3C_EXT_TERMN_LCNT
+      description: Read termination bit low count extension.
+      bit_offset: 0
+      bit_size: 4
+    - name: I3C_TS_SKEW_CNT
+      description: HDR ternary skew count (core clocks) for bus turn-around detection.
+      bit_offset: 16
+      bit_size: 4
+
+fieldset/I3C_SDA_HOLD:
+  description: SDA hold time and PP↔OD mode switching delays.
+  fields:
+    - name: SDA_OD_PP_SWITCH_DLY
+      description: Delay sda_out vs sda_oe when switching OD→PP (valid 0-4).
+      bit_offset: 0
+      bit_size: 3
+    - name: SDA_PP_OD_SWITCH_DLY
+      description: Delay sda_oe vs sda_out when switching PP→OD (valid 0-4).
+      bit_offset: 8
+      bit_size: 3
+    - name: SDA_TX_HOLD
+      description: SDA transmit hold time vs SCL edge in FM/FM+/SDR/DDR (1-7 core clocks).
+      bit_offset: 16
+      bit_size: 3
+
+fieldset/I3C_BUS_FREE:
+  description: Bus free timing for IBI initiation and inter-transfer gap.
+  fields:
+    - name: I3C_MST_FREE
+      description: Master free count after STOP before next transfer.
+      bit_offset: 0
+      bit_size: 16
+    - name: I3C_IBI_FREE
+      description: Slave/non-current-master bus available count for IBI initiation.
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/I3C_BUS_IDLE:
+  description: Bus idle count before Hot-Join initiation.
+  fields:
+    - name: BUS_IDLE_TIME
+      description: Idle count (slave/non-current-master before initiating Hot-Join).
+      bit_offset: 0
+      bit_size: 20
+
+fieldset/I3C_SCL_LOW_TIMEOUT:
+  description: Core clock count for SCL Low Bus Reset pattern generation.
+  fields:
+    - name: SCL_LOW_MST_TIMEOUT_COUNT
+      description: Clock count for SCL low bus reset pattern (master).
+      bit_offset: 0
+      bit_size: 26
+
+fieldset/I3C_VERSION:
+  description: DWC version ID or type in ASCII (read-only, 4 bytes).
+  fields:
+    - name: VER
+      description: Version identifier as 4 ASCII characters.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/I3C_QUEUE_SIZE_CAP:
+  description: "Queue and FIFO depth capability (read-only). Encoding: 0=2, 1=4, 2=8, 3=16, 5=64 DWORDs."
+  fields:
+    - name: TX_BUF_SIZE
+      description: TX FIFO depth (encoded).
+      bit_offset: 0
+      bit_size: 4
+    - name: RX_BUF_SIZE
+      description: RX FIFO depth (encoded).
+      bit_offset: 4
+      bit_size: 4
+    - name: CMD_BUF_SIZE
+      description: Command queue depth (encoded).
+      bit_offset: 8
+      bit_size: 4
+    - name: RESP_BUF_SIZE
+      description: Response queue depth (encoded).
+      bit_offset: 12
+      bit_size: 4
+    - name: IBI_BUF_SIZE
+      description: IBI queue depth (encoded).
+      bit_offset: 16
+      bit_size: 4
+
+fieldset/I3C_IBI_PAYLOAD_LEN:
+  description: IBI payload length configuration and capability.
+  fields:
+    - name: IBI_MAX_PAYLOAD_SIZE
+      description: Maximum IBI payload size (set by master SETMRL, read-only to firmware).
+      bit_offset: 0
+      bit_size: 8
+    - name: IBI_PAYLOAD_SIZE
+      description: IBI payload size in slave mode (must be ≤ IBI_MAX_PAYLOAD_SIZE).
+      bit_offset: 16
+      bit_size: 8
+
+# ── DCT entry fieldsets ────────────────────────────────────────────────────────
+
+fieldset/I3C_DCT_PID_LO:
+  description: DCT entry location 1 — Provisional ID bits [31:0].
+  fields:
+    - name: PID_LO
+      description: Provisional ID lower 32 bits.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/I3C_DCT_PID_HI:
+  description: DCT entry location 2 — Provisional ID bits [47:32].
+  fields:
+    - name: PID_HI
+      description: Provisional ID upper 16 bits.
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/I3C_DCT_BCR_DCR:
+  description: DCT entry location 3 — BCR and DCR values.
+  fields:
+    - name: DCR
+      description: Device Characteristic Register value.
+      bit_offset: 0
+      bit_size: 8
+    - name: BCR
+      description: Bus Characteristic Register value.
+      bit_offset: 8
+      bit_size: 8
+
+fieldset/I3C_DCT_DYN_ADDR:
+  description: DCT entry location 4 — assigned dynamic address.
+  fields:
+    - name: DEV_DYNAMIC_ADDR
+      description: Assigned dynamic address (7-bit).
+      bit_offset: 0
+      bit_size: 8
+
+# ── DAT entry fieldset ─────────────────────────────────────────────────────────
+
+fieldset/I3C_DAT_ENTRY:
+  description: >
+    Device Address Table entry. One per target device. Holds dynamic address
+    with odd-parity, static address, and per-device IBI/MR/SIR policy.
+  fields:
+    - name: DEV_STATIC_ADDR
+      description: Device static I2C/I3C address (7-bit).
+      bit_offset: 0
+      bit_size: 7
+    - name: IBI_WITH_DATA
+      description: 1=IBI from this device includes mandatory data byte(s) (T-Bit continuation).
+      bit_offset: 12
+      bit_size: 1
+    - name: SIR_REJECT
+      description: "0=ACK SIR; 1=NACK and send directed auto-disable DISEC."
+      bit_offset: 13
+      bit_size: 1
+    - name: MR_REJECT
+      description: "0=ACK master request; 1=NACK and send directed DISEC."
+      bit_offset: 14
+      bit_size: 1
+    - name: DEV_DYNAMIC_ADDR
+      description: Dynamic address with odd parity. bit[23]=parity, bits[22:16]=addr[6:0].
+      bit_offset: 16
+      bit_size: 8
+    - name: DEV_NACK_RETRY_CNT
+      description: Auto-retry count when device NACKs address (0=none, 1-3 retries).
+      bit_offset: 29
+      bit_size: 2
+    - name: LEGACY_I2C_DEVICE
+      description: 1=this is a legacy I2C device.
+      bit_offset: 31
+      bit_size: 1

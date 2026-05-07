@@ -1,0 +1,124 @@
+# AST2500 / AST2400 ColdFire VIC (CVIC) register definitions.
+#
+# The CVIC is the interrupt controller for the ColdFire coprocessor embedded
+# in AST2400 and AST2500 SoCs.  It provides 32 IRQ sources.
+#
+# Physical base address (BMC view): 0x1E6C2000
+# ColdFire virtual address (default segment map): 0x2C2000
+#
+# Register layout has gaps:
+#   0x04: reserved
+#   0x0C: reserved
+#   0x20: reserved
+#   0x30, 0x34: reserved
+#
+# Sources:
+#   AST2500 datasheet (ast2500v18): Chapter 9 – ColdFire interrupt controller
+#   AST2400 datasheet (ast2400v14): Chapter 9 – ColdFire interrupt controller
+
+block/CVIC:
+  description: >
+    ColdFire VIC – interrupt controller for the AST2400/AST2500 ColdFire coprocessor.
+    32 IRQ sources. Physical base: 0x1E6C2000 (BMC view).
+  items:
+    - name: IRQ_STATUS
+      description: >
+        IRQ Status Register (CVIC00). Read-only.
+        Bit N = 1 when IRQ N is asserted and enabled (INT_ENABLE[N]=1).
+        Masked view: software should read this to determine pending IRQs.
+      byte_offset: 0x00
+      fieldset: CVIC_IRQ32
+
+    - name: RAW_STATUS
+      description: >
+        Raw Interrupt Status Register (CVIC08). Read-only.
+        Bit N = 1 when IRQ N is asserted regardless of INT_ENABLE masking.
+        Useful for debugging spurious interrupts.
+      byte_offset: 0x08
+      fieldset: CVIC_IRQ32
+
+    - name: INT_ENABLE
+      description: >
+        Interrupt Enable Register (CVIC10). Read/write.
+        Write 1 to enable the corresponding IRQ source.
+        Write 0 to mask it.  Read returns the current enable state.
+      byte_offset: 0x10
+      fieldset: CVIC_IRQ32
+
+    - name: INT_ENABLE_CLR
+      description: >
+        Interrupt Enable Clear Register (CVIC14). Write-only.
+        Write 1 to clear (mask) the corresponding IRQ source.
+        Equivalent to writing 0 to INT_ENABLE[N] but without a read-modify-write.
+      byte_offset: 0x14
+      fieldset: CVIC_IRQ32
+
+    - name: SW_INT
+      description: >
+        Software Interrupt Register (CVIC18). Write-only.
+        Write 1 to trigger a software-generated interrupt for the corresponding source.
+        Used for inter-processor signalling and testing.
+      byte_offset: 0x18
+      fieldset: CVIC_IRQ32
+
+    - name: SW_INT_CLR
+      description: >
+        Software Interrupt Clear Register (CVIC1C). Write-only.
+        Write 1 to clear a software-triggered interrupt.
+      byte_offset: 0x1C
+      fieldset: CVIC_IRQ32
+
+    - name: INT_SENSITIVITY
+      description: >
+        Interrupt Sensitivity Register (CVIC24). Read/write.
+        Bit N = 0: level-triggered (default).
+        Bit N = 1: edge-triggered.
+        Must be configured before enabling the IRQ source.
+      byte_offset: 0x24
+      fieldset: CVIC_IRQ32
+
+    - name: BOTH_EDGE
+      description: >
+        Both-Edge Interrupt Register (CVIC28). Read/write.
+        Valid only for edge-triggered sources (INT_SENSITIVITY[N]=1).
+        Bit N = 1: trigger on both rising and falling edges.
+        Bit N = 0: trigger on edge polarity set by INT_EVENT[N].
+      byte_offset: 0x28
+      fieldset: CVIC_IRQ32
+
+    - name: INT_EVENT
+      description: >
+        Interrupt Event Register (CVIC2C). Read/write.
+        Bit N = 0: active-low / falling-edge trigger.
+        Bit N = 1: active-high / rising-edge trigger.
+        Ignored for sources with BOTH_EDGE[N]=1.
+      byte_offset: 0x2C
+      fieldset: CVIC_IRQ32
+
+    - name: EDGE_INT_CLR
+      description: >
+        Edge Interrupt Clear Register (CVIC38). Write-only.
+        Write 1 to acknowledge and clear a latched edge interrupt.
+        Has no effect on level-triggered sources.
+      byte_offset: 0x38
+      fieldset: CVIC_IRQ32
+
+    - name: EDGE_INT_STATUS
+      description: >
+        Edge Interrupt Status Register (CVIC3C). Read-only.
+        Bit N = 1 when an edge has been latched for an edge-triggered source
+        and has not yet been cleared via EDGE_INT_CLR.
+      byte_offset: 0x3C
+      fieldset: CVIC_IRQ32
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/CVIC_IRQ32:
+  description: 32-bit bitmask — one bit per CVIC IRQ source (IRQ 0 = bit 0).
+  fields:
+    - name: IRQ
+      description: >
+        IRQ bitmask. Bit N corresponds to IRQ source N (0–31).
+        Meaning depends on the register (enable, status, clear, sensitivity, event).
+      bit_offset: 0
+      bit_size: 32

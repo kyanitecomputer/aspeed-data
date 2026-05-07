@@ -1,0 +1,188 @@
+# AST2500 ColdFire coprocessor control registers.
+#
+# These registers live in the SCU (System Control Unit) at offsets 0x100–0x128.
+# Physical address (BMC view): SCU base 0x1E6E2000 + 0x100 = 0x1E6E2100.
+# ColdFire virtual address (default segment map): 0x2E2100.
+#
+# The ColdFire coprocessor on AST2500 has a 24-bit address space.  The 9
+# segment registers each map a 64 KB window of the ColdFire address space
+# to a corresponding 64 KB window in the BMC 32-bit address space.
+#
+# Segment mapping (SCU1xx):
+#   SEG0_BASE: ColdFire address 0x000000–0x00FFFF  (local ROM / first segment)
+#   SEG1_BASE: ColdFire address 0x010000–0x01FFFF
+#   ...
+#   SEG8_BASE: ColdFire address 0x080000–0x08FFFF
+#   Higher addresses follow the same pattern in hardware; only 9 are wired here.
+#
+# Cache control:
+#   CACHE_CTRL.GLOBAL_EN enables the ColdFire instruction cache globally.
+#   SEGn_CACHE_EN enables caching for the window mapped by SEGn_BASE.
+#
+# Sources:
+#   AST2500 datasheet (ast2500v18): Chapter 5 – SCU (registers SCU100–SCU128)
+
+block/COPROC:
+  description: >
+    AST2500 ColdFire coprocessor control registers (SCU offset 0x100).
+    Physical base (BMC): 0x1E6E2100. ColdFire virtual (default map): 0x2E2100.
+    9 segment registers map 64 KB ColdFire windows to BMC address space.
+  items:
+    - name: CTRL
+      description: >
+        ColdFire Coprocessor Control Register (SCU100).
+        Controls enable, reset, and debug mode of the ColdFire core.
+      byte_offset: 0x00
+      fieldset: COPROC_CTRL
+
+    - name: SEG0_BASE
+      description: >
+        Segment 0 Base Register (SCU104).
+        Maps ColdFire address range 0x000000–0x00FFFF to BMC address space.
+        BASE[31:20] selects the 1 MB-aligned BMC target; ENDIAN_SWAP swaps bytes.
+      byte_offset: 0x04
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG1_BASE
+      description: Segment 1 Base Register (SCU108). Maps ColdFire 0x010000–0x01FFFF.
+      byte_offset: 0x08
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG2_BASE
+      description: Segment 2 Base Register (SCU10C). Maps ColdFire 0x020000–0x02FFFF.
+      byte_offset: 0x0C
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG3_BASE
+      description: Segment 3 Base Register (SCU110). Maps ColdFire 0x030000–0x03FFFF.
+      byte_offset: 0x10
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG4_BASE
+      description: Segment 4 Base Register (SCU114). Maps ColdFire 0x040000–0x04FFFF.
+      byte_offset: 0x14
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG5_BASE
+      description: Segment 5 Base Register (SCU118). Maps ColdFire 0x050000–0x05FFFF.
+      byte_offset: 0x18
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG6_BASE
+      description: Segment 6 Base Register (SCU11C). Maps ColdFire 0x060000–0x06FFFF.
+      byte_offset: 0x1C
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG7_BASE
+      description: Segment 7 Base Register (SCU120). Maps ColdFire 0x070000–0x07FFFF.
+      byte_offset: 0x20
+      fieldset: COPROC_SEG_BASE
+
+    - name: SEG8_BASE
+      description: Segment 8 Base Register (SCU124). Maps ColdFire 0x080000–0x08FFFF.
+      byte_offset: 0x24
+      fieldset: COPROC_SEG_BASE
+
+    - name: CACHE_CTRL
+      description: >
+        Cache Control Register (SCU128).
+        GLOBAL_EN enables the ColdFire instruction cache.
+        SEGn_CACHE_EN enables caching for the corresponding segment window.
+      byte_offset: 0x28
+      fieldset: COPROC_CACHE_CTRL
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/COPROC_CTRL:
+  description: ColdFire Coprocessor Control Register (SCU100).
+  fields:
+    - name: EN
+      description: >
+        ColdFire Enable.
+        0 = coprocessor held in reset (default after power-on);
+        1 = coprocessor released from reset and may begin execution.
+        Set only after programming segment registers and loading firmware.
+      bit_offset: 0
+      bit_size: 1
+    - name: RESET
+      description: >
+        ColdFire Software Reset.
+        Write 1 to assert reset; write 0 to release.
+        EN must be 0 before asserting RESET.
+      bit_offset: 1
+      bit_size: 1
+    - name: DEBUG_EN
+      description: >
+        ColdFire Debug Enable.
+        1 = enable BDM (Background Debug Mode) interface on the debug pins.
+        Must be set before releasing RESET for debug sessions.
+      bit_offset: 2
+      bit_size: 1
+
+fieldset/COPROC_SEG_BASE:
+  description: >
+    Segment Base Register — maps a 64 KB ColdFire window to BMC address space.
+    BASE[31:20] is the upper 12 bits of the 32-bit BMC target address (1 MB-aligned).
+    ENDIAN_SWAP[0] swaps byte order on reads/writes through this segment.
+  fields:
+    - name: ENDIAN_SWAP
+      description: >
+        Byte-endian swap.
+        0 = pass bytes unchanged (little-endian view of BMC peripherals);
+        1 = swap bytes (big-endian ColdFire accessing little-endian BMC peripherals).
+        Set to 1 for most peripheral windows when running big-endian firmware.
+      bit_offset: 0
+      bit_size: 1
+    - name: BASE
+      description: >
+        BMC target base address bits [31:20] (1 MB-aligned).
+        Example: to map ColdFire segment to BMC 0x1E780000, set BASE = 0x1E7.
+      bit_offset: 20
+      bit_size: 12
+
+fieldset/COPROC_CACHE_CTRL:
+  description: ColdFire Cache Control Register (SCU128).
+  fields:
+    - name: GLOBAL_EN
+      description: >
+        Global instruction cache enable.
+        0 = cache disabled (all fetches go to BMC memory);
+        1 = cache enabled for segments with SEGn_CACHE_EN=1.
+      bit_offset: 0
+      bit_size: 1
+    - name: SEG0_CACHE_EN
+      description: Enable instruction cache for segment 0 window.
+      bit_offset: 1
+      bit_size: 1
+    - name: SEG1_CACHE_EN
+      description: Enable instruction cache for segment 1 window.
+      bit_offset: 2
+      bit_size: 1
+    - name: SEG2_CACHE_EN
+      description: Enable instruction cache for segment 2 window.
+      bit_offset: 3
+      bit_size: 1
+    - name: SEG3_CACHE_EN
+      description: Enable instruction cache for segment 3 window.
+      bit_offset: 4
+      bit_size: 1
+    - name: SEG4_CACHE_EN
+      description: Enable instruction cache for segment 4 window.
+      bit_offset: 5
+      bit_size: 1
+    - name: SEG5_CACHE_EN
+      description: Enable instruction cache for segment 5 window.
+      bit_offset: 6
+      bit_size: 1
+    - name: SEG6_CACHE_EN
+      description: Enable instruction cache for segment 6 window.
+      bit_offset: 7
+      bit_size: 1
+    - name: SEG7_CACHE_EN
+      description: Enable instruction cache for segment 7 window.
+      bit_offset: 8
+      bit_size: 1
+    - name: SEG8_CACHE_EN
+      description: Enable instruction cache for segment 8 window.
+      bit_offset: 9
+      bit_size: 1
