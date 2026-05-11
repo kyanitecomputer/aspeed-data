@@ -1,8 +1,9 @@
 [workspace]
 members = [
     "aspeed-data-gen",
-    "aspeed-pac",
 ]
+# aspeed-pac is its own standalone workspace (no external path deps).
+# Check it with: cargo check --manifest-path aspeed-pac/Cargo.toml ...
 resolver = "2"
 
 [profile.release]

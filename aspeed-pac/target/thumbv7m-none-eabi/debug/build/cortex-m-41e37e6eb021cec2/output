@@ -1,0 +1,4 @@
+cargo:rustc-link-lib=static=cortex-m
+cargo:rustc-link-search=/home/mdr164/private/kyanite/aspeed-data/aspeed-pac/target/thumbv7m-none-eabi/debug/build/cortex-m-41e37e6eb021cec2/out
+cargo:rustc-cfg=cortex_m
+cargo:rustc-cfg=armv7m

@@ -1,3 +1,7 @@
+# aspeed-pac is a standalone workspace so it can be checked independently
+# of aspeed-data-gen (which has an external path dep on chiptool).
+[workspace]
+
 [package]
 name        = "aspeed-pac"
 version     = "0.1.0"
