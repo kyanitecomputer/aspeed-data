@@ -2,7 +2,7 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
-//!Peripheral access API (generated using chiptool v0.1.0 (f57dd3c 2026-04-21))
+//!Peripheral access API (generated using chiptool v0.1.0 (untracked))
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Interrupt {
@@ -482,16 +482,26 @@ mod _vectors {
         Vector { _handler: MAC1 },
         Vector { _handler: MAC2 },
         Vector { _handler: HACE },
-        Vector { _handler: USB2_HUB_HOST },
+        Vector {
+            _handler: USB2_HUB_HOST,
+        },
         Vector { _handler: XDMA },
-        Vector { _handler: VIDEO_ENGINE },
+        Vector {
+            _handler: VIDEO_ENGINE,
+        },
         Vector { _handler: UART5 },
-        Vector { _handler: USB_HID_HOST2 },
-        Vector { _handler: USB1_HOST },
+        Vector {
+            _handler: USB_HID_HOST2,
+        },
+        Vector {
+            _handler: USB1_HOST,
+        },
         Vector { _handler: GPIO18 },
         Vector { _handler: SCU },
         Vector { _handler: RTC },
-        Vector { _handler: GRAPHICS_CRT },
+        Vector {
+            _handler: GRAPHICS_CRT,
+        },
         Vector { _handler: EMMC },
         Vector { _handler: TIMER1 },
         Vector { _handler: TIMER2 },
@@ -502,12 +512,20 @@ mod _vectors {
         Vector { _handler: TIMER7 },
         Vector { _handler: TIMER8 },
         Vector { _handler: WDT },
-        Vector { _handler: GRAPHICS_2D },
+        Vector {
+            _handler: GRAPHICS_2D,
+        },
         Vector { _handler: MCTP },
-        Vector { _handler: JTAG1_MASTER },
+        Vector {
+            _handler: JTAG1_MASTER,
+        },
         Vector { _handler: AHBC },
-        Vector { _handler: PCIE_BRIDGE_T },
-        Vector { _handler: DISPLAYPORT },
+        Vector {
+            _handler: PCIE_BRIDGE_T,
+        },
+        Vector {
+            _handler: DISPLAYPORT,
+        },
         Vector { _reserved: 0 },
         Vector { _handler: MAC3 },
         Vector { _handler: MAC4 },
@@ -521,16 +539,26 @@ mod _vectors {
         Vector { _handler: SCU2 },
         Vector { _handler: ESPI },
         Vector { _handler: SD_SDIO },
-        Vector { _handler: PWM_TACHO },
-        Vector { _handler: SYS_WAKEUP },
+        Vector {
+            _handler: PWM_TACHO,
+        },
+        Vector {
+            _handler: SYS_WAKEUP,
+        },
         Vector { _handler: ADC },
         Vector { _handler: UART1 },
         Vector { _handler: UART2 },
         Vector { _handler: UART3 },
         Vector { _handler: UART4 },
-        Vector { _handler: SGPIO_MASTER },
-        Vector { _handler: SGPIO_SLAVE },
-        Vector { _handler: JTAG2_MASTER },
+        Vector {
+            _handler: SGPIO_MASTER,
+        },
+        Vector {
+            _handler: SGPIO_SLAVE,
+        },
+        Vector {
+            _handler: JTAG2_MASTER,
+        },
         Vector { _handler: MAILBOX },
         Vector { _handler: AHBC2 },
         Vector { _handler: UART_DMA },
@@ -607,14 +635,30 @@ mod _vectors {
         Vector { _handler: MAC_PHY1 },
         Vector { _handler: MAC_PHY2 },
         Vector { _handler: MAC_PHY3 },
-        Vector { _handler: GPIO_DIRECT0 },
-        Vector { _handler: GPIO_DIRECT1 },
-        Vector { _handler: GPIO_DIRECT2 },
-        Vector { _handler: GPIO_DIRECT3 },
-        Vector { _handler: GPIO_DIRECT4 },
-        Vector { _handler: GPIO_DIRECT5 },
-        Vector { _handler: GPIO_DIRECT6 },
-        Vector { _handler: GPIO_DIRECT7 },
+        Vector {
+            _handler: GPIO_DIRECT0,
+        },
+        Vector {
+            _handler: GPIO_DIRECT1,
+        },
+        Vector {
+            _handler: GPIO_DIRECT2,
+        },
+        Vector {
+            _handler: GPIO_DIRECT3,
+        },
+        Vector {
+            _handler: GPIO_DIRECT4,
+        },
+        Vector {
+            _handler: GPIO_DIRECT5,
+        },
+        Vector {
+            _handler: GPIO_DIRECT6,
+        },
+        Vector {
+            _handler: GPIO_DIRECT7,
+        },
         Vector { _handler: KCS1 },
         Vector { _handler: KCS2 },
         Vector { _handler: KCS3 },
@@ -623,7 +667,9 @@ mod _vectors {
         Vector { _handler: BT },
         Vector { _handler: KCS7 },
         Vector { _handler: SNOOP_PW },
-        Vector { _handler: POST_CODE_FIFO },
+        Vector {
+            _handler: POST_CODE_FIFO,
+        },
         Vector { _handler: VUART1 },
         Vector { _handler: VUART2 },
         Vector { _reserved: 0 },
@@ -636,31 +682,65 @@ mod _vectors {
         Vector { _reserved: 0 },
         Vector { _reserved: 0 },
         Vector { _reserved: 0 },
-        Vector { _handler: FWSPIWP_N },
+        Vector {
+            _handler: FWSPIWP_N,
+        },
         Vector { _handler: ECC_RSA },
-        Vector { _handler: BOOT_EMMC },
+        Vector {
+            _handler: BOOT_EMMC,
+        },
         Vector {
             _handler: INTERNAL_BRIDGE,
         },
         Vector { _handler: RVAS_VGA },
         Vector { _handler: PCIE_LPC },
-        Vector { _handler: LPC_MAILBOX },
+        Vector {
+            _handler: LPC_MAILBOX,
+        },
         Vector { _handler: LPC_SWC },
-        Vector { _handler: PCIE_BRIDGE_L },
-        Vector { _handler: PCIE_BRIDGE_H },
+        Vector {
+            _handler: PCIE_BRIDGE_L,
+        },
+        Vector {
+            _handler: PCIE_BRIDGE_H,
+        },
         Vector { _reserved: 0 },
-        Vector { _handler: PCIE_LPC1 },
-        Vector { _handler: PCIE_LPC2 },
-        Vector { _handler: PCIE_LPC3 },
-        Vector { _handler: PCIE_LPC4 },
-        Vector { _handler: PCIE_LPC5 },
-        Vector { _handler: PCIE_LPC6 },
-        Vector { _handler: PCIE_LPC7 },
-        Vector { _handler: PCIE_LPC8 },
-        Vector { _handler: PCIE_LPC9 },
-        Vector { _handler: PCIE_LPC10 },
-        Vector { _handler: PCIE_LPC11 },
-        Vector { _handler: PCIE_LPC12 },
+        Vector {
+            _handler: PCIE_LPC1,
+        },
+        Vector {
+            _handler: PCIE_LPC2,
+        },
+        Vector {
+            _handler: PCIE_LPC3,
+        },
+        Vector {
+            _handler: PCIE_LPC4,
+        },
+        Vector {
+            _handler: PCIE_LPC5,
+        },
+        Vector {
+            _handler: PCIE_LPC6,
+        },
+        Vector {
+            _handler: PCIE_LPC7,
+        },
+        Vector {
+            _handler: PCIE_LPC8,
+        },
+        Vector {
+            _handler: PCIE_LPC9,
+        },
+        Vector {
+            _handler: PCIE_LPC10,
+        },
+        Vector {
+            _handler: PCIE_LPC11,
+        },
+        Vector {
+            _handler: PCIE_LPC12,
+        },
         Vector { _handler: IPC0 },
         Vector { _handler: IPC1 },
         Vector { _handler: IPC2 },
@@ -683,20 +763,12 @@ pub use cortex_m_rt::interrupt;
 #[cfg(feature = "rt")]
 pub use Interrupt as interrupt;
 pub const IPC: ipc_v1::IPC = unsafe { ipc_v1::IPC::from_ptr(0x7e6c_0000usize as _) };
-pub const CLOCK: clock_v1::CLOCK = unsafe {
-    clock_v1::CLOCK::from_ptr(0x7e6e_2000usize as _)
-};
+pub const CLOCK: clock_v1::CLOCK = unsafe { clock_v1::CLOCK::from_ptr(0x7e6e_2000usize as _) };
 pub const SSP: ssp_v1::SSP = unsafe { ssp_v1::SSP::from_ptr(0x7e6e_2a00usize as _) };
-pub const GPIO: gpio_v1::GPIO = unsafe {
-    gpio_v1::GPIO::from_ptr(0x7e78_0000usize as _)
-};
-pub const TIMER: timer_v1::TIMER = unsafe {
-    timer_v1::TIMER::from_ptr(0x7e78_2000usize as _)
-};
+pub const GPIO: gpio_v1::GPIO = unsafe { gpio_v1::GPIO::from_ptr(0x7e78_0000usize as _) };
+pub const TIMER: timer_v1::TIMER = unsafe { timer_v1::TIMER::from_ptr(0x7e78_2000usize as _) };
 pub const WDT0: wdt_v1::WDT = unsafe { wdt_v1::WDT::from_ptr(0x7e78_5000usize as _) };
-pub const UART11: uart_v1::UART = unsafe {
-    uart_v1::UART::from_ptr(0x7e79_0500usize as _)
-};
+pub const UART11: uart_v1::UART = unsafe { uart_v1::UART::from_ptr(0x7e79_0500usize as _) };
 /// Number of priority bits implemented by the NVIC
 #[cfg(feature = "rt")]
 pub const NVIC_PRIO_BITS: u8 = 3;
@@ -719,69 +791,43 @@ pub mod clock_v1 {
         }
         ///Clock Stop Control Group 0 – Set Register (SCU080). Write 1 to any bit to STOP (gate) the corresponding clock. Write 0 has no effect. Bits 0–31 match ASPEED_CLK_GRP_0_OFFSET.
         #[inline(always)]
-        pub const fn CLK_STOP0_SET(
-            self,
-        ) -> crate::common::Reg<CLK_STOP0, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _)
-            }
+        pub const fn CLK_STOP0_SET(self) -> crate::common::Reg<CLK_STOP0, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _) }
         }
         ///Clock Stop Control Group 0 – Clear Register (SCU084). Write 1 to any bit to START (un-gate) the corresponding clock. Write 0 has no effect. Same bit assignment as CLK_STOP0_SET.
         #[inline(always)]
-        pub const fn CLK_STOP0_CLR(
-            self,
-        ) -> crate::common::Reg<CLK_STOP0, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _)
-            }
+        pub const fn CLK_STOP0_CLR(self) -> crate::common::Reg<CLK_STOP0, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _) }
         }
         ///Clock Stop Control Group 1 – Set Register (SCU090). Write 1 to STOP the corresponding clock. Bits 0–30 map to ASPEED_CLK_GRP_1_OFFSET+0 through ASPEED_CLK_GRP_1_OFFSET+30.
         #[inline(always)]
-        pub const fn CLK_STOP1_SET(
-            self,
-        ) -> crate::common::Reg<CLK_STOP1, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x90usize) as _)
-            }
+        pub const fn CLK_STOP1_SET(self) -> crate::common::Reg<CLK_STOP1, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x90usize) as _) }
         }
         ///Clock Stop Control Group 1 – Clear Register (SCU094). Write 1 to START the corresponding clock.
         #[inline(always)]
-        pub const fn CLK_STOP1_CLR(
-            self,
-        ) -> crate::common::Reg<CLK_STOP1, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x94usize) as _)
-            }
+        pub const fn CLK_STOP1_CLR(self) -> crate::common::Reg<CLK_STOP1, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x94usize) as _) }
         }
         ///APLL Parameter Register (SCU210). Controls the Audio PLL frequency: f_APLL = 25 MHz × (M+1) / ((N+1) × (P+1)). When BYPASS=1 the PLL is bypassed and f_APLL = 25 MHz.
         #[inline(always)]
-        pub const fn APLL_PARAM(
-            self,
-        ) -> crate::common::Reg<PLL_PARAM, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0210usize) as _)
-            }
+        pub const fn APLL_PARAM(self) -> crate::common::Reg<PLL_PARAM, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0210usize) as _) }
         }
         ///Clock Selection Register 0 (SCU300). APB1 clock divider from HPLL (1200 MHz). APB1 freq = 1200 MHz / ((APB1_DIV + 1) × 4).
         #[inline(always)]
         pub const fn CLK_SEL0(self) -> crate::common::Reg<CLK_SEL0, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0300usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0300usize) as _) }
         }
         ///Clock Selection Register 4 (SCU310). APB2 clock divider from HCLK (200 MHz). APB2 freq = 200 MHz / ((APB2_DIV + 1) × 2).
         #[inline(always)]
         pub const fn CLK_SEL4(self) -> crate::common::Reg<CLK_SEL4, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0310usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0310usize) as _) }
         }
         ///Clock Selection Register 5 (SCU314). I3C and UART7–13 clock source selection.
         #[inline(always)]
         pub const fn CLK_SEL5(self) -> crate::common::Reg<CLK_SEL5, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0314usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0314usize) as _) }
         }
     }
     ///Clock Selection Register 0 (SCU300). Selects APB1 divider.
@@ -810,7 +856,9 @@ pub mod clock_v1 {
     }
     impl core::fmt::Debug for CLK_SEL0 {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("CLK_SEL0").field("APB1_DIV", &self.APB1_DIV()).finish()
+            f.debug_struct("CLK_SEL0")
+                .field("APB1_DIV", &self.APB1_DIV())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -845,7 +893,9 @@ pub mod clock_v1 {
     }
     impl core::fmt::Debug for CLK_SEL4 {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("CLK_SEL4").field("APB2_DIV", &self.APB2_DIV()).finish()
+            f.debug_struct("CLK_SEL4")
+                .field("APB2_DIV", &self.APB2_DIV())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -902,8 +952,10 @@ pub mod clock_v1 {
     impl defmt::Format for CLK_SEL5 {
         fn format(&self, f: defmt::Formatter) {
             defmt::write!(
-                f, "CLK_SEL5 {{ I3C_CLK_APLL_DIV: {=u8:?}, I3C_CLK_SRC: {=bool:?} }}",
-                self.I3C_CLK_APLL_DIV(), self.I3C_CLK_SRC()
+                f,
+                "CLK_SEL5 {{ I3C_CLK_APLL_DIV: {=u8:?}, I3C_CLK_SRC: {=bool:?} }}",
+                self.I3C_CLK_APLL_DIV(),
+                self.I3C_CLK_SRC()
             )
         }
     }
@@ -1559,8 +1611,7 @@ pub mod clock_v1 {
         ///PLL M parameter (feedback divider minus 1). Range 0–8191. Multiplier = M+1.
         #[inline(always)]
         pub const fn set_M(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x1fff << 0usize))
-                | (((val as u32) & 0x1fff) << 0usize);
+            self.0 = (self.0 & !(0x1fff << 0usize)) | (((val as u32) & 0x1fff) << 0usize);
         }
         ///PLL N parameter (input pre-divider minus 1). Range 0–63. Pre-divider = N+1.
         #[must_use]
@@ -1621,7 +1672,10 @@ pub mod clock_v1 {
             defmt::write!(
                 f,
                 "PLL_PARAM {{ M: {=u16:?}, N: {=u8:?}, P: {=u8:?}, BYPASS: {=bool:?} }}",
-                self.M(), self.N(), self.P(), self.BYPASS()
+                self.M(),
+                self.N(),
+                self.P(),
+                self.BYPASS()
             )
         }
     }
@@ -1726,697 +1780,427 @@ pub mod gpio_v1 {
         ///Group 0 (A/B/C/D) Direction Register (GPIO004). 1=output.
         #[inline(always)]
         pub const fn G0_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///Group 0 (A/B/C/D) Interrupt Enable Register (GPIO008).
         #[inline(always)]
         pub const fn G0_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Group 0 Interrupt Sensitivity Type 0 (GPIO00C).
         #[inline(always)]
-        pub const fn G0_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+        pub const fn G0_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///Group 0 Interrupt Sensitivity Type 1 (GPIO010).
         #[inline(always)]
-        pub const fn G0_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
-            }
+        pub const fn G0_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
         }
         ///Group 0 Interrupt Sensitivity Type 2 (GPIO014).
         #[inline(always)]
-        pub const fn G0_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
-            }
+        pub const fn G0_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
         }
         ///Group 0 (A/B/C/D) Interrupt Status Register (GPIO018). RW1C.
         #[inline(always)]
-        pub const fn G0_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+        pub const fn G0_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///Group 0 WDT Reset Tolerant Register (GPIO01C).
         #[inline(always)]
-        pub const fn G0_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _)
-            }
+        pub const fn G0_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
         }
         ///Group 1 (E/F/G/H) Data Value Register (GPIO020).
         #[inline(always)]
         pub const fn G1_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _) }
         }
         ///Group 1 (E/F/G/H) Direction Register (GPIO024).
         #[inline(always)]
         pub const fn G1_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
         }
         ///Group 1 (E/F/G/H) Interrupt Enable Register (GPIO028).
         #[inline(always)]
         pub const fn G1_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
         ///Group 1 Interrupt Sensitivity Type 0 (GPIO02C).
         #[inline(always)]
-        pub const fn G1_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _)
-            }
+        pub const fn G1_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _) }
         }
         ///Group 1 Interrupt Sensitivity Type 1 (GPIO030).
         #[inline(always)]
-        pub const fn G1_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _)
-            }
+        pub const fn G1_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _) }
         }
         ///Group 1 Interrupt Sensitivity Type 2 (GPIO034).
         #[inline(always)]
-        pub const fn G1_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _)
-            }
+        pub const fn G1_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _) }
         }
         ///Group 1 (E/F/G/H) Interrupt Status Register (GPIO038). RW1C.
         #[inline(always)]
-        pub const fn G1_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _)
-            }
+        pub const fn G1_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _) }
         }
         ///Group 1 WDT Reset Tolerant Register (GPIO03C).
         #[inline(always)]
-        pub const fn G1_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _)
-            }
+        pub const fn G1_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _) }
         }
         ///Group 0 (A/B/C/D) Command Source Register 0 (GPIO060). Each bit is bit 0 of the 2-bit command source for that pin. {CMD_SRC1\[n\], CMD_SRC0\[n\]}: 0b00=ARM, 0b10=SSP.
         #[inline(always)]
         pub const fn G0_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _) }
         }
         ///Group 0 Command Source Register 1 (GPIO064). Bit 1 of each 2-bit source.
         #[inline(always)]
         pub const fn G0_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _) }
         }
         ///Group 1 (E/F/G/H) Command Source Register 0 (GPIO068).
         #[inline(always)]
         pub const fn G1_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _) }
         }
         ///Group 1 Command Source Register 1 (GPIO06C).
         #[inline(always)]
         pub const fn G1_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x6cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x6cusize) as _) }
         }
         ///Group 2 (I/J/K/L) Data Value Register (GPIO070).
         #[inline(always)]
         pub const fn G2_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _) }
         }
         ///Group 2 (I/J/K/L) Direction Register (GPIO074).
         #[inline(always)]
         pub const fn G2_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _) }
         }
         ///Group 3 (M/N/O/P) Data Value Register (GPIO078).
         #[inline(always)]
         pub const fn G3_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _) }
         }
         ///Group 3 (M/N/O/P) Direction Register (GPIO07C).
         #[inline(always)]
         pub const fn G3_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x7cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x7cusize) as _) }
         }
         ///Group 4 (Q/R/S/T) Data Value Register (GPIO080).
         #[inline(always)]
         pub const fn G4_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _) }
         }
         ///Group 4 (Q/R/S/T) Direction Register (GPIO084).
         #[inline(always)]
         pub const fn G4_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _) }
         }
         ///Group 5 (U/V/W/X) Data Value Register (GPIO088).
         #[inline(always)]
         pub const fn G5_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _) }
         }
         ///Group 5 (U/V/W/X) Direction Register (GPIO08C).
         #[inline(always)]
         pub const fn G5_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x8cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x8cusize) as _) }
         }
         ///Group 2 (I/J/K/L) Command Source Register 0 (GPIO090).
         #[inline(always)]
         pub const fn G2_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x90usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x90usize) as _) }
         }
         ///Group 2 Command Source Register 1 (GPIO094).
         #[inline(always)]
         pub const fn G2_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x94usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x94usize) as _) }
         }
         ///Group 2 (I/J/K/L) Interrupt Enable Register (GPIO098).
         #[inline(always)]
         pub const fn G2_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x98usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x98usize) as _) }
         }
         ///Group 2 Interrupt Sensitivity Type 0 (GPIO09C).
         #[inline(always)]
-        pub const fn G2_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x9cusize) as _)
-            }
+        pub const fn G2_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x9cusize) as _) }
         }
         ///Group 2 Interrupt Sensitivity Type 1 (GPIO0A0).
         #[inline(always)]
-        pub const fn G2_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa0usize) as _)
-            }
+        pub const fn G2_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa0usize) as _) }
         }
         ///Group 2 Interrupt Sensitivity Type 2 (GPIO0A4).
         #[inline(always)]
-        pub const fn G2_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa4usize) as _)
-            }
+        pub const fn G2_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa4usize) as _) }
         }
         ///Group 2 (I/J/K/L) Interrupt Status Register (GPIO0A8). RW1C.
         #[inline(always)]
-        pub const fn G2_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa8usize) as _)
-            }
+        pub const fn G2_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa8usize) as _) }
         }
         ///Group 2 WDT Reset Tolerant Register (GPIO0AC).
         #[inline(always)]
-        pub const fn G2_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xacusize) as _)
-            }
+        pub const fn G2_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xacusize) as _) }
         }
         ///Group 2 (I/J/K/L) Input Mask Register (GPIO0B8).
         #[inline(always)]
-        pub const fn G2_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xb8usize) as _)
-            }
+        pub const fn G2_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xb8usize) as _) }
         }
         ///Group 0 (A/B/C/D) Data Read Register (GPIO0C0). Input state.
         #[inline(always)]
-        pub const fn G0_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc0usize) as _)
-            }
+        pub const fn G0_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc0usize) as _) }
         }
         ///Group 1 (E/F/G/H) Data Read Register (GPIO0C4).
         #[inline(always)]
-        pub const fn G1_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc4usize) as _)
-            }
+        pub const fn G1_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc4usize) as _) }
         }
         ///Group 2 (I/J/K/L) Data Read Register (GPIO0C8).
         #[inline(always)]
-        pub const fn G2_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc8usize) as _)
-            }
+        pub const fn G2_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc8usize) as _) }
         }
         ///Group 3 (M/N/O/P) Data Read Register (GPIO0CC).
         #[inline(always)]
-        pub const fn G3_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xccusize) as _)
-            }
+        pub const fn G3_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xccusize) as _) }
         }
         ///Group 4 (Q/R/S/T) Data Read Register (GPIO0D0).
         #[inline(always)]
-        pub const fn G4_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd0usize) as _)
-            }
+        pub const fn G4_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd0usize) as _) }
         }
         ///Group 5 (U/V/W/X) Data Read Register (GPIO0D4).
         #[inline(always)]
-        pub const fn G5_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd4usize) as _)
-            }
+        pub const fn G5_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd4usize) as _) }
         }
         ///Group 6 (Y/Z) Data Read Register (GPIO0D8). Only bits \[15:0\] valid.
         #[inline(always)]
-        pub const fn G6_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd8usize) as _)
-            }
+        pub const fn G6_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd8usize) as _) }
         }
         ///Group 3 (M/N/O/P) Command Source Register 0 (GPIO0E0).
         #[inline(always)]
         pub const fn G3_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe0usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe0usize) as _) }
         }
         ///Group 3 Command Source Register 1 (GPIO0E4).
         #[inline(always)]
         pub const fn G3_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe4usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe4usize) as _) }
         }
         ///Group 3 (M/N/O/P) Interrupt Enable Register (GPIO0E8).
         #[inline(always)]
         pub const fn G3_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe8usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe8usize) as _) }
         }
         ///Group 3 Interrupt Sensitivity Type 0 (GPIO0EC).
         #[inline(always)]
-        pub const fn G3_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xecusize) as _)
-            }
+        pub const fn G3_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xecusize) as _) }
         }
         ///Group 3 Interrupt Sensitivity Type 1 (GPIO0F0).
         #[inline(always)]
-        pub const fn G3_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf0usize) as _)
-            }
+        pub const fn G3_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf0usize) as _) }
         }
         ///Group 3 Interrupt Sensitivity Type 2 (GPIO0F4).
         #[inline(always)]
-        pub const fn G3_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf4usize) as _)
-            }
+        pub const fn G3_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf4usize) as _) }
         }
         ///Group 3 (M/N/O/P) Interrupt Status Register (GPIO0F8). RW1C.
         #[inline(always)]
-        pub const fn G3_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf8usize) as _)
-            }
+        pub const fn G3_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf8usize) as _) }
         }
         ///Group 3 WDT Reset Tolerant Register (GPIO0FC).
         #[inline(always)]
-        pub const fn G3_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xfcusize) as _)
-            }
+        pub const fn G3_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xfcusize) as _) }
         }
         ///Group 3 (M/N/O/P) Input Mask Register (GPIO108).
         #[inline(always)]
-        pub const fn G3_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0108usize) as _)
-            }
+        pub const fn G3_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0108usize) as _) }
         }
         ///Group 4 (Q/R/S/T) Command Source Register 0 (GPIO110).
         #[inline(always)]
         pub const fn G4_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0110usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0110usize) as _) }
         }
         ///Group 4 Command Source Register 1 (GPIO114).
         #[inline(always)]
         pub const fn G4_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0114usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0114usize) as _) }
         }
         ///Group 4 (Q/R/S/T) Interrupt Enable Register (GPIO118).
         #[inline(always)]
         pub const fn G4_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0118usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0118usize) as _) }
         }
         ///Group 4 Interrupt Sensitivity Type 0 (GPIO11C).
         #[inline(always)]
-        pub const fn G4_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x011cusize) as _)
-            }
+        pub const fn G4_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x011cusize) as _) }
         }
         ///Group 4 Interrupt Sensitivity Type 1 (GPIO120).
         #[inline(always)]
-        pub const fn G4_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0120usize) as _)
-            }
+        pub const fn G4_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0120usize) as _) }
         }
         ///Group 4 Interrupt Sensitivity Type 2 (GPIO124).
         #[inline(always)]
-        pub const fn G4_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0124usize) as _)
-            }
+        pub const fn G4_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0124usize) as _) }
         }
         ///Group 4 (Q/R/S/T) Interrupt Status Register (GPIO128). RW1C.
         #[inline(always)]
-        pub const fn G4_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0128usize) as _)
-            }
+        pub const fn G4_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0128usize) as _) }
         }
         ///Group 4 WDT Reset Tolerant Register (GPIO12C).
         #[inline(always)]
-        pub const fn G4_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x012cusize) as _)
-            }
+        pub const fn G4_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x012cusize) as _) }
         }
         ///Group 4 (Q/R/S/T) Input Mask Register (GPIO138).
         #[inline(always)]
-        pub const fn G4_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0138usize) as _)
-            }
+        pub const fn G4_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0138usize) as _) }
         }
         ///Group 5 (U/V/W/X) Command Source Register 0 (GPIO140).
         #[inline(always)]
         pub const fn G5_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0140usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0140usize) as _) }
         }
         ///Group 5 Command Source Register 1 (GPIO144).
         #[inline(always)]
         pub const fn G5_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0144usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0144usize) as _) }
         }
         ///Group 5 (U/V/W/X) Interrupt Enable Register (GPIO148).
         #[inline(always)]
         pub const fn G5_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0148usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0148usize) as _) }
         }
         ///Group 5 Interrupt Sensitivity Type 0 (GPIO14C).
         #[inline(always)]
-        pub const fn G5_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x014cusize) as _)
-            }
+        pub const fn G5_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x014cusize) as _) }
         }
         ///Group 5 Interrupt Sensitivity Type 1 (GPIO150).
         #[inline(always)]
-        pub const fn G5_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0150usize) as _)
-            }
+        pub const fn G5_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0150usize) as _) }
         }
         ///Group 5 Interrupt Sensitivity Type 2 (GPIO154).
         #[inline(always)]
-        pub const fn G5_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0154usize) as _)
-            }
+        pub const fn G5_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0154usize) as _) }
         }
         ///Group 5 (U/V/W/X) Interrupt Status Register (GPIO158). RW1C.
         #[inline(always)]
-        pub const fn G5_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0158usize) as _)
-            }
+        pub const fn G5_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0158usize) as _) }
         }
         ///Group 5 WDT Reset Tolerant Register (GPIO15C).
         #[inline(always)]
-        pub const fn G5_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x015cusize) as _)
-            }
+        pub const fn G5_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x015cusize) as _) }
         }
         ///Group 5 (U/V/W/X) Input Mask Register (GPIO168).
         #[inline(always)]
-        pub const fn G5_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0168usize) as _)
-            }
+        pub const fn G5_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0168usize) as _) }
         }
         ///Group 6 (Y/Z) Command Source Register 0 (GPIO170).
         #[inline(always)]
         pub const fn G6_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0170usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0170usize) as _) }
         }
         ///Group 6 Command Source Register 1 (GPIO174).
         #[inline(always)]
         pub const fn G6_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0174usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0174usize) as _) }
         }
         ///Group 6 (Y/Z) Interrupt Enable Register (GPIO178).
         #[inline(always)]
         pub const fn G6_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0178usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0178usize) as _) }
         }
         ///Group 6 Interrupt Sensitivity Type 0 (GPIO17C).
         #[inline(always)]
-        pub const fn G6_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x017cusize) as _)
-            }
+        pub const fn G6_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x017cusize) as _) }
         }
         ///Group 6 Interrupt Sensitivity Type 1 (GPIO180).
         #[inline(always)]
-        pub const fn G6_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0180usize) as _)
-            }
+        pub const fn G6_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0180usize) as _) }
         }
         ///Group 6 Interrupt Sensitivity Type 2 (GPIO184).
         #[inline(always)]
-        pub const fn G6_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0184usize) as _)
-            }
+        pub const fn G6_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0184usize) as _) }
         }
         ///Group 6 (Y/Z) Interrupt Status Register (GPIO188). RW1C.
         #[inline(always)]
-        pub const fn G6_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0188usize) as _)
-            }
+        pub const fn G6_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0188usize) as _) }
         }
         ///Group 6 WDT Reset Tolerant Register (GPIO18C).
         #[inline(always)]
-        pub const fn G6_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x018cusize) as _)
-            }
+        pub const fn G6_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x018cusize) as _) }
         }
         ///Group 6 (Y/Z) Input Mask Register (GPIO198).
         #[inline(always)]
-        pub const fn G6_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0198usize) as _)
-            }
+        pub const fn G6_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0198usize) as _) }
         }
         ///Group 0 (A/B/C/D) Input Mask Register (GPIO1D0).
         #[inline(always)]
-        pub const fn G0_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01d0usize) as _)
-            }
+        pub const fn G0_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01d0usize) as _) }
         }
         ///Group 1 (E/F/G/H) Input Mask Register (GPIO1D4).
         #[inline(always)]
-        pub const fn G1_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01d4usize) as _)
-            }
+        pub const fn G1_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01d4usize) as _) }
         }
         ///Group 6 (Y/Z) Data Value Register (GPIO1E0). Only bits \[15:0\] valid.
         #[inline(always)]
         pub const fn G6_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01e0usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01e0usize) as _) }
         }
         ///Group 6 (Y/Z) Direction Register (GPIO1E4).
         #[inline(always)]
         pub const fn G6_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01e4usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01e4usize) as _) }
         }
         ///GPIO Index Register (GPIO2AC). Command-based interface for per-pin configuration. bits \[7:0\] = pin number (0–207) bit \[12\] = command (0=write, 1=read) bits \[19:16\] = type (0=DATA, 1=DIR, 2=INTERRUPT, 3=DEBOUNCE, 4=TOLERANCE, 5=CMD_SRC, 6=INPUT_MASK) bits \[24:20\] = data (for INTERRUPT: bit0=int_enable, bits\[4:1\]=int_type 0=FALL 1=RISE 2=LOW 3=HIGH 4=BOTH)
         #[inline(always)]
         pub const fn INDEX(self) -> crate::common::Reg<GPIO_INDEX, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x02acusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x02acusize) as _) }
         }
         ///GPIO Command Source Selection Register (GPIO2D0). Assigns a bus master index to each of the 5 master slots. SSP master number = 6 (ASPEED_GPIO_SEL_SSP). Configure to allow SSP to write GPIO via CMD_SRC registers.
         #[inline(always)]
-        pub const fn CMD_SRC_SEL(
-            self,
-        ) -> crate::common::Reg<GPIO_CMD_SRC_SEL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x02d0usize) as _)
-            }
+        pub const fn CMD_SRC_SEL(self) -> crate::common::Reg<GPIO_CMD_SRC_SEL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x02d0usize) as _) }
         }
     }
     ///Generic 32-bit GPIO register (data, direction, interrupt enable/status, reset tolerant, command source, input mask, data read). Each bit corresponds to one GPIO pin within the group.
@@ -2434,8 +2218,7 @@ pub mod gpio_v1 {
         ///Per-pin bitmask. Bit 0 = port_A pin 0 (or first port in group).
         #[inline(always)]
         pub const fn set_PINS(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for GPIO32 {
@@ -2446,7 +2229,9 @@ pub mod gpio_v1 {
     }
     impl core::fmt::Debug for GPIO32 {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("GPIO32").field("PINS", &self.PINS()).finish()
+            f.debug_struct("GPIO32")
+                .field("PINS", &self.PINS())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -2664,25 +2449,17 @@ pub mod ipc_v1 {
         ///IPC Trigger Register (offset 0x18). Write BIT(n) to ring doorbell on channel n to the CA7. Bits \[14:0\] correspond to channels 0-14. Writing this register is a pulse; it does not hold state.
         #[inline(always)]
         pub const fn TRIG(self) -> crate::common::Reg<IPC_CHANNELS, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///IPC Status Register (offset 0x28). Read-only. Each bit indicates a pending channel: - Bit set by CA7 write → bit is pending for CM3 to handle. - Bit set by CM3 TRIG → still waiting for CA7 acknowledgement. Read STATUS before TRIG to check if a send would be busy.
         #[inline(always)]
-        pub const fn STATUS(
-            self,
-        ) -> crate::common::Reg<IPC_CHANNELS, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+        pub const fn STATUS(self) -> crate::common::Reg<IPC_CHANNELS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
         ///IPC Clear Register (offset 0x2C). Write-only. Write the STATUS value (or BIT(n)) to acknowledge received CA7→CM3 interrupts. Clears the corresponding STATUS bits.
         #[inline(always)]
         pub const fn CLEAR(self) -> crate::common::Reg<IPC_CHANNELS, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _) }
         }
     }
     ///IPC 15-channel bitmask. Bit n corresponds to IPC channel n (n = 0..14).
@@ -2700,8 +2477,7 @@ pub mod ipc_v1 {
         ///IPC channel bitmask (bits \[14:0\]). Bit 0 = channel 0 (IRQ 182); bit 14 = channel 14 (IRQ 196).
         #[inline(always)]
         pub const fn set_CH(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x7fff << 0usize))
-                | (((val as u32) & 0x7fff) << 0usize);
+            self.0 = (self.0 & !(0x7fff << 0usize)) | (((val as u32) & 0x7fff) << 0usize);
         }
     }
     impl Default for IPC_CHANNELS {
@@ -2712,7 +2488,9 @@ pub mod ipc_v1 {
     }
     impl core::fmt::Debug for IPC_CHANNELS {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("IPC_CHANNELS").field("CH", &self.CH()).finish()
+            f.debug_struct("IPC_CHANNELS")
+                .field("CH", &self.CH())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -2747,54 +2525,32 @@ pub mod ssp_v1 {
         ///CM3 Memory Base Address Register (SCUA04)
         #[inline(always)]
         pub const fn MEM_BASE(self) -> crate::common::Reg<MEM_BASE, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///CM3 Instruction Memory Address Limit Register (SCUA08)
         #[inline(always)]
-        pub const fn IMEM_LIMIT(
-            self,
-        ) -> crate::common::Reg<MEM_LIMIT, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+        pub const fn IMEM_LIMIT(self) -> crate::common::Reg<MEM_LIMIT, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///CM3 Data Memory Address Limit Register (SCUA0C)
         #[inline(always)]
-        pub const fn DMEM_LIMIT(
-            self,
-        ) -> crate::common::Reg<MEM_LIMIT, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+        pub const fn DMEM_LIMIT(self) -> crate::common::Reg<MEM_LIMIT, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///CM3 Cacheable Area Declaration Register (SCUA40)
         #[inline(always)]
-        pub const fn CACHE_AREA(
-            self,
-        ) -> crate::common::Reg<CACHE_AREA, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _)
-            }
+        pub const fn CACHE_AREA(self) -> crate::common::Reg<CACHE_AREA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _) }
         }
         ///CM3 Cache Invalidation Control Register (SCUA44)
         #[inline(always)]
-        pub const fn CACHE_INVAL(
-            self,
-        ) -> crate::common::Reg<CACHE_INVAL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _)
-            }
+        pub const fn CACHE_INVAL(self) -> crate::common::Reg<CACHE_INVAL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _) }
         }
         ///CM3 Cache Function Control Register (SCUA48)
         #[inline(always)]
-        pub const fn CACHE_FUNC(
-            self,
-        ) -> crate::common::Reg<CACHE_FUNC, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _)
-            }
+        pub const fn CACHE_FUNC(self) -> crate::common::Reg<CACHE_FUNC, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _) }
         }
     }
     ///CM3 Cacheable Area Declaration (SCUA40). Reset value 0xFFFF_FFFF. Modify only while CM3 is in reset (CTRL.RESET=1 or CTRL.EN=0).
@@ -2812,8 +2568,7 @@ pub mod ssp_v1 {
         ///Cacheable region bitmask (32 bits × 16 MB per bit). Bit 0 → CM3 0x0000_0000–0x00FF_FFFF cacheable when set. Bit 31 → CM3 0x1F00_0000–0x1FFF_FFFF cacheable when set. Non-cached accesses bypass the cache controller and go directly to DRAM. The CM3 non-cached DMA region (typically at 0x0100_0000, bit 1) must be kept clear so IPC shared-memory coherency is maintained without explicit invalidation.
         #[inline(always)]
         pub const fn set_REGION(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for CACHE_AREA {
@@ -2824,7 +2579,9 @@ pub mod ssp_v1 {
     }
     impl core::fmt::Debug for CACHE_AREA {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("CACHE_AREA").field("REGION", &self.REGION()).finish()
+            f.debug_struct("CACHE_AREA")
+                .field("REGION", &self.REGION())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -3061,8 +2818,7 @@ pub mod ssp_v1 {
         ///I-cache line address for targeted invalidation. 11-bit LSB of the cache line address (each cache line is 32 B, so bits \[15:5\] of the virtual address; hardware ignores \[4:0\]). Write together with ICACHE_EN=1.
         #[inline(always)]
         pub const fn set_ICACHE_ADDR(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x07ff << 0usize))
-                | (((val as u32) & 0x07ff) << 0usize);
+            self.0 = (self.0 & !(0x07ff << 0usize)) | (((val as u32) & 0x07ff) << 0usize);
         }
         ///I-cache line invalidation trigger. Write 1 to invalidate the instruction-cache line identified by ICACHE_ADDR. Self-clearing (reads back 0 after invalidation). Datasheet protocol: write 0x0000 first, then write {ICACHE_EN=1, ICACHE_ADDR=<line>} in a single write.
         #[must_use]
@@ -3086,8 +2842,7 @@ pub mod ssp_v1 {
         ///D-cache line address for targeted invalidation. 11-bit LSB of the cache line address. Corresponds to register bits \[26:16\]. Write together with DCACHE_EN=1.
         #[inline(always)]
         pub const fn set_DCACHE_ADDR(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x07ff << 16usize))
-                | (((val as u32) & 0x07ff) << 16usize);
+            self.0 = (self.0 & !(0x07ff << 16usize)) | (((val as u32) & 0x07ff) << 16usize);
         }
         ///D-cache line invalidation trigger. Write 1 to invalidate the data-cache line identified by DCACHE_ADDR. Self-clearing (reads back 0 after invalidation). Datasheet protocol: write 0x0000_0000 first, then write {DCACHE_EN=1, DCACHE_ADDR=<line>} in a single write.
         #[must_use]
@@ -3177,7 +2932,10 @@ pub mod ssp_v1 {
     impl defmt::Format for CTRL {
         fn format(&self, f: defmt::Formatter) {
             defmt::write!(
-                f, "CTRL {{ EN: {=bool:?}, RESET: {=bool:?} }}", self.EN(), self.RESET()
+                f,
+                "CTRL {{ EN: {=bool:?}, RESET: {=bool:?} }}",
+                self.EN(),
+                self.RESET()
             )
         }
     }
@@ -3196,8 +2954,7 @@ pub mod ssp_v1 {
         ///Physical DRAM base address bits \[31:20\]. CM3 virtual address 0x0000_0000 maps to this 1 MB-aligned physical address. The CA7-to-CM3 address window is CM3 \[0x0000_0000, 0x1FFF_FFFF\] ↔ phys \[BASE, BASE+512 MB).
         #[inline(always)]
         pub const fn set_BASE(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x0fff << 20usize))
-                | (((val as u32) & 0x0fff) << 20usize);
+            self.0 = (self.0 & !(0x0fff << 20usize)) | (((val as u32) & 0x0fff) << 20usize);
         }
     }
     impl Default for MEM_BASE {
@@ -3208,7 +2965,9 @@ pub mod ssp_v1 {
     }
     impl core::fmt::Debug for MEM_BASE {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("MEM_BASE").field("BASE", &self.BASE()).finish()
+            f.debug_struct("MEM_BASE")
+                .field("BASE", &self.BASE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -3232,8 +2991,7 @@ pub mod ssp_v1 {
         ///Physical DRAM upper-bound address bits \[31:20\]. Accesses at or above this 1 MB-aligned boundary are rejected by the hardware access-checker (generates an IRQ; see CACHE_FUNC).
         #[inline(always)]
         pub const fn set_LIMIT(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x0fff << 20usize))
-                | (((val as u32) & 0x0fff) << 20usize);
+            self.0 = (self.0 & !(0x0fff << 20usize)) | (((val as u32) & 0x0fff) << 20usize);
         }
     }
     impl Default for MEM_LIMIT {
@@ -3244,7 +3002,9 @@ pub mod ssp_v1 {
     }
     impl core::fmt::Debug for MEM_LIMIT {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("MEM_LIMIT").field("LIMIT", &self.LIMIT()).finish()
+            f.debug_struct("MEM_LIMIT")
+                .field("LIMIT", &self.LIMIT())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -3273,240 +3033,138 @@ pub mod timer_v1 {
         }
         ///Timer 1 Counter Status (TMC00). Read-only current count.
         #[inline(always)]
-        pub const fn T1_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+        pub const fn T1_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
             unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
         }
         ///Timer 1 Reload Value (TMC04). Loaded on enable or overflow.
         #[inline(always)]
-        pub const fn T1_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+        pub const fn T1_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///Timer 1 First Match Register (TMC08).
         #[inline(always)]
-        pub const fn T1_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+        pub const fn T1_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Timer 2 Counter Status (TMC10).
         #[inline(always)]
-        pub const fn T2_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
-            }
+        pub const fn T2_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
         }
         ///Timer 2 Reload Value (TMC14).
         #[inline(always)]
-        pub const fn T2_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
-            }
+        pub const fn T2_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
         }
         ///Timer 2 First Match Register (TMC18).
         #[inline(always)]
-        pub const fn T2_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+        pub const fn T2_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///Timer 3 Counter Status (TMC20).
         #[inline(always)]
-        pub const fn T3_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _)
-            }
+        pub const fn T3_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _) }
         }
         ///Timer 3 Reload Value (TMC24).
         #[inline(always)]
-        pub const fn T3_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
-            }
+        pub const fn T3_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
         }
         ///Timer 3 First Match Register (TMC28).
         #[inline(always)]
-        pub const fn T3_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+        pub const fn T3_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
         ///Global Timer Control Register (TMC30). Write 1 to set specific bits; write 1 to TMC3C to clear. 4 bits per timer: \[WDT_EN, OVF_INTR, CLK_SEL, EN\], timer 1 in bits \[3:0\].
         #[inline(always)]
         pub const fn CTRL(self) -> crate::common::Reg<TMC_CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _) }
         }
         ///Timer Interrupt Status Register (TMC34). RW1C. Bit N-1 set when timer N overflows and OVF_INTR is enabled. Clear by writing 1 to the bit.
         #[inline(always)]
-        pub const fn INT_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_INT_STATUS, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _)
-            }
+        pub const fn INT_STATUS(self) -> crate::common::Reg<TMC_INT_STATUS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _) }
         }
         ///TMC30 Clear Register (TMC3C). Write-only. Write 1 to a bit to clear the same bit in CTRL (TMC30).
         #[inline(always)]
         pub const fn CTRL_CLR(self) -> crate::common::Reg<TMC_CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _) }
         }
         ///Timer 4 Counter Status (TMC40).
         #[inline(always)]
-        pub const fn T4_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _)
-            }
+        pub const fn T4_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _) }
         }
         ///Timer 4 Reload Value (TMC44).
         #[inline(always)]
-        pub const fn T4_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _)
-            }
+        pub const fn T4_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _) }
         }
         ///Timer 4 First Match Register (TMC48).
         #[inline(always)]
-        pub const fn T4_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _)
-            }
+        pub const fn T4_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _) }
         }
         ///Timer 5 Counter Status (TMC50).
         #[inline(always)]
-        pub const fn T5_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _)
-            }
+        pub const fn T5_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _) }
         }
         ///Timer 5 Reload Value (TMC54).
         #[inline(always)]
-        pub const fn T5_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _)
-            }
+        pub const fn T5_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _) }
         }
         ///Timer 5 First Match Register (TMC58).
         #[inline(always)]
-        pub const fn T5_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x58usize) as _)
-            }
+        pub const fn T5_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x58usize) as _) }
         }
         ///Timer 6 Counter Status (TMC60).
         #[inline(always)]
-        pub const fn T6_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _)
-            }
+        pub const fn T6_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _) }
         }
         ///Timer 6 Reload Value (TMC64).
         #[inline(always)]
-        pub const fn T6_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _)
-            }
+        pub const fn T6_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _) }
         }
         ///Timer 6 First Match Register (TMC68).
         #[inline(always)]
-        pub const fn T6_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _)
-            }
+        pub const fn T6_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _) }
         }
         ///Timer 7 Counter Status (TMC70).
         #[inline(always)]
-        pub const fn T7_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _)
-            }
+        pub const fn T7_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _) }
         }
         ///Timer 7 Reload Value (TMC74).
         #[inline(always)]
-        pub const fn T7_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _)
-            }
+        pub const fn T7_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _) }
         }
         ///Timer 7 First Match Register (TMC78).
         #[inline(always)]
-        pub const fn T7_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _)
-            }
+        pub const fn T7_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _) }
         }
         ///Timer 8 Counter Status (TMC80).
         #[inline(always)]
-        pub const fn T8_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _)
-            }
+        pub const fn T8_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _) }
         }
         ///Timer 8 Reload Value (TMC84).
         #[inline(always)]
-        pub const fn T8_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _)
-            }
+        pub const fn T8_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _) }
         }
         ///Timer 8 First Match Register (TMC88).
         #[inline(always)]
-        pub const fn T8_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _)
-            }
+        pub const fn T8_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _) }
         }
     }
     ///32-bit timer counter or reload value.
@@ -3524,8 +3182,7 @@ pub mod timer_v1 {
         ///Counter / reload value (32-bit).
         #[inline(always)]
         pub const fn set_VALUE(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for TMC_COUNTER {
@@ -3536,7 +3193,9 @@ pub mod timer_v1 {
     }
     impl core::fmt::Debug for TMC_COUNTER {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("TMC_COUNTER").field("VALUE", &self.VALUE()).finish()
+            f.debug_struct("TMC_COUNTER")
+                .field("VALUE", &self.VALUE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -4155,51 +3814,37 @@ pub mod uart_v1 {
         ///Interrupt Enable Register (DLAB=0) / Baud Divisor High byte (DLAB=1). DLAB=1 access handled in HAL code via raw pointer.
         #[inline(always)]
         pub const fn IER(self) -> crate::common::Reg<IER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///FIFO Control Register (write) / Interrupt Identification Register (read). Reads return IIR; writes configure FIFO via FCR fields. FCR is write-only; IIR is read-only.
         #[inline(always)]
         pub const fn FCR_IIR(self) -> crate::common::Reg<FCR_IIR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Line Control Register. Controls data format and DLAB.
         #[inline(always)]
         pub const fn LCR(self) -> crate::common::Reg<LCR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///Modem Control Register.
         #[inline(always)]
         pub const fn MCR(self) -> crate::common::Reg<MCR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
         }
         ///Line Status Register. TX/RX status flags.
         #[inline(always)]
         pub const fn LSR(self) -> crate::common::Reg<LSR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
         }
         ///Modem Status Register.
         #[inline(always)]
         pub const fn MSR(self) -> crate::common::Reg<MSR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///Scratch Register. Read/write with no hardware effect.
         #[inline(always)]
         pub const fn SCR(self) -> crate::common::Reg<DATA8, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
         }
     }
     ///8-bit data register (RBR/THR and SCR share this layout).
@@ -4420,7 +4065,10 @@ pub mod uart_v1 {
             defmt::write!(
                 f,
                 "IER {{ ERBFI: {=bool:?}, ETBEI: {=bool:?}, ELSI: {=bool:?}, EDSSI: {=bool:?} }}",
-                self.ERBFI(), self.ETBEI(), self.ELSI(), self.EDSSI()
+                self.ERBFI(),
+                self.ETBEI(),
+                self.ELSI(),
+                self.EDSSI()
             )
         }
     }
@@ -4929,43 +4577,31 @@ pub mod wdt_v1 {
         ///Counter Reload Value Register (WDT04). Value loaded into STATUS on reset or when 0x4755 is written to the RESTART register. Units: microseconds. Default: 0x014F_B180 (~22 s).
         #[inline(always)]
         pub const fn RELOAD(self) -> crate::common::Reg<WDT_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///Counter Restart Register (WDT08). Write-only trigger. Write 0x4755 to reload STATUS from RELOAD and restart the counter (provided CTRL.WDT_EN=1). Any other write value is ignored.
         #[inline(always)]
-        pub const fn RESTART(
-            self,
-        ) -> crate::common::Reg<WDT_RESTART, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+        pub const fn RESTART(self) -> crate::common::Reg<WDT_RESTART, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Control Register (WDT0C). Configures reset mode, interrupt, and enable. Default: 0x0010 (WDT_EN=0, RST_SYS=1 = SOC reset mode).
         #[inline(always)]
         pub const fn CTRL(self) -> crate::common::Reg<WDT_CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///Software Mode Reset Control Register (WDT24). Write 0xAEED_F123 to trigger an immediate software-mode SOC reset (after setting SW_RESET_MASK1 to select which blocks to reset). This bit clears automatically after reset.
         #[inline(always)]
         pub const fn SW_RESET_CTRL(
             self,
         ) -> crate::common::Reg<WDT_SW_RESET_CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
         }
         ///Software Mode Reset Mask Register #1 (WDT28). Each bit enables the corresponding subsystem to be reset when SW_RESET_CTRL is triggered. Zephyr uses 0x3FFF_FF1 to reset most subsystems.
         #[inline(always)]
         pub const fn SW_RESET_MASK1(
             self,
         ) -> crate::common::Reg<WDT_SW_RESET_MASK1, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
     }
     ///32-bit counter / reload value (WDT00 and WDT04 share this layout).
@@ -4983,8 +4619,7 @@ pub mod wdt_v1 {
         ///Counter value in microseconds.
         #[inline(always)]
         pub const fn set_VALUE(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for WDT_COUNTER {
@@ -4995,7 +4630,9 @@ pub mod wdt_v1 {
     }
     impl core::fmt::Debug for WDT_COUNTER {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("WDT_COUNTER").field("VALUE", &self.VALUE()).finish()
+            f.debug_struct("WDT_COUNTER")
+                .field("VALUE", &self.VALUE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -5126,8 +4763,7 @@ pub mod wdt_v1 {
         ///Write 0x4755 to reload and restart the counter. Read returns 0 (write-only hardware).
         #[inline(always)]
         pub const fn set_KEY(&mut self, val: u16) {
-            self.0 = (self.0 & !(0xffff << 0usize))
-                | (((val as u32) & 0xffff) << 0usize);
+            self.0 = (self.0 & !(0xffff << 0usize)) | (((val as u32) & 0xffff) << 0usize);
         }
     }
     impl Default for WDT_RESTART {
@@ -5138,7 +4774,9 @@ pub mod wdt_v1 {
     }
     impl core::fmt::Debug for WDT_RESTART {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("WDT_RESTART").field("KEY", &self.KEY()).finish()
+            f.debug_struct("WDT_RESTART")
+                .field("KEY", &self.KEY())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -5162,8 +4800,7 @@ pub mod wdt_v1 {
         ///Write 0xAEEDF123 to fire a software-mode SOC reset immediately. After reset this bit clears to 0 automatically. Only SOC reset mode is supported for software-triggered resets.
         #[inline(always)]
         pub const fn set_TRIGGER(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for WDT_SW_RESET_CTRL {
@@ -5182,7 +4819,11 @@ pub mod wdt_v1 {
     #[cfg(feature = "defmt")]
     impl defmt::Format for WDT_SW_RESET_CTRL {
         fn format(&self, f: defmt::Formatter) {
-            defmt::write!(f, "WDT_SW_RESET_CTRL {{ TRIGGER: {=u32:?} }}", self.TRIGGER())
+            defmt::write!(
+                f,
+                "WDT_SW_RESET_CTRL {{ TRIGGER: {=u32:?} }}",
+                self.TRIGGER()
+            )
         }
     }
     ///Software Mode Reset Mask Register #1 (WDT28). Each bit enables (1) or disables (0) the reset of the corresponding subsystem when SW_RESET_CTRL is triggered.
@@ -5200,8 +4841,7 @@ pub mod wdt_v1 {
         ///Subsystem reset enable bitmask. Zephyr sets 0x03FF_FFF1 to reset the standard set of subsystems (ARM, SDRAM, AHB bridges, coprocessor, SOC controllers, USB, etc.).
         #[inline(always)]
         pub const fn set_MASK(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for WDT_SW_RESET_MASK1 {
@@ -5212,7 +4852,9 @@ pub mod wdt_v1 {
     }
     impl core::fmt::Debug for WDT_SW_RESET_MASK1 {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("WDT_SW_RESET_MASK1").field("MASK", &self.MASK()).finish()
+            f.debug_struct("WDT_SW_RESET_MASK1")
+                .field("MASK", &self.MASK())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]

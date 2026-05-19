@@ -1,4 +1,5 @@
 # Standard 16550-compatible UART registers (32-bit word spacing).
+# Verified against AST2600 datasheet v1.6 section 29.
 #
 # The UART11 base address (CM3 view) is 0x7E79_0500.
 # All registers are at 4-byte (word) stride, even though the hardware
