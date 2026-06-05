@@ -29,6 +29,7 @@ use std::path::Path;
 
 use anyhow::{Context, Result};
 use chiptool::generate::c::{CArch, CGenerator, COptions};
+use chiptool::generate::go::{GoGenerator, GoOptions};
 use chiptool::generate::rust::{CommonModule, DefmtOption, Options, RustArch};
 use chiptool::generate::CodeGenerator;
 use chiptool::ir::{
@@ -52,6 +53,8 @@ fn main() -> Result<()> {
     let pac_src_dir = workspace_dir.join("aspeed-pac").join("src");
     // C PAC output directory (single-file headers, one per ColdFire chip).
     let c_pac_dir = workspace_dir.join("aspeed-c-pac").join("include");
+    // Go PAC output directory (one .gen.go per peripheral block, per chip).
+    let go_pac_dir = workspace_dir.join("aspeed-go-pac");
 
     eprintln!("aspeed-data-gen");
     eprintln!("  data dir   : {}", data_dir.display());
@@ -62,6 +65,7 @@ fn main() -> Result<()> {
     let chips_subdir = pac_src_dir.join("chips");
     std::fs::create_dir_all(&chips_subdir)?;
     std::fs::create_dir_all(&c_pac_dir)?;
+    std::fs::create_dir_all(&go_pac_dir)?;
 
     // Process every *.yaml in data/chips/ (sorted, deterministic).
     let chips_dir = data_dir.join("chips");
@@ -86,6 +90,10 @@ fn main() -> Result<()> {
             process_chip_c(&path, &data_dir, &c_pac_dir)?;
         } else {
             let (chip_name, feature) = process_chip(&path, &data_dir, &chips_subdir)?;
+            // Also emit Go register structs for every ARM/RISC-V chip.
+            let chip_go_dir = go_pac_dir.join(feature.replace('-', "_"));
+            std::fs::create_dir_all(&chip_go_dir)?;
+            process_chip_go(&path, &data_dir, &chip_go_dir)?;
             chip_infos.push((chip_name, feature));
         }
     }
@@ -324,6 +332,95 @@ fn process_chip_c(chip_path: &Path, data_dir: &Path, out_dir: &Path) -> Result<(
     write_if_changed(&out_path, &header)
         .with_context(|| format!("writing {}", out_path.display()))?;
     eprintln!("    wrote  : {}", out_path.display());
+
+    Ok(())
+}
+
+// ── Go register struct generation ─────────────────────────────────────────────
+
+/// Process one ARM/RISC-V chip YAML, write Go register structs to `out_dir/`.
+///
+/// Output uses `reg.Read(uint32)` / `reg.Write(uint32, val)` from the
+/// `github.com/kyanitecomputer/aspeed-go/reg` package — compatible with
+/// both our custom reg package and TamaGo's `tamago/reg` API.
+fn process_chip_go(chip_path: &Path, data_dir: &Path, out_dir: &Path) -> Result<()> {
+    let yaml = std::fs::read_to_string(chip_path)
+        .with_context(|| format!("reading {}", chip_path.display()))?;
+    let chip: chip::ChipDef = serde_yaml::from_str(&yaml)
+        .with_context(|| format!("parsing {}", chip_path.display()))?;
+
+    let mut ir = IR::new();
+
+    let mut loaded: std::collections::BTreeSet<String> = Default::default();
+    for periph in &chip.peripherals {
+        let block_ref = match &periph.block {
+            Some(b) => b,
+            None => continue,
+        };
+        let file_stem = block_ref
+            .split("::")
+            .next()
+            .with_context(|| format!("block ref '{}' must contain '::'", block_ref))?
+            .to_owned();
+        if !loaded.insert(file_stem.clone()) {
+            continue;
+        }
+        let reg_path = data_dir
+            .join("registers")
+            .join(format!("{}.yaml", file_stem));
+        let reg_yaml = std::fs::read_to_string(&reg_path)
+            .with_context(|| format!("reading {}", reg_path.display()))?;
+        let mut reg_ir: IR = serde_yaml::from_str(&reg_yaml)
+            .with_context(|| format!("parsing {}", reg_path.display()))?;
+        namespace_ir(&mut reg_ir, &file_stem);
+        ir.merge(reg_ir);
+    }
+
+    let device = Device {
+        nvic_priority_bits: chip.nvic_priority_bits,
+        peripherals: chip
+            .peripherals
+            .iter()
+            .filter_map(|p| {
+                p.block.as_ref().map(|block_ref| Peripheral {
+                    name: p.name.clone(),
+                    description: p.description.clone(),
+                    base_address: p.address,
+                    array: None,
+                    block: Some(block_ref.clone()),
+                    interrupts: BTreeMap::new(),
+                })
+            })
+            .collect(),
+        interrupts: chip
+            .interrupts
+            .iter()
+            .map(|i| Interrupt {
+                name: i.name.clone(),
+                description: i.description.clone(),
+                value: i.number,
+            })
+            .collect(),
+    };
+
+    ir.devices.insert(chip.name.clone(), device);
+
+    ExpandExtends {}.run(&mut ir).context("ExpandExtends")?;
+    Sort {}.run(&mut ir).context("Sort")?;
+
+    let opts = GoOptions {
+        package_name: "pac".to_string(),
+        reg_import: "github.com/kyanitecomputer/aspeed-go/reg".to_string(),
+    };
+    let generator = GoGenerator;
+    let files = generator.generate(&ir, &opts).context("GoGenerator::generate")?;
+
+    for (filename, content) in &files {
+        let out_path = out_dir.join(filename);
+        write_if_changed(&out_path, content)
+            .with_context(|| format!("writing {}", out_path.display()))?;
+        eprintln!("    wrote  : {}", out_path.display());
+    }
 
     Ok(())
 }
