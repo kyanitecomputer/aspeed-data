@@ -1,2 +1,6 @@
 /target/
 aspeed-pac/target/
+
+# Local Go workspace file for aspeed-go-pac development
+aspeed-go-pac/go.work
+aspeed-go-pac/go.work.sum

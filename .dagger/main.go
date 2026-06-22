@@ -165,6 +165,33 @@ func (m *AspeedData) Check(
 	return m.CheckPac(ctx, src)
 }
 
+// GoCheck verifies the generated Go PAC compiles.
+// Pass the aspeed-go sibling dir: --aspeed-go ../aspeed-go
+// (the PAC imports aspeed-go/reg, resolved via go.work inside the container)
+func (m *AspeedData) GoCheck(
+	ctx context.Context,
+	// +defaultPath="."
+	src *dagger.Directory,
+	aspeedGo *dagger.Directory,
+) error {
+	goCache := dag.CacheVolume("go-mod-cache")
+	goBuild := dag.CacheVolume("go-build-cache-aspeed-data")
+
+	_, err := dag.Container().
+		From("golang:1.24-bookworm").
+		WithMountedCache("/go/pkg/mod", goCache).
+		WithMountedCache("/root/.cache/go-build", goBuild).
+		WithDirectory("/build/aspeed-data", src).
+		WithDirectory("/build/aspeed-go", aspeedGo).
+		// Create a go.work so the PAC module can resolve aspeed-go/reg locally.
+		WithWorkdir("/build/aspeed-data/aspeed-go-pac").
+		WithNewFile("/build/aspeed-data/aspeed-go-pac/go.work",
+			"go 1.24\nuse .\nuse /build/aspeed-go\n").
+		WithExec([]string{"go", "build", "./..."}).
+		Sync(ctx)
+	return err
+}
+
 // GccCheck runs gcc -fsyntax-only on all generated C headers.
 func (m *AspeedData) GccCheck(
 	ctx context.Context,
@@ -201,13 +228,14 @@ func (m *AspeedData) Test(
 	return err
 }
 
-// Ci runs the full pipeline: Check + GccCheck + Test.
-// Pass the chiptool sibling dir: --chiptool ../chiptool
+// Ci runs the full pipeline: Check + GccCheck + GoCheck + Test.
+// Pass sibling dirs: --chiptool ../chiptool --aspeed-go ../aspeed-go
 func (m *AspeedData) Ci(
 	ctx context.Context,
 	// +defaultPath="."
 	src *dagger.Directory,
 	chiptool *dagger.Directory,
+	aspeedGo *dagger.Directory,
 ) (string, error) {
 	steps := []string{}
 
@@ -220,6 +248,11 @@ func (m *AspeedData) Ci(
 		return "", fmt.Errorf("gcc-check: %w", err)
 	}
 	steps = append(steps, "gcc-check: ok")
+
+	if err := m.GoCheck(ctx, src, aspeedGo); err != nil {
+		return "", fmt.Errorf("go-check: %w", err)
+	}
+	steps = append(steps, "go-check: ok")
 
 	if err := m.Test(ctx, src, chiptool); err != nil {
 		return "", fmt.Errorf("test: %w", err)
