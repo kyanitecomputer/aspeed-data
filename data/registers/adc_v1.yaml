@@ -1,0 +1,251 @@
+# ASPEED ADC Controller registers — Generation 6 (AST2600 / AST1060).
+#
+# AST1060:  one 8-channel bank at 0x7E6E_9000.
+# AST2600:  two 8-channel banks: ADC0 at 0x7E6E_9000, ADC1 at 0x7E6E_9100.
+#           Together they provide 16 channels (CH0–15).
+#
+# ADC clock formula (AST2600 / AST1060):
+#   sample_period = PCLK_period × 2 × (ADC0C[15:0] + 1)
+#   Default divider: ~65 kHz sample rate from 25 MHz PCLK.
+#
+# Resolution: 10 bits, right-aligned in a 16-bit register (bits [9:0]).
+#
+# Channel data registers (offset 0x10 + channel × 0x02):
+#   CH0 at 0x10, CH1 at 0x12, …, CH7 at 0x1E.
+#   Each holds the latest 10-bit ADC result in bits [9:0].
+#
+# Sources:
+#   drivers/iio/adc/aspeed_adc.c  (Linux 6.12.3)
+#   ast1060v19.pdf  Chapter 20 – ADC Controller (ADC0C–ADC2C, ADC10–ADC1E)
+#   ast2600.pdf / aspeed-g6.dtsi  (two independent ADC banks)
+
+block/ADC:
+  description: >
+    ASPEED ADC controller block.  8 input channels per instance.
+    AST1060: one instance at 0x7E6E_9000.
+    AST2600: ADC0 at 0x7E6E_9000 (CH0–7), ADC1 at 0x7E6E_9100 (CH8–15).
+  items:
+    - name: ENGINE_CTRL
+      description: >
+        ADC Engine Control Register (ADC0C, offset 0x00).
+        Controls operating mode, reference voltage, compensation, and per-channel enable.
+        Bit 8 (INIT_RDY) is read-only and indicates the engine has completed initialisation.
+      byte_offset: 0x00
+      fieldset: ADC_ENGINE_CTRL
+
+    - name: INT_CTRL
+      description: >
+        ADC Interrupt Control Register (ADC04, offset 0x04).
+        Per-channel interrupt enable (bit N enables interrupt for channel N, N=0–7).
+        Interrupt fires when the channel value crosses the threshold set in the
+        VGA_DETECT_CTRL register.
+      byte_offset: 0x04
+      fieldset: ADC_INT_CTRL
+
+    - name: VGA_DETECT_CTRL
+      description: >
+        VGA Detect Control Register (ADC08, offset 0x08).
+        Holds a 10-bit threshold value and comparison direction per channel.
+        When a channel crosses the threshold and the channel's interrupt is enabled,
+        an ADC interrupt is generated.
+      byte_offset: 0x08
+      fieldset: ADC_VGA_DETECT
+
+    - name: CLK_CTRL
+      description: >
+        ADC Clock Control Register (ADC0C, offset 0x0C).
+        16-bit clock divider: sample_period = PCLK × 2 × (DIV + 1).
+        Set DIV = (PCLK_Hz / (2 × sample_rate_Hz)) - 1.
+      byte_offset: 0x0C
+      fieldset: ADC_CLK_CTRL
+
+    # ── Channel data registers (read-only, 10-bit result in [9:0]) ─────────────
+    # Stride: 2 bytes per channel, CH0 at 0x10, CH7 at 0x1E.
+
+    - name: CH0_DATA
+      description: Channel 0 ADC result register (ADC10). Read-only. Bits [9:0].
+      byte_offset: 0x10
+      fieldset: ADC_CH_DATA
+
+    - name: CH1_DATA
+      description: Channel 1 ADC result register (ADC12). Read-only. Bits [9:0].
+      byte_offset: 0x12
+      fieldset: ADC_CH_DATA
+
+    - name: CH2_DATA
+      description: Channel 2 ADC result register (ADC14). Read-only. Bits [9:0].
+      byte_offset: 0x14
+      fieldset: ADC_CH_DATA
+
+    - name: CH3_DATA
+      description: Channel 3 ADC result register (ADC16). Read-only. Bits [9:0].
+      byte_offset: 0x16
+      fieldset: ADC_CH_DATA
+
+    - name: CH4_DATA
+      description: Channel 4 ADC result register (ADC18). Read-only. Bits [9:0].
+      byte_offset: 0x18
+      fieldset: ADC_CH_DATA
+
+    - name: CH5_DATA
+      description: Channel 5 ADC result register (ADC1A). Read-only. Bits [9:0].
+      byte_offset: 0x1A
+      fieldset: ADC_CH_DATA
+
+    - name: CH6_DATA
+      description: Channel 6 ADC result register (ADC1C). Read-only. Bits [9:0].
+      byte_offset: 0x1C
+      fieldset: ADC_CH_DATA
+
+    - name: CH7_DATA
+      description: >
+        Channel 7 ADC result register (ADC1E). Read-only. Bits [9:0].
+        This channel can alternatively be used for battery voltage sensing
+        (VBAT/3 or VBAT*2/3) when ENGINE_CTRL.CH7_BAT_MODE = 1.
+      byte_offset: 0x1E
+      fieldset: ADC_CH_DATA
+
+    - name: COMPENSATION_TRIM
+      description: >
+        Compensation Trim Register (ADCC4, offset 0xC4).
+        Factory-programmed calibration value read from OTP (SCU) during init.
+        Written by software after reading SCU OTP; do not set manually.
+      byte_offset: 0xC4
+      fieldset: ADC_COMP_TRIM
+
+# ── Fieldsets ─────────────────────────────────────────────────────────────────
+
+fieldset/ADC_ENGINE_CTRL:
+  description: ADC Engine Control Register (ADC0C).
+  fields:
+    - name: ENGINE_EN
+      description: >
+        ADC engine enable.
+        0 = disabled (power-down mode if OP_MODE = 0).
+        1 = enabled.
+      bit_offset: 0
+      bit_size: 1
+    - name: OP_MODE
+      description: >
+        Operating mode.
+        0 = power-down.
+        1 = standby (no conversion, preserves calibration).
+        7 = normal continuous scan.
+        Other values reserved.
+      bit_offset: 1
+      bit_size: 3
+    - name: CTRL_COMPENSATION
+      description: >
+        Manual compensation enable.
+        When set, the value in COMPENSATION_TRIM is used directly.
+        When clear, AUTO_COMPENSATION controls trimming.
+      bit_offset: 4
+      bit_size: 1
+    - name: AUTO_COMPENSATION
+      description: >
+        Automatic compensation enable.
+        When set, the engine applies factory OTP trim automatically.
+        Only meaningful when CTRL_COMPENSATION = 0.
+      bit_offset: 5
+      bit_size: 1
+    - name: REF_VOLTAGE
+      description: >
+        Reference voltage selection.
+        0 = internal 2.5 V reference (VREF = 2500 mV).
+        1 = internal 1.2 V reference (VREF = 1200 mV).
+        2 = external reference (high range, ADCVREFP pin).
+        3 = external reference (low range, ADCVREFEXT pin).
+      bit_offset: 6
+      bit_size: 2
+    - name: INIT_RDY
+      description: >
+        Initialisation ready flag (read-only).
+        Set by hardware when the ADC engine has completed power-up sequencing
+        and is ready to produce valid results.
+        Poll this bit after enabling the engine before reading channel data.
+      bit_offset: 8
+      bit_size: 1
+    - name: CH7_BAT_MODE
+      description: >
+        Channel 7 battery sensing mode.
+        0 = normal ADC input.
+        1 = battery voltage sensing: input is divided before the ADC.
+      bit_offset: 12
+      bit_size: 1
+    - name: BAT_SENSING_EN
+      description: Battery sensing circuit enable. Required when CH7_BAT_MODE = 1.
+      bit_offset: 13
+      bit_size: 1
+    - name: CH_EN
+      description: >
+        Per-channel enable mask [31:16].
+        Bit 16 = CH0, bit 17 = CH1, …, bit 23 = CH7.
+        Channels not enabled are skipped in the continuous scan.
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/ADC_INT_CTRL:
+  description: ADC Interrupt Control Register (ADC04).
+  fields:
+    - name: CH_INT_EN
+      description: >
+        Per-channel interrupt enable [7:0].
+        Bit N enables the interrupt for channel N.
+        Interrupt fires when the channel value crosses the VGA_DETECT threshold.
+      bit_offset: 0
+      bit_size: 8
+
+fieldset/ADC_VGA_DETECT:
+  description: >
+    ADC VGA Detect Control Register (ADC08).
+    Sets a 10-bit comparison threshold for interrupt generation.
+    The hardware compares each enabled channel's result against this threshold.
+  fields:
+    - name: THRESHOLD
+      description: 10-bit comparison threshold value (applied to all channels).
+      bit_offset: 0
+      bit_size: 10
+    - name: ABOVE_THRESHOLD
+      description: >
+        Interrupt direction.
+        0 = interrupt when value falls below threshold.
+        1 = interrupt when value rises above threshold.
+      bit_offset: 10
+      bit_size: 1
+
+fieldset/ADC_CLK_CTRL:
+  description: >
+    ADC Clock Control Register (ADC0C offset 0x0C).
+    16-bit clock divider.  sample_period = PCLK_period × 2 × (DIV + 1).
+    For a 65 kHz sample rate from 25 MHz PCLK: DIV = (25_000_000 / (2 × 65_000)) - 1 ≈ 191.
+  fields:
+    - name: CLK_DIV
+      description: >
+        ADC clock divider [15:0].
+        sample_rate_Hz = PCLK_Hz / (2 × (CLK_DIV + 1)).
+        Default after reset: ~65 kHz from PCLK.
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/ADC_CH_DATA:
+  description: >
+    ADC channel result register (read-only).
+    Holds the most recent 10-bit conversion result in bits [9:0].
+    The upper 6 bits are zero.  Result range: 0–1023.
+    Voltage = (result / 1023) × VREF.
+  fields:
+    - name: VALUE
+      description: 10-bit ADC result. Updated after each channel conversion in continuous mode.
+      bit_offset: 0
+      bit_size: 10
+
+fieldset/ADC_COMP_TRIM:
+  description: >
+    ADC Compensation Trim Register (ADCC4 offset 0xC4).
+    Factory calibration value.  Read from SCU OTP at init and written here.
+    Used by the analogue frontend to correct for process variation.
+  fields:
+    - name: TRIM_VALUE
+      description: Calibration trim code from SCU OTP. Written once at engine init.
+      bit_offset: 0
+      bit_size: 32

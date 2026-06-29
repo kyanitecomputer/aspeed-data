@@ -1,0 +1,403 @@
+# ASPEED PECI Controller registers.
+#
+# PECI (Platform Environment Control Interface) is an Intel-defined single-wire
+# bus for reading CPU die temperature and power management data from Intel CPUs.
+#
+# Base address: 0x7E78_B000 (AST2600, CM3 view).
+#
+# Protocol summary:
+#   Host sends: address + write_length + command + FCS
+#   Device responds: read_data + FCS
+#   Maximum payload: 32 bytes each direction.
+#
+# Sources:
+#   drivers/peci/controller/peci-aspeed.c  (Linux 6.12.3)
+#   ast2600_ssp.md  / ast2600.md  Chapter — PECI Controller
+
+block/PECI:
+  description: >
+    ASPEED PECI controller.  Implements the Platform Environment Control
+    Interface (PECI) single-wire host protocol for reading Intel CPU telemetry.
+    Base: 0x7E78_B000 (AST2600, CM3 view).
+  items:
+    - name: CTRL
+      description: >
+        PECI Control Register (PECI00, offset 0x00).
+        Main control: enable PECI engine, clock source, clock divider,
+        input/output signal inversion, bus contention detection.
+      byte_offset: 0x00
+      fieldset: PECI_CTRL
+
+    - name: TIMING_NEG
+      description: >
+        PECI Timing Negotiation Register (PECI04, offset 0x04).
+        Sets T_NEGO_MSG (message timing) and T_NEGO_ADDR (address timing)
+        in units of PECI clock cycles.  Both are negotiated with the target.
+      byte_offset: 0x04
+      fieldset: PECI_TIMING_NEG
+
+    - name: CMD
+      description: >
+        PECI Command Register (PECI08, offset 0x08).
+        Writing FIRE=1 launches a PECI transaction.
+        STATUS holds the current state machine status.
+        PIN_MONITORING lets software observe the PECI wire state.
+      byte_offset: 0x08
+      fieldset: PECI_CMD
+
+    - name: RW_LENGTH
+      description: >
+        PECI Read/Write Length Register (PECI0C, offset 0x0C).
+        Specifies the target device address, write byte count, read byte count,
+        and whether to append an Assured Write FCS.
+      byte_offset: 0x0C
+      fieldset: PECI_RW_LENGTH
+
+    - name: EXPECTED_FCS
+      description: >
+        PECI Expected FCS Register (PECI10, offset 0x10).
+        Expected read FCS, auto-computed write FCS, and expected write FCS.
+        Written by software before launching a transaction for FCS checking.
+      byte_offset: 0x10
+      fieldset: PECI_EXPECTED_FCS
+
+    - name: CAPTURED_FCS
+      description: >
+        PECI Captured FCS Register (PECI14, offset 0x14).
+        Read-only. Holds the FCS bytes captured from the last transaction.
+        Compare CAPTURED_RD_FCS against EXPECTED_RD_FCS to verify integrity.
+      byte_offset: 0x14
+      fieldset: PECI_CAPTURED_FCS
+
+    - name: INT_CTRL
+      description: >
+        PECI Interrupt Control Register (PECI18, offset 0x18).
+        Enable bits for each interrupt source and timing negotiation mode select.
+      byte_offset: 0x18
+      fieldset: PECI_INT_CTRL
+
+    - name: INT_STS
+      description: >
+        PECI Interrupt Status Register (PECI1C, offset 0x1C). RW1C.
+        Status bits mirror the INT_CTRL enable bit definitions.
+        Also contains TIMING_RESULT [29:16] which holds the negotiated timing.
+        Write 1 to a status bit to clear it.
+      byte_offset: 0x1C
+      fieldset: PECI_INT_STS
+
+    # ── Write data buffers (payload bytes written by software before FIRE) ───
+    - name: WR_DATA0
+      description: PECI Write Data Buffer 0, bytes [3:0] (PECI20, offset 0x20).
+      byte_offset: 0x20
+      fieldset: PECI_DATA_BUF
+
+    - name: WR_DATA1
+      description: PECI Write Data Buffer 1, bytes [7:4] (PECI24, offset 0x24).
+      byte_offset: 0x24
+      fieldset: PECI_DATA_BUF
+
+    - name: WR_DATA2
+      description: PECI Write Data Buffer 2, bytes [11:8] (PECI28, offset 0x28).
+      byte_offset: 0x28
+      fieldset: PECI_DATA_BUF
+
+    - name: WR_DATA3
+      description: PECI Write Data Buffer 3, bytes [15:12] (PECI2C, offset 0x2C).
+      byte_offset: 0x2C
+      fieldset: PECI_DATA_BUF
+
+    # ── Read data buffers (filled by hardware after transaction completes) ───
+    - name: RD_DATA0
+      description: PECI Read Data Buffer 0, bytes [3:0] (PECI30, offset 0x30).
+      byte_offset: 0x30
+      fieldset: PECI_DATA_BUF
+
+    - name: RD_DATA1
+      description: PECI Read Data Buffer 1, bytes [7:4] (PECI34, offset 0x34).
+      byte_offset: 0x34
+      fieldset: PECI_DATA_BUF
+
+    - name: RD_DATA2
+      description: PECI Read Data Buffer 2, bytes [11:8] (PECI38, offset 0x38).
+      byte_offset: 0x38
+      fieldset: PECI_DATA_BUF
+
+    - name: RD_DATA3
+      description: PECI Read Data Buffer 3, bytes [15:12] (PECI3C, offset 0x3C).
+      byte_offset: 0x3C
+      fieldset: PECI_DATA_BUF
+
+    - name: WR_DATA4
+      description: PECI Write Data Buffer 4, bytes [19:16] (PECI40, offset 0x40).
+      byte_offset: 0x40
+      fieldset: PECI_DATA_BUF
+
+    - name: WR_DATA5
+      description: PECI Write Data Buffer 5, bytes [23:20] (PECI44, offset 0x44).
+      byte_offset: 0x44
+      fieldset: PECI_DATA_BUF
+
+    - name: WR_DATA6
+      description: PECI Write Data Buffer 6, bytes [27:24] (PECI48, offset 0x48).
+      byte_offset: 0x48
+      fieldset: PECI_DATA_BUF
+
+    - name: WR_DATA7
+      description: PECI Write Data Buffer 7, bytes [31:28] (PECI4C, offset 0x4C).
+      byte_offset: 0x4C
+      fieldset: PECI_DATA_BUF
+
+    - name: RD_DATA4
+      description: PECI Read Data Buffer 4, bytes [19:16] (PECI50, offset 0x50).
+      byte_offset: 0x50
+      fieldset: PECI_DATA_BUF
+
+    - name: RD_DATA5
+      description: PECI Read Data Buffer 5, bytes [23:20] (PECI54, offset 0x54).
+      byte_offset: 0x54
+      fieldset: PECI_DATA_BUF
+
+    - name: RD_DATA6
+      description: PECI Read Data Buffer 6, bytes [27:24] (PECI58, offset 0x58).
+      byte_offset: 0x58
+      fieldset: PECI_DATA_BUF
+
+    - name: RD_DATA7
+      description: PECI Read Data Buffer 7, bytes [31:28] (PECI5C, offset 0x5C).
+      byte_offset: 0x5C
+      fieldset: PECI_DATA_BUF
+
+# ── Fieldsets ─────────────────────────────────────────────────────────────────
+
+fieldset/PECI_CTRL:
+  description: PECI Control Register (PECI00).
+  fields:
+    - name: PECI_CLK_EN
+      description: PECI clock enable [0]. Enable the PECI clock generator.
+      bit_offset: 0
+      bit_size: 1
+    - name: PECI_EN
+      description: PECI controller enable [4]. Must be set before issuing commands.
+      bit_offset: 4
+      bit_size: 1
+    - name: BUS_CONTENTION_EN
+      description: Bus contention detection enable [5].
+      bit_offset: 5
+      bit_size: 1
+    - name: INVERT_IN
+      description: Invert PECI input pin [6]. 0 = normal, 1 = inverted.
+      bit_offset: 6
+      bit_size: 1
+    - name: INVERT_OUT
+      description: Invert PECI output pin [7]. 0 = normal, 1 = inverted.
+      bit_offset: 7
+      bit_size: 1
+    - name: CLK_DIV
+      description: >
+        PECI clock divider [10:8].
+        PECI_clk = HCLK / (4 × (msg_timing + 1) × 2^CLK_DIV).
+        Lower values → faster PECI clock.  Typical: 0 for 1 MHz PECI.
+      bit_offset: 8
+      bit_size: 3
+    - name: CLK_SRC_HCLK
+      description: >
+        Clock source select [11].
+        0 = internal oscillator. 1 = HCLK.
+        Use HCLK (1) for accurate timing.
+      bit_offset: 11
+      bit_size: 1
+    - name: RD_MODE
+      description: >
+        Read mode [13:12].
+        Bit 12: COUNT mode — byte count driven by hardware.
+        Bit 13: DBG mode — debug capture enable.
+      bit_offset: 12
+      bit_size: 2
+    - name: SAMPLING
+      description: >
+        Read sampling point [19:16].
+        Adjusts the bit sampling point within each PECI bit period.
+        Default: 8.  Valid range: 0–15.
+      bit_offset: 16
+      bit_size: 4
+
+fieldset/PECI_TIMING_NEG:
+  description: PECI Timing Negotiation Register (PECI04).
+  fields:
+    - name: T_NEGO_ADDR
+      description: >
+        Address timing parameter [7:0].
+        PECI bus address cycle timing in PECI clock units.
+        Set before issuing an address timing negotiation command.
+      bit_offset: 0
+      bit_size: 8
+    - name: T_NEGO_MSG
+      description: >
+        Message timing parameter [15:8].
+        PECI bus message cycle timing in PECI clock units.
+        Set before issuing a message timing negotiation command.
+      bit_offset: 8
+      bit_size: 8
+
+fieldset/PECI_CMD:
+  description: PECI Command Register (PECI08).
+  fields:
+    - name: FIRE
+      description: >
+        Fire PECI transaction [0].
+        Write 1 to start a transaction using the configured WR_DATA buffers,
+        RW_LENGTH, and TIMING_NEG settings.
+        Hardware clears this bit when the transaction completes.
+      bit_offset: 0
+      bit_size: 1
+    - name: STATUS
+      description: >
+        PECI state machine status [27:24]. Read-only.
+        0x3 = address timing negotiation in progress.
+        Other values indicate transaction phase.
+      bit_offset: 24
+      bit_size: 4
+    - name: PIN_MONITORING
+      description: >
+        PECI wire monitor mode [31].
+        When set, the controller monitors the PECI wire and records activity
+        without driving it.  Used for debugging.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/PECI_RW_LENGTH:
+  description: PECI Read/Write Length Register (PECI0C).
+  fields:
+    - name: TARGET_ADDR
+      description: >
+        PECI target device address [7:0].
+        Intel CPU PECI address, typically 0x30 for the first CPU socket.
+      bit_offset: 0
+      bit_size: 8
+    - name: WR_LEN
+      description: >
+        Write data length in bytes [15:8].
+        Number of bytes to transmit (from WR_DATA buffers), not counting FCS.
+        Maximum: 32 bytes.
+      bit_offset: 8
+      bit_size: 8
+    - name: RD_LEN
+      description: >
+        Read data length in bytes [23:16].
+        Number of bytes expected from the target, not counting FCS.
+        Maximum: 32 bytes.
+      bit_offset: 16
+      bit_size: 8
+    - name: AW_FCS_EN
+      description: >
+        Assured Write FCS enable [31].
+        When set, the controller appends an Assured Write FCS to the transaction.
+        Required for write commands that modify CPU configuration.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/PECI_EXPECTED_FCS:
+  description: PECI Expected FCS Register (PECI10).
+  fields:
+    - name: EXPECTED_WR_FCS
+      description: Expected Write FCS byte [7:0]. Written by software.
+      bit_offset: 0
+      bit_size: 8
+    - name: EXPECTED_AW_FCS_AUTO
+      description: >
+        Auto-computed Assured Write FCS [15:8].
+        Filled by hardware when AW_FCS_EN=1 before the transaction fires.
+      bit_offset: 8
+      bit_size: 8
+    - name: EXPECTED_RD_FCS
+      description: >
+        Expected Read FCS byte [23:16]. Written by software.
+        Compare against CAPTURED_RD_FCS to verify data integrity.
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/PECI_CAPTURED_FCS:
+  description: PECI Captured FCS Register (PECI14). Read-only.
+  fields:
+    - name: CAPTURED_WR_FCS
+      description: Write FCS byte captured from the last transaction [7:0].
+      bit_offset: 0
+      bit_size: 8
+    - name: CAPTURED_RD_FCS
+      description: Read FCS byte captured from the last transaction [23:16].
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/PECI_INT_CTRL:
+  description: PECI Interrupt Control Register (PECI18).
+  fields:
+    - name: CMD_DONE_EN
+      description: Interrupt enable for command completion [0].
+      bit_offset: 0
+      bit_size: 1
+    - name: WR_FCS_ABORT_EN
+      description: Interrupt enable for write FCS abort [1].
+      bit_offset: 1
+      bit_size: 1
+    - name: WR_FCS_BAD_EN
+      description: Interrupt enable for write FCS mismatch [2].
+      bit_offset: 2
+      bit_size: 1
+    - name: BUS_CONTENTION_EN
+      description: Interrupt enable for bus contention [3].
+      bit_offset: 3
+      bit_size: 1
+    - name: BUS_TIMEOUT_EN
+      description: Interrupt enable for bus timeout [4].
+      bit_offset: 4
+      bit_size: 1
+    - name: TIMING_NEGO_SEL
+      description: >
+        Timing negotiation interrupt trigger select [31:30].
+        0 = on 1st bit of address negotiation.
+        1 = on 2nd bit of address negotiation.
+        2 = on message negotiation.
+      bit_offset: 30
+      bit_size: 2
+
+fieldset/PECI_INT_STS:
+  description: PECI Interrupt Status Register (PECI1C). RW1C on bits [4:0].
+  fields:
+    - name: CMD_DONE
+      description: Command completed [0]. Write 1 to clear.
+      bit_offset: 0
+      bit_size: 1
+    - name: WR_FCS_ABORT
+      description: Write FCS abort [1]. Write 1 to clear.
+      bit_offset: 1
+      bit_size: 1
+    - name: WR_FCS_BAD
+      description: Write FCS mismatch detected [2]. Write 1 to clear.
+      bit_offset: 2
+      bit_size: 1
+    - name: BUS_CONTENTION
+      description: Bus contention detected [3]. Write 1 to clear.
+      bit_offset: 3
+      bit_size: 1
+    - name: BUS_TIMEOUT
+      description: Bus timeout [4]. Write 1 to clear.
+      bit_offset: 4
+      bit_size: 1
+    - name: TIMING_RESULT
+      description: >
+        Timing negotiation result [29:16]. Read-only.
+        Holds the negotiated timing value after a timing negotiation command.
+      bit_offset: 16
+      bit_size: 14
+
+fieldset/PECI_DATA_BUF:
+  description: >
+    PECI data buffer register (4 bytes).
+    Write data: filled by software before issuing a command.
+    Read data: filled by hardware after a command completes.
+    Maximum total payload: 32 bytes (8 registers × 4 bytes).
+  fields:
+    - name: DATA
+      description: 32-bit data buffer word (4 bytes of PECI payload).
+      bit_offset: 0
+      bit_size: 32

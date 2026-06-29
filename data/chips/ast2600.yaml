@@ -63,6 +63,125 @@ peripherals:
     block:   timer_v1::TIMER
     address: 0x7e782000
 
+  # HACE — Hash and Crypto Engine (AES/DES/RC4 + SHA/MD5/HMAC, IRQ 4)
+  # Base: 0x1E6D_0000 (BMC) → 0x7E6D_0000 (CM3 view)
+  # Source: aspeed-g6.dtsi  crypto@1e6d0000
+  - name:    HACE
+    description: Hash and Crypto Engine (AES/DES/RC4 + SHA/MD5/HMAC)
+    block:   hace_v1::HACE
+    address: 0x7e6d0000
+
+  # ADC0 — Analog-to-Digital Converter, bank 0, channels CH0–7 (IRQ 46)
+  # Base: 0x1E6E_9000 (BMC) → 0x7E6E_9000 (CM3 view)
+  # Source: aspeed-g6.dtsi  adc@1e6e9000
+  - name:    ADC0
+    description: ADC bank 0, channels 0–7 (10-bit, 8 channels)
+    block:   adc_v1::ADC
+    address: 0x7e6e9000
+
+  # ADC1 — Analog-to-Digital Converter, bank 1, channels CH8–15 (IRQ 46)
+  # Base: 0x1E6E_9100 (BMC) → 0x7E6E_9100 (CM3 view)
+  # Source: aspeed-g6.dtsi  adc@1e6e9100
+  - name:    ADC1
+    description: ADC bank 1, channels 8–15 (10-bit, 8 channels)
+    block:   adc_v1::ADC
+    address: 0x7e6e9100
+
+  # PWM_TACH — G6 PWM and Fan Tachometer controller (IRQ 44)
+  # 16 PWM output channels, 16 tachometer input channels.
+  # Base: 0x1E61_0000 (BMC) → 0x7E61_0000 (CM3 view)
+  # Source: Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
+  - name:    PWM_TACH
+    description: G6 PWM and fan tachometer controller (16 PWM + 16 TACH channels)
+    block:   pwm_v1::PWM_TACH
+    address: 0x7e610000
+
+  # PECI — Platform Environment Control Interface controller (IRQ 38)
+  # Single-wire bus for reading Intel CPU die temperature and power data.
+  # Base: 0x1E78_B000 (BMC) → 0x7E78_B000 (CM3 view)
+  # Source: aspeed-g6.dtsi  peci@1e78b000
+  - name:    PECI
+    description: PECI controller for Intel CPU telemetry (temperature/power)
+    block:   peci_v1::PECI
+    address: 0x7e78b000
+
+  # I2C_GLOBAL — I2C/SMBus global interrupt aggregator and clock divider
+  # Base: 0x1E78_A000 (BMC) → 0x7E78_A000 (CM3 view)
+  # Note: AST2600 I2C global is at 0x7E78_A000, unlike AST1060 (0x7E7B_0000).
+  # Source: aspeed-g6.dtsi  bus@1e78a000
+  - name:    I2C_GLOBAL
+    description: I2C/SMBus global interrupt status and clock divider
+    block:   i2cglobal_v1::I2CGLOBAL
+    address: 0x7e78a000
+
+  # I2C instances — 16 channels (CH0–15), stride 0x80 from base+0x80
+  # Absolute addresses: 0x1E78_A080 + N×0x80 (BMC) → 0x7E78_A080 + N×0x80 (CM3)
+  # Source: aspeed-g6.dtsi  i2c0: i2c@80 through i2c15: i2c@800
+
+  - name:    I2C0
+    block:   i2c_v1::I2C
+    address: 0x7e78a080
+
+  - name:    I2C1
+    block:   i2c_v1::I2C
+    address: 0x7e78a100
+
+  - name:    I2C2
+    block:   i2c_v1::I2C
+    address: 0x7e78a180
+
+  - name:    I2C3
+    block:   i2c_v1::I2C
+    address: 0x7e78a200
+
+  - name:    I2C4
+    block:   i2c_v1::I2C
+    address: 0x7e78a280
+
+  - name:    I2C5
+    block:   i2c_v1::I2C
+    address: 0x7e78a300
+
+  - name:    I2C6
+    block:   i2c_v1::I2C
+    address: 0x7e78a380
+
+  - name:    I2C7
+    block:   i2c_v1::I2C
+    address: 0x7e78a400
+
+  - name:    I2C8
+    block:   i2c_v1::I2C
+    address: 0x7e78a480
+
+  - name:    I2C9
+    block:   i2c_v1::I2C
+    address: 0x7e78a500
+
+  - name:    I2C10
+    block:   i2c_v1::I2C
+    address: 0x7e78a580
+
+  - name:    I2C11
+    block:   i2c_v1::I2C
+    address: 0x7e78a600
+
+  - name:    I2C12
+    block:   i2c_v1::I2C
+    address: 0x7e78a680
+
+  - name:    I2C13
+    block:   i2c_v1::I2C
+    address: 0x7e78a700
+
+  - name:    I2C14
+    block:   i2c_v1::I2C
+    address: 0x7e78a780
+
+  - name:    I2C15
+    block:   i2c_v1::I2C
+    address: 0x7e78a800
+
 # ── Interrupt table ───────────────────────────────────────────────────────────
 #
 # Source: ast2600_ssp.md v0.1f Section 5 (Exception# 16–212 = IRQ# 0–196).

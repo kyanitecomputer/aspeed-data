@@ -1,0 +1,594 @@
+# ASPEED G6 PWM and Fan Tachometer Controller registers.
+#
+# This IP is the "G6" (generation 6) redesign found in the AST2600.
+# It is *not* compatible with the older aspeed-pwm-tacho IP (AST2400/2500).
+#
+# Base address: 0x7E61_0000 (AST2600, CM3 view).
+#
+# PWM engine: 16 independent channels (CH0–15).
+# Tachometer:  16 independent input capture channels (TACH0–15).
+# Both PWM and TACH channels can be operated independently.
+#
+# Register layout per channel (stride 0x10):
+#   channel × 0x10 + 0x00  PWM_CTRL       — clock divider, enable, polarity
+#   channel × 0x10 + 0x04  PWM_DUTY       — period, falling point, rising point
+#   channel × 0x10 + 0x08  TACH_CTRL      — tach enable, IRQ enable, debounce, threshold
+#   channel × 0x10 + 0x0C  TACH_STS       — tach IRQ status, captured value
+#
+# PWM period formula:
+#   Q     = (DIV_L + 1) << DIV_H / input_clk
+#   period = (DUTY_PERIOD + 1) × Q
+#   duty   = (FALLING_POINT − RISING_POINT) × Q
+#
+# Tachometer resolution:
+#   fan_rpm = (input_clk × 60) / (tach_value × pulse_per_revolution × DIV_T)
+#   where DIV_T = 4^(CLK_DIV_T field value).
+#
+# Sources:
+#   drivers/hwmon/aspeed-g6-pwm-tach.c  (Linux 6.12.3)
+#   Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
+#   ast2600.pdf  Chapter — PWM/Tachometer Controller (G6)
+
+block/PWM_TACH:
+  description: >
+    ASPEED G6 PWM and Fan Tachometer controller.
+    Base: 0x7E61_0000 (AST2600).  16 PWM outputs, 16 tachometer inputs.
+    Each channel occupies 0x10 bytes; channels 0–15 at offsets 0x00–0xF0.
+  items:
+    # ── Channel 0 ────────────────────────────────────────────────────────────
+    - name: CH0_PWM_CTRL
+      description: PWM Channel 0 Control Register (offset 0x00).
+      byte_offset: 0x00
+      fieldset: PWM_CTRL
+
+    - name: CH0_PWM_DUTY
+      description: PWM Channel 0 Duty Cycle Register (offset 0x04).
+      byte_offset: 0x04
+      fieldset: PWM_DUTY
+
+    - name: CH0_TACH_CTRL
+      description: Tachometer Channel 0 Control Register (offset 0x08).
+      byte_offset: 0x08
+      fieldset: TACH_CTRL
+
+    - name: CH0_TACH_STS
+      description: Tachometer Channel 0 Status Register (offset 0x0C).
+      byte_offset: 0x0C
+      fieldset: TACH_STS
+
+    # ── Channel 1 ────────────────────────────────────────────────────────────
+    - name: CH1_PWM_CTRL
+      description: PWM Channel 1 Control Register (offset 0x10).
+      byte_offset: 0x10
+      fieldset: PWM_CTRL
+
+    - name: CH1_PWM_DUTY
+      description: PWM Channel 1 Duty Cycle Register (offset 0x14).
+      byte_offset: 0x14
+      fieldset: PWM_DUTY
+
+    - name: CH1_TACH_CTRL
+      description: Tachometer Channel 1 Control Register (offset 0x18).
+      byte_offset: 0x18
+      fieldset: TACH_CTRL
+
+    - name: CH1_TACH_STS
+      description: Tachometer Channel 1 Status Register (offset 0x1C).
+      byte_offset: 0x1C
+      fieldset: TACH_STS
+
+    # ── Channel 2 ────────────────────────────────────────────────────────────
+    - name: CH2_PWM_CTRL
+      description: PWM Channel 2 Control Register (offset 0x20).
+      byte_offset: 0x20
+      fieldset: PWM_CTRL
+
+    - name: CH2_PWM_DUTY
+      description: PWM Channel 2 Duty Cycle Register (offset 0x24).
+      byte_offset: 0x24
+      fieldset: PWM_DUTY
+
+    - name: CH2_TACH_CTRL
+      description: Tachometer Channel 2 Control Register (offset 0x28).
+      byte_offset: 0x28
+      fieldset: TACH_CTRL
+
+    - name: CH2_TACH_STS
+      description: Tachometer Channel 2 Status Register (offset 0x2C).
+      byte_offset: 0x2C
+      fieldset: TACH_STS
+
+    # ── Channel 3 ────────────────────────────────────────────────────────────
+    - name: CH3_PWM_CTRL
+      description: PWM Channel 3 Control Register (offset 0x30).
+      byte_offset: 0x30
+      fieldset: PWM_CTRL
+
+    - name: CH3_PWM_DUTY
+      description: PWM Channel 3 Duty Cycle Register (offset 0x34).
+      byte_offset: 0x34
+      fieldset: PWM_DUTY
+
+    - name: CH3_TACH_CTRL
+      description: Tachometer Channel 3 Control Register (offset 0x38).
+      byte_offset: 0x38
+      fieldset: TACH_CTRL
+
+    - name: CH3_TACH_STS
+      description: Tachometer Channel 3 Status Register (offset 0x3C).
+      byte_offset: 0x3C
+      fieldset: TACH_STS
+
+    # ── Channel 4 ────────────────────────────────────────────────────────────
+    - name: CH4_PWM_CTRL
+      description: PWM Channel 4 Control Register (offset 0x40).
+      byte_offset: 0x40
+      fieldset: PWM_CTRL
+
+    - name: CH4_PWM_DUTY
+      description: PWM Channel 4 Duty Cycle Register (offset 0x44).
+      byte_offset: 0x44
+      fieldset: PWM_DUTY
+
+    - name: CH4_TACH_CTRL
+      description: Tachometer Channel 4 Control Register (offset 0x48).
+      byte_offset: 0x48
+      fieldset: TACH_CTRL
+
+    - name: CH4_TACH_STS
+      description: Tachometer Channel 4 Status Register (offset 0x4C).
+      byte_offset: 0x4C
+      fieldset: TACH_STS
+
+    # ── Channel 5 ────────────────────────────────────────────────────────────
+    - name: CH5_PWM_CTRL
+      description: PWM Channel 5 Control Register (offset 0x50).
+      byte_offset: 0x50
+      fieldset: PWM_CTRL
+
+    - name: CH5_PWM_DUTY
+      description: PWM Channel 5 Duty Cycle Register (offset 0x54).
+      byte_offset: 0x54
+      fieldset: PWM_DUTY
+
+    - name: CH5_TACH_CTRL
+      description: Tachometer Channel 5 Control Register (offset 0x58).
+      byte_offset: 0x58
+      fieldset: TACH_CTRL
+
+    - name: CH5_TACH_STS
+      description: Tachometer Channel 5 Status Register (offset 0x5C).
+      byte_offset: 0x5C
+      fieldset: TACH_STS
+
+    # ── Channel 6 ────────────────────────────────────────────────────────────
+    - name: CH6_PWM_CTRL
+      description: PWM Channel 6 Control Register (offset 0x60).
+      byte_offset: 0x60
+      fieldset: PWM_CTRL
+
+    - name: CH6_PWM_DUTY
+      description: PWM Channel 6 Duty Cycle Register (offset 0x64).
+      byte_offset: 0x64
+      fieldset: PWM_DUTY
+
+    - name: CH6_TACH_CTRL
+      description: Tachometer Channel 6 Control Register (offset 0x68).
+      byte_offset: 0x68
+      fieldset: TACH_CTRL
+
+    - name: CH6_TACH_STS
+      description: Tachometer Channel 6 Status Register (offset 0x6C).
+      byte_offset: 0x6C
+      fieldset: TACH_STS
+
+    # ── Channel 7 ────────────────────────────────────────────────────────────
+    - name: CH7_PWM_CTRL
+      description: PWM Channel 7 Control Register (offset 0x70).
+      byte_offset: 0x70
+      fieldset: PWM_CTRL
+
+    - name: CH7_PWM_DUTY
+      description: PWM Channel 7 Duty Cycle Register (offset 0x74).
+      byte_offset: 0x74
+      fieldset: PWM_DUTY
+
+    - name: CH7_TACH_CTRL
+      description: Tachometer Channel 7 Control Register (offset 0x78).
+      byte_offset: 0x78
+      fieldset: TACH_CTRL
+
+    - name: CH7_TACH_STS
+      description: Tachometer Channel 7 Status Register (offset 0x7C).
+      byte_offset: 0x7C
+      fieldset: TACH_STS
+
+    # ── Channel 8 ────────────────────────────────────────────────────────────
+    - name: CH8_PWM_CTRL
+      description: PWM Channel 8 Control Register (offset 0x80).
+      byte_offset: 0x80
+      fieldset: PWM_CTRL
+
+    - name: CH8_PWM_DUTY
+      description: PWM Channel 8 Duty Cycle Register (offset 0x84).
+      byte_offset: 0x84
+      fieldset: PWM_DUTY
+
+    - name: CH8_TACH_CTRL
+      description: Tachometer Channel 8 Control Register (offset 0x88).
+      byte_offset: 0x88
+      fieldset: TACH_CTRL
+
+    - name: CH8_TACH_STS
+      description: Tachometer Channel 8 Status Register (offset 0x8C).
+      byte_offset: 0x8C
+      fieldset: TACH_STS
+
+    # ── Channel 9 ────────────────────────────────────────────────────────────
+    - name: CH9_PWM_CTRL
+      description: PWM Channel 9 Control Register (offset 0x90).
+      byte_offset: 0x90
+      fieldset: PWM_CTRL
+
+    - name: CH9_PWM_DUTY
+      description: PWM Channel 9 Duty Cycle Register (offset 0x94).
+      byte_offset: 0x94
+      fieldset: PWM_DUTY
+
+    - name: CH9_TACH_CTRL
+      description: Tachometer Channel 9 Control Register (offset 0x98).
+      byte_offset: 0x98
+      fieldset: TACH_CTRL
+
+    - name: CH9_TACH_STS
+      description: Tachometer Channel 9 Status Register (offset 0x9C).
+      byte_offset: 0x9C
+      fieldset: TACH_STS
+
+    # ── Channel 10 ───────────────────────────────────────────────────────────
+    - name: CH10_PWM_CTRL
+      description: PWM Channel 10 Control Register (offset 0xA0).
+      byte_offset: 0xA0
+      fieldset: PWM_CTRL
+
+    - name: CH10_PWM_DUTY
+      description: PWM Channel 10 Duty Cycle Register (offset 0xA4).
+      byte_offset: 0xA4
+      fieldset: PWM_DUTY
+
+    - name: CH10_TACH_CTRL
+      description: Tachometer Channel 10 Control Register (offset 0xA8).
+      byte_offset: 0xA8
+      fieldset: TACH_CTRL
+
+    - name: CH10_TACH_STS
+      description: Tachometer Channel 10 Status Register (offset 0xAC).
+      byte_offset: 0xAC
+      fieldset: TACH_STS
+
+    # ── Channel 11 ───────────────────────────────────────────────────────────
+    - name: CH11_PWM_CTRL
+      description: PWM Channel 11 Control Register (offset 0xB0).
+      byte_offset: 0xB0
+      fieldset: PWM_CTRL
+
+    - name: CH11_PWM_DUTY
+      description: PWM Channel 11 Duty Cycle Register (offset 0xB4).
+      byte_offset: 0xB4
+      fieldset: PWM_DUTY
+
+    - name: CH11_TACH_CTRL
+      description: Tachometer Channel 11 Control Register (offset 0xB8).
+      byte_offset: 0xB8
+      fieldset: TACH_CTRL
+
+    - name: CH11_TACH_STS
+      description: Tachometer Channel 11 Status Register (offset 0xBC).
+      byte_offset: 0xBC
+      fieldset: TACH_STS
+
+    # ── Channel 12 ───────────────────────────────────────────────────────────
+    - name: CH12_PWM_CTRL
+      description: PWM Channel 12 Control Register (offset 0xC0).
+      byte_offset: 0xC0
+      fieldset: PWM_CTRL
+
+    - name: CH12_PWM_DUTY
+      description: PWM Channel 12 Duty Cycle Register (offset 0xC4).
+      byte_offset: 0xC4
+      fieldset: PWM_DUTY
+
+    - name: CH12_TACH_CTRL
+      description: Tachometer Channel 12 Control Register (offset 0xC8).
+      byte_offset: 0xC8
+      fieldset: TACH_CTRL
+
+    - name: CH12_TACH_STS
+      description: Tachometer Channel 12 Status Register (offset 0xCC).
+      byte_offset: 0xCC
+      fieldset: TACH_STS
+
+    # ── Channel 13 ───────────────────────────────────────────────────────────
+    - name: CH13_PWM_CTRL
+      description: PWM Channel 13 Control Register (offset 0xD0).
+      byte_offset: 0xD0
+      fieldset: PWM_CTRL
+
+    - name: CH13_PWM_DUTY
+      description: PWM Channel 13 Duty Cycle Register (offset 0xD4).
+      byte_offset: 0xD4
+      fieldset: PWM_DUTY
+
+    - name: CH13_TACH_CTRL
+      description: Tachometer Channel 13 Control Register (offset 0xD8).
+      byte_offset: 0xD8
+      fieldset: TACH_CTRL
+
+    - name: CH13_TACH_STS
+      description: Tachometer Channel 13 Status Register (offset 0xDC).
+      byte_offset: 0xDC
+      fieldset: TACH_STS
+
+    # ── Channel 14 ───────────────────────────────────────────────────────────
+    - name: CH14_PWM_CTRL
+      description: PWM Channel 14 Control Register (offset 0xE0).
+      byte_offset: 0xE0
+      fieldset: PWM_CTRL
+
+    - name: CH14_PWM_DUTY
+      description: PWM Channel 14 Duty Cycle Register (offset 0xE4).
+      byte_offset: 0xE4
+      fieldset: PWM_DUTY
+
+    - name: CH14_TACH_CTRL
+      description: Tachometer Channel 14 Control Register (offset 0xE8).
+      byte_offset: 0xE8
+      fieldset: TACH_CTRL
+
+    - name: CH14_TACH_STS
+      description: Tachometer Channel 14 Status Register (offset 0xEC).
+      byte_offset: 0xEC
+      fieldset: TACH_STS
+
+    # ── Channel 15 ───────────────────────────────────────────────────────────
+    - name: CH15_PWM_CTRL
+      description: PWM Channel 15 Control Register (offset 0xF0).
+      byte_offset: 0xF0
+      fieldset: PWM_CTRL
+
+    - name: CH15_PWM_DUTY
+      description: PWM Channel 15 Duty Cycle Register (offset 0xF4).
+      byte_offset: 0xF4
+      fieldset: PWM_DUTY
+
+    - name: CH15_TACH_CTRL
+      description: Tachometer Channel 15 Control Register (offset 0xF8).
+      byte_offset: 0xF8
+      fieldset: TACH_CTRL
+
+    - name: CH15_TACH_STS
+      description: Tachometer Channel 15 Status Register (offset 0xFC).
+      byte_offset: 0xFC
+      fieldset: TACH_STS
+
+# ── Fieldsets ─────────────────────────────────────────────────────────────────
+
+fieldset/PWM_CTRL:
+  description: >
+    PWM channel control register.
+    Controls PWM output enable, clock prescaler, polarity, and WDT-safe mode.
+    Clock: input_clk / ((DIV_L + 1) << DIV_H)
+  fields:
+    - name: CLK_DIV_L
+      description: >
+        Low-order clock divider [7:0].
+        Effective clock = input_clk / ((DIV_L + 1) << DIV_H).
+      bit_offset: 0
+      bit_size: 8
+    - name: CLK_DIV_H
+      description: >
+        High-order clock divider (shift amount) [11:8].
+        Effective clock = input_clk / ((DIV_L + 1) << DIV_H).
+        Range 0–15 giving divisors of 1–32768 × (DIV_L+1).
+      bit_offset: 8
+      bit_size: 4
+    - name: PIN_EN
+      description: >
+        PWM output pin enable [12].
+        0 = output held at inactive level; PWM counter does not drive the pin.
+        1 = PWM signal drives the output pin.
+        CLK_EN must also be set for the duty cycle to be non-zero.
+      bit_offset: 12
+      bit_size: 1
+    - name: OPEN_DRAIN_EN
+      description: Open-drain output mode [13]. 0 = push-pull, 1 = open-drain.
+      bit_offset: 13
+      bit_size: 1
+    - name: INVERSE
+      description: >
+        Output polarity inversion [14].
+        0 = active high. 1 = active low (output is inverted immediately).
+        Toggling this while PWM is running may generate a glitch.
+      bit_offset: 14
+      bit_size: 1
+    - name: LEVEL_OUTPUT
+      description: >
+        Force output to inactive level [15].
+        When set, the PWM output is forced to inactive regardless of CLK_EN.
+      bit_offset: 15
+      bit_size: 1
+    - name: CLK_EN
+      description: >
+        PWM clock enable [16].
+        0 = duty counter held in reset, output at inactive level.
+        1 = duty counter runs; duty cycle determined by PWM_DUTY.
+        Use PIN_EN to gate the output without resetting the counter.
+      bit_offset: 16
+      bit_size: 1
+    - name: DUTY_SYNC_DIS
+      description: >
+        Duty cycle synchronisation disable [17].
+        0 = new duty values take effect at the start of the next period (glitch-free).
+        1 = new duty values take effect immediately.
+      bit_offset: 17
+      bit_size: 1
+    - name: DUTY_LOAD_WDT_EN
+      description: >
+        Load duty cycle from WDT-safe value on watchdog event [18].
+        When set, a WDT reset causes the PWM to switch to the duty point
+        programmed in PWM_DUTY.POINT_WDT.
+      bit_offset: 18
+      bit_size: 1
+    - name: LOAD_SEL_RISING_WDT
+      description: >
+        WDT duty select: use rising point as WDT-safe duty [19].
+        0 = use FALLING_POINT as WDT duty. 1 = use RISING_POINT as WDT duty.
+      bit_offset: 19
+      bit_size: 1
+
+fieldset/PWM_DUTY:
+  description: >
+    PWM channel duty cycle register.
+    Period = (DUTY_PERIOD + 1) × Q, where Q = (DIV_L+1) << DIV_H / input_clk.
+    Active time = (FALLING_POINT - RISING_POINT) × Q.
+    RISING_POINT = 0 and FALLING_POINT = DUTY_PERIOD+1 → 100% duty cycle.
+    FALLING_POINT = 0 (and CLK_EN=1) → 100% duty cycle (rising=falling=0).
+  fields:
+    - name: RISING_POINT
+      description: >
+        Duty cycle rising edge point [7:0].
+        The PWM output goes active at this count within the period.
+        Typically 0 (output active from start of period).
+      bit_offset: 0
+      bit_size: 8
+    - name: FALLING_POINT
+      description: >
+        Duty cycle falling edge point [15:8].
+        The PWM output goes inactive at this count.
+        duty_cycle = (FALLING_POINT - RISING_POINT) / (DUTY_PERIOD + 1).
+        Set equal to RISING_POINT for 100% duty cycle.
+      bit_offset: 8
+      bit_size: 8
+    - name: POINT_WDT
+      description: >
+        WDT-safe duty cycle point [23:16].
+        Used as the falling point when DUTY_LOAD_WDT_EN fires.
+        Allows a safe fan speed fallback on watchdog reset.
+      bit_offset: 16
+      bit_size: 8
+    - name: DUTY_PERIOD
+      description: >
+        PWM period length [31:24].
+        Period = (DUTY_PERIOD + 1) × Q.
+        Maximum value (255) is recommended for fine-grained duty control.
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/TACH_CTRL:
+  description: >
+    Tachometer channel control register.
+    Measures fan speed by timing edges on the TACH input pin.
+    fan_rpm = (clk_hz × 60) / (tach_value × pulses_per_rev × 4^CLK_DIV_T)
+  fields:
+    - name: THRESHOLD
+      description: >
+        Fan stopped / timeout threshold [19:0].
+        If the tach counter exceeds this value between edges, the fan is
+        considered stopped and the IRQ fires (if IER=1).
+        Set to the counter value corresponding to ~0 RPM.
+      bit_offset: 0
+      bit_size: 20
+    - name: CLK_DIV_T
+      description: >
+        Tachometer input clock divisor [23:20].
+        Actual divisor = 4^CLK_DIV_T.
+        Values: 0→1, 1→4, 2→16, 3→64, …, 15→4^15.
+        Use larger values for slow fans to avoid counter overflow.
+      bit_offset: 20
+      bit_size: 4
+    - name: IO_EDGE
+      description: >
+        Edge detection mode [25:24].
+        0 = falling-to-falling (F2F).
+        1 = rising-to-rising (R2R).
+        2 = both edges (period = half-cycle).
+      bit_offset: 24
+      bit_size: 2
+    - name: DEBOUNCE
+      description: >
+        Input debounce filter [27:26].
+        0 = 3 clock cycles. 1 = 2 cycles. 2 = 1 cycle. 3 = no debounce.
+      bit_offset: 26
+      bit_size: 2
+    - name: ENABLE
+      description: Tachometer channel enable [28]. 1 = measuring; 0 = disabled.
+      bit_offset: 28
+      bit_size: 1
+    - name: LOOPBACK
+      description: >
+        PWM-to-tach loopback test [29].
+        When set, this tach channel monitors the corresponding PWM output.
+        Used for self-test; disconnect external fan input first.
+      bit_offset: 29
+      bit_size: 1
+    - name: INVERS_LIMIT
+      description: >
+        Interrupt on fan too-fast (below threshold) [30].
+        0 = interrupt when tach_value > THRESHOLD (fan too slow / stopped).
+        1 = interrupt when tach_value < THRESHOLD (fan too fast).
+      bit_offset: 30
+      bit_size: 1
+    - name: IER
+      description: Tachometer interrupt enable [31]. 1 = interrupt on threshold event.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/TACH_STS:
+  description: >
+    Tachometer channel status register (read-only / RW1C on bit 31).
+    Contains the captured tach value and status flags.
+  fields:
+    - name: VALUE
+      description: >
+        Captured tachometer count [19:0].
+        Number of input clock cycles between successive TACH edges
+        (divided by 4^CLK_DIV_T).
+        Convert to RPM: fan_rpm = (clk_hz × 60) / (VALUE × PPR × 4^CLK_DIV_T)
+        where PPR = pulses per revolution of the fan (typically 2).
+      bit_offset: 0
+      bit_size: 20
+    - name: FULL_MEASUREMENT
+      description: >
+        Full measurement complete [20]. Set after the first complete edge-to-edge
+        measurement. Clear until the first complete measurement since enable.
+      bit_offset: 20
+      bit_size: 1
+    - name: VALUE_UPDATE
+      description: >
+        Tach value updated flag [21]. Set when a new measurement completes.
+        Poll or use interrupt to detect new results.
+      bit_offset: 21
+      bit_size: 1
+    - name: RAW_INPUT
+      description: Raw (unlatched) tachometer pin state [22]. Read-only.
+      bit_offset: 22
+      bit_size: 1
+    - name: DEB_INPUT
+      description: Debounced tachometer input state [23]. Read-only.
+      bit_offset: 23
+      bit_size: 1
+    - name: PWM_OEN
+      description: Current state of the paired PWM output-enable [24]. Read-only.
+      bit_offset: 24
+      bit_size: 1
+    - name: PWM_OUT
+      description: Current state of the paired PWM output pin [25]. Read-only.
+      bit_offset: 25
+      bit_size: 1
+    - name: ISR
+      description: >
+        Tachometer interrupt status / clear [31]. RW1C.
+        Set by hardware when the threshold event fires (IER must be 1).
+        Write 1 to clear.
+      bit_offset: 31
+      bit_size: 1

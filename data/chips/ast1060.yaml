@@ -52,6 +52,14 @@ peripherals:
     block:   hace_v1::HACE
     address: 0x7e6d0000
 
+  # ── ADC ───────────────────────────────────────────────────────────────────
+  # 8-channel 10-bit ADC. Channels CH0–7.
+  # Base: 0x7E6E_9000. Source: ast1060v19.pdf section 20; memory map 0x7E6E:9000.
+  - name:    ADC
+    description: 10-bit ADC controller, 8 channels (CH0–7)
+    block:   adc_v1::ADC
+    address: 0x7e6e9000
+
   # ── Secure Boot Controller / OTP ─────────────────────────────────────────
   - name:    SECURE
     description: Secure Boot Controller and OTP engine

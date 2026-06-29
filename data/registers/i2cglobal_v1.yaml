@@ -1,6 +1,9 @@
 # ASPEED I2C/SMBus Global Control registers.
 #
-# Global base: 0x7E7B_0000 (AST1060; same on AST2600).
+# Global base:
+#   AST1060:  0x7E7B_0000  (I2C controller at this address)
+#   AST2600:  0x7E78_A000  (I2C bus controller, different address family)
+#
 # Covers interrupt status aggregation and global clock/mode configuration.
 #
 # There are two register modes selectable via I2CG0C[2]:
