@@ -18,6 +18,50 @@ const (
     WDT0_BASE = 0x7e785000
     // TIMER_BASE TIMER
     TIMER_BASE = 0x7e782000
+    // HACE_BASE Hash and Crypto Engine (AES/DES/RC4 + SHA/MD5/HMAC)
+    HACE_BASE = 0x7e6d0000
+    // ADC0_BASE ADC bank 0, channels 0–7 (10-bit, 8 channels)
+    ADC0_BASE = 0x7e6e9000
+    // ADC1_BASE ADC bank 1, channels 8–15 (10-bit, 8 channels)
+    ADC1_BASE = 0x7e6e9100
+    // PWM_TACH_BASE G6 PWM and fan tachometer controller (16 PWM + 16 TACH channels)
+    PWM_TACH_BASE = 0x7e610000
+    // PECI_BASE PECI controller for Intel CPU telemetry (temperature/power)
+    PECI_BASE = 0x7e78b000
+    // I2C_GLOBAL_BASE I2C/SMBus global interrupt status and clock divider
+    I2C_GLOBAL_BASE = 0x7e78a000
+    // I2C0_BASE I2C0
+    I2C0_BASE = 0x7e78a080
+    // I2C1_BASE I2C1
+    I2C1_BASE = 0x7e78a100
+    // I2C2_BASE I2C2
+    I2C2_BASE = 0x7e78a180
+    // I2C3_BASE I2C3
+    I2C3_BASE = 0x7e78a200
+    // I2C4_BASE I2C4
+    I2C4_BASE = 0x7e78a280
+    // I2C5_BASE I2C5
+    I2C5_BASE = 0x7e78a300
+    // I2C6_BASE I2C6
+    I2C6_BASE = 0x7e78a380
+    // I2C7_BASE I2C7
+    I2C7_BASE = 0x7e78a400
+    // I2C8_BASE I2C8
+    I2C8_BASE = 0x7e78a480
+    // I2C9_BASE I2C9
+    I2C9_BASE = 0x7e78a500
+    // I2C10_BASE I2C10
+    I2C10_BASE = 0x7e78a580
+    // I2C11_BASE I2C11
+    I2C11_BASE = 0x7e78a600
+    // I2C12_BASE I2C12
+    I2C12_BASE = 0x7e78a680
+    // I2C13_BASE I2C13
+    I2C13_BASE = 0x7e78a700
+    // I2C14_BASE I2C14
+    I2C14_BASE = 0x7e78a780
+    // I2C15_BASE I2C15
+    I2C15_BASE = 0x7e78a800
 )
 
 // IRQ numbers

@@ -2,6 +2,75 @@
 
 package pac
 
+// adc_v1::ADC_CH_DATA ADC channel result register (read-only). Holds the most recent 10-bit conversion result in bits [9:0]. The upper 6 bits are zero.  Result range: 0–1023. Voltage = (result / 1023) × VREF.
+const (
+    // VALUE 10-bit ADC result. Updated after each channel conversion in continuous mode.
+    AdcV1ADCCHDATAVALUEPos = 0
+    AdcV1ADCCHDATAVALUEMsk = 0x3ff << 0
+)
+
+// adc_v1::ADC_CLK_CTRL ADC Clock Control Register (ADC0C offset 0x0C). 16-bit clock divider.  sample_period = PCLK_period × 2 × (DIV + 1). For a 65 kHz sample rate from 25 MHz PCLK: DIV = (25_000_000 / (2 × 65_000)) - 1 ≈ 191.
+const (
+    // CLKDIV ADC clock divider [15:0]. sample_rate_Hz = PCLK_Hz / (2 × (CLK_DIV + 1)). Default after reset: ~65 kHz from PCLK.
+    AdcV1ADCCLKCTRLCLKDIVPos = 0
+    AdcV1ADCCLKCTRLCLKDIVMsk = 0xffff << 0
+)
+
+// adc_v1::ADC_COMP_TRIM ADC Compensation Trim Register (ADCC4 offset 0xC4). Factory calibration value.  Read from SCU OTP at init and written here. Used by the analogue frontend to correct for process variation.
+const (
+    // TRIMVALUE Calibration trim code from SCU OTP. Written once at engine init.
+    AdcV1ADCCOMPTRIMTRIMVALUEPos = 0
+    AdcV1ADCCOMPTRIMTRIMVALUEMsk = 0xffffffff << 0
+)
+
+// adc_v1::ADC_ENGINE_CTRL ADC Engine Control Register (ADC0C).
+const (
+    // ENGINEEN ADC engine enable. 0 = disabled (power-down mode if OP_MODE = 0). 1 = enabled.
+    AdcV1ADCENGINECTRLENGINEENPos = 0
+    AdcV1ADCENGINECTRLENGINEENMsk = 0x1 << 0
+    // OPMODE Operating mode. 0 = power-down. 1 = standby (no conversion, preserves calibration). 7 = normal continuous scan. Other values reserved.
+    AdcV1ADCENGINECTRLOPMODEPos = 1
+    AdcV1ADCENGINECTRLOPMODEMsk = 0x7 << 1
+    // CTRLCOMPENSATION Manual compensation enable. When set, the value in COMPENSATION_TRIM is used directly. When clear, AUTO_COMPENSATION controls trimming.
+    AdcV1ADCENGINECTRLCTRLCOMPENSATIONPos = 4
+    AdcV1ADCENGINECTRLCTRLCOMPENSATIONMsk = 0x1 << 4
+    // AUTOCOMPENSATION Automatic compensation enable. When set, the engine applies factory OTP trim automatically. Only meaningful when CTRL_COMPENSATION = 0.
+    AdcV1ADCENGINECTRLAUTOCOMPENSATIONPos = 5
+    AdcV1ADCENGINECTRLAUTOCOMPENSATIONMsk = 0x1 << 5
+    // REFVOLTAGE Reference voltage selection. 0 = internal 2.5 V reference (VREF = 2500 mV). 1 = internal 1.2 V reference (VREF = 1200 mV). 2 = external reference (high range, ADCVREFP pin). 3 = external reference (low range, ADCVREFEXT pin).
+    AdcV1ADCENGINECTRLREFVOLTAGEPos = 6
+    AdcV1ADCENGINECTRLREFVOLTAGEMsk = 0x3 << 6
+    // INITRDY Initialisation ready flag (read-only). Set by hardware when the ADC engine has completed power-up sequencing and is ready to produce valid results. Poll this bit after enabling the engine before reading channel data.
+    AdcV1ADCENGINECTRLINITRDYPos = 8
+    AdcV1ADCENGINECTRLINITRDYMsk = 0x1 << 8
+    // CH7BATMODE Channel 7 battery sensing mode. 0 = normal ADC input. 1 = battery voltage sensing: input is divided before the ADC.
+    AdcV1ADCENGINECTRLCH7BATMODEPos = 12
+    AdcV1ADCENGINECTRLCH7BATMODEMsk = 0x1 << 12
+    // BATSENSINGEN Battery sensing circuit enable. Required when CH7_BAT_MODE = 1.
+    AdcV1ADCENGINECTRLBATSENSINGENPos = 13
+    AdcV1ADCENGINECTRLBATSENSINGENMsk = 0x1 << 13
+    // CHEN Per-channel enable mask [31:16]. Bit 16 = CH0, bit 17 = CH1, …, bit 23 = CH7. Channels not enabled are skipped in the continuous scan.
+    AdcV1ADCENGINECTRLCHENPos = 16
+    AdcV1ADCENGINECTRLCHENMsk = 0xffff << 16
+)
+
+// adc_v1::ADC_INT_CTRL ADC Interrupt Control Register (ADC04).
+const (
+    // CHINTEN Per-channel interrupt enable [7:0]. Bit N enables the interrupt for channel N. Interrupt fires when the channel value crosses the VGA_DETECT threshold.
+    AdcV1ADCINTCTRLCHINTENPos = 0
+    AdcV1ADCINTCTRLCHINTENMsk = 0xff << 0
+)
+
+// adc_v1::ADC_VGA_DETECT ADC VGA Detect Control Register (ADC08). Sets a 10-bit comparison threshold for interrupt generation. The hardware compares each enabled channel's result against this threshold.
+const (
+    // THRESHOLD 10-bit comparison threshold value (applied to all channels).
+    AdcV1ADCVGADETECTTHRESHOLDPos = 0
+    AdcV1ADCVGADETECTTHRESHOLDMsk = 0x3ff << 0
+    // ABOVETHRESHOLD Interrupt direction. 0 = interrupt when value falls below threshold. 1 = interrupt when value rises above threshold.
+    AdcV1ADCVGADETECTABOVETHRESHOLDPos = 10
+    AdcV1ADCVGADETECTABOVETHRESHOLDMsk = 0x1 << 10
+)
+
 // clock_v1::CLK_SEL0 Clock Selection Register 0 (SCU300). Selects APB1 divider.
 const (
     // APB1DIV APB1 clock divider selection (bits [25:23]). APB1 freq = HPLL (1200 MHz) / ((APB1_DIV + 1) × 4). Example: 0 → 1200/4 = 300 MHz, 1 → 1200/8 = 150 MHz, ...
@@ -227,11 +296,995 @@ const (
     GpioV1GPIOINDEXINDEXDATAMsk = 0x1f << 20
 )
 
+// hace_v1::HACE_CQ_BASE Command Queue base address in DRAM (16-byte aligned).
+const (
+    // CQBASEADDR CQ base address bits[30:4] (16-byte aligned).
+    HaceV1HACECQBASECQBASEADDRPos = 4
+    HaceV1HACECQBASECQBASEADDRMsk = 0x7ffffff << 4
+)
+
+// hace_v1::HACE_CQ_PTR Command Queue end pointer (write before enabling CQ).
+const (
+    // CQENDPTR CQ end pointer bits[11:1] (16-byte aligned within CQ buffer).
+    HaceV1HACECQPTRCQENDPTRPos = 1
+    HaceV1HACECQPTRCQENDPTRMsk = 0x7ff << 1
+)
+
+// hace_v1::HACE_CQ_RW_PTR Command Queue write or read pointer.
+const (
+    // CQPTR CQ pointer bits[11:0] (8-byte aligned).
+    HaceV1HACECQRWPTRCQPTRPos = 0
+    HaceV1HACECQRWPTRCQPTRMsk = 0xfff << 0
+)
+
+// hace_v1::HACE_CRYPTO_CMD Crypto engine command register (HACE10).
+const (
+    // CASCADEMODE Cascade mode: 0/1=independent, 2=Crypto→Hash, 3=Hash→Crypto.
+    HaceV1HACECRYPTOCMDCASCADEMODEPos = 0
+    HaceV1HACECRYPTOCMDCASCADEMODEMsk = 0x3 << 0
+    // KEYLEN AES key length: 0=128-bit, 1=192-bit, 2=256-bit. Ignored for RC4/DES.
+    HaceV1HACECRYPTOCMDKEYLENPos = 2
+    HaceV1HACECRYPTOCMDKEYLENMsk = 0x3 << 2
+    // OPMODE AES/DES operation mode: 0=ECB, 1=CBC, 2=CFB, 3=OFB, 4=CTR, 5=AES-GCM.
+    HaceV1HACECRYPTOCMDOPMODEPos = 4
+    HaceV1HACECRYPTOCMDOPMODEMsk = 0x7 << 4
+    // ENCDEC Direction: 0=decrypt (ciphertext→plaintext), 1=encrypt (plaintext→ciphertext).
+    HaceV1HACECRYPTOCMDENCDECPos = 7
+    HaceV1HACECRYPTOCMDENCDECMsk = 0x1 << 7
+    // ALGOSEL Algorithm: 0=AES/DES, 1=RC4.
+    HaceV1HACECRYPTOCMDALGOSELPos = 8
+    HaceV1HACECRYPTOCMDALGOSELMsk = 0x1 << 8
+    // DISCTXSAVE Disable context save to buffer after engine completes.
+    HaceV1HACECRYPTOCMDDISCTXSAVEPos = 9
+    HaceV1HACECRYPTOCMDDISCTXSAVEMsk = 0x1 << 9
+    // DISCTXLOAD Disable context load from buffer before algorithm starts.
+    HaceV1HACECRYPTOCMDDISCTXLOADPos = 10
+    HaceV1HACECRYPTOCMDDISCTXLOADMsk = 0x1 << 10
+    // DISRWDATA Disable crypto engine data I/O (context only).
+    HaceV1HACECRYPTOCMDDISRWDATAPos = 11
+    HaceV1HACECRYPTOCMDDISRWDATAMsk = 0x1 << 11
+    // CRYPTOINTEN Enable interrupt when crypto command finishes.
+    HaceV1HACECRYPTOCMDCRYPTOINTENPos = 12
+    HaceV1HACECRYPTOCMDCRYPTOINTENMsk = 0x1 << 12
+    // KEYEXPSEL AES key expansion: 0=software (key in context), 1=hardware.
+    HaceV1HACECRYPTOCMDKEYEXPSELPos = 13
+    HaceV1HACECRYPTOCMDKEYEXPSELMsk = 0x1 << 13
+    // CTRBITS CTR counter width: 0=AES128/DES64, 1=AES96/DES32, 2=AES64, 3=AES32.
+    HaceV1HACECRYPTOCMDCTRBITSPos = 14
+    HaceV1HACECRYPTOCMDCTRBITSMsk = 0x3 << 14
+    // ENGSEL Engine: 0=AES, 1=DES.
+    HaceV1HACECRYPTOCMDENGSELPos = 16
+    HaceV1HACECRYPTOCMDENGSELMsk = 0x1 << 16
+    // TRIPLEDES Triple DES: 0=single DES, 1=3DES.
+    HaceV1HACECRYPTOCMDTRIPLEDESPos = 17
+    HaceV1HACECRYPTOCMDTRIPLEDESMsk = 0x1 << 17
+    // SRCSG Crypto source: 0=direct access, 1=scatter-gather list.
+    HaceV1HACECRYPTOCMDSRCSGPos = 18
+    HaceV1HACECRYPTOCMDSRCSGMsk = 0x1 << 18
+    // DSTSG Crypto destination: 0=direct access, 1=scatter-gather list.
+    HaceV1HACECRYPTOCMDDSTSGPos = 19
+    HaceV1HACECRYPTOCMDDSTSGMsk = 0x1 << 19
+    // MBUSSYNC Enable M-Bus request synchronization for Crypto Engine Idle.
+    HaceV1HACECRYPTOCMDMBUSSYNCPos = 20
+    HaceV1HACECRYPTOCMDMBUSSYNCMsk = 0x1 << 20
+    // GCMTAGADDRSEL AES-GCM tag write: 0=append to end of destination, 1=write to GCM_TAG_BASE.
+    HaceV1HACECRYPTOCMDGCMTAGADDRSELPos = 21
+    HaceV1HACECRYPTOCMDGCMTAGADDRSELMsk = 0x1 << 21
+    // GHASHPADORDER GHASH padding length order: 0=len(A)‖len(D), 1=len(D)‖len(A).
+    HaceV1HACECRYPTOCMDGHASHPADORDERPos = 22
+    HaceV1HACECRYPTOCMDGHASHPADORDERMsk = 0x1 << 22
+    // GHASHXORDIS Disable GHASH Tag XOR with GCTR output (0=XOR enabled, 1=disabled).
+    HaceV1HACECRYPTOCMDGHASHXORDISPos = 23
+    HaceV1HACECRYPTOCMDGHASHXORDISMsk = 0x1 << 23
+    // AESKEYSRC AES key source: 0=DRAM context buffer, 1=Secure Vault Key (SEC80C).
+    HaceV1HACECRYPTOCMDAESKEYSRCPos = 24
+    HaceV1HACECRYPTOCMDAESKEYSRCMsk = 0x1 << 24
+)
+
+// hace_v1::HACE_DATA_LEN Data length in bytes (bits[27:0]).
+const (
+    // LEN Data length in bytes (max 256 MB - 1).
+    HaceV1HACEDATALENLENPos = 0
+    HaceV1HACEDATALENLENMsk = 0xfffffff << 0
+)
+
+// hace_v1::HACE_DMA_ADDR DMA buffer base address (bit[31] reserved, bits[30:0] = address).
+const (
+    // ADDR Buffer base address (byte or 8-byte aligned depending on register and mode).
+    HaceV1HACEDMAADDRADDRPos = 0
+    HaceV1HACEDMAADDRADDRMsk = 0x7fffffff << 0
+)
+
+// hace_v1::HACE_FEATURE HACE feature control register (HACE60).
+const (
+    // CQBURST CQ data format: 0=single (8 bytes), 1=burst (8/16/24/32 bytes).
+    HaceV1HACEFEATURECQBURSTPos = 28
+    HaceV1HACEFEATURECQBURSTMsk = 0x1 << 28
+    // CTR64BIT AES/DES CTR counter width: 0=32-bit, 1=64-bit.
+    HaceV1HACEFEATURECTR64BITPos = 29
+    HaceV1HACEFEATURECTR64BITMsk = 0x1 << 29
+    // CQREGWR Register write source: 0=AHB (normal), 1=from CQ data.
+    HaceV1HACEFEATURECQREGWRPos = 30
+    HaceV1HACEFEATURECQREGWRMsk = 0x1 << 30
+    // CQEN Enable DRAM-based Command Queue.
+    HaceV1HACEFEATURECQENPos = 31
+    HaceV1HACEFEATURECQENMsk = 0x1 << 31
+)
+
+// hace_v1::HACE_HASH_CMD Hash engine command register (HACE30).
+const (
+    // CASCADEMODE Cascade mode: 0/1=independent, 2=Crypto→Hash, 3=Hash→Crypto.
+    HaceV1HACEHASHCMDCASCADEMODEPos = 0
+    HaceV1HACEHASHCMDCASCADEMODEMsk = 0x3 << 0
+    // BYTESWAP Byte swapping: 1=MD5 (little-endian), 2=SHA-x (big-endian).
+    HaceV1HACEHASHCMDBYTESWAPPos = 2
+    HaceV1HACEHASHCMDBYTESWAPMsk = 0x3 << 2
+    // HASHALGO Hash algorithm: 0=MD5, 2=SHA-1, 4=SHA-224, 5=SHA-256, 6=SHA-512 series (use SHA512_SEL for variant). Others invalid.
+    HaceV1HACEHASHCMDHASHALGOPos = 4
+    HaceV1HACEHASHCMDHASHALGOMsk = 0x7 << 4
+    // HMACCMD HMAC/accumulative: 0=digest only, 1=HMAC, 2=accumulative, 3=compute HMAC key.
+    HaceV1HACEHASHCMDHMACCMDPos = 7
+    HaceV1HACEHASHCMDHMACCMDMsk = 0x3 << 7
+    // HASHINTEN Enable interrupt when hash command finishes.
+    HaceV1HACEHASHCMDHASHINTENPos = 9
+    HaceV1HACEHASHCMDHASHINTENMsk = 0x1 << 9
+    // SHA512SEL SHA-512 variant (when HASH_ALGO=6): 0=SHA-512, 1=SHA-384, 2=SHA-512/256, 3=SHA-512/224.
+    HaceV1HACEHASHCMDSHA512SELPos = 10
+    HaceV1HACEHASHCMDSHA512SELMsk = 0x7 << 10
+    // ACCFIRST This command includes the first block (accumulative mode).
+    HaceV1HACEHASHCMDACCFIRSTPos = 13
+    HaceV1HACEHASHCMDACCFIRSTMsk = 0x1 << 13
+    // ACCLAST This command includes the last block (accumulative mode). Requires HASH_PAD_LEN set.
+    HaceV1HACEHASHCMDACCLASTPos = 14
+    HaceV1HACEHASHCMDACCLASTMsk = 0x1 << 14
+    // SRCSG Hash source: 0=direct access, 1=scatter-gather. Must be 0 when HMAC_CMD=3.
+    HaceV1HACEHASHCMDSRCSGPos = 18
+    HaceV1HACEHASHCMDSRCSGMsk = 0x1 << 18
+    // MBUSSYNC Enable M-Bus request synchronization for Hash Engine Idle.
+    HaceV1HACEHASHCMDMBUSSYNCPos = 20
+    HaceV1HACEHASHCMDMBUSSYNCMsk = 0x1 << 20
+)
+
+// hace_v1::HACE_STATUS HACE engine status and interrupt register (HACE1C).
+const (
+    // HASHBUSY Hash engine busy.
+    HaceV1HACESTATUSHASHBUSYPos = 0
+    HaceV1HACESTATUSHASHBUSYMsk = 0x1 << 0
+    // CRYPTOBUSY Crypto engine busy.
+    HaceV1HACESTATUSCRYPTOBUSYPos = 1
+    HaceV1HACESTATUSCRYPTOBUSYMsk = 0x1 << 1
+    // CQBUSY Command queue busy.
+    HaceV1HACESTATUSCQBUSYPos = 3
+    HaceV1HACESTATUSCQBUSYMsk = 0x1 << 3
+    // HASHINT Hash engine done interrupt (write 1 to clear).
+    HaceV1HACESTATUSHASHINTPos = 9
+    HaceV1HACESTATUSHASHINTMsk = 0x1 << 9
+    // CRYPTOINT Crypto engine done interrupt (write 1 to clear).
+    HaceV1HACESTATUSCRYPTOINTPos = 12
+    HaceV1HACESTATUSCRYPTOINTMsk = 0x1 << 12
+    // SWTAGINT Software tag interrupt — set when value written to HACE64 (write 1 to clear).
+    HaceV1HACESTATUSSWTAGINTPos = 15
+    HaceV1HACESTATUSSWTAGINTMsk = 0x1 << 15
+)
+
+// hace_v1::HACE_SW_TAG Software tag register (HACE64).
+const (
+    // SWTAG Software tag value [27:0]. Writing triggers SW_TAG_INT if enabled.
+    HaceV1HACESWTAGSWTAGPos = 0
+    HaceV1HACESWTAGSWTAGMsk = 0xfffffff << 0
+    // WAITHASH Wait for hash engine idle before updating tag.
+    HaceV1HACESWTAGWAITHASHPos = 28
+    HaceV1HACESWTAGWAITHASHMsk = 0x1 << 28
+    // WAITCRYPTO Wait for crypto engine idle before updating tag.
+    HaceV1HACESWTAGWAITCRYPTOPos = 29
+    HaceV1HACESWTAGWAITCRYPTOMsk = 0x1 << 29
+    // SWTAGINTEN Enable software tag interrupt on write to HACE64.
+    HaceV1HACESWTAGSWTAGINTENPos = 31
+    HaceV1HACESWTAGSWTAGINTENMsk = 0x1 << 31
+)
+
+// i2c_v1::I2C_CLK_TIMING I2C/SMBus clock and AC timing control register (I2CC04).
+const (
+    // BASECLKDIV Base clock divisor selection. Old mode: 0=PCLK/1, 1=PCLK/2, ..., 15=PCLK/32768. New mode: 0=PCLK/1, 1–3=PCLK/base_divider_1..3, 4=1MHz, 5=baseclk4/2, ..., 15=baseclk4/2048.
+    I2cV1I2CCLKTIMINGBASECLKDIVPos = 0
+    I2cV1I2CCLKTIMINGBASECLKDIVMsk = 0xf << 0
+    // TOUTBASECLKDIV Timeout base clock divisor. Old mode: 00=PCLK/16384, 01=PCLK/65536, 10=PCLK/262144, 11=PCLK/1048576. New mode: 00=baseclk4/256, 01=baseclk4/1024, 10=baseclk4/4096, 11=baseclk4/8192.
+    I2cV1I2CCLKTIMINGTOUTBASECLKDIVPos = 8
+    I2cV1I2CCLKTIMINGTOUTBASECLKDIVMsk = 0x3 << 8
+    // THDDAT Data hold time (tHDDAT) in base clock units. Master: 0=1, 1=2, 2=3, 3=4. Slave: 0=0, 1=1, 2=2, 3=3.
+    I2cV1I2CCLKTIMINGTHDDATPos = 10
+    I2cV1I2CCLKTIMINGTHDDATMsk = 0x3 << 10
+    // TCKLOW Master SCL clock-low pulse width (tCKLow) in base clock units. 0–2 = no guarantee. 3=4 clocks. 15=16 clocks.
+    I2cV1I2CCLKTIMINGTCKLOWPos = 12
+    I2cV1I2CCLKTIMINGTCKLOWMsk = 0xf << 12
+    // TCKIGH Master SCL clock-high pulse width (tCKHigh) in base clock units. 0–2 = no guarantee. 3=4 clocks. 15=16 clocks.
+    I2cV1I2CCLKTIMINGTCKIGHPos = 16
+    I2cV1I2CCLKTIMINGTCKIGHMsk = 0xf << 16
+    // TCKIGHMIN Master SCL clock-high minimum pulse width (tCKHighMin) in base clock units. Hardware samples SCL feedback and extends high if needed. Must be ≤ tCKHigh.
+    I2cV1I2CCLKTIMINGTCKIGHMINPos = 20
+    I2cV1I2CCLKTIMINGTCKIGHMINMsk = 0xf << 20
+    // TIMEOUTTIMER SCL-low / SDA-low / slave-active timeout (N × timeout base clock period). 0 = no timeout. 1–31 = N × timeout base period.
+    I2cV1I2CCLKTIMINGTIMEOUTTIMERPos = 24
+    I2cV1I2CCLKTIMINGTIMEOUTTIMERMsk = 0x1f << 24
+)
+
+// i2c_v1::I2C_CUR_DMA_ADDR Current DMA operating address (I2CC50). Read-only; increments during transfer.
+const (
+    // CURADDR Current DMA address counter.
+    I2cV1I2CCURDMAADDRCURADDRPos = 0
+    I2cV1I2CCURDMAADDRCURADDRMsk = 0xffffffff << 0
+)
+
+// i2c_v1::I2C_CUR_DMA_LEN Current DMA remaining length (I2CC54). Read-only; decrements during transfer.
+const (
+    // CURLEN Remaining DMA bytes.
+    I2cV1I2CCURDMALENCURLENPos = 0
+    I2cV1I2CCURDMALENCURLENMsk = 0xfff << 0
+)
+
+// i2c_v1::I2C_DMA_BASE_ADDR DMA buffer base address in SDRAM (I2CM30/34/I2CS38/3C). Hardware increments during transfer.
+const (
+    // SDRAMBASEADDR SDRAM DMA buffer base address (bits [30:0]).
+    I2cV1I2CDMABASEADDRSDRAMBASEADDRPos = 0
+    I2cV1I2CDMABASEADDRSDRAMBASEADDRMsk = 0x7fffffff << 0
+)
+
+// i2c_v1::I2C_DMA_LEN DMA transfer length register (I2CM1C / I2CS2C). Bits[31] and [15] (W1T) allow updating RX and TX lengths independently. Length value N = N+1 bytes transferred (0=1 byte, 4095=4096 bytes).
+const (
+    // DMATXLEN DMA TX buffer length (0=1 byte, 4095=4096 bytes).
+    I2cV1I2CDMALENDMATXLENPos = 0
+    I2cV1I2CDMALENDMATXLENMsk = 0xfff << 0
+    // DMATXLENWE Write-1 enable for TX length field (write-1-to-apply independently).
+    I2cV1I2CDMALENDMATXLENWEPos = 15
+    I2cV1I2CDMALENDMATXLENWEMsk = 0x1 << 15
+    // DMARXLEN DMA RX buffer length (0=1 byte, 4095=4096 bytes).
+    I2cV1I2CDMALENDMARXLENPos = 16
+    I2cV1I2CDMALENDMARXLENMsk = 0xfff << 16
+    // DMARXLENWE Write-1 enable for RX length field.
+    I2cV1I2CDMALENDMARXLENWEPos = 31
+    I2cV1I2CDMALENDMARXLENWEMsk = 0x1 << 31
+)
+
+// i2c_v1::I2C_DMA_STATUS DMA actual transfer length status (I2CM48 / I2CS4C). Write clears to 0.
+const (
+    // DMATXACTUALLEN DMA TX actual bytes transferred.
+    I2cV1I2CDMASTATUSDMATXACTUALLENPos = 0
+    I2cV1I2CDMASTATUSDMATXACTUALLENMsk = 0x1fff << 0
+    // DMARXACTUALLEN DMA RX actual bytes transferred.
+    I2cV1I2CDMASTATUSDMARXACTUALLENPos = 16
+    I2cV1I2CDMASTATUSDMARXACTUALLENMsk = 0x1fff << 16
+)
+
+// i2c_v1::I2C_FUNC_CTRL I2C/SMBus function control register (I2CC00).
+const (
+    // ENBLMASTERFN Enable master function. Clearing both master and slave resets state machines.
+    I2cV1I2CFUNCCTRLENBLMASTERFNPos = 0
+    I2cV1I2CFUNCCTRLENBLMASTERFNMsk = 0x1 << 0
+    // ENBLSLAVEFN Enable slave function. Can coexist with master.
+    I2cV1I2CFUNCCTRLENBLSLAVEFNPos = 1
+    I2cV1I2CFUNCCTRLENBLSLAVEFNMsk = 0x1 << 1
+    // ENBLRESPONDGENCALL Respond to I2C/SMBus General Call Address (0x00).
+    I2cV1I2CFUNCCTRLENBLRESPONDGENCALLPos = 2
+    I2cV1I2CFUNCCTRLENBLRESPONDGENCALLMsk = 0x1 << 2
+    // ENBLRESPONDARPHOST Respond to SMBus ARP Host Address (0b0001_000).
+    I2cV1I2CFUNCCTRLENBLRESPONDARPHOSTPos = 3
+    I2cV1I2CFUNCCTRLENBLRESPONDARPHOSTMsk = 0x1 << 3
+    // ENBLRESPONDALERTADDR Respond to SMBus Alert Response Address (0b0001_100).
+    I2cV1I2CFUNCCTRLENBLRESPONDALERTADDRPos = 4
+    I2cV1I2CFUNCCTRLENBLRESPONDALERTADDRMsk = 0x1 << 4
+    // ENBLRESPONDDEFAULTADDR Respond to I2C Default Address (0b1100_001).
+    I2cV1I2CFUNCCTRLENBLRESPONDDEFAULTADDRPos = 5
+    I2cV1I2CFUNCCTRLENBLRESPONDDEFAULTADDRMsk = 0x1 << 5
+    // ENBLHIGHSPEEDMODE Enable High Speed master mode (3.4 Mbps). Requires buffer or DMA; clock from I2CC04[19:12] with baseclk 0.
+    I2cV1I2CFUNCCTRLENBLHIGHSPEEDMODEPos = 6
+    I2cV1I2CFUNCCTRLENBLHIGHSPEEDMODEMsk = 0x1 << 6
+    // ENBLSCLDRIVEHIGH1T Drive SCL actively high for 1 base clock, then tri-state (master only). Supports higher transfer rates; disallows slave clock stretching.
+    I2cV1I2CFUNCCTRLENBLSCLDRIVEHIGH1TPos = 7
+    I2cV1I2CFUNCCTRLENBLSCLDRIVEHIGH1TMsk = 0x1 << 7
+    // ENBLSDADRIVEHIGH1T Drive SDA actively high for 1 PCLK cycle, then tri-state.
+    I2cV1I2CFUNCCTRLENBLSDADRIVEHIGH1TPos = 8
+    I2cV1I2CFUNCCTRLENBLSDADRIVEHIGH1TMsk = 0x1 << 8
+    // ENBLSLAVEADDRRANGE Slave address range mode. 0 = exact match on addr1 and addr2. 1 = match if addr1 ≤ incoming ≤ addr2.
+    I2cV1I2CFUNCCTRLENBLSLAVEADDRRANGEPos = 9
+    I2cV1I2CFUNCCTRLENBLSLAVEADDRRANGEMsk = 0x1 << 9
+    // ENBLSCLDIRECTDRIVE SCL direct drive mode (master only, no clock stretching allowed). 0 = open-drain. 1 = actively drive SCL.
+    I2cV1I2CFUNCCTRLENBLSCLDIRECTDRIVEPos = 14
+    I2cV1I2CFUNCCTRLENBLSCLDIRECTDRIVEMsk = 0x1 << 14
+    // DISMULTIMASTER Disable multi-master capability (no arbitration loss detection). 0 = multi-master. 1 = single-master.
+    I2cV1I2CFUNCCTRLDISMULTIMASTERPos = 15
+    I2cV1I2CFUNCCTRLDISMULTIMASTERMsk = 0x1 << 15
+    // ENBLMASTERAUTOSDARECOVERY Master auto SDA lock recovery (single-master only). Generates clock pulses to recover SDA if locked before START.
+    I2cV1I2CFUNCCTRLENBLMASTERAUTOSDARECOVERYPos = 16
+    I2cV1I2CFUNCCTRLENBLMASTERAUTOSDARECOVERYMsk = 0x1 << 16
+    // ENBLBUSAUTORELEASETIMEOUT Release bus on SCL-low, SDA-low, or slave inactive timeout. Requires timeout set in I2CC04[28:24]. Invalid in packet mode.
+    I2cV1I2CFUNCCTRLENBLBUSAUTORELEASETIMEOUTPos = 17
+    I2cV1I2CFUNCCTRLENBLBUSAUTORELEASETIMEOUTMsk = 0x1 << 17
+    // MASTERPKTRETRYCOUNT Master packet operation retry count. 0=none, 1=1 retry, 2=2 retries, 3=3 retries.
+    I2cV1I2CFUNCCTRLMASTERPKTRETRYCOUNTPos = 18
+    I2cV1I2CFUNCCTRLMASTERPKTRETRYCOUNTMsk = 0x3 << 18
+)
+
+// i2c_v1::I2C_MASTER_CMD Master command register (I2CM18).
+const (
+    // MASTERSTARTCMD Issue Start/Repeated-Start (highest priority). Hardware clears when Start is issued. Only effective when master enabled and bus idle.
+    I2cV1I2CMASTERCMDMASTERSTARTCMDPos = 0
+    I2cV1I2CMASTERCMDMASTERSTARTCMDMsk = 0x1 << 0
+    // MASTERTXCMD Transmit data from buffer (2nd priority). Hardware clears when buffer empty.
+    I2cV1I2CMASTERCMDMASTERTXCMDPos = 1
+    I2cV1I2CMASTERCMDMASTERTXCMDMsk = 0x1 << 1
+    // MASTERRXCMD Receive data into buffer (3rd priority). Hardware clears when done or terminated.
+    I2cV1I2CMASTERCMDMASTERRXCMDPos = 3
+    I2cV1I2CMASTERCMDMASTERRXCMDMsk = 0x1 << 3
+    // MASTERRXLAST Last receive flag. 0=ACK after last byte. 1=NACK after last byte.
+    I2cV1I2CMASTERCMDMASTERRXLASTPos = 4
+    I2cV1I2CMASTERCMDMASTERRXLASTMsk = 0x1 << 4
+    // MASTERSTOPCMD Issue Stop (4th priority). Hardware clears when Stop is issued.
+    I2cV1I2CMASTERCMDMASTERSTOPCMDPos = 5
+    I2cV1I2CMASTERCMDMASTERSTOPCMDMsk = 0x1 << 5
+    // ENBLMASTERTXPOOL Enable master transmit pool buffer.
+    I2cV1I2CMASTERCMDENBLMASTERTXPOOLPos = 6
+    I2cV1I2CMASTERCMDENBLMASTERTXPOOLMsk = 0x1 << 6
+    // ENBLMASTERRXPOOL Enable master receive pool buffer.
+    I2cV1I2CMASTERCMDENBLMASTERRXPOOLPos = 7
+    I2cV1I2CMASTERCMDENBLMASTERRXPOOLMsk = 0x1 << 7
+    // ENBLMASTERTXDMA Enable master transmit DMA. Configure I2CM30/I2CM1C first.
+    I2cV1I2CMASTERCMDENBLMASTERTXDMAPos = 8
+    I2cV1I2CMASTERCMDENBLMASTERTXDMAMsk = 0x1 << 8
+    // ENBLMASTERRXDMA Enable master receive DMA. TX and RX DMA cannot be active simultaneously.
+    I2cV1I2CMASTERCMDENBLMASTERRXDMAPos = 9
+    I2cV1I2CMASTERCMDENBLMASTERRXDMAMsk = 0x1 << 9
+    // ENBLBUSRECOVERCMD Issue bus recover command. SCL must be high; state machine must be IDLE. Generates 1–8 SCL pulses to release SDA.
+    I2cV1I2CMASTERCMDENBLBUSRECOVERCMDPos = 11
+    I2cV1I2CMASTERCMDENBLBUSRECOVERCMDMsk = 0x1 << 11
+    // SCLOGPIO SCL GPIO output value (valid only when both master and slave disabled).
+    I2cV1I2CMASTERCMDSCLOGPIOPos = 12
+    I2cV1I2CMASTERCMDSCLOGPIOMsk = 0x1 << 12
+    // SCLOEGPIO SCL GPIO output enable.
+    I2cV1I2CMASTERCMDSCLOEGPIOPos = 13
+    I2cV1I2CMASTERCMDSCLOEGPIOMsk = 0x1 << 13
+    // SDAOGPIO SDA GPIO output value.
+    I2cV1I2CMASTERCMDSDAOGPIOPos = 14
+    I2cV1I2CMASTERCMDSDAOGPIOMsk = 0x1 << 14
+    // SDAOEGPIO SDA GPIO output enable.
+    I2cV1I2CMASTERCMDSDAOEGPIOPos = 15
+    I2cV1I2CMASTERCMDSDAOEGPIOMsk = 0x1 << 15
+    // ENBLMASTERPKTOP Enable master packet operation mode. Hardware auto-issues S→Aw→TxD→Sr→Ar→RxD→P with retry and SDA recovery.
+    I2cV1I2CMASTERCMDENBLMASTERPKTOPPos = 16
+    I2cV1I2CMASTERCMDENBLMASTERPKTOPMsk = 0x1 << 16
+    // HSMASTERCODELSB High Speed mode master code bits [2:0] (for 0b00001xxx). Packet mode only.
+    I2cV1I2CMASTERCMDHSMASTERCODELSBPos = 17
+    I2cV1I2CMASTERCMDHSMASTERCODELSBMsk = 0x7 << 17
+    // TARGETADDR Target device address for packet operation mode (7-bit).
+    I2cV1I2CMASTERCMDTARGETADDRPos = 24
+    I2cV1I2CMASTERCMDTARGETADDRMsk = 0x7f << 24
+    // W1TCTRL Write-1 control. When set, register write only sets bits (no clear).
+    I2cV1I2CMASTERCMDW1TCTRLPos = 31
+    I2cV1I2CMASTERCMDW1TCTRLMsk = 0x1 << 31
+)
+
+// i2c_v1::I2C_MASTER_IRQ_CTRL Master interrupt enable register (I2CM10).
+const (
+    // ENBLTXACKINT Enable transmit ended with ACK interrupt.
+    I2cV1I2CMASTERIRQCTRLENBLTXACKINTPos = 0
+    I2cV1I2CMASTERIRQCTRLENBLTXACKINTMsk = 0x1 << 0
+    // ENBLTXNACKINT Enable transmit ended with NACK interrupt.
+    I2cV1I2CMASTERIRQCTRLENBLTXNACKINTPos = 1
+    I2cV1I2CMASTERIRQCTRLENBLTXNACKINTMsk = 0x1 << 1
+    // ENBLRXDONEINT Enable receive done interrupt.
+    I2cV1I2CMASTERIRQCTRLENBLRXDONEINTPos = 2
+    I2cV1I2CMASTERIRQCTRLENBLRXDONEINTMsk = 0x1 << 2
+    // ENBLARBLOSSINT Enable arbitration loss interrupt.
+    I2cV1I2CMASTERIRQCTRLENBLARBLOSSINTPos = 3
+    I2cV1I2CMASTERIRQCTRLENBLARBLOSSINTMsk = 0x1 << 3
+    // ENBLNORMALSTOPINT Enable normal Stop condition interrupt.
+    I2cV1I2CMASTERIRQCTRLENBLNORMALSTOPINTPos = 4
+    I2cV1I2CMASTERIRQCTRLENBLNORMALSTOPINTMsk = 0x1 << 4
+    // ENBLABNSTARTSTOPINT Enable abnormal Start/Stop detection interrupt.
+    I2cV1I2CMASTERIRQCTRLENBLABNSTARTSTOPINTPos = 5
+    I2cV1I2CMASTERIRQCTRLENBLABNSTARTSTOPINTMsk = 0x1 << 5
+    // ENBLSCLTIMEOUTINT Enable SCL clock-low timeout interrupt.
+    I2cV1I2CMASTERIRQCTRLENBLSCLTIMEOUTINTPos = 6
+    I2cV1I2CMASTERIRQCTRLENBLSCLTIMEOUTINTMsk = 0x1 << 6
+    // ENBLSMBUSALERTINT Enable SMBus device alert interrupt (independent of packet done).
+    I2cV1I2CMASTERIRQCTRLENBLSMBUSALERTINTPos = 12
+    I2cV1I2CMASTERIRQCTRLENBLSMBUSALERTINTMsk = 0x1 << 12
+    // ENBLBUSRECOVERDONEINT Enable bus recover done interrupt.
+    I2cV1I2CMASTERIRQCTRLENBLBUSRECOVERDONEINTPos = 13
+    I2cV1I2CMASTERIRQCTRLENBLBUSRECOVERDONEINTMsk = 0x1 << 13
+    // ENBLSDATIMEOUTINT Enable SDA data-low timeout interrupt.
+    I2cV1I2CMASTERIRQCTRLENBLSDATIMEOUTINTPos = 14
+    I2cV1I2CMASTERIRQCTRLENBLSDATIMEOUTINTMsk = 0x1 << 14
+    // ENBLPKTCMDDONEINT Enable packet command done interrupt. In packet mode, only this and/or ENBL_SMBUS_ALERT_INT are needed.
+    I2cV1I2CMASTERIRQCTRLENBLPKTCMDDONEINTPos = 16
+    I2cV1I2CMASTERIRQCTRLENBLPKTCMDDONEINTMsk = 0x1 << 16
+)
+
+// i2c_v1::I2C_MASTER_IRQ_STATUS Master interrupt status register (I2CM14). Write-1-to-clear.
+const (
+    // TXACKSTS Transmit ended with ACK.
+    I2cV1I2CMASTERIRQSTATUSTXACKSTSPos = 0
+    I2cV1I2CMASTERIRQSTATUSTXACKSTSMsk = 0x1 << 0
+    // TXNACKSTS Transmit ended with NACK.
+    I2cV1I2CMASTERIRQSTATUSTXNACKSTSPos = 1
+    I2cV1I2CMASTERIRQSTATUSTXNACKSTSMsk = 0x1 << 1
+    // RXDONESTS Receive done. Must be cleared to enable next receive.
+    I2cV1I2CMASTERIRQSTATUSRXDONESTSPos = 2
+    I2cV1I2CMASTERIRQSTATUSRXDONESTSMsk = 0x1 << 2
+    // ARBLOSSSTS Master arbitration loss.
+    I2cV1I2CMASTERIRQSTATUSARBLOSSSTSPos = 3
+    I2cV1I2CMASTERIRQSTATUSARBLOSSSTSMsk = 0x1 << 3
+    // NORMALSTOPSTS Normal Stop condition detected.
+    I2cV1I2CMASTERIRQSTATUSNORMALSTOPSTSPos = 4
+    I2cV1I2CMASTERIRQSTATUSNORMALSTOPSTSMsk = 0x1 << 4
+    // ABNSTARTSTOPSTS Abnormal Start/Stop condition detected.
+    I2cV1I2CMASTERIRQSTATUSABNSTARTSTOPSTSPos = 5
+    I2cV1I2CMASTERIRQSTATUSABNSTARTSTOPSTSMsk = 0x1 << 5
+    // SCLTIMEOUTSTS SCL clock-low timeout.
+    I2cV1I2CMASTERIRQSTATUSSCLTIMEOUTSTSPos = 6
+    I2cV1I2CMASTERIRQSTATUSSCLTIMEOUTSTSMsk = 0x1 << 6
+    // SMBUSALERTSTS SMBus device alert (independent of packet command).
+    I2cV1I2CMASTERIRQSTATUSSMBUSALERTSTSPos = 12
+    I2cV1I2CMASTERIRQSTATUSSMBUSALERTSTSMsk = 0x1 << 12
+    // BUSRECOVERDONESTS Bus recover done.
+    I2cV1I2CMASTERIRQSTATUSBUSRECOVERDONESTSPos = 13
+    I2cV1I2CMASTERIRQSTATUSBUSRECOVERDONESTSMsk = 0x1 << 13
+    // SDATIMEOUTSTS SDA data-low timeout.
+    I2cV1I2CMASTERIRQSTATUSSDATIMEOUTSTSPos = 14
+    I2cV1I2CMASTERIRQSTATUSSDATIMEOUTSTSMsk = 0x1 << 14
+    // PKTCMDDONESTS Packet command done. Clearing also clears bits[6:0,13:12,18:17].
+    I2cV1I2CMASTERIRQSTATUSPKTCMDDONESTSPos = 16
+    I2cV1I2CMASTERIRQSTATUSPKTCMDDONESTSMsk = 0x1 << 16
+    // PKTCMDFAILSTS Packet command fail (detail in bits[1,3,5,6,14,15,18]).
+    I2cV1I2CMASTERIRQSTATUSPKTCMDFAILSTSPos = 17
+    I2cV1I2CMASTERIRQSTATUSPKTCMDFAILSTSMsk = 0x1 << 17
+    // PKTCMDTIMEOUTSTS Packet command timeout.
+    I2cV1I2CMASTERIRQSTATUSPKTCMDTIMEOUTSTSPos = 18
+    I2cV1I2CMASTERIRQSTATUSPKTCMDTIMEOUTSTSMsk = 0x1 << 18
+    // PKTOPSTATE Packet operation state machine (read-only). 0=IDLE, 1=STARTH, 2=STARTW, 3=STARTR, 4=TXMCODE, 5=TXAW, 6=TXAR, 8=INIT, 9=TXD, 10=RXD, 11=STOP, 12=RETRY, 13=FAIL, 14=WAIT, 15=PASS.
+    I2cV1I2CMASTERIRQSTATUSPKTOPSTATEPos = 28
+    I2cV1I2CMASTERIRQSTATUSPKTOPSTATEMsk = 0xf << 28
+)
+
+// i2c_v1::I2C_POOL_CTRL I2C/SMBus pool buffer control register (I2CC0C).
+const (
+    // BUFORGANIZATION Pool buffer organization. 0 = all 32 bytes for TX or RX. 1 = lower 16 bytes TX, upper 16 bytes RX.
+    I2cV1I2CPOOLCTRLBUFORGANIZATIONPos = 0
+    I2cV1I2CPOOLCTRLBUFORGANIZATIONMsk = 0x1 << 0
+    // TXDATABYTECOUNT Transmit pool buffer byte count. Value N = N+1 bytes (0=1, 31=32).
+    I2cV1I2CPOOLCTRLTXDATABYTECOUNTPos = 8
+    I2cV1I2CPOOLCTRLTXDATABYTECOUNTMsk = 0x1f << 8
+    // RXPOOLBUFSIZE Receive pool buffer size. Value N = N+1 bytes (0=1, 31=32). For slave: defines max receive size. For master: receive byte count.
+    I2cV1I2CPOOLCTRLRXPOOLBUFSIZEPos = 16
+    I2cV1I2CPOOLCTRLRXPOOLBUFSIZEMsk = 0x1f << 16
+    // ACTUALRXPOOLBUFSIZE Actual received bytes in pool buffer (0–32). Write clears to 0.
+    I2cV1I2CPOOLCTRLACTUALRXPOOLBUFSIZEPos = 24
+    I2cV1I2CPOOLCTRLACTUALRXPOOLBUFSIZEMsk = 0x3f << 24
+)
+
+// i2c_v1::I2C_SLAVE_ADDR Slave device address register (I2CS40). Up to three 7-bit slave addresses.
+const (
+    // SLAVEADDR1 Slave device address 1 (7-bit).
+    I2cV1I2CSLAVEADDRSLAVEADDR1Pos = 0
+    I2cV1I2CSLAVEADDRSLAVEADDR1Msk = 0x7f << 0
+    // ENBLSLAVEADDR1 Enable slave address 1.
+    I2cV1I2CSLAVEADDRENBLSLAVEADDR1Pos = 7
+    I2cV1I2CSLAVEADDRENBLSLAVEADDR1Msk = 0x1 << 7
+    // SLAVEADDR2 Slave device address 2 (7-bit). Upper bound in address range mode.
+    I2cV1I2CSLAVEADDRSLAVEADDR2Pos = 8
+    I2cV1I2CSLAVEADDRSLAVEADDR2Msk = 0x7f << 8
+    // ENBLSLAVEADDR2 Enable slave address 2.
+    I2cV1I2CSLAVEADDRENBLSLAVEADDR2Pos = 15
+    I2cV1I2CSLAVEADDRENBLSLAVEADDR2Msk = 0x1 << 15
+    // SLAVEADDR3 Slave device address 3 (7-bit).
+    I2cV1I2CSLAVEADDRSLAVEADDR3Pos = 16
+    I2cV1I2CSLAVEADDRSLAVEADDR3Msk = 0x7f << 16
+    // ENBLSLAVEADDR3 Enable slave address 3.
+    I2cV1I2CSLAVEADDRENBLSLAVEADDR3Pos = 23
+    I2cV1I2CSLAVEADDRENBLSLAVEADDR3Msk = 0x1 << 23
+)
+
+// i2c_v1::I2C_SLAVE_CMD Slave command register (I2CS28).
+const (
+    // SLAVETXCMD Issue slave transmit command. Hardware clears when buffer empty or bus contention.
+    I2cV1I2CSLAVECMDSLAVETXCMDPos = 2
+    I2cV1I2CSLAVECMDSLAVETXCMDMsk = 0x1 << 2
+    // SLAVERXLAST Slave receive last. 0=ACK. 1=NACK after last byte.
+    I2cV1I2CSLAVECMDSLAVERXLASTPos = 4
+    I2cV1I2CSLAVECMDSLAVERXLASTMsk = 0x1 << 4
+    // ENBLSLAVETXPOOL Enable slave transmit pool buffer.
+    I2cV1I2CSLAVECMDENBLSLAVETXPOOLPos = 6
+    I2cV1I2CSLAVECMDENBLSLAVETXPOOLMsk = 0x1 << 6
+    // ENBLSLAVERXPOOL Enable slave receive pool buffer.
+    I2cV1I2CSLAVECMDENBLSLAVERXPOOLPos = 7
+    I2cV1I2CSLAVECMDENBLSLAVERXPOOLMsk = 0x1 << 7
+    // ENBLSLAVETXDMA Enable slave transmit DMA.
+    I2cV1I2CSLAVECMDENBLSLAVETXDMAPos = 8
+    I2cV1I2CSLAVECMDENBLSLAVETXDMAMsk = 0x1 << 8
+    // ENBLSLAVERXDMA Enable slave receive DMA.
+    I2cV1I2CSLAVECMDENBLSLAVERXDMAPos = 9
+    I2cV1I2CSLAVECMDENBLSLAVERXDMAMsk = 0x1 << 9
+    // ENBLSLAVEALERTSIG Issue SMBus slave alert. Hardware clears after address-matched packet received.
+    I2cV1I2CSLAVECMDENBLSLAVEALERTSIGPos = 10
+    I2cV1I2CSLAVECMDENBLSLAVEALERTSIGMsk = 0x1 << 10
+    // ENBLAUTONACKACTIVEADDR Auto-NACK when active-address buffer not ready (packet mode, suggested).
+    I2cV1I2CSLAVECMDENBLAUTONACKACTIVEADDRPos = 14
+    I2cV1I2CSLAVECMDENBLAUTONACKACTIVEADDRMsk = 0x1 << 14
+    // ENBLAUTONACKNONACTIVEADDR Auto-NACK to non-active address at address phase (packet mode).
+    I2cV1I2CSLAVECMDENBLAUTONACKNONACTIVEADDRPos = 15
+    I2cV1I2CSLAVECMDENBLAUTONACKNONACTIVEADDRMsk = 0x1 << 15
+    // ENBLSLAVEPKTOP Enable slave packet operation mode. Disables byte mode.
+    I2cV1I2CSLAVECMDENBLSLAVEPKTOPPos = 16
+    I2cV1I2CSLAVECMDENBLSLAVEPKTOPMsk = 0x1 << 16
+    // ACTIVEADDRSEL Active address for packet operation. 0=addr1, 1=addr2, 2=addr3, 3=all.
+    I2cV1I2CSLAVECMDACTIVEADDRSELPos = 17
+    I2cV1I2CSLAVECMDACTIVEADDRSELMsk = 0x3 << 17
+    // W1TCTRL Write-1 control. When set, register write only sets bits (no clear).
+    I2cV1I2CSLAVECMDW1TCTRLPos = 31
+    I2cV1I2CSLAVECMDW1TCTRLMsk = 0x1 << 31
+)
+
+// i2c_v1::I2C_SLAVE_IRQ_CTRL Slave interrupt enable register (I2CS20).
+const (
+    // ENBLTXACKINT Enable transmit ended with ACK interrupt.
+    I2cV1I2CSLAVEIRQCTRLENBLTXACKINTPos = 0
+    I2cV1I2CSLAVEIRQCTRLENBLTXACKINTMsk = 0x1 << 0
+    // ENBLRXDONEINT Enable receive done interrupt.
+    I2cV1I2CSLAVEIRQCTRLENBLRXDONEINTPos = 2
+    I2cV1I2CSLAVEIRQCTRLENBLRXDONEINTMsk = 0x1 << 2
+    // ENBLNORMALSTOPINT Enable normal Stop condition interrupt.
+    I2cV1I2CSLAVEIRQCTRLENBLNORMALSTOPINTPos = 4
+    I2cV1I2CSLAVEIRQCTRLENBLNORMALSTOPINTMsk = 0x1 << 4
+    // ENBLABNSTARTSTOPINT Enable abnormal Start/Stop detection interrupt.
+    I2cV1I2CSLAVEIRQCTRLENBLABNSTARTSTOPINTPos = 5
+    I2cV1I2CSLAVEIRQCTRLENBLABNSTARTSTOPINTMsk = 0x1 << 5
+    // ENBLSLAVEINACTIVETIMEOUTINT Enable slave inactive timeout interrupt (state machine stuck in slave-active).
+    I2cV1I2CSLAVEIRQCTRLENBLSLAVEINACTIVETIMEOUTINTPos = 15
+    I2cV1I2CSLAVEIRQCTRLENBLSLAVEINACTIVETIMEOUTINTMsk = 0x1 << 15
+    // ENBLPKTCMDDONEINT Enable slave packet command done interrupt.
+    I2cV1I2CSLAVEIRQCTRLENBLPKTCMDDONEINTPos = 16
+    I2cV1I2CSLAVEIRQCTRLENBLPKTCMDDONEINTMsk = 0x1 << 16
+    // ENBLSLAVEADDRNACKEDINT Enable slave address matched-but-NACKed interrupt. Valid in packet mode with auto-NACK enabled.
+    I2cV1I2CSLAVEIRQCTRLENBLSLAVEADDRNACKEDINTPos = 17
+    I2cV1I2CSLAVEIRQCTRLENBLSLAVEADDRNACKEDINTMsk = 0x1 << 17
+)
+
+// i2c_v1::I2C_SLAVE_IRQ_STATUS Slave interrupt status register (I2CS24). Write-1-to-clear.
+const (
+    // TXACKSTS Transmit ended with ACK.
+    I2cV1I2CSLAVEIRQSTATUSTXACKSTSPos = 0
+    I2cV1I2CSLAVEIRQSTATUSTXACKSTSMsk = 0x1 << 0
+    // TXNACKSTS Transmit ended with NACK. Also raises NORMAL_STOP_STS.
+    I2cV1I2CSLAVEIRQSTATUSTXNACKSTSPos = 1
+    I2cV1I2CSLAVEIRQSTATUSTXNACKSTSMsk = 0x1 << 1
+    // RXDONESTS Receive done.
+    I2cV1I2CSLAVEIRQSTATUSRXDONESTSPos = 2
+    I2cV1I2CSLAVEIRQSTATUSRXDONESTSMsk = 0x1 << 2
+    // RXDONEWITHNACK Receive done ended with NACK returned (read-only; clears with NORMAL_STOP_STS).
+    I2cV1I2CSLAVEIRQSTATUSRXDONEWITHNACKPos = 3
+    I2cV1I2CSLAVEIRQSTATUSRXDONEWITHNACKMsk = 0x1 << 3
+    // NORMALSTOPSTS Normal Stop condition (Stop during RX, or NACK during TX).
+    I2cV1I2CSLAVEIRQSTATUSNORMALSTOPSTSPos = 4
+    I2cV1I2CSLAVEIRQSTATUSNORMALSTOPSTSMsk = 0x1 << 4
+    // ABNSTARTSTOPSTS Abnormal Start/Stop condition detected.
+    I2cV1I2CSLAVEIRQSTATUSABNSTARTSTOPSTSPos = 5
+    I2cV1I2CSLAVEIRQSTATUSABNSTARTSTOPSTSMsk = 0x1 << 5
+    // SLAVEADDRMATCHSTS Slave address received and matched.
+    I2cV1I2CSLAVEIRQSTATUSSLAVEADDRMATCHSTSPos = 7
+    I2cV1I2CSLAVEIRQSTATUSSLAVEADDRMATCHSTSMsk = 0x1 << 7
+    // SLAVEINACTIVETIMEOUTSTS Slave inactive timeout.
+    I2cV1I2CSLAVEIRQSTATUSSLAVEINACTIVETIMEOUTSTSPos = 15
+    I2cV1I2CSLAVEIRQSTATUSSLAVEINACTIVETIMEOUTSTSMsk = 0x1 << 15
+    // PKTCMDDONESTS Slave packet command done. Clearing also clears bits[0,2,4:5,7,15,17].
+    I2cV1I2CSLAVEIRQSTATUSPKTCMDDONESTSPos = 16
+    I2cV1I2CSLAVEIRQSTATUSPKTCMDDONESTSMsk = 0x1 << 16
+    // PKTCMDFAILSTS Slave packet command fail.
+    I2cV1I2CSLAVEIRQSTATUSPKTCMDFAILSTSPos = 17
+    I2cV1I2CSLAVEIRQSTATUSPKTCMDFAILSTSMsk = 0x1 << 17
+    // CURACTIVESLAVEADDR Current active slave address. 0=addr1, 1=addr2, 2=addr3.
+    I2cV1I2CSLAVEIRQSTATUSCURACTIVESLAVEADDRPos = 18
+    I2cV1I2CSLAVEIRQSTATUSCURACTIVESLAVEADDRMsk = 0x3 << 18
+    // SLAVEADDR1NACKED Slave address 1 was NACKed.
+    I2cV1I2CSLAVEIRQSTATUSSLAVEADDR1NACKEDPos = 20
+    I2cV1I2CSLAVEIRQSTATUSSLAVEADDR1NACKEDMsk = 0x1 << 20
+    // SLAVEADDR2NACKED Slave address 2 was NACKed.
+    I2cV1I2CSLAVEIRQSTATUSSLAVEADDR2NACKEDPos = 21
+    I2cV1I2CSLAVEIRQSTATUSSLAVEADDR2NACKEDMsk = 0x1 << 21
+    // SLAVEADDR3NACKED Slave address 3 was NACKed.
+    I2cV1I2CSLAVEIRQSTATUSSLAVEADDR3NACKEDPos = 22
+    I2cV1I2CSLAVEIRQSTATUSSLAVEADDR3NACKEDMsk = 0x1 << 22
+    // CURSLAVEPARKINGSTS Current slave parking status. 0=idle, 1=waiting for RX buf, 2=waiting for TX buf.
+    I2cV1I2CSLAVEIRQSTATUSCURSLAVEPARKINGSTSPos = 24
+    I2cV1I2CSLAVEIRQSTATUSCURSLAVEPARKINGSTSMsk = 0x3 << 24
+    // SLAVEADDRRXDPENDING Previous slave DMA receive not yet processed; address match pending.
+    I2cV1I2CSLAVEIRQSTATUSSLAVEADDRRXDPENDINGPos = 29
+    I2cV1I2CSLAVEIRQSTATUSSLAVEADDRRXDPENDINGMsk = 0x1 << 29
+    // LASTSLAVEADDRMATCH Last slave address that matched. 0=addr1, 1=addr2, 2=addr3.
+    I2cV1I2CSLAVEIRQSTATUSLASTSLAVEADDRMATCHPos = 30
+    I2cV1I2CSLAVEIRQSTATUSLASTSLAVEADDRMATCHMsk = 0x3 << 30
+)
+
+// i2c_v1::I2C_TX_RX_BUF I2C/SMBus byte transmit/receive buffer and bus state (I2CC08).
+const (
+    // TXBYTEBUF Transmit byte buffer (byte mode only). Write byte to send.
+    I2cV1I2CTXRXBUFTXBYTEBUFPos = 0
+    I2cV1I2CTXRXBUFTXBYTEBUFMsk = 0xff << 0
+    // RXBYTEBUF Receive byte buffer (byte mode only). Read received byte.
+    I2cV1I2CTXRXBUFRXBYTEBUFPos = 8
+    I2cV1I2CTXRXBUFRXBYTEBUFMsk = 0xff << 8
+    // BUSBUSY Bus busy. 0=idle. 1=busy (transaction in progress or idle timing not met).
+    I2cV1I2CTXRXBUFBUSBUSYPos = 16
+    I2cV1I2CTXRXBUFBUSBUSYMsk = 0x1 << 16
+    // SDALINESTATE Sampled SDA line state.
+    I2cV1I2CTXRXBUFSDALINESTATEPos = 17
+    I2cV1I2CTXRXBUFSDALINESTATEMsk = 0x1 << 17
+    // SCLLINESTATE Sampled SCL line state.
+    I2cV1I2CTXRXBUFSCLLINESTATEPos = 18
+    I2cV1I2CTXRXBUFSCLLINESTATEMsk = 0x1 << 18
+    // XFERSTATE Transfer mode state machine. 0x0=IDLE, 0x8=MACTIVE, 0x9=MSTART, 0xA=MSTARTR, 0xB=MSTOP, 0xC=MTXD, 0xD=MRXACK, 0xE=MRXD, 0xF=MTXACK, 0x1=SWAIT, 0x4=SRXD, 0x5=STXACK, 0x6=STXD, 0x7=SRXACK, 0x3=RECOVER.
+    I2cV1I2CTXRXBUFXFERSTATEPos = 19
+    I2cV1I2CTXRXBUFXFERSTATEMsk = 0xf << 19
+    // XFERTIMINGSTAGE Transfer timing stage. 0=T0, 1=T1, 2=T2, 3=T3.
+    I2cV1I2CTXRXBUFXFERTIMINGSTAGEPos = 23
+    I2cV1I2CTXRXBUFXFERTIMINGSTAGEMsk = 0x3 << 23
+    // SCLOUTPUT SCL output value.
+    I2cV1I2CTXRXBUFSCLOUTPUTPos = 25
+    I2cV1I2CTXRXBUFSCLOUTPUTMsk = 0x1 << 25
+    // SCLOUTPUTEN SCL output enable.
+    I2cV1I2CTXRXBUFSCLOUTPUTENPos = 26
+    I2cV1I2CTXRXBUFSCLOUTPUTENMsk = 0x1 << 26
+    // SDAOUTPUT SDA output value.
+    I2cV1I2CTXRXBUFSDAOUTPUTPos = 27
+    I2cV1I2CTXRXBUFSDAOUTPUTMsk = 0x1 << 27
+    // SDAOUTPUTEN SDA output enable.
+    I2cV1I2CTXRXBUFSDAOUTPUTENPos = 28
+    I2cV1I2CTXRXBUFSDAOUTPUTENMsk = 0x1 << 28
+    // XFERDATADIR Transfer data direction. 0=IDLE, 1=WAIT, 4=MTX, 5=MRX, 6=STX, 7=SRX.
+    I2cV1I2CTXRXBUFXFERDATADIRPos = 29
+    I2cV1I2CTXRXBUFXFERDATADIRMsk = 0x7 << 29
+)
+
+// i2cglobal_v1::I2CG_CLK_DIV I2C/SMBus new-mode clock divisor register (I2CG10). Valid when I2CG0C[1]=1 (new clock divider mode). Four 8-bit fields, each setting a base clock divisor. Effective divisor = value/2 + 0.5 (0x00=÷1, 0xFF=÷128.5).
+const (
+    // BASECLK1DIV Base clock 1 divisor (PCLK ÷ (N/2 + 0.5)).
+    I2cglobalV1I2CGCLKDIVBASECLK1DIVPos = 0
+    I2cglobalV1I2CGCLKDIVBASECLK1DIVMsk = 0xff << 0
+    // BASECLK2DIV Base clock 2 divisor.
+    I2cglobalV1I2CGCLKDIVBASECLK2DIVPos = 8
+    I2cglobalV1I2CGCLKDIVBASECLK2DIVMsk = 0xff << 8
+    // BASECLK3DIV Base clock 3 divisor.
+    I2cglobalV1I2CGCLKDIVBASECLK3DIVPos = 16
+    I2cglobalV1I2CGCLKDIVBASECLK3DIVMsk = 0xff << 16
+    // BASECLK4DIV Base clock 4 divisor.
+    I2cglobalV1I2CGCLKDIVBASECLK4DIVPos = 24
+    I2cglobalV1I2CGCLKDIVBASECLK4DIVMsk = 0xff << 24
+)
+
+// i2cglobal_v1::I2CG_GLOBAL_CTRL I2C/SMBus global control register (I2CG0C).
+const (
+    // CLKDIVIDERMODE Clock divider mode selection. 0 = old mode (per-channel PCLK power-of-2 divisors). 1 = new mode (I2CG10 programmable base clock divisors — recommended).
+    I2cglobalV1I2CGGLOBALCTRLCLKDIVIDERMODEPos = 1
+    I2cglobalV1I2CGGLOBALCTRLCLKDIVIDERMODEMsk = 0x1 << 1
+    // REGMODE Per-channel register mode selection. 0 = old mode (I2CDxx registers). 1 = new mode (I2CCxx/I2CMxx/I2CSxx — recommended; used by i2c_v1).
+    I2cglobalV1I2CGGLOBALCTRLREGMODEPos = 2
+    I2cglobalV1I2CGGLOBALCTRLREGMODEMsk = 0x1 << 2
+    // SEPARATEMASTERSLAVEINTS Master/slave interrupt separation. 0 = merged: all device interrupts in I2CG00. 1 = separated: master in I2CG00, slave in I2CG04.
+    I2cglobalV1I2CGGLOBALCTRLSEPARATEMASTERSLAVEINTSPos = 3
+    I2cglobalV1I2CGGLOBALCTRLSEPARATEMASTERSLAVEINTSMsk = 0x1 << 3
+    // SLAVEPKTRXFULLACTION Slave packet mode: action when RX buffer is full. 0 = issue packet-done interrupt and pull SCL low (halt transfer). 1 = expect Repeated-Start or Stop; NACK if more data follows.
+    I2cglobalV1I2CGGLOBALCTRLSLAVEPKTRXFULLACTIONPos = 4
+    I2cglobalV1I2CGGLOBALCTRLSLAVEPKTRXFULLACTIONMsk = 0x1 << 4
+    // MASTERTURNAROUNDDELAY Master transmit-to-receive turnaround delay in base clock cycles. 0 = no delay. 1–15 = delay N base clock cycles. Applied in master packet operation mode only.
+    I2cglobalV1I2CGGLOBALCTRLMASTERTURNAROUNDDELAYPos = 8
+    I2cglobalV1I2CGGLOBALCTRLMASTERTURNAROUNDDELAYMsk = 0xf << 8
+)
+
+// i2cglobal_v1::I2CG_IRQ_STATUS I2C/SMBus global interrupt status (I2CG00 / I2CG04). Bit N-1 set = device N has a pending interrupt. Read-only — clear at the individual channel's interrupt status register.
+const (
+    // DEV1INT Device 1 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV1INTPos = 0
+    I2cglobalV1I2CGIRQSTATUSDEV1INTMsk = 0x1 << 0
+    // DEV2INT Device 2 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV2INTPos = 1
+    I2cglobalV1I2CGIRQSTATUSDEV2INTMsk = 0x1 << 1
+    // DEV3INT Device 3 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV3INTPos = 2
+    I2cglobalV1I2CGIRQSTATUSDEV3INTMsk = 0x1 << 2
+    // DEV4INT Device 4 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV4INTPos = 3
+    I2cglobalV1I2CGIRQSTATUSDEV4INTMsk = 0x1 << 3
+    // DEV5INT Device 5 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV5INTPos = 4
+    I2cglobalV1I2CGIRQSTATUSDEV5INTMsk = 0x1 << 4
+    // DEV6INT Device 6 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV6INTPos = 5
+    I2cglobalV1I2CGIRQSTATUSDEV6INTMsk = 0x1 << 5
+    // DEV7INT Device 7 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV7INTPos = 6
+    I2cglobalV1I2CGIRQSTATUSDEV7INTMsk = 0x1 << 6
+    // DEV8INT Device 8 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV8INTPos = 7
+    I2cglobalV1I2CGIRQSTATUSDEV8INTMsk = 0x1 << 7
+    // DEV9INT Device 9 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV9INTPos = 8
+    I2cglobalV1I2CGIRQSTATUSDEV9INTMsk = 0x1 << 8
+    // DEV10INT Device 10 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV10INTPos = 9
+    I2cglobalV1I2CGIRQSTATUSDEV10INTMsk = 0x1 << 9
+    // DEV11INT Device 11 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV11INTPos = 10
+    I2cglobalV1I2CGIRQSTATUSDEV11INTMsk = 0x1 << 10
+    // DEV12INT Device 12 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV12INTPos = 11
+    I2cglobalV1I2CGIRQSTATUSDEV12INTMsk = 0x1 << 11
+    // DEV13INT Device 13 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV13INTPos = 12
+    I2cglobalV1I2CGIRQSTATUSDEV13INTMsk = 0x1 << 12
+    // DEV14INT Device 14 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV14INTPos = 13
+    I2cglobalV1I2CGIRQSTATUSDEV14INTMsk = 0x1 << 13
+    // DEV15INT Device 15 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV15INTPos = 14
+    I2cglobalV1I2CGIRQSTATUSDEV15INTMsk = 0x1 << 14
+    // DEV16INT Device 16 interrupt pending.
+    I2cglobalV1I2CGIRQSTATUSDEV16INTPos = 15
+    I2cglobalV1I2CGIRQSTATUSDEV16INTMsk = 0x1 << 15
+)
+
 // ipc_v1::IPC_CHANNELS IPC 15-channel bitmask. Bit n corresponds to IPC channel n (n = 0..14).
 const (
     // CH IPC channel bitmask (bits [14:0]). Bit 0 = channel 0 (IRQ 182); bit 14 = channel 14 (IRQ 196).
     IpcV1IPCCHANNELSCHPos = 0
     IpcV1IPCCHANNELSCHMsk = 0x7fff << 0
+)
+
+// peci_v1::PECI_CAPTURED_FCS PECI Captured FCS Register (PECI14). Read-only.
+const (
+    // CAPTUREDWRFCS Write FCS byte captured from the last transaction [7:0].
+    PeciV1PECICAPTUREDFCSCAPTUREDWRFCSPos = 0
+    PeciV1PECICAPTUREDFCSCAPTUREDWRFCSMsk = 0xff << 0
+    // CAPTUREDRDFCS Read FCS byte captured from the last transaction [23:16].
+    PeciV1PECICAPTUREDFCSCAPTUREDRDFCSPos = 16
+    PeciV1PECICAPTUREDFCSCAPTUREDRDFCSMsk = 0xff << 16
+)
+
+// peci_v1::PECI_CMD PECI Command Register (PECI08).
+const (
+    // FIRE Fire PECI transaction [0]. Write 1 to start a transaction using the configured WR_DATA buffers, RW_LENGTH, and TIMING_NEG settings. Hardware clears this bit when the transaction completes.
+    PeciV1PECICMDFIREPos = 0
+    PeciV1PECICMDFIREMsk = 0x1 << 0
+    // STATUS PECI state machine status [27:24]. Read-only. 0x3 = address timing negotiation in progress. Other values indicate transaction phase.
+    PeciV1PECICMDSTATUSPos = 24
+    PeciV1PECICMDSTATUSMsk = 0xf << 24
+    // PINMONITORING PECI wire monitor mode [31]. When set, the controller monitors the PECI wire and records activity without driving it.  Used for debugging.
+    PeciV1PECICMDPINMONITORINGPos = 31
+    PeciV1PECICMDPINMONITORINGMsk = 0x1 << 31
+)
+
+// peci_v1::PECI_CTRL PECI Control Register (PECI00).
+const (
+    // PECICLKEN PECI clock enable [0]. Enable the PECI clock generator.
+    PeciV1PECICTRLPECICLKENPos = 0
+    PeciV1PECICTRLPECICLKENMsk = 0x1 << 0
+    // PECIEN PECI controller enable [4]. Must be set before issuing commands.
+    PeciV1PECICTRLPECIENPos = 4
+    PeciV1PECICTRLPECIENMsk = 0x1 << 4
+    // BUSCONTENTIONEN Bus contention detection enable [5].
+    PeciV1PECICTRLBUSCONTENTIONENPos = 5
+    PeciV1PECICTRLBUSCONTENTIONENMsk = 0x1 << 5
+    // INVERTIN Invert PECI input pin [6]. 0 = normal, 1 = inverted.
+    PeciV1PECICTRLINVERTINPos = 6
+    PeciV1PECICTRLINVERTINMsk = 0x1 << 6
+    // INVERTOUT Invert PECI output pin [7]. 0 = normal, 1 = inverted.
+    PeciV1PECICTRLINVERTOUTPos = 7
+    PeciV1PECICTRLINVERTOUTMsk = 0x1 << 7
+    // CLKDIV PECI clock divider [10:8]. PECI_clk = HCLK / (4 × (msg_timing + 1) × 2^CLK_DIV). Lower values → faster PECI clock.  Typical: 0 for 1 MHz PECI.
+    PeciV1PECICTRLCLKDIVPos = 8
+    PeciV1PECICTRLCLKDIVMsk = 0x7 << 8
+    // CLKSRCHCLK Clock source select [11]. 0 = internal oscillator. 1 = HCLK. Use HCLK (1) for accurate timing.
+    PeciV1PECICTRLCLKSRCHCLKPos = 11
+    PeciV1PECICTRLCLKSRCHCLKMsk = 0x1 << 11
+    // RDMODE Read mode [13:12]. Bit 12: COUNT mode — byte count driven by hardware. Bit 13: DBG mode — debug capture enable.
+    PeciV1PECICTRLRDMODEPos = 12
+    PeciV1PECICTRLRDMODEMsk = 0x3 << 12
+    // SAMPLING Read sampling point [19:16]. Adjusts the bit sampling point within each PECI bit period. Default: 8.  Valid range: 0–15.
+    PeciV1PECICTRLSAMPLINGPos = 16
+    PeciV1PECICTRLSAMPLINGMsk = 0xf << 16
+)
+
+// peci_v1::PECI_DATA_BUF PECI data buffer register (4 bytes). Write data: filled by software before issuing a command. Read data: filled by hardware after a command completes. Maximum total payload: 32 bytes (8 registers × 4 bytes).
+const (
+    // DATA 32-bit data buffer word (4 bytes of PECI payload).
+    PeciV1PECIDATABUFDATAPos = 0
+    PeciV1PECIDATABUFDATAMsk = 0xffffffff << 0
+)
+
+// peci_v1::PECI_EXPECTED_FCS PECI Expected FCS Register (PECI10).
+const (
+    // EXPECTEDWRFCS Expected Write FCS byte [7:0]. Written by software.
+    PeciV1PECIEXPECTEDFCSEXPECTEDWRFCSPos = 0
+    PeciV1PECIEXPECTEDFCSEXPECTEDWRFCSMsk = 0xff << 0
+    // EXPECTEDAWFCSAUTO Auto-computed Assured Write FCS [15:8]. Filled by hardware when AW_FCS_EN=1 before the transaction fires.
+    PeciV1PECIEXPECTEDFCSEXPECTEDAWFCSAUTOPos = 8
+    PeciV1PECIEXPECTEDFCSEXPECTEDAWFCSAUTOMsk = 0xff << 8
+    // EXPECTEDRDFCS Expected Read FCS byte [23:16]. Written by software. Compare against CAPTURED_RD_FCS to verify data integrity.
+    PeciV1PECIEXPECTEDFCSEXPECTEDRDFCSPos = 16
+    PeciV1PECIEXPECTEDFCSEXPECTEDRDFCSMsk = 0xff << 16
+)
+
+// peci_v1::PECI_INT_CTRL PECI Interrupt Control Register (PECI18).
+const (
+    // CMDDONEEN Interrupt enable for command completion [0].
+    PeciV1PECIINTCTRLCMDDONEENPos = 0
+    PeciV1PECIINTCTRLCMDDONEENMsk = 0x1 << 0
+    // WRFCSABORTEN Interrupt enable for write FCS abort [1].
+    PeciV1PECIINTCTRLWRFCSABORTENPos = 1
+    PeciV1PECIINTCTRLWRFCSABORTENMsk = 0x1 << 1
+    // WRFCSBADEN Interrupt enable for write FCS mismatch [2].
+    PeciV1PECIINTCTRLWRFCSBADENPos = 2
+    PeciV1PECIINTCTRLWRFCSBADENMsk = 0x1 << 2
+    // BUSCONTENTIONEN Interrupt enable for bus contention [3].
+    PeciV1PECIINTCTRLBUSCONTENTIONENPos = 3
+    PeciV1PECIINTCTRLBUSCONTENTIONENMsk = 0x1 << 3
+    // BUSTIMEOUTEN Interrupt enable for bus timeout [4].
+    PeciV1PECIINTCTRLBUSTIMEOUTENPos = 4
+    PeciV1PECIINTCTRLBUSTIMEOUTENMsk = 0x1 << 4
+    // TIMINGNEGOSEL Timing negotiation interrupt trigger select [31:30]. 0 = on 1st bit of address negotiation. 1 = on 2nd bit of address negotiation. 2 = on message negotiation.
+    PeciV1PECIINTCTRLTIMINGNEGOSELPos = 30
+    PeciV1PECIINTCTRLTIMINGNEGOSELMsk = 0x3 << 30
+)
+
+// peci_v1::PECI_INT_STS PECI Interrupt Status Register (PECI1C). RW1C on bits [4:0].
+const (
+    // CMDDONE Command completed [0]. Write 1 to clear.
+    PeciV1PECIINTSTSCMDDONEPos = 0
+    PeciV1PECIINTSTSCMDDONEMsk = 0x1 << 0
+    // WRFCSABORT Write FCS abort [1]. Write 1 to clear.
+    PeciV1PECIINTSTSWRFCSABORTPos = 1
+    PeciV1PECIINTSTSWRFCSABORTMsk = 0x1 << 1
+    // WRFCSBAD Write FCS mismatch detected [2]. Write 1 to clear.
+    PeciV1PECIINTSTSWRFCSBADPos = 2
+    PeciV1PECIINTSTSWRFCSBADMsk = 0x1 << 2
+    // BUSCONTENTION Bus contention detected [3]. Write 1 to clear.
+    PeciV1PECIINTSTSBUSCONTENTIONPos = 3
+    PeciV1PECIINTSTSBUSCONTENTIONMsk = 0x1 << 3
+    // BUSTIMEOUT Bus timeout [4]. Write 1 to clear.
+    PeciV1PECIINTSTSBUSTIMEOUTPos = 4
+    PeciV1PECIINTSTSBUSTIMEOUTMsk = 0x1 << 4
+    // TIMINGRESULT Timing negotiation result [29:16]. Read-only. Holds the negotiated timing value after a timing negotiation command.
+    PeciV1PECIINTSTSTIMINGRESULTPos = 16
+    PeciV1PECIINTSTSTIMINGRESULTMsk = 0x3fff << 16
+)
+
+// peci_v1::PECI_RW_LENGTH PECI Read/Write Length Register (PECI0C).
+const (
+    // TARGETADDR PECI target device address [7:0]. Intel CPU PECI address, typically 0x30 for the first CPU socket.
+    PeciV1PECIRWLENGTHTARGETADDRPos = 0
+    PeciV1PECIRWLENGTHTARGETADDRMsk = 0xff << 0
+    // WRLEN Write data length in bytes [15:8]. Number of bytes to transmit (from WR_DATA buffers), not counting FCS. Maximum: 32 bytes.
+    PeciV1PECIRWLENGTHWRLENPos = 8
+    PeciV1PECIRWLENGTHWRLENMsk = 0xff << 8
+    // RDLEN Read data length in bytes [23:16]. Number of bytes expected from the target, not counting FCS. Maximum: 32 bytes.
+    PeciV1PECIRWLENGTHRDLENPos = 16
+    PeciV1PECIRWLENGTHRDLENMsk = 0xff << 16
+    // AWFCSEN Assured Write FCS enable [31]. When set, the controller appends an Assured Write FCS to the transaction. Required for write commands that modify CPU configuration.
+    PeciV1PECIRWLENGTHAWFCSENPos = 31
+    PeciV1PECIRWLENGTHAWFCSENMsk = 0x1 << 31
+)
+
+// peci_v1::PECI_TIMING_NEG PECI Timing Negotiation Register (PECI04).
+const (
+    // TNEGOADDR Address timing parameter [7:0]. PECI bus address cycle timing in PECI clock units. Set before issuing an address timing negotiation command.
+    PeciV1PECITIMINGNEGTNEGOADDRPos = 0
+    PeciV1PECITIMINGNEGTNEGOADDRMsk = 0xff << 0
+    // TNEGOMSG Message timing parameter [15:8]. PECI bus message cycle timing in PECI clock units. Set before issuing a message timing negotiation command.
+    PeciV1PECITIMINGNEGTNEGOMSGPos = 8
+    PeciV1PECITIMINGNEGTNEGOMSGMsk = 0xff << 8
+)
+
+// pwm_v1::PWM_CTRL PWM channel control register. Controls PWM output enable, clock prescaler, polarity, and WDT-safe mode. Clock: input_clk / ((DIV_L + 1) << DIV_H)
+const (
+    // CLKDIVL Low-order clock divider [7:0]. Effective clock = input_clk / ((DIV_L + 1) << DIV_H).
+    PwmV1PWMCTRLCLKDIVLPos = 0
+    PwmV1PWMCTRLCLKDIVLMsk = 0xff << 0
+    // CLKDIVH High-order clock divider (shift amount) [11:8]. Effective clock = input_clk / ((DIV_L + 1) << DIV_H). Range 0–15 giving divisors of 1–32768 × (DIV_L+1).
+    PwmV1PWMCTRLCLKDIVHPos = 8
+    PwmV1PWMCTRLCLKDIVHMsk = 0xf << 8
+    // PINEN PWM output pin enable [12]. 0 = output held at inactive level; PWM counter does not drive the pin. 1 = PWM signal drives the output pin. CLK_EN must also be set for the duty cycle to be non-zero.
+    PwmV1PWMCTRLPINENPos = 12
+    PwmV1PWMCTRLPINENMsk = 0x1 << 12
+    // OPENDRAINEN Open-drain output mode [13]. 0 = push-pull, 1 = open-drain.
+    PwmV1PWMCTRLOPENDRAINENPos = 13
+    PwmV1PWMCTRLOPENDRAINENMsk = 0x1 << 13
+    // INVERSE Output polarity inversion [14]. 0 = active high. 1 = active low (output is inverted immediately). Toggling this while PWM is running may generate a glitch.
+    PwmV1PWMCTRLINVERSEPos = 14
+    PwmV1PWMCTRLINVERSEMsk = 0x1 << 14
+    // LEVELOUTPUT Force output to inactive level [15]. When set, the PWM output is forced to inactive regardless of CLK_EN.
+    PwmV1PWMCTRLLEVELOUTPUTPos = 15
+    PwmV1PWMCTRLLEVELOUTPUTMsk = 0x1 << 15
+    // CLKEN PWM clock enable [16]. 0 = duty counter held in reset, output at inactive level. 1 = duty counter runs; duty cycle determined by PWM_DUTY. Use PIN_EN to gate the output without resetting the counter.
+    PwmV1PWMCTRLCLKENPos = 16
+    PwmV1PWMCTRLCLKENMsk = 0x1 << 16
+    // DUTYSYNCDIS Duty cycle synchronisation disable [17]. 0 = new duty values take effect at the start of the next period (glitch-free). 1 = new duty values take effect immediately.
+    PwmV1PWMCTRLDUTYSYNCDISPos = 17
+    PwmV1PWMCTRLDUTYSYNCDISMsk = 0x1 << 17
+    // DUTYLOADWDTEN Load duty cycle from WDT-safe value on watchdog event [18]. When set, a WDT reset causes the PWM to switch to the duty point programmed in PWM_DUTY.POINT_WDT.
+    PwmV1PWMCTRLDUTYLOADWDTENPos = 18
+    PwmV1PWMCTRLDUTYLOADWDTENMsk = 0x1 << 18
+    // LOADSELRISINGWDT WDT duty select: use rising point as WDT-safe duty [19]. 0 = use FALLING_POINT as WDT duty. 1 = use RISING_POINT as WDT duty.
+    PwmV1PWMCTRLLOADSELRISINGWDTPos = 19
+    PwmV1PWMCTRLLOADSELRISINGWDTMsk = 0x1 << 19
+)
+
+// pwm_v1::PWM_DUTY PWM channel duty cycle register. Period = (DUTY_PERIOD + 1) × Q, where Q = (DIV_L+1) << DIV_H / input_clk. Active time = (FALLING_POINT - RISING_POINT) × Q. RISING_POINT = 0 and FALLING_POINT = DUTY_PERIOD+1 → 100% duty cycle. FALLING_POINT = 0 (and CLK_EN=1) → 100% duty cycle (rising=falling=0).
+const (
+    // RISINGPOINT Duty cycle rising edge point [7:0]. The PWM output goes active at this count within the period. Typically 0 (output active from start of period).
+    PwmV1PWMDUTYRISINGPOINTPos = 0
+    PwmV1PWMDUTYRISINGPOINTMsk = 0xff << 0
+    // FALLINGPOINT Duty cycle falling edge point [15:8]. The PWM output goes inactive at this count. duty_cycle = (FALLING_POINT - RISING_POINT) / (DUTY_PERIOD + 1). Set equal to RISING_POINT for 100% duty cycle.
+    PwmV1PWMDUTYFALLINGPOINTPos = 8
+    PwmV1PWMDUTYFALLINGPOINTMsk = 0xff << 8
+    // POINTWDT WDT-safe duty cycle point [23:16]. Used as the falling point when DUTY_LOAD_WDT_EN fires. Allows a safe fan speed fallback on watchdog reset.
+    PwmV1PWMDUTYPOINTWDTPos = 16
+    PwmV1PWMDUTYPOINTWDTMsk = 0xff << 16
+    // DUTYPERIOD PWM period length [31:24]. Period = (DUTY_PERIOD + 1) × Q. Maximum value (255) is recommended for fine-grained duty control.
+    PwmV1PWMDUTYDUTYPERIODPos = 24
+    PwmV1PWMDUTYDUTYPERIODMsk = 0xff << 24
+)
+
+// pwm_v1::TACH_CTRL Tachometer channel control register. Measures fan speed by timing edges on the TACH input pin. fan_rpm = (clk_hz × 60) / (tach_value × pulses_per_rev × 4^CLK_DIV_T)
+const (
+    // THRESHOLD Fan stopped / timeout threshold [19:0]. If the tach counter exceeds this value between edges, the fan is considered stopped and the IRQ fires (if IER=1). Set to the counter value corresponding to ~0 RPM.
+    PwmV1TACHCTRLTHRESHOLDPos = 0
+    PwmV1TACHCTRLTHRESHOLDMsk = 0xfffff << 0
+    // CLKDIVT Tachometer input clock divisor [23:20]. Actual divisor = 4^CLK_DIV_T. Values: 0→1, 1→4, 2→16, 3→64, …, 15→4^15. Use larger values for slow fans to avoid counter overflow.
+    PwmV1TACHCTRLCLKDIVTPos = 20
+    PwmV1TACHCTRLCLKDIVTMsk = 0xf << 20
+    // IOEDGE Edge detection mode [25:24]. 0 = falling-to-falling (F2F). 1 = rising-to-rising (R2R). 2 = both edges (period = half-cycle).
+    PwmV1TACHCTRLIOEDGEPos = 24
+    PwmV1TACHCTRLIOEDGEMsk = 0x3 << 24
+    // DEBOUNCE Input debounce filter [27:26]. 0 = 3 clock cycles. 1 = 2 cycles. 2 = 1 cycle. 3 = no debounce.
+    PwmV1TACHCTRLDEBOUNCEPos = 26
+    PwmV1TACHCTRLDEBOUNCEMsk = 0x3 << 26
+    // ENABLE Tachometer channel enable [28]. 1 = measuring; 0 = disabled.
+    PwmV1TACHCTRLENABLEPos = 28
+    PwmV1TACHCTRLENABLEMsk = 0x1 << 28
+    // LOOPBACK PWM-to-tach loopback test [29]. When set, this tach channel monitors the corresponding PWM output. Used for self-test; disconnect external fan input first.
+    PwmV1TACHCTRLLOOPBACKPos = 29
+    PwmV1TACHCTRLLOOPBACKMsk = 0x1 << 29
+    // INVERSLIMIT Interrupt on fan too-fast (below threshold) [30]. 0 = interrupt when tach_value > THRESHOLD (fan too slow / stopped). 1 = interrupt when tach_value < THRESHOLD (fan too fast).
+    PwmV1TACHCTRLINVERSLIMITPos = 30
+    PwmV1TACHCTRLINVERSLIMITMsk = 0x1 << 30
+    // IER Tachometer interrupt enable [31]. 1 = interrupt on threshold event.
+    PwmV1TACHCTRLIERPos = 31
+    PwmV1TACHCTRLIERMsk = 0x1 << 31
+)
+
+// pwm_v1::TACH_STS Tachometer channel status register (read-only / RW1C on bit 31). Contains the captured tach value and status flags.
+const (
+    // VALUE Captured tachometer count [19:0]. Number of input clock cycles between successive TACH edges (divided by 4^CLK_DIV_T). Convert to RPM: fan_rpm = (clk_hz × 60) / (VALUE × PPR × 4^CLK_DIV_T) where PPR = pulses per revolution of the fan (typically 2).
+    PwmV1TACHSTSVALUEPos = 0
+    PwmV1TACHSTSVALUEMsk = 0xfffff << 0
+    // FULLMEASUREMENT Full measurement complete [20]. Set after the first complete edge-to-edge measurement. Clear until the first complete measurement since enable.
+    PwmV1TACHSTSFULLMEASUREMENTPos = 20
+    PwmV1TACHSTSFULLMEASUREMENTMsk = 0x1 << 20
+    // VALUEUPDATE Tach value updated flag [21]. Set when a new measurement completes. Poll or use interrupt to detect new results.
+    PwmV1TACHSTSVALUEUPDATEPos = 21
+    PwmV1TACHSTSVALUEUPDATEMsk = 0x1 << 21
+    // RAWINPUT Raw (unlatched) tachometer pin state [22]. Read-only.
+    PwmV1TACHSTSRAWINPUTPos = 22
+    PwmV1TACHSTSRAWINPUTMsk = 0x1 << 22
+    // DEBINPUT Debounced tachometer input state [23]. Read-only.
+    PwmV1TACHSTSDEBINPUTPos = 23
+    PwmV1TACHSTSDEBINPUTMsk = 0x1 << 23
+    // PWMOEN Current state of the paired PWM output-enable [24]. Read-only.
+    PwmV1TACHSTSPWMOENPos = 24
+    PwmV1TACHSTSPWMOENMsk = 0x1 << 24
+    // PWMOUT Current state of the paired PWM output pin [25]. Read-only.
+    PwmV1TACHSTSPWMOUTPos = 25
+    PwmV1TACHSTSPWMOUTMsk = 0x1 << 25
+    // ISR Tachometer interrupt status / clear [31]. RW1C. Set by hardware when the threshold event fires (IER must be 1). Write 1 to clear.
+    PwmV1TACHSTSISRPos = 31
+    PwmV1TACHSTSISRMsk = 0x1 << 31
 )
 
 // ssp_v1::CACHE_AREA CM3 Cacheable Area Declaration (SCUA40). Reset value 0xFFFF_FFFF. Modify only while CM3 is in reset (CTRL.RESET=1 or CTRL.EN=0).

@@ -2,6 +2,75 @@
 
 package pac
 
+// adc_v1::ADC_CH_DATA ADC channel result register (read-only). Holds the most recent 10-bit conversion result in bits [9:0]. The upper 6 bits are zero.  Result range: 0–1023. Voltage = (result / 1023) × VREF.
+const (
+    // VALUE 10-bit ADC result. Updated after each channel conversion in continuous mode.
+    AdcV1ADCCHDATAVALUEPos = 0
+    AdcV1ADCCHDATAVALUEMsk = 0x3ff << 0
+)
+
+// adc_v1::ADC_CLK_CTRL ADC Clock Control Register (ADC0C offset 0x0C). 16-bit clock divider.  sample_period = PCLK_period × 2 × (DIV + 1). For a 65 kHz sample rate from 25 MHz PCLK: DIV = (25_000_000 / (2 × 65_000)) - 1 ≈ 191.
+const (
+    // CLKDIV ADC clock divider [15:0]. sample_rate_Hz = PCLK_Hz / (2 × (CLK_DIV + 1)). Default after reset: ~65 kHz from PCLK.
+    AdcV1ADCCLKCTRLCLKDIVPos = 0
+    AdcV1ADCCLKCTRLCLKDIVMsk = 0xffff << 0
+)
+
+// adc_v1::ADC_COMP_TRIM ADC Compensation Trim Register (ADCC4 offset 0xC4). Factory calibration value.  Read from SCU OTP at init and written here. Used by the analogue frontend to correct for process variation.
+const (
+    // TRIMVALUE Calibration trim code from SCU OTP. Written once at engine init.
+    AdcV1ADCCOMPTRIMTRIMVALUEPos = 0
+    AdcV1ADCCOMPTRIMTRIMVALUEMsk = 0xffffffff << 0
+)
+
+// adc_v1::ADC_ENGINE_CTRL ADC Engine Control Register (ADC0C).
+const (
+    // ENGINEEN ADC engine enable. 0 = disabled (power-down mode if OP_MODE = 0). 1 = enabled.
+    AdcV1ADCENGINECTRLENGINEENPos = 0
+    AdcV1ADCENGINECTRLENGINEENMsk = 0x1 << 0
+    // OPMODE Operating mode. 0 = power-down. 1 = standby (no conversion, preserves calibration). 7 = normal continuous scan. Other values reserved.
+    AdcV1ADCENGINECTRLOPMODEPos = 1
+    AdcV1ADCENGINECTRLOPMODEMsk = 0x7 << 1
+    // CTRLCOMPENSATION Manual compensation enable. When set, the value in COMPENSATION_TRIM is used directly. When clear, AUTO_COMPENSATION controls trimming.
+    AdcV1ADCENGINECTRLCTRLCOMPENSATIONPos = 4
+    AdcV1ADCENGINECTRLCTRLCOMPENSATIONMsk = 0x1 << 4
+    // AUTOCOMPENSATION Automatic compensation enable. When set, the engine applies factory OTP trim automatically. Only meaningful when CTRL_COMPENSATION = 0.
+    AdcV1ADCENGINECTRLAUTOCOMPENSATIONPos = 5
+    AdcV1ADCENGINECTRLAUTOCOMPENSATIONMsk = 0x1 << 5
+    // REFVOLTAGE Reference voltage selection. 0 = internal 2.5 V reference (VREF = 2500 mV). 1 = internal 1.2 V reference (VREF = 1200 mV). 2 = external reference (high range, ADCVREFP pin). 3 = external reference (low range, ADCVREFEXT pin).
+    AdcV1ADCENGINECTRLREFVOLTAGEPos = 6
+    AdcV1ADCENGINECTRLREFVOLTAGEMsk = 0x3 << 6
+    // INITRDY Initialisation ready flag (read-only). Set by hardware when the ADC engine has completed power-up sequencing and is ready to produce valid results. Poll this bit after enabling the engine before reading channel data.
+    AdcV1ADCENGINECTRLINITRDYPos = 8
+    AdcV1ADCENGINECTRLINITRDYMsk = 0x1 << 8
+    // CH7BATMODE Channel 7 battery sensing mode. 0 = normal ADC input. 1 = battery voltage sensing: input is divided before the ADC.
+    AdcV1ADCENGINECTRLCH7BATMODEPos = 12
+    AdcV1ADCENGINECTRLCH7BATMODEMsk = 0x1 << 12
+    // BATSENSINGEN Battery sensing circuit enable. Required when CH7_BAT_MODE = 1.
+    AdcV1ADCENGINECTRLBATSENSINGENPos = 13
+    AdcV1ADCENGINECTRLBATSENSINGENMsk = 0x1 << 13
+    // CHEN Per-channel enable mask [31:16]. Bit 16 = CH0, bit 17 = CH1, …, bit 23 = CH7. Channels not enabled are skipped in the continuous scan.
+    AdcV1ADCENGINECTRLCHENPos = 16
+    AdcV1ADCENGINECTRLCHENMsk = 0xffff << 16
+)
+
+// adc_v1::ADC_INT_CTRL ADC Interrupt Control Register (ADC04).
+const (
+    // CHINTEN Per-channel interrupt enable [7:0]. Bit N enables the interrupt for channel N. Interrupt fires when the channel value crosses the VGA_DETECT threshold.
+    AdcV1ADCINTCTRLCHINTENPos = 0
+    AdcV1ADCINTCTRLCHINTENMsk = 0xff << 0
+)
+
+// adc_v1::ADC_VGA_DETECT ADC VGA Detect Control Register (ADC08). Sets a 10-bit comparison threshold for interrupt generation. The hardware compares each enabled channel's result against this threshold.
+const (
+    // THRESHOLD 10-bit comparison threshold value (applied to all channels).
+    AdcV1ADCVGADETECTTHRESHOLDPos = 0
+    AdcV1ADCVGADETECTTHRESHOLDMsk = 0x3ff << 0
+    // ABOVETHRESHOLD Interrupt direction. 0 = interrupt when value falls below threshold. 1 = interrupt when value rises above threshold.
+    AdcV1ADCVGADETECTABOVETHRESHOLDPos = 10
+    AdcV1ADCVGADETECTABOVETHRESHOLDMsk = 0x1 << 10
+)
+
 // clock_ast1060_v1::SCU_CACHE_AREA CM4F cacheable area declaration (SCUA50). Each bit N=1 declares that the 32 MB region at (base + N×32 MB) is cacheable.
 const (
     // CACHEABLEREGIONS Cacheable region bitmask (one bit per 32 MB region).

@@ -482,16 +482,26 @@ mod _vectors {
         Vector { _handler: MAC1 },
         Vector { _handler: MAC2 },
         Vector { _handler: HACE },
-        Vector { _handler: USB2_HUB_HOST },
+        Vector {
+            _handler: USB2_HUB_HOST,
+        },
         Vector { _handler: XDMA },
-        Vector { _handler: VIDEO_ENGINE },
+        Vector {
+            _handler: VIDEO_ENGINE,
+        },
         Vector { _handler: UART5 },
-        Vector { _handler: USB_HID_HOST2 },
-        Vector { _handler: USB1_HOST },
+        Vector {
+            _handler: USB_HID_HOST2,
+        },
+        Vector {
+            _handler: USB1_HOST,
+        },
         Vector { _handler: GPIO18 },
         Vector { _handler: SCU },
         Vector { _handler: RTC },
-        Vector { _handler: GRAPHICS_CRT },
+        Vector {
+            _handler: GRAPHICS_CRT,
+        },
         Vector { _handler: EMMC },
         Vector { _handler: TIMER1 },
         Vector { _handler: TIMER2 },
@@ -502,12 +512,20 @@ mod _vectors {
         Vector { _handler: TIMER7 },
         Vector { _handler: TIMER8 },
         Vector { _handler: WDT },
-        Vector { _handler: GRAPHICS_2D },
+        Vector {
+            _handler: GRAPHICS_2D,
+        },
         Vector { _handler: MCTP },
-        Vector { _handler: JTAG1_MASTER },
+        Vector {
+            _handler: JTAG1_MASTER,
+        },
         Vector { _handler: AHBC },
-        Vector { _handler: PCIE_BRIDGE_T },
-        Vector { _handler: DISPLAYPORT },
+        Vector {
+            _handler: PCIE_BRIDGE_T,
+        },
+        Vector {
+            _handler: DISPLAYPORT,
+        },
         Vector { _reserved: 0 },
         Vector { _handler: MAC3 },
         Vector { _handler: MAC4 },
@@ -521,16 +539,26 @@ mod _vectors {
         Vector { _handler: SCU2 },
         Vector { _handler: ESPI },
         Vector { _handler: SD_SDIO },
-        Vector { _handler: PWM_TACHO },
-        Vector { _handler: SYS_WAKEUP },
+        Vector {
+            _handler: PWM_TACHO,
+        },
+        Vector {
+            _handler: SYS_WAKEUP,
+        },
         Vector { _handler: ADC },
         Vector { _handler: UART1 },
         Vector { _handler: UART2 },
         Vector { _handler: UART3 },
         Vector { _handler: UART4 },
-        Vector { _handler: SGPIO_MASTER },
-        Vector { _handler: SGPIO_SLAVE },
-        Vector { _handler: JTAG2_MASTER },
+        Vector {
+            _handler: SGPIO_MASTER,
+        },
+        Vector {
+            _handler: SGPIO_SLAVE,
+        },
+        Vector {
+            _handler: JTAG2_MASTER,
+        },
         Vector { _handler: MAILBOX },
         Vector { _handler: AHBC2 },
         Vector { _handler: UART_DMA },
@@ -607,14 +635,30 @@ mod _vectors {
         Vector { _handler: MAC_PHY1 },
         Vector { _handler: MAC_PHY2 },
         Vector { _handler: MAC_PHY3 },
-        Vector { _handler: GPIO_DIRECT0 },
-        Vector { _handler: GPIO_DIRECT1 },
-        Vector { _handler: GPIO_DIRECT2 },
-        Vector { _handler: GPIO_DIRECT3 },
-        Vector { _handler: GPIO_DIRECT4 },
-        Vector { _handler: GPIO_DIRECT5 },
-        Vector { _handler: GPIO_DIRECT6 },
-        Vector { _handler: GPIO_DIRECT7 },
+        Vector {
+            _handler: GPIO_DIRECT0,
+        },
+        Vector {
+            _handler: GPIO_DIRECT1,
+        },
+        Vector {
+            _handler: GPIO_DIRECT2,
+        },
+        Vector {
+            _handler: GPIO_DIRECT3,
+        },
+        Vector {
+            _handler: GPIO_DIRECT4,
+        },
+        Vector {
+            _handler: GPIO_DIRECT5,
+        },
+        Vector {
+            _handler: GPIO_DIRECT6,
+        },
+        Vector {
+            _handler: GPIO_DIRECT7,
+        },
         Vector { _handler: KCS1 },
         Vector { _handler: KCS2 },
         Vector { _handler: KCS3 },
@@ -623,7 +667,9 @@ mod _vectors {
         Vector { _handler: BT },
         Vector { _handler: KCS7 },
         Vector { _handler: SNOOP_PW },
-        Vector { _handler: POST_CODE_FIFO },
+        Vector {
+            _handler: POST_CODE_FIFO,
+        },
         Vector { _handler: VUART1 },
         Vector { _handler: VUART2 },
         Vector { _reserved: 0 },
@@ -636,31 +682,65 @@ mod _vectors {
         Vector { _reserved: 0 },
         Vector { _reserved: 0 },
         Vector { _reserved: 0 },
-        Vector { _handler: FWSPIWP_N },
+        Vector {
+            _handler: FWSPIWP_N,
+        },
         Vector { _handler: ECC_RSA },
-        Vector { _handler: BOOT_EMMC },
+        Vector {
+            _handler: BOOT_EMMC,
+        },
         Vector {
             _handler: INTERNAL_BRIDGE,
         },
         Vector { _handler: RVAS_VGA },
         Vector { _handler: PCIE_LPC },
-        Vector { _handler: LPC_MAILBOX },
+        Vector {
+            _handler: LPC_MAILBOX,
+        },
         Vector { _handler: LPC_SWC },
-        Vector { _handler: PCIE_BRIDGE_L },
-        Vector { _handler: PCIE_BRIDGE_H },
+        Vector {
+            _handler: PCIE_BRIDGE_L,
+        },
+        Vector {
+            _handler: PCIE_BRIDGE_H,
+        },
         Vector { _reserved: 0 },
-        Vector { _handler: PCIE_LPC1 },
-        Vector { _handler: PCIE_LPC2 },
-        Vector { _handler: PCIE_LPC3 },
-        Vector { _handler: PCIE_LPC4 },
-        Vector { _handler: PCIE_LPC5 },
-        Vector { _handler: PCIE_LPC6 },
-        Vector { _handler: PCIE_LPC7 },
-        Vector { _handler: PCIE_LPC8 },
-        Vector { _handler: PCIE_LPC9 },
-        Vector { _handler: PCIE_LPC10 },
-        Vector { _handler: PCIE_LPC11 },
-        Vector { _handler: PCIE_LPC12 },
+        Vector {
+            _handler: PCIE_LPC1,
+        },
+        Vector {
+            _handler: PCIE_LPC2,
+        },
+        Vector {
+            _handler: PCIE_LPC3,
+        },
+        Vector {
+            _handler: PCIE_LPC4,
+        },
+        Vector {
+            _handler: PCIE_LPC5,
+        },
+        Vector {
+            _handler: PCIE_LPC6,
+        },
+        Vector {
+            _handler: PCIE_LPC7,
+        },
+        Vector {
+            _handler: PCIE_LPC8,
+        },
+        Vector {
+            _handler: PCIE_LPC9,
+        },
+        Vector {
+            _handler: PCIE_LPC10,
+        },
+        Vector {
+            _handler: PCIE_LPC11,
+        },
+        Vector {
+            _handler: PCIE_LPC12,
+        },
         Vector { _handler: IPC0 },
         Vector { _handler: IPC1 },
         Vector { _handler: IPC2 },
@@ -682,24 +762,487 @@ mod _vectors {
 pub use cortex_m_rt::interrupt;
 #[cfg(feature = "rt")]
 pub use Interrupt as interrupt;
+///G6 PWM and fan tachometer controller (16 PWM + 16 TACH channels)
+pub const PWM_TACH: pwm_v1::PWM_TACH = unsafe { pwm_v1::PWM_TACH::from_ptr(0x7e61_0000usize as _) };
 pub const IPC: ipc_v1::IPC = unsafe { ipc_v1::IPC::from_ptr(0x7e6c_0000usize as _) };
-pub const CLOCK: clock_v1::CLOCK = unsafe {
-    clock_v1::CLOCK::from_ptr(0x7e6e_2000usize as _)
-};
+///Hash and Crypto Engine (AES/DES/RC4 + SHA/MD5/HMAC)
+pub const HACE: hace_v1::HACE = unsafe { hace_v1::HACE::from_ptr(0x7e6d_0000usize as _) };
+pub const CLOCK: clock_v1::CLOCK = unsafe { clock_v1::CLOCK::from_ptr(0x7e6e_2000usize as _) };
 pub const SSP: ssp_v1::SSP = unsafe { ssp_v1::SSP::from_ptr(0x7e6e_2a00usize as _) };
-pub const GPIO: gpio_v1::GPIO = unsafe {
-    gpio_v1::GPIO::from_ptr(0x7e78_0000usize as _)
-};
-pub const TIMER: timer_v1::TIMER = unsafe {
-    timer_v1::TIMER::from_ptr(0x7e78_2000usize as _)
-};
+///ADC bank 0, channels 0–7 (10-bit, 8 channels)
+pub const ADC0: adc_v1::ADC = unsafe { adc_v1::ADC::from_ptr(0x7e6e_9000usize as _) };
+///ADC bank 1, channels 8–15 (10-bit, 8 channels)
+pub const ADC1: adc_v1::ADC = unsafe { adc_v1::ADC::from_ptr(0x7e6e_9100usize as _) };
+pub const GPIO: gpio_v1::GPIO = unsafe { gpio_v1::GPIO::from_ptr(0x7e78_0000usize as _) };
+pub const TIMER: timer_v1::TIMER = unsafe { timer_v1::TIMER::from_ptr(0x7e78_2000usize as _) };
 pub const WDT0: wdt_v1::WDT = unsafe { wdt_v1::WDT::from_ptr(0x7e78_5000usize as _) };
-pub const UART11: uart_v1::UART = unsafe {
-    uart_v1::UART::from_ptr(0x7e79_0500usize as _)
-};
+///I2C/SMBus global interrupt status and clock divider
+pub const I2C_GLOBAL: i2cglobal_v1::I2CGLOBAL =
+    unsafe { i2cglobal_v1::I2CGLOBAL::from_ptr(0x7e78_a000usize as _) };
+pub const I2C0: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a080usize as _) };
+pub const I2C1: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a100usize as _) };
+pub const I2C2: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a180usize as _) };
+pub const I2C3: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a200usize as _) };
+pub const I2C4: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a280usize as _) };
+pub const I2C5: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a300usize as _) };
+pub const I2C6: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a380usize as _) };
+pub const I2C7: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a400usize as _) };
+pub const I2C8: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a480usize as _) };
+pub const I2C9: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a500usize as _) };
+pub const I2C10: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a580usize as _) };
+pub const I2C11: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a600usize as _) };
+pub const I2C12: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a680usize as _) };
+pub const I2C13: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a700usize as _) };
+pub const I2C14: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a780usize as _) };
+pub const I2C15: i2c_v1::I2C = unsafe { i2c_v1::I2C::from_ptr(0x7e78_a800usize as _) };
+///PECI controller for Intel CPU telemetry (temperature/power)
+pub const PECI: peci_v1::PECI = unsafe { peci_v1::PECI::from_ptr(0x7e78_b000usize as _) };
+pub const UART11: uart_v1::UART = unsafe { uart_v1::UART::from_ptr(0x7e79_0500usize as _) };
 /// Number of priority bits implemented by the NVIC
 #[cfg(feature = "rt")]
 pub const NVIC_PRIO_BITS: u8 = 3;
+pub mod adc_v1 {
+    ///ASPEED ADC controller block. 8 input channels per instance. AST1060: one instance at 0x7E6E_9000. AST2600: ADC0 at 0x7E6E_9000 (CH0–7), ADC1 at 0x7E6E_9100 (CH8–15).
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct ADC {
+        ptr: *mut u8,
+    }
+    unsafe impl Send for ADC {}
+    unsafe impl Sync for ADC {}
+    impl ADC {
+        #[inline(always)]
+        pub const unsafe fn from_ptr(ptr: *mut ()) -> Self {
+            Self { ptr: ptr as _ }
+        }
+        #[inline(always)]
+        pub const fn as_ptr(&self) -> *mut () {
+            self.ptr as _
+        }
+        ///ADC Engine Control Register (ADC0C, offset 0x00). Controls operating mode, reference voltage, compensation, and per-channel enable. Bit 8 (INIT_RDY) is read-only and indicates the engine has completed initialisation.
+        #[inline(always)]
+        pub const fn ENGINE_CTRL(self) -> crate::common::Reg<ADC_ENGINE_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
+        }
+        ///ADC Interrupt Control Register (ADC04, offset 0x04). Per-channel interrupt enable (bit N enables interrupt for channel N, N=0–7). Interrupt fires when the channel value crosses the threshold set in the VGA_DETECT_CTRL register.
+        #[inline(always)]
+        pub const fn INT_CTRL(self) -> crate::common::Reg<ADC_INT_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
+        }
+        ///VGA Detect Control Register (ADC08, offset 0x08). Holds a 10-bit threshold value and comparison direction per channel. When a channel crosses the threshold and the channel's interrupt is enabled, an ADC interrupt is generated.
+        #[inline(always)]
+        pub const fn VGA_DETECT_CTRL(
+            self,
+        ) -> crate::common::Reg<ADC_VGA_DETECT, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
+        }
+        ///ADC Clock Control Register (ADC0C, offset 0x0C). 16-bit clock divider: sample_period = PCLK × 2 × (DIV + 1). Set DIV = (PCLK_Hz / (2 × sample_rate_Hz)) - 1.
+        #[inline(always)]
+        pub const fn CLK_CTRL(self) -> crate::common::Reg<ADC_CLK_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
+        }
+        ///Channel 0 ADC result register (ADC10). Read-only. Bits \[9:0\].
+        #[inline(always)]
+        pub const fn CH0_DATA(self) -> crate::common::Reg<ADC_CH_DATA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
+        }
+        ///Channel 1 ADC result register (ADC12). Read-only. Bits \[9:0\].
+        #[inline(always)]
+        pub const fn CH1_DATA(self) -> crate::common::Reg<ADC_CH_DATA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x12usize) as _) }
+        }
+        ///Channel 2 ADC result register (ADC14). Read-only. Bits \[9:0\].
+        #[inline(always)]
+        pub const fn CH2_DATA(self) -> crate::common::Reg<ADC_CH_DATA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
+        }
+        ///Channel 3 ADC result register (ADC16). Read-only. Bits \[9:0\].
+        #[inline(always)]
+        pub const fn CH3_DATA(self) -> crate::common::Reg<ADC_CH_DATA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x16usize) as _) }
+        }
+        ///Channel 4 ADC result register (ADC18). Read-only. Bits \[9:0\].
+        #[inline(always)]
+        pub const fn CH4_DATA(self) -> crate::common::Reg<ADC_CH_DATA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
+        }
+        ///Channel 5 ADC result register (ADC1A). Read-only. Bits \[9:0\].
+        #[inline(always)]
+        pub const fn CH5_DATA(self) -> crate::common::Reg<ADC_CH_DATA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1ausize) as _) }
+        }
+        ///Channel 6 ADC result register (ADC1C). Read-only. Bits \[9:0\].
+        #[inline(always)]
+        pub const fn CH6_DATA(self) -> crate::common::Reg<ADC_CH_DATA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
+        }
+        ///Channel 7 ADC result register (ADC1E). Read-only. Bits \[9:0\]. This channel can alternatively be used for battery voltage sensing (VBAT/3 or VBAT*2/3) when ENGINE_CTRL.CH7_BAT_MODE = 1.
+        #[inline(always)]
+        pub const fn CH7_DATA(self) -> crate::common::Reg<ADC_CH_DATA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1eusize) as _) }
+        }
+        ///Compensation Trim Register (ADCC4, offset 0xC4). Factory-programmed calibration value read from OTP (SCU) during init. Written by software after reading SCU OTP; do not set manually.
+        #[inline(always)]
+        pub const fn COMPENSATION_TRIM(
+            self,
+        ) -> crate::common::Reg<ADC_COMP_TRIM, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc4usize) as _) }
+        }
+    }
+    ///ADC channel result register (read-only). Holds the most recent 10-bit conversion result in bits \[9:0\]. The upper 6 bits are zero. Result range: 0–1023. Voltage = (result / 1023) × VREF.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct ADC_CH_DATA(pub u32);
+    impl ADC_CH_DATA {
+        ///10-bit ADC result. Updated after each channel conversion in continuous mode.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VALUE(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0x03ff;
+            val as u16
+        }
+        ///10-bit ADC result. Updated after each channel conversion in continuous mode.
+        #[inline(always)]
+        pub const fn set_VALUE(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x03ff << 0usize)) | (((val as u32) & 0x03ff) << 0usize);
+        }
+    }
+    impl Default for ADC_CH_DATA {
+        #[inline(always)]
+        fn default() -> ADC_CH_DATA {
+            ADC_CH_DATA(0)
+        }
+    }
+    impl core::fmt::Debug for ADC_CH_DATA {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("ADC_CH_DATA")
+                .field("VALUE", &self.VALUE())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for ADC_CH_DATA {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "ADC_CH_DATA {{ VALUE: {=u16:?} }}", self.VALUE())
+        }
+    }
+    ///ADC Clock Control Register (ADC0C offset 0x0C). 16-bit clock divider. sample_period = PCLK_period × 2 × (DIV + 1). For a 65 kHz sample rate from 25 MHz PCLK: DIV = (25_000_000 / (2 × 65_000)) - 1 ≈ 191.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct ADC_CLK_CTRL(pub u32);
+    impl ADC_CLK_CTRL {
+        ///ADC clock divider \[15:0\]. sample_rate_Hz = PCLK_Hz / (2 × (CLK_DIV + 1)). Default after reset: ~65 kHz from PCLK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CLK_DIV(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0xffff;
+            val as u16
+        }
+        ///ADC clock divider \[15:0\]. sample_rate_Hz = PCLK_Hz / (2 × (CLK_DIV + 1)). Default after reset: ~65 kHz from PCLK.
+        #[inline(always)]
+        pub const fn set_CLK_DIV(&mut self, val: u16) {
+            self.0 = (self.0 & !(0xffff << 0usize)) | (((val as u32) & 0xffff) << 0usize);
+        }
+    }
+    impl Default for ADC_CLK_CTRL {
+        #[inline(always)]
+        fn default() -> ADC_CLK_CTRL {
+            ADC_CLK_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for ADC_CLK_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("ADC_CLK_CTRL")
+                .field("CLK_DIV", &self.CLK_DIV())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for ADC_CLK_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "ADC_CLK_CTRL {{ CLK_DIV: {=u16:?} }}", self.CLK_DIV())
+        }
+    }
+    ///ADC Compensation Trim Register (ADCC4 offset 0xC4). Factory calibration value. Read from SCU OTP at init and written here. Used by the analogue frontend to correct for process variation.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct ADC_COMP_TRIM(pub u32);
+    impl ADC_COMP_TRIM {
+        ///Calibration trim code from SCU OTP. Written once at engine init.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRIM_VALUE(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0xffff_ffff;
+            val as u32
+        }
+        ///Calibration trim code from SCU OTP. Written once at engine init.
+        #[inline(always)]
+        pub const fn set_TRIM_VALUE(&mut self, val: u32) {
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
+        }
+    }
+    impl Default for ADC_COMP_TRIM {
+        #[inline(always)]
+        fn default() -> ADC_COMP_TRIM {
+            ADC_COMP_TRIM(0)
+        }
+    }
+    impl core::fmt::Debug for ADC_COMP_TRIM {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("ADC_COMP_TRIM")
+                .field("TRIM_VALUE", &self.TRIM_VALUE())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for ADC_COMP_TRIM {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "ADC_COMP_TRIM {{ TRIM_VALUE: {=u32:?} }}",
+                self.TRIM_VALUE()
+            )
+        }
+    }
+    ///ADC Engine Control Register (ADC0C).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct ADC_ENGINE_CTRL(pub u32);
+    impl ADC_ENGINE_CTRL {
+        ///ADC engine enable. 0 = disabled (power-down mode if OP_MODE = 0). 1 = enabled.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENGINE_EN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///ADC engine enable. 0 = disabled (power-down mode if OP_MODE = 0). 1 = enabled.
+        #[inline(always)]
+        pub const fn set_ENGINE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Operating mode. 0 = power-down. 1 = standby (no conversion, preserves calibration). 7 = normal continuous scan. Other values reserved.
+        #[must_use]
+        #[inline(always)]
+        pub const fn OP_MODE(&self) -> u8 {
+            let val = (self.0 >> 1usize) & 0x07;
+            val as u8
+        }
+        ///Operating mode. 0 = power-down. 1 = standby (no conversion, preserves calibration). 7 = normal continuous scan. Other values reserved.
+        #[inline(always)]
+        pub const fn set_OP_MODE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 1usize)) | (((val as u32) & 0x07) << 1usize);
+        }
+        ///Manual compensation enable. When set, the value in COMPENSATION_TRIM is used directly. When clear, AUTO_COMPENSATION controls trimming.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CTRL_COMPENSATION(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Manual compensation enable. When set, the value in COMPENSATION_TRIM is used directly. When clear, AUTO_COMPENSATION controls trimming.
+        #[inline(always)]
+        pub const fn set_CTRL_COMPENSATION(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Automatic compensation enable. When set, the engine applies factory OTP trim automatically. Only meaningful when CTRL_COMPENSATION = 0.
+        #[must_use]
+        #[inline(always)]
+        pub const fn AUTO_COMPENSATION(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///Automatic compensation enable. When set, the engine applies factory OTP trim automatically. Only meaningful when CTRL_COMPENSATION = 0.
+        #[inline(always)]
+        pub const fn set_AUTO_COMPENSATION(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///Reference voltage selection. 0 = internal 2.5 V reference (VREF = 2500 mV). 1 = internal 1.2 V reference (VREF = 1200 mV). 2 = external reference (high range, ADCVREFP pin). 3 = external reference (low range, ADCVREFEXT pin).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REF_VOLTAGE(&self) -> u8 {
+            let val = (self.0 >> 6usize) & 0x03;
+            val as u8
+        }
+        ///Reference voltage selection. 0 = internal 2.5 V reference (VREF = 2500 mV). 1 = internal 1.2 V reference (VREF = 1200 mV). 2 = external reference (high range, ADCVREFP pin). 3 = external reference (low range, ADCVREFEXT pin).
+        #[inline(always)]
+        pub const fn set_REF_VOLTAGE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 6usize)) | (((val as u32) & 0x03) << 6usize);
+        }
+        ///Initialisation ready flag (read-only). Set by hardware when the ADC engine has completed power-up sequencing and is ready to produce valid results. Poll this bit after enabling the engine before reading channel data.
+        #[must_use]
+        #[inline(always)]
+        pub const fn INIT_RDY(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///Initialisation ready flag (read-only). Set by hardware when the ADC engine has completed power-up sequencing and is ready to produce valid results. Poll this bit after enabling the engine before reading channel data.
+        #[inline(always)]
+        pub const fn set_INIT_RDY(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///Channel 7 battery sensing mode. 0 = normal ADC input. 1 = battery voltage sensing: input is divided before the ADC.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CH7_BAT_MODE(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///Channel 7 battery sensing mode. 0 = normal ADC input. 1 = battery voltage sensing: input is divided before the ADC.
+        #[inline(always)]
+        pub const fn set_CH7_BAT_MODE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///Battery sensing circuit enable. Required when CH7_BAT_MODE = 1.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BAT_SENSING_EN(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///Battery sensing circuit enable. Required when CH7_BAT_MODE = 1.
+        #[inline(always)]
+        pub const fn set_BAT_SENSING_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///Per-channel enable mask \[31:16\]. Bit 16 = CH0, bit 17 = CH1, …, bit 23 = CH7. Channels not enabled are skipped in the continuous scan.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CH_EN(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0xffff;
+            val as u16
+        }
+        ///Per-channel enable mask \[31:16\]. Bit 16 = CH0, bit 17 = CH1, …, bit 23 = CH7. Channels not enabled are skipped in the continuous scan.
+        #[inline(always)]
+        pub const fn set_CH_EN(&mut self, val: u16) {
+            self.0 = (self.0 & !(0xffff << 16usize)) | (((val as u32) & 0xffff) << 16usize);
+        }
+    }
+    impl Default for ADC_ENGINE_CTRL {
+        #[inline(always)]
+        fn default() -> ADC_ENGINE_CTRL {
+            ADC_ENGINE_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for ADC_ENGINE_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("ADC_ENGINE_CTRL")
+                .field("ENGINE_EN", &self.ENGINE_EN())
+                .field("OP_MODE", &self.OP_MODE())
+                .field("CTRL_COMPENSATION", &self.CTRL_COMPENSATION())
+                .field("AUTO_COMPENSATION", &self.AUTO_COMPENSATION())
+                .field("REF_VOLTAGE", &self.REF_VOLTAGE())
+                .field("INIT_RDY", &self.INIT_RDY())
+                .field("CH7_BAT_MODE", &self.CH7_BAT_MODE())
+                .field("BAT_SENSING_EN", &self.BAT_SENSING_EN())
+                .field("CH_EN", &self.CH_EN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for ADC_ENGINE_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "ADC_ENGINE_CTRL {{ ENGINE_EN: {=bool:?}, OP_MODE: {=u8:?}, CTRL_COMPENSATION: {=bool:?}, AUTO_COMPENSATION: {=bool:?}, REF_VOLTAGE: {=u8:?}, INIT_RDY: {=bool:?}, CH7_BAT_MODE: {=bool:?}, BAT_SENSING_EN: {=bool:?}, CH_EN: {=u16:?} }}",
+                self.ENGINE_EN(), self.OP_MODE(), self.CTRL_COMPENSATION(), self
+                .AUTO_COMPENSATION(), self.REF_VOLTAGE(), self.INIT_RDY(), self
+                .CH7_BAT_MODE(), self.BAT_SENSING_EN(), self.CH_EN()
+            )
+        }
+    }
+    ///ADC Interrupt Control Register (ADC04).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct ADC_INT_CTRL(pub u32);
+    impl ADC_INT_CTRL {
+        ///Per-channel interrupt enable \[7:0\]. Bit N enables the interrupt for channel N. Interrupt fires when the channel value crosses the VGA_DETECT threshold.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CH_INT_EN(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///Per-channel interrupt enable \[7:0\]. Bit N enables the interrupt for channel N. Interrupt fires when the channel value crosses the VGA_DETECT threshold.
+        #[inline(always)]
+        pub const fn set_CH_INT_EN(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+    }
+    impl Default for ADC_INT_CTRL {
+        #[inline(always)]
+        fn default() -> ADC_INT_CTRL {
+            ADC_INT_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for ADC_INT_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("ADC_INT_CTRL")
+                .field("CH_INT_EN", &self.CH_INT_EN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for ADC_INT_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "ADC_INT_CTRL {{ CH_INT_EN: {=u8:?} }}", self.CH_INT_EN())
+        }
+    }
+    ///ADC VGA Detect Control Register (ADC08). Sets a 10-bit comparison threshold for interrupt generation. The hardware compares each enabled channel's result against this threshold.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct ADC_VGA_DETECT(pub u32);
+    impl ADC_VGA_DETECT {
+        ///10-bit comparison threshold value (applied to all channels).
+        #[must_use]
+        #[inline(always)]
+        pub const fn THRESHOLD(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0x03ff;
+            val as u16
+        }
+        ///10-bit comparison threshold value (applied to all channels).
+        #[inline(always)]
+        pub const fn set_THRESHOLD(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x03ff << 0usize)) | (((val as u32) & 0x03ff) << 0usize);
+        }
+        ///Interrupt direction. 0 = interrupt when value falls below threshold. 1 = interrupt when value rises above threshold.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ABOVE_THRESHOLD(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///Interrupt direction. 0 = interrupt when value falls below threshold. 1 = interrupt when value rises above threshold.
+        #[inline(always)]
+        pub const fn set_ABOVE_THRESHOLD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+    }
+    impl Default for ADC_VGA_DETECT {
+        #[inline(always)]
+        fn default() -> ADC_VGA_DETECT {
+            ADC_VGA_DETECT(0)
+        }
+    }
+    impl core::fmt::Debug for ADC_VGA_DETECT {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("ADC_VGA_DETECT")
+                .field("THRESHOLD", &self.THRESHOLD())
+                .field("ABOVE_THRESHOLD", &self.ABOVE_THRESHOLD())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for ADC_VGA_DETECT {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "ADC_VGA_DETECT {{ THRESHOLD: {=u16:?}, ABOVE_THRESHOLD: {=bool:?} }}",
+                self.THRESHOLD(),
+                self.ABOVE_THRESHOLD()
+            )
+        }
+    }
+}
 pub mod clock_v1 {
     ///AST2600 SCU clock-gating and PLL registers. Base: 0x7E6E_2000 (CM3 view = SCU base).
     #[derive(Copy, Clone, Eq, PartialEq)]
@@ -719,69 +1262,43 @@ pub mod clock_v1 {
         }
         ///Clock Stop Control Group 0 – Set Register (SCU080). Write 1 to any bit to STOP (gate) the corresponding clock. Write 0 has no effect. Bits 0–31 match ASPEED_CLK_GRP_0_OFFSET.
         #[inline(always)]
-        pub const fn CLK_STOP0_SET(
-            self,
-        ) -> crate::common::Reg<CLK_STOP0, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _)
-            }
+        pub const fn CLK_STOP0_SET(self) -> crate::common::Reg<CLK_STOP0, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _) }
         }
         ///Clock Stop Control Group 0 – Clear Register (SCU084). Write 1 to any bit to START (un-gate) the corresponding clock. Write 0 has no effect. Same bit assignment as CLK_STOP0_SET.
         #[inline(always)]
-        pub const fn CLK_STOP0_CLR(
-            self,
-        ) -> crate::common::Reg<CLK_STOP0, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _)
-            }
+        pub const fn CLK_STOP0_CLR(self) -> crate::common::Reg<CLK_STOP0, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _) }
         }
         ///Clock Stop Control Group 1 – Set Register (SCU090). Write 1 to STOP the corresponding clock. Bits 0–30 map to ASPEED_CLK_GRP_1_OFFSET+0 through ASPEED_CLK_GRP_1_OFFSET+30.
         #[inline(always)]
-        pub const fn CLK_STOP1_SET(
-            self,
-        ) -> crate::common::Reg<CLK_STOP1, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x90usize) as _)
-            }
+        pub const fn CLK_STOP1_SET(self) -> crate::common::Reg<CLK_STOP1, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x90usize) as _) }
         }
         ///Clock Stop Control Group 1 – Clear Register (SCU094). Write 1 to START the corresponding clock.
         #[inline(always)]
-        pub const fn CLK_STOP1_CLR(
-            self,
-        ) -> crate::common::Reg<CLK_STOP1, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x94usize) as _)
-            }
+        pub const fn CLK_STOP1_CLR(self) -> crate::common::Reg<CLK_STOP1, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x94usize) as _) }
         }
         ///APLL Parameter Register (SCU210). Controls the Audio PLL frequency: f_APLL = 25 MHz × (M+1) / ((N+1) × (P+1)). When BYPASS=1 the PLL is bypassed and f_APLL = 25 MHz.
         #[inline(always)]
-        pub const fn APLL_PARAM(
-            self,
-        ) -> crate::common::Reg<PLL_PARAM, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0210usize) as _)
-            }
+        pub const fn APLL_PARAM(self) -> crate::common::Reg<PLL_PARAM, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0210usize) as _) }
         }
         ///Clock Selection Register 0 (SCU300). APB1 clock divider from HPLL (1200 MHz). APB1 freq = 1200 MHz / ((APB1_DIV + 1) × 4).
         #[inline(always)]
         pub const fn CLK_SEL0(self) -> crate::common::Reg<CLK_SEL0, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0300usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0300usize) as _) }
         }
         ///Clock Selection Register 4 (SCU310). APB2 clock divider from HCLK (200 MHz). APB2 freq = 200 MHz / ((APB2_DIV + 1) × 2).
         #[inline(always)]
         pub const fn CLK_SEL4(self) -> crate::common::Reg<CLK_SEL4, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0310usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0310usize) as _) }
         }
         ///Clock Selection Register 5 (SCU314). I3C and UART7–13 clock source selection.
         #[inline(always)]
         pub const fn CLK_SEL5(self) -> crate::common::Reg<CLK_SEL5, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0314usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0314usize) as _) }
         }
     }
     ///Clock Selection Register 0 (SCU300). Selects APB1 divider.
@@ -810,7 +1327,9 @@ pub mod clock_v1 {
     }
     impl core::fmt::Debug for CLK_SEL0 {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("CLK_SEL0").field("APB1_DIV", &self.APB1_DIV()).finish()
+            f.debug_struct("CLK_SEL0")
+                .field("APB1_DIV", &self.APB1_DIV())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -845,7 +1364,9 @@ pub mod clock_v1 {
     }
     impl core::fmt::Debug for CLK_SEL4 {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("CLK_SEL4").field("APB2_DIV", &self.APB2_DIV()).finish()
+            f.debug_struct("CLK_SEL4")
+                .field("APB2_DIV", &self.APB2_DIV())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -902,8 +1423,10 @@ pub mod clock_v1 {
     impl defmt::Format for CLK_SEL5 {
         fn format(&self, f: defmt::Formatter) {
             defmt::write!(
-                f, "CLK_SEL5 {{ I3C_CLK_APLL_DIV: {=u8:?}, I3C_CLK_SRC: {=bool:?} }}",
-                self.I3C_CLK_APLL_DIV(), self.I3C_CLK_SRC()
+                f,
+                "CLK_SEL5 {{ I3C_CLK_APLL_DIV: {=u8:?}, I3C_CLK_SRC: {=bool:?} }}",
+                self.I3C_CLK_APLL_DIV(),
+                self.I3C_CLK_SRC()
             )
         }
     }
@@ -1559,8 +2082,7 @@ pub mod clock_v1 {
         ///PLL M parameter (feedback divider minus 1). Range 0–8191. Multiplier = M+1.
         #[inline(always)]
         pub const fn set_M(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x1fff << 0usize))
-                | (((val as u32) & 0x1fff) << 0usize);
+            self.0 = (self.0 & !(0x1fff << 0usize)) | (((val as u32) & 0x1fff) << 0usize);
         }
         ///PLL N parameter (input pre-divider minus 1). Range 0–63. Pre-divider = N+1.
         #[must_use]
@@ -1621,7 +2143,10 @@ pub mod clock_v1 {
             defmt::write!(
                 f,
                 "PLL_PARAM {{ M: {=u16:?}, N: {=u8:?}, P: {=u8:?}, BYPASS: {=bool:?} }}",
-                self.M(), self.N(), self.P(), self.BYPASS()
+                self.M(),
+                self.N(),
+                self.P(),
+                self.BYPASS()
             )
         }
     }
@@ -1726,697 +2251,427 @@ pub mod gpio_v1 {
         ///Group 0 (A/B/C/D) Direction Register (GPIO004). 1=output.
         #[inline(always)]
         pub const fn G0_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///Group 0 (A/B/C/D) Interrupt Enable Register (GPIO008).
         #[inline(always)]
         pub const fn G0_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Group 0 Interrupt Sensitivity Type 0 (GPIO00C).
         #[inline(always)]
-        pub const fn G0_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+        pub const fn G0_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///Group 0 Interrupt Sensitivity Type 1 (GPIO010).
         #[inline(always)]
-        pub const fn G0_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
-            }
+        pub const fn G0_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
         }
         ///Group 0 Interrupt Sensitivity Type 2 (GPIO014).
         #[inline(always)]
-        pub const fn G0_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
-            }
+        pub const fn G0_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
         }
         ///Group 0 (A/B/C/D) Interrupt Status Register (GPIO018). RW1C.
         #[inline(always)]
-        pub const fn G0_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+        pub const fn G0_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///Group 0 WDT Reset Tolerant Register (GPIO01C).
         #[inline(always)]
-        pub const fn G0_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _)
-            }
+        pub const fn G0_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
         }
         ///Group 1 (E/F/G/H) Data Value Register (GPIO020).
         #[inline(always)]
         pub const fn G1_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _) }
         }
         ///Group 1 (E/F/G/H) Direction Register (GPIO024).
         #[inline(always)]
         pub const fn G1_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
         }
         ///Group 1 (E/F/G/H) Interrupt Enable Register (GPIO028).
         #[inline(always)]
         pub const fn G1_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
         ///Group 1 Interrupt Sensitivity Type 0 (GPIO02C).
         #[inline(always)]
-        pub const fn G1_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _)
-            }
+        pub const fn G1_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _) }
         }
         ///Group 1 Interrupt Sensitivity Type 1 (GPIO030).
         #[inline(always)]
-        pub const fn G1_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _)
-            }
+        pub const fn G1_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _) }
         }
         ///Group 1 Interrupt Sensitivity Type 2 (GPIO034).
         #[inline(always)]
-        pub const fn G1_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _)
-            }
+        pub const fn G1_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _) }
         }
         ///Group 1 (E/F/G/H) Interrupt Status Register (GPIO038). RW1C.
         #[inline(always)]
-        pub const fn G1_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _)
-            }
+        pub const fn G1_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _) }
         }
         ///Group 1 WDT Reset Tolerant Register (GPIO03C).
         #[inline(always)]
-        pub const fn G1_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _)
-            }
+        pub const fn G1_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _) }
         }
         ///Group 0 (A/B/C/D) Command Source Register 0 (GPIO060). Each bit is bit 0 of the 2-bit command source for that pin. {CMD_SRC1\[n\], CMD_SRC0\[n\]}: 0b00=ARM, 0b10=SSP.
         #[inline(always)]
         pub const fn G0_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _) }
         }
         ///Group 0 Command Source Register 1 (GPIO064). Bit 1 of each 2-bit source.
         #[inline(always)]
         pub const fn G0_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _) }
         }
         ///Group 1 (E/F/G/H) Command Source Register 0 (GPIO068).
         #[inline(always)]
         pub const fn G1_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _) }
         }
         ///Group 1 Command Source Register 1 (GPIO06C).
         #[inline(always)]
         pub const fn G1_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x6cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x6cusize) as _) }
         }
         ///Group 2 (I/J/K/L) Data Value Register (GPIO070).
         #[inline(always)]
         pub const fn G2_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _) }
         }
         ///Group 2 (I/J/K/L) Direction Register (GPIO074).
         #[inline(always)]
         pub const fn G2_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _) }
         }
         ///Group 3 (M/N/O/P) Data Value Register (GPIO078).
         #[inline(always)]
         pub const fn G3_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _) }
         }
         ///Group 3 (M/N/O/P) Direction Register (GPIO07C).
         #[inline(always)]
         pub const fn G3_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x7cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x7cusize) as _) }
         }
         ///Group 4 (Q/R/S/T) Data Value Register (GPIO080).
         #[inline(always)]
         pub const fn G4_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _) }
         }
         ///Group 4 (Q/R/S/T) Direction Register (GPIO084).
         #[inline(always)]
         pub const fn G4_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _) }
         }
         ///Group 5 (U/V/W/X) Data Value Register (GPIO088).
         #[inline(always)]
         pub const fn G5_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _) }
         }
         ///Group 5 (U/V/W/X) Direction Register (GPIO08C).
         #[inline(always)]
         pub const fn G5_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x8cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x8cusize) as _) }
         }
         ///Group 2 (I/J/K/L) Command Source Register 0 (GPIO090).
         #[inline(always)]
         pub const fn G2_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x90usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x90usize) as _) }
         }
         ///Group 2 Command Source Register 1 (GPIO094).
         #[inline(always)]
         pub const fn G2_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x94usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x94usize) as _) }
         }
         ///Group 2 (I/J/K/L) Interrupt Enable Register (GPIO098).
         #[inline(always)]
         pub const fn G2_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x98usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x98usize) as _) }
         }
         ///Group 2 Interrupt Sensitivity Type 0 (GPIO09C).
         #[inline(always)]
-        pub const fn G2_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x9cusize) as _)
-            }
+        pub const fn G2_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x9cusize) as _) }
         }
         ///Group 2 Interrupt Sensitivity Type 1 (GPIO0A0).
         #[inline(always)]
-        pub const fn G2_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa0usize) as _)
-            }
+        pub const fn G2_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa0usize) as _) }
         }
         ///Group 2 Interrupt Sensitivity Type 2 (GPIO0A4).
         #[inline(always)]
-        pub const fn G2_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa4usize) as _)
-            }
+        pub const fn G2_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa4usize) as _) }
         }
         ///Group 2 (I/J/K/L) Interrupt Status Register (GPIO0A8). RW1C.
         #[inline(always)]
-        pub const fn G2_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa8usize) as _)
-            }
+        pub const fn G2_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa8usize) as _) }
         }
         ///Group 2 WDT Reset Tolerant Register (GPIO0AC).
         #[inline(always)]
-        pub const fn G2_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xacusize) as _)
-            }
+        pub const fn G2_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xacusize) as _) }
         }
         ///Group 2 (I/J/K/L) Input Mask Register (GPIO0B8).
         #[inline(always)]
-        pub const fn G2_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xb8usize) as _)
-            }
+        pub const fn G2_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xb8usize) as _) }
         }
         ///Group 0 (A/B/C/D) Data Read Register (GPIO0C0). Input state.
         #[inline(always)]
-        pub const fn G0_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc0usize) as _)
-            }
+        pub const fn G0_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc0usize) as _) }
         }
         ///Group 1 (E/F/G/H) Data Read Register (GPIO0C4).
         #[inline(always)]
-        pub const fn G1_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc4usize) as _)
-            }
+        pub const fn G1_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc4usize) as _) }
         }
         ///Group 2 (I/J/K/L) Data Read Register (GPIO0C8).
         #[inline(always)]
-        pub const fn G2_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc8usize) as _)
-            }
+        pub const fn G2_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc8usize) as _) }
         }
         ///Group 3 (M/N/O/P) Data Read Register (GPIO0CC).
         #[inline(always)]
-        pub const fn G3_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xccusize) as _)
-            }
+        pub const fn G3_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xccusize) as _) }
         }
         ///Group 4 (Q/R/S/T) Data Read Register (GPIO0D0).
         #[inline(always)]
-        pub const fn G4_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd0usize) as _)
-            }
+        pub const fn G4_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd0usize) as _) }
         }
         ///Group 5 (U/V/W/X) Data Read Register (GPIO0D4).
         #[inline(always)]
-        pub const fn G5_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd4usize) as _)
-            }
+        pub const fn G5_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd4usize) as _) }
         }
         ///Group 6 (Y/Z) Data Read Register (GPIO0D8). Only bits \[15:0\] valid.
         #[inline(always)]
-        pub const fn G6_DATA_READ(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd8usize) as _)
-            }
+        pub const fn G6_DATA_READ(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd8usize) as _) }
         }
         ///Group 3 (M/N/O/P) Command Source Register 0 (GPIO0E0).
         #[inline(always)]
         pub const fn G3_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe0usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe0usize) as _) }
         }
         ///Group 3 Command Source Register 1 (GPIO0E4).
         #[inline(always)]
         pub const fn G3_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe4usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe4usize) as _) }
         }
         ///Group 3 (M/N/O/P) Interrupt Enable Register (GPIO0E8).
         #[inline(always)]
         pub const fn G3_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe8usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe8usize) as _) }
         }
         ///Group 3 Interrupt Sensitivity Type 0 (GPIO0EC).
         #[inline(always)]
-        pub const fn G3_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xecusize) as _)
-            }
+        pub const fn G3_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xecusize) as _) }
         }
         ///Group 3 Interrupt Sensitivity Type 1 (GPIO0F0).
         #[inline(always)]
-        pub const fn G3_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf0usize) as _)
-            }
+        pub const fn G3_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf0usize) as _) }
         }
         ///Group 3 Interrupt Sensitivity Type 2 (GPIO0F4).
         #[inline(always)]
-        pub const fn G3_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf4usize) as _)
-            }
+        pub const fn G3_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf4usize) as _) }
         }
         ///Group 3 (M/N/O/P) Interrupt Status Register (GPIO0F8). RW1C.
         #[inline(always)]
-        pub const fn G3_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf8usize) as _)
-            }
+        pub const fn G3_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf8usize) as _) }
         }
         ///Group 3 WDT Reset Tolerant Register (GPIO0FC).
         #[inline(always)]
-        pub const fn G3_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xfcusize) as _)
-            }
+        pub const fn G3_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xfcusize) as _) }
         }
         ///Group 3 (M/N/O/P) Input Mask Register (GPIO108).
         #[inline(always)]
-        pub const fn G3_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0108usize) as _)
-            }
+        pub const fn G3_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0108usize) as _) }
         }
         ///Group 4 (Q/R/S/T) Command Source Register 0 (GPIO110).
         #[inline(always)]
         pub const fn G4_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0110usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0110usize) as _) }
         }
         ///Group 4 Command Source Register 1 (GPIO114).
         #[inline(always)]
         pub const fn G4_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0114usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0114usize) as _) }
         }
         ///Group 4 (Q/R/S/T) Interrupt Enable Register (GPIO118).
         #[inline(always)]
         pub const fn G4_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0118usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0118usize) as _) }
         }
         ///Group 4 Interrupt Sensitivity Type 0 (GPIO11C).
         #[inline(always)]
-        pub const fn G4_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x011cusize) as _)
-            }
+        pub const fn G4_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x011cusize) as _) }
         }
         ///Group 4 Interrupt Sensitivity Type 1 (GPIO120).
         #[inline(always)]
-        pub const fn G4_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0120usize) as _)
-            }
+        pub const fn G4_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0120usize) as _) }
         }
         ///Group 4 Interrupt Sensitivity Type 2 (GPIO124).
         #[inline(always)]
-        pub const fn G4_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0124usize) as _)
-            }
+        pub const fn G4_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0124usize) as _) }
         }
         ///Group 4 (Q/R/S/T) Interrupt Status Register (GPIO128). RW1C.
         #[inline(always)]
-        pub const fn G4_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0128usize) as _)
-            }
+        pub const fn G4_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0128usize) as _) }
         }
         ///Group 4 WDT Reset Tolerant Register (GPIO12C).
         #[inline(always)]
-        pub const fn G4_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x012cusize) as _)
-            }
+        pub const fn G4_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x012cusize) as _) }
         }
         ///Group 4 (Q/R/S/T) Input Mask Register (GPIO138).
         #[inline(always)]
-        pub const fn G4_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0138usize) as _)
-            }
+        pub const fn G4_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0138usize) as _) }
         }
         ///Group 5 (U/V/W/X) Command Source Register 0 (GPIO140).
         #[inline(always)]
         pub const fn G5_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0140usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0140usize) as _) }
         }
         ///Group 5 Command Source Register 1 (GPIO144).
         #[inline(always)]
         pub const fn G5_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0144usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0144usize) as _) }
         }
         ///Group 5 (U/V/W/X) Interrupt Enable Register (GPIO148).
         #[inline(always)]
         pub const fn G5_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0148usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0148usize) as _) }
         }
         ///Group 5 Interrupt Sensitivity Type 0 (GPIO14C).
         #[inline(always)]
-        pub const fn G5_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x014cusize) as _)
-            }
+        pub const fn G5_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x014cusize) as _) }
         }
         ///Group 5 Interrupt Sensitivity Type 1 (GPIO150).
         #[inline(always)]
-        pub const fn G5_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0150usize) as _)
-            }
+        pub const fn G5_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0150usize) as _) }
         }
         ///Group 5 Interrupt Sensitivity Type 2 (GPIO154).
         #[inline(always)]
-        pub const fn G5_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0154usize) as _)
-            }
+        pub const fn G5_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0154usize) as _) }
         }
         ///Group 5 (U/V/W/X) Interrupt Status Register (GPIO158). RW1C.
         #[inline(always)]
-        pub const fn G5_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0158usize) as _)
-            }
+        pub const fn G5_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0158usize) as _) }
         }
         ///Group 5 WDT Reset Tolerant Register (GPIO15C).
         #[inline(always)]
-        pub const fn G5_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x015cusize) as _)
-            }
+        pub const fn G5_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x015cusize) as _) }
         }
         ///Group 5 (U/V/W/X) Input Mask Register (GPIO168).
         #[inline(always)]
-        pub const fn G5_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0168usize) as _)
-            }
+        pub const fn G5_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0168usize) as _) }
         }
         ///Group 6 (Y/Z) Command Source Register 0 (GPIO170).
         #[inline(always)]
         pub const fn G6_CMD_SRC0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0170usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0170usize) as _) }
         }
         ///Group 6 Command Source Register 1 (GPIO174).
         #[inline(always)]
         pub const fn G6_CMD_SRC1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0174usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0174usize) as _) }
         }
         ///Group 6 (Y/Z) Interrupt Enable Register (GPIO178).
         #[inline(always)]
         pub const fn G6_INT_EN(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0178usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0178usize) as _) }
         }
         ///Group 6 Interrupt Sensitivity Type 0 (GPIO17C).
         #[inline(always)]
-        pub const fn G6_INT_TYPE0(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x017cusize) as _)
-            }
+        pub const fn G6_INT_TYPE0(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x017cusize) as _) }
         }
         ///Group 6 Interrupt Sensitivity Type 1 (GPIO180).
         #[inline(always)]
-        pub const fn G6_INT_TYPE1(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0180usize) as _)
-            }
+        pub const fn G6_INT_TYPE1(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0180usize) as _) }
         }
         ///Group 6 Interrupt Sensitivity Type 2 (GPIO184).
         #[inline(always)]
-        pub const fn G6_INT_TYPE2(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0184usize) as _)
-            }
+        pub const fn G6_INT_TYPE2(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0184usize) as _) }
         }
         ///Group 6 (Y/Z) Interrupt Status Register (GPIO188). RW1C.
         #[inline(always)]
-        pub const fn G6_INT_STATUS(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0188usize) as _)
-            }
+        pub const fn G6_INT_STATUS(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0188usize) as _) }
         }
         ///Group 6 WDT Reset Tolerant Register (GPIO18C).
         #[inline(always)]
-        pub const fn G6_RESET_TOL(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x018cusize) as _)
-            }
+        pub const fn G6_RESET_TOL(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x018cusize) as _) }
         }
         ///Group 6 (Y/Z) Input Mask Register (GPIO198).
         #[inline(always)]
-        pub const fn G6_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0198usize) as _)
-            }
+        pub const fn G6_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0198usize) as _) }
         }
         ///Group 0 (A/B/C/D) Input Mask Register (GPIO1D0).
         #[inline(always)]
-        pub const fn G0_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01d0usize) as _)
-            }
+        pub const fn G0_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01d0usize) as _) }
         }
         ///Group 1 (E/F/G/H) Input Mask Register (GPIO1D4).
         #[inline(always)]
-        pub const fn G1_INPUT_MASK(
-            self,
-        ) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01d4usize) as _)
-            }
+        pub const fn G1_INPUT_MASK(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01d4usize) as _) }
         }
         ///Group 6 (Y/Z) Data Value Register (GPIO1E0). Only bits \[15:0\] valid.
         #[inline(always)]
         pub const fn G6_DATA(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01e0usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01e0usize) as _) }
         }
         ///Group 6 (Y/Z) Direction Register (GPIO1E4).
         #[inline(always)]
         pub const fn G6_DIR(self) -> crate::common::Reg<GPIO32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01e4usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01e4usize) as _) }
         }
         ///GPIO Index Register (GPIO2AC). Command-based interface for per-pin configuration. bits \[7:0\] = pin number (0–207) bit \[12\] = command (0=write, 1=read) bits \[19:16\] = type (0=DATA, 1=DIR, 2=INTERRUPT, 3=DEBOUNCE, 4=TOLERANCE, 5=CMD_SRC, 6=INPUT_MASK) bits \[24:20\] = data (for INTERRUPT: bit0=int_enable, bits\[4:1\]=int_type 0=FALL 1=RISE 2=LOW 3=HIGH 4=BOTH)
         #[inline(always)]
         pub const fn INDEX(self) -> crate::common::Reg<GPIO_INDEX, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x02acusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x02acusize) as _) }
         }
         ///GPIO Command Source Selection Register (GPIO2D0). Assigns a bus master index to each of the 5 master slots. SSP master number = 6 (ASPEED_GPIO_SEL_SSP). Configure to allow SSP to write GPIO via CMD_SRC registers.
         #[inline(always)]
-        pub const fn CMD_SRC_SEL(
-            self,
-        ) -> crate::common::Reg<GPIO_CMD_SRC_SEL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x02d0usize) as _)
-            }
+        pub const fn CMD_SRC_SEL(self) -> crate::common::Reg<GPIO_CMD_SRC_SEL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x02d0usize) as _) }
         }
     }
     ///Generic 32-bit GPIO register (data, direction, interrupt enable/status, reset tolerant, command source, input mask, data read). Each bit corresponds to one GPIO pin within the group.
@@ -2434,8 +2689,7 @@ pub mod gpio_v1 {
         ///Per-pin bitmask. Bit 0 = port_A pin 0 (or first port in group).
         #[inline(always)]
         pub const fn set_PINS(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for GPIO32 {
@@ -2446,7 +2700,9 @@ pub mod gpio_v1 {
     }
     impl core::fmt::Debug for GPIO32 {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("GPIO32").field("PINS", &self.PINS()).finish()
+            f.debug_struct("GPIO32")
+                .field("PINS", &self.PINS())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -2644,6 +2900,3873 @@ pub mod gpio_v1 {
         }
     }
 }
+pub mod hace_v1 {
+    ///ASPEED Hash and Crypto Engine (HACE). Base: 0x7E6D_0000. Two cascadeable engines: Hash (SHA/MD5/HMAC) and Crypto (AES/DES/3DES/RC4/AES-GCM).
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE {
+        ptr: *mut u8,
+    }
+    unsafe impl Send for HACE {}
+    unsafe impl Sync for HACE {}
+    impl HACE {
+        #[inline(always)]
+        pub const unsafe fn from_ptr(ptr: *mut ()) -> Self {
+            Self { ptr: ptr as _ }
+        }
+        #[inline(always)]
+        pub const fn as_ptr(&self) -> *mut () {
+            self.ptr as _
+        }
+        ///Crypto data source base address (HACE00). Direct access mode: byte-aligned address \[30:0\]. Scatter-gather mode: 8-byte aligned SG list address \[30:3\]. In cascade (Hash→Crypto): must equal HASH_SRC.
+        #[inline(always)]
+        pub const fn CRYPTO_SRC(self) -> crate::common::Reg<HACE_DMA_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
+        }
+        ///Crypto data destination base address (HACE04). Direct access: byte-aligned \[30:0\]. SG mode: \[30:3\]. In cascade (Crypto→Hash): must equal HASH_SRC.
+        #[inline(always)]
+        pub const fn CRYPTO_DST(self) -> crate::common::Reg<HACE_DMA_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
+        }
+        ///Crypto context buffer base address (HACE08). 8-byte aligned \[30:3\]. Holds IV, keys, and intermediate state. Hardware loads before and saves after algorithm execution unless disabled.
+        #[inline(always)]
+        pub const fn CRYPTO_CTX(self) -> crate::common::Reg<HACE_DMA_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
+        }
+        ///Crypto data length in bytes (HACE0C). Bits\[27:0\], max 256 MB-1. In cascade mode must equal HASH_DATA_LEN. 0 is valid only for AES-GCM (zero-length confidential data).
+        #[inline(always)]
+        pub const fn CRYPTO_DATA_LEN(self) -> crate::common::Reg<HACE_DATA_LEN, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
+        }
+        ///Crypto engine command register (HACE10). Select engine (AES/DES/RC4), algorithm, mode, direction, key source, cascade mode, DMA type (direct/SG), interrupt enable, and context I/O.
+        #[inline(always)]
+        pub const fn CRYPTO_CMD(self) -> crate::common::Reg<HACE_CRYPTO_CMD, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
+        }
+        ///AES-GCM additional authenticated data (AAD) length in bytes (HACE14). Used when CRYPTO_CMD selects AES-GCM mode (OP_MODE=101).
+        #[inline(always)]
+        pub const fn GCM_AAD_LEN(self) -> crate::common::Reg<HACE_DATA_LEN, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
+        }
+        ///AES-GCM authentication tag write buffer base address (HACE18). Byte-aligned \[30:0\]. Tag is 16 bytes. Used when CRYPTO_CMD\[21\]=1.
+        #[inline(always)]
+        pub const fn GCM_TAG_BASE(self) -> crate::common::Reg<HACE_DMA_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
+        }
+        ///HAC engine status and interrupt register (HACE1C). Interrupt flags for crypto, hash, and software tag events. Engine busy status bits.
+        #[inline(always)]
+        pub const fn HACE_STATUS(self) -> crate::common::Reg<HACE_STATUS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
+        }
+        ///Hash data source base address (HACE20). Direct access: byte-aligned \[30:0\]. SG mode: 8-byte aligned \[30:3\]. Cascade: Crypto→Hash: must equal CRYPTO_DST; Hash→Crypto: equal CRYPTO_SRC.
+        #[inline(always)]
+        pub const fn HASH_SRC(self) -> crate::common::Reg<HACE_DMA_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _) }
+        }
+        ///Hash digest write buffer base address (HACE24). 8-byte aligned \[30:3\]. Buffer sizes: MD5=16 B, SHA-1=20 B, SHA-224/256=32 B, SHA-384/512/512-x=64 B.
+        #[inline(always)]
+        pub const fn HASH_DIGEST_BASE(
+            self,
+        ) -> crate::common::Reg<HACE_DMA_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
+        }
+        ///HMAC key buffer base address (HACE28). 8-byte aligned \[30:3\]. Stores result of HMAC key calculation command.
+        #[inline(always)]
+        pub const fn HASH_KEY_BASE(self) -> crate::common::Reg<HACE_DMA_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
+        }
+        ///Hash data length in bytes (HACE2C). Bits\[27:0\], max 256 MB-1. Alignment requirements vary by algorithm and accumulative mode. In cascade mode must equal CRYPTO_DATA_LEN.
+        #[inline(always)]
+        pub const fn HASH_DATA_LEN(self) -> crate::common::Reg<HACE_DATA_LEN, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _) }
+        }
+        ///Hash engine command register (HACE30). Select algorithm, HMAC/accumulative mode, byte-swap, cascade mode, SG or direct access, interrupt enable, first/last block indicators.
+        #[inline(always)]
+        pub const fn HASH_CMD(self) -> crate::common::Reg<HACE_HASH_CMD, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _) }
+        }
+        ///Hash data padding length (HACE34). Used in the padding block when in accumulative mode with last block set.
+        #[inline(always)]
+        pub const fn HASH_PAD_LEN(self) -> crate::common::Reg<HACE_DATA_LEN, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _) }
+        }
+        ///Command Queue base address in DRAM (HACE50). 16-byte aligned \[30:4\]. Configure before enabling CQ in HACE60.
+        #[inline(always)]
+        pub const fn CQ_BASE(self) -> crate::common::Reg<HACE_CQ_BASE, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _) }
+        }
+        ///Command Queue end pointer offset (HACE54). 16-byte aligned \[11:1\]. Defines the end of the circular CQ buffer.
+        #[inline(always)]
+        pub const fn CQ_END_PTR(self) -> crate::common::Reg<HACE_CQ_PTR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _) }
+        }
+        ///Command Queue write pointer (HACE58). 8-byte aligned \[11:0\]. Write before enabling CQ.
+        #[inline(always)]
+        pub const fn CQ_WRITE_PTR(self) -> crate::common::Reg<HACE_CQ_RW_PTR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x58usize) as _) }
+        }
+        ///Command Queue read pointer (HACE5C). 8-byte aligned \[11:0\]. Read-only; hardware-managed.
+        #[inline(always)]
+        pub const fn CQ_READ_PTR(self) -> crate::common::Reg<HACE_CQ_RW_PTR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x5cusize) as _) }
+        }
+        ///HACE feature control register (HACE60). Enable DRAM command queue, set CQ data format (single vs burst), select AES/DES CTR counter width, control register write source (AHB vs CQ).
+        #[inline(always)]
+        pub const fn HACE_FEATURE(self) -> crate::common::Reg<HACE_FEATURE, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _) }
+        }
+        ///Software tag register (HACE64). Write a tag value to trigger a software interrupt (when HACE64\[31\]=1). The 28-bit SW_TAG value is stored; interrupt fires when value is written. Also controls whether to wait for crypto/hash idle before updating.
+        #[inline(always)]
+        pub const fn SW_TAG(self) -> crate::common::Reg<HACE_SW_TAG, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _) }
+        }
+    }
+    ///Command Queue base address in DRAM (16-byte aligned).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE_CQ_BASE(pub u32);
+    impl HACE_CQ_BASE {
+        ///CQ base address bits\[30:4\] (16-byte aligned).
+        #[must_use]
+        #[inline(always)]
+        pub const fn CQ_BASE_ADDR(&self) -> u32 {
+            let val = (self.0 >> 4usize) & 0x07ff_ffff;
+            val as u32
+        }
+        ///CQ base address bits\[30:4\] (16-byte aligned).
+        #[inline(always)]
+        pub const fn set_CQ_BASE_ADDR(&mut self, val: u32) {
+            self.0 = (self.0 & !(0x07ff_ffff << 4usize)) | (((val as u32) & 0x07ff_ffff) << 4usize);
+        }
+    }
+    impl Default for HACE_CQ_BASE {
+        #[inline(always)]
+        fn default() -> HACE_CQ_BASE {
+            HACE_CQ_BASE(0)
+        }
+    }
+    impl core::fmt::Debug for HACE_CQ_BASE {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("HACE_CQ_BASE")
+                .field("CQ_BASE_ADDR", &self.CQ_BASE_ADDR())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for HACE_CQ_BASE {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "HACE_CQ_BASE {{ CQ_BASE_ADDR: {=u32:?} }}",
+                self.CQ_BASE_ADDR()
+            )
+        }
+    }
+    ///Command Queue end pointer (write before enabling CQ).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE_CQ_PTR(pub u32);
+    impl HACE_CQ_PTR {
+        ///CQ end pointer bits\[11:1\] (16-byte aligned within CQ buffer).
+        #[must_use]
+        #[inline(always)]
+        pub const fn CQ_END_PTR(&self) -> u16 {
+            let val = (self.0 >> 1usize) & 0x07ff;
+            val as u16
+        }
+        ///CQ end pointer bits\[11:1\] (16-byte aligned within CQ buffer).
+        #[inline(always)]
+        pub const fn set_CQ_END_PTR(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x07ff << 1usize)) | (((val as u32) & 0x07ff) << 1usize);
+        }
+    }
+    impl Default for HACE_CQ_PTR {
+        #[inline(always)]
+        fn default() -> HACE_CQ_PTR {
+            HACE_CQ_PTR(0)
+        }
+    }
+    impl core::fmt::Debug for HACE_CQ_PTR {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("HACE_CQ_PTR")
+                .field("CQ_END_PTR", &self.CQ_END_PTR())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for HACE_CQ_PTR {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "HACE_CQ_PTR {{ CQ_END_PTR: {=u16:?} }}",
+                self.CQ_END_PTR()
+            )
+        }
+    }
+    ///Command Queue write or read pointer.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE_CQ_RW_PTR(pub u32);
+    impl HACE_CQ_RW_PTR {
+        ///CQ pointer bits\[11:0\] (8-byte aligned).
+        #[must_use]
+        #[inline(always)]
+        pub const fn CQ_PTR(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0x0fff;
+            val as u16
+        }
+        ///CQ pointer bits\[11:0\] (8-byte aligned).
+        #[inline(always)]
+        pub const fn set_CQ_PTR(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x0fff << 0usize)) | (((val as u32) & 0x0fff) << 0usize);
+        }
+    }
+    impl Default for HACE_CQ_RW_PTR {
+        #[inline(always)]
+        fn default() -> HACE_CQ_RW_PTR {
+            HACE_CQ_RW_PTR(0)
+        }
+    }
+    impl core::fmt::Debug for HACE_CQ_RW_PTR {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("HACE_CQ_RW_PTR")
+                .field("CQ_PTR", &self.CQ_PTR())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for HACE_CQ_RW_PTR {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "HACE_CQ_RW_PTR {{ CQ_PTR: {=u16:?} }}", self.CQ_PTR())
+        }
+    }
+    ///Crypto engine command register (HACE10).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE_CRYPTO_CMD(pub u32);
+    impl HACE_CRYPTO_CMD {
+        ///Cascade mode: 0/1=independent, 2=Crypto→Hash, 3=Hash→Crypto.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CASCADE_MODE(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x03;
+            val as u8
+        }
+        ///Cascade mode: 0/1=independent, 2=Crypto→Hash, 3=Hash→Crypto.
+        #[inline(always)]
+        pub const fn set_CASCADE_MODE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 0usize)) | (((val as u32) & 0x03) << 0usize);
+        }
+        ///AES key length: 0=128-bit, 1=192-bit, 2=256-bit. Ignored for RC4/DES.
+        #[must_use]
+        #[inline(always)]
+        pub const fn KEY_LEN(&self) -> u8 {
+            let val = (self.0 >> 2usize) & 0x03;
+            val as u8
+        }
+        ///AES key length: 0=128-bit, 1=192-bit, 2=256-bit. Ignored for RC4/DES.
+        #[inline(always)]
+        pub const fn set_KEY_LEN(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 2usize)) | (((val as u32) & 0x03) << 2usize);
+        }
+        ///AES/DES operation mode: 0=ECB, 1=CBC, 2=CFB, 3=OFB, 4=CTR, 5=AES-GCM.
+        #[must_use]
+        #[inline(always)]
+        pub const fn OP_MODE(&self) -> u8 {
+            let val = (self.0 >> 4usize) & 0x07;
+            val as u8
+        }
+        ///AES/DES operation mode: 0=ECB, 1=CBC, 2=CFB, 3=OFB, 4=CTR, 5=AES-GCM.
+        #[inline(always)]
+        pub const fn set_OP_MODE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 4usize)) | (((val as u32) & 0x07) << 4usize);
+        }
+        ///Direction: 0=decrypt (ciphertext→plaintext), 1=encrypt (plaintext→ciphertext).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENC_DEC(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///Direction: 0=decrypt (ciphertext→plaintext), 1=encrypt (plaintext→ciphertext).
+        #[inline(always)]
+        pub const fn set_ENC_DEC(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///Algorithm: 0=AES/DES, 1=RC4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ALGO_SEL(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///Algorithm: 0=AES/DES, 1=RC4.
+        #[inline(always)]
+        pub const fn set_ALGO_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///Disable context save to buffer after engine completes.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DIS_CTX_SAVE(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///Disable context save to buffer after engine completes.
+        #[inline(always)]
+        pub const fn set_DIS_CTX_SAVE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///Disable context load from buffer before algorithm starts.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DIS_CTX_LOAD(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///Disable context load from buffer before algorithm starts.
+        #[inline(always)]
+        pub const fn set_DIS_CTX_LOAD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+        ///Disable crypto engine data I/O (context only).
+        #[must_use]
+        #[inline(always)]
+        pub const fn DIS_RW_DATA(&self) -> bool {
+            let val = (self.0 >> 11usize) & 0x01;
+            val != 0
+        }
+        ///Disable crypto engine data I/O (context only).
+        #[inline(always)]
+        pub const fn set_DIS_RW_DATA(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 11usize)) | (((val as u32) & 0x01) << 11usize);
+        }
+        ///Enable interrupt when crypto command finishes.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CRYPTO_INT_EN(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///Enable interrupt when crypto command finishes.
+        #[inline(always)]
+        pub const fn set_CRYPTO_INT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///AES key expansion: 0=software (key in context), 1=hardware.
+        #[must_use]
+        #[inline(always)]
+        pub const fn KEY_EXP_SEL(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///AES key expansion: 0=software (key in context), 1=hardware.
+        #[inline(always)]
+        pub const fn set_KEY_EXP_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///CTR counter width: 0=AES128/DES64, 1=AES96/DES32, 2=AES64, 3=AES32.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CTR_BITS(&self) -> u8 {
+            let val = (self.0 >> 14usize) & 0x03;
+            val as u8
+        }
+        ///CTR counter width: 0=AES128/DES64, 1=AES96/DES32, 2=AES64, 3=AES32.
+        #[inline(always)]
+        pub const fn set_CTR_BITS(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 14usize)) | (((val as u32) & 0x03) << 14usize);
+        }
+        ///Engine: 0=AES, 1=DES.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENG_SEL(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///Engine: 0=AES, 1=DES.
+        #[inline(always)]
+        pub const fn set_ENG_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///Triple DES: 0=single DES, 1=3DES.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRIPLE_DES(&self) -> bool {
+            let val = (self.0 >> 17usize) & 0x01;
+            val != 0
+        }
+        ///Triple DES: 0=single DES, 1=3DES.
+        #[inline(always)]
+        pub const fn set_TRIPLE_DES(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 17usize)) | (((val as u32) & 0x01) << 17usize);
+        }
+        ///Crypto source: 0=direct access, 1=scatter-gather list.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SRC_SG(&self) -> bool {
+            let val = (self.0 >> 18usize) & 0x01;
+            val != 0
+        }
+        ///Crypto source: 0=direct access, 1=scatter-gather list.
+        #[inline(always)]
+        pub const fn set_SRC_SG(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 18usize)) | (((val as u32) & 0x01) << 18usize);
+        }
+        ///Crypto destination: 0=direct access, 1=scatter-gather list.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DST_SG(&self) -> bool {
+            let val = (self.0 >> 19usize) & 0x01;
+            val != 0
+        }
+        ///Crypto destination: 0=direct access, 1=scatter-gather list.
+        #[inline(always)]
+        pub const fn set_DST_SG(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 19usize)) | (((val as u32) & 0x01) << 19usize);
+        }
+        ///Enable M-Bus request synchronization for Crypto Engine Idle.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MBUS_SYNC(&self) -> bool {
+            let val = (self.0 >> 20usize) & 0x01;
+            val != 0
+        }
+        ///Enable M-Bus request synchronization for Crypto Engine Idle.
+        #[inline(always)]
+        pub const fn set_MBUS_SYNC(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 20usize)) | (((val as u32) & 0x01) << 20usize);
+        }
+        ///AES-GCM tag write: 0=append to end of destination, 1=write to GCM_TAG_BASE.
+        #[must_use]
+        #[inline(always)]
+        pub const fn GCM_TAG_ADDR_SEL(&self) -> bool {
+            let val = (self.0 >> 21usize) & 0x01;
+            val != 0
+        }
+        ///AES-GCM tag write: 0=append to end of destination, 1=write to GCM_TAG_BASE.
+        #[inline(always)]
+        pub const fn set_GCM_TAG_ADDR_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 21usize)) | (((val as u32) & 0x01) << 21usize);
+        }
+        ///GHASH padding length order: 0=len(A)‖len(D), 1=len(D)‖len(A).
+        #[must_use]
+        #[inline(always)]
+        pub const fn GHASH_PAD_ORDER(&self) -> bool {
+            let val = (self.0 >> 22usize) & 0x01;
+            val != 0
+        }
+        ///GHASH padding length order: 0=len(A)‖len(D), 1=len(D)‖len(A).
+        #[inline(always)]
+        pub const fn set_GHASH_PAD_ORDER(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 22usize)) | (((val as u32) & 0x01) << 22usize);
+        }
+        ///Disable GHASH Tag XOR with GCTR output (0=XOR enabled, 1=disabled).
+        #[must_use]
+        #[inline(always)]
+        pub const fn GHASH_XOR_DIS(&self) -> bool {
+            let val = (self.0 >> 23usize) & 0x01;
+            val != 0
+        }
+        ///Disable GHASH Tag XOR with GCTR output (0=XOR enabled, 1=disabled).
+        #[inline(always)]
+        pub const fn set_GHASH_XOR_DIS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 23usize)) | (((val as u32) & 0x01) << 23usize);
+        }
+        ///AES key source: 0=DRAM context buffer, 1=Secure Vault Key (SEC80C).
+        #[must_use]
+        #[inline(always)]
+        pub const fn AES_KEY_SRC(&self) -> bool {
+            let val = (self.0 >> 24usize) & 0x01;
+            val != 0
+        }
+        ///AES key source: 0=DRAM context buffer, 1=Secure Vault Key (SEC80C).
+        #[inline(always)]
+        pub const fn set_AES_KEY_SRC(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 24usize)) | (((val as u32) & 0x01) << 24usize);
+        }
+    }
+    impl Default for HACE_CRYPTO_CMD {
+        #[inline(always)]
+        fn default() -> HACE_CRYPTO_CMD {
+            HACE_CRYPTO_CMD(0)
+        }
+    }
+    impl core::fmt::Debug for HACE_CRYPTO_CMD {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("HACE_CRYPTO_CMD")
+                .field("CASCADE_MODE", &self.CASCADE_MODE())
+                .field("KEY_LEN", &self.KEY_LEN())
+                .field("OP_MODE", &self.OP_MODE())
+                .field("ENC_DEC", &self.ENC_DEC())
+                .field("ALGO_SEL", &self.ALGO_SEL())
+                .field("DIS_CTX_SAVE", &self.DIS_CTX_SAVE())
+                .field("DIS_CTX_LOAD", &self.DIS_CTX_LOAD())
+                .field("DIS_RW_DATA", &self.DIS_RW_DATA())
+                .field("CRYPTO_INT_EN", &self.CRYPTO_INT_EN())
+                .field("KEY_EXP_SEL", &self.KEY_EXP_SEL())
+                .field("CTR_BITS", &self.CTR_BITS())
+                .field("ENG_SEL", &self.ENG_SEL())
+                .field("TRIPLE_DES", &self.TRIPLE_DES())
+                .field("SRC_SG", &self.SRC_SG())
+                .field("DST_SG", &self.DST_SG())
+                .field("MBUS_SYNC", &self.MBUS_SYNC())
+                .field("GCM_TAG_ADDR_SEL", &self.GCM_TAG_ADDR_SEL())
+                .field("GHASH_PAD_ORDER", &self.GHASH_PAD_ORDER())
+                .field("GHASH_XOR_DIS", &self.GHASH_XOR_DIS())
+                .field("AES_KEY_SRC", &self.AES_KEY_SRC())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for HACE_CRYPTO_CMD {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "HACE_CRYPTO_CMD {{ CASCADE_MODE: {=u8:?}, KEY_LEN: {=u8:?}, OP_MODE: {=u8:?}, ENC_DEC: {=bool:?}, ALGO_SEL: {=bool:?}, DIS_CTX_SAVE: {=bool:?}, DIS_CTX_LOAD: {=bool:?}, DIS_RW_DATA: {=bool:?}, CRYPTO_INT_EN: {=bool:?}, KEY_EXP_SEL: {=bool:?}, CTR_BITS: {=u8:?}, ENG_SEL: {=bool:?}, TRIPLE_DES: {=bool:?}, SRC_SG: {=bool:?}, DST_SG: {=bool:?}, MBUS_SYNC: {=bool:?}, GCM_TAG_ADDR_SEL: {=bool:?}, GHASH_PAD_ORDER: {=bool:?}, GHASH_XOR_DIS: {=bool:?}, AES_KEY_SRC: {=bool:?} }}",
+                self.CASCADE_MODE(), self.KEY_LEN(), self.OP_MODE(), self.ENC_DEC(), self
+                .ALGO_SEL(), self.DIS_CTX_SAVE(), self.DIS_CTX_LOAD(), self
+                .DIS_RW_DATA(), self.CRYPTO_INT_EN(), self.KEY_EXP_SEL(), self
+                .CTR_BITS(), self.ENG_SEL(), self.TRIPLE_DES(), self.SRC_SG(), self
+                .DST_SG(), self.MBUS_SYNC(), self.GCM_TAG_ADDR_SEL(), self
+                .GHASH_PAD_ORDER(), self.GHASH_XOR_DIS(), self.AES_KEY_SRC()
+            )
+        }
+    }
+    ///Data length in bytes (bits\[27:0\]).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE_DATA_LEN(pub u32);
+    impl HACE_DATA_LEN {
+        ///Data length in bytes (max 256 MB - 1).
+        #[must_use]
+        #[inline(always)]
+        pub const fn LEN(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0x0fff_ffff;
+            val as u32
+        }
+        ///Data length in bytes (max 256 MB - 1).
+        #[inline(always)]
+        pub const fn set_LEN(&mut self, val: u32) {
+            self.0 = (self.0 & !(0x0fff_ffff << 0usize)) | (((val as u32) & 0x0fff_ffff) << 0usize);
+        }
+    }
+    impl Default for HACE_DATA_LEN {
+        #[inline(always)]
+        fn default() -> HACE_DATA_LEN {
+            HACE_DATA_LEN(0)
+        }
+    }
+    impl core::fmt::Debug for HACE_DATA_LEN {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("HACE_DATA_LEN")
+                .field("LEN", &self.LEN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for HACE_DATA_LEN {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "HACE_DATA_LEN {{ LEN: {=u32:?} }}", self.LEN())
+        }
+    }
+    ///DMA buffer base address (bit\[31\] reserved, bits\[30:0\] = address).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE_DMA_ADDR(pub u32);
+    impl HACE_DMA_ADDR {
+        ///Buffer base address (byte or 8-byte aligned depending on register and mode).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ADDR(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0x7fff_ffff;
+            val as u32
+        }
+        ///Buffer base address (byte or 8-byte aligned depending on register and mode).
+        #[inline(always)]
+        pub const fn set_ADDR(&mut self, val: u32) {
+            self.0 = (self.0 & !(0x7fff_ffff << 0usize)) | (((val as u32) & 0x7fff_ffff) << 0usize);
+        }
+    }
+    impl Default for HACE_DMA_ADDR {
+        #[inline(always)]
+        fn default() -> HACE_DMA_ADDR {
+            HACE_DMA_ADDR(0)
+        }
+    }
+    impl core::fmt::Debug for HACE_DMA_ADDR {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("HACE_DMA_ADDR")
+                .field("ADDR", &self.ADDR())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for HACE_DMA_ADDR {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "HACE_DMA_ADDR {{ ADDR: {=u32:?} }}", self.ADDR())
+        }
+    }
+    ///HACE feature control register (HACE60).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE_FEATURE(pub u32);
+    impl HACE_FEATURE {
+        ///CQ data format: 0=single (8 bytes), 1=burst (8/16/24/32 bytes).
+        #[must_use]
+        #[inline(always)]
+        pub const fn CQ_BURST(&self) -> bool {
+            let val = (self.0 >> 28usize) & 0x01;
+            val != 0
+        }
+        ///CQ data format: 0=single (8 bytes), 1=burst (8/16/24/32 bytes).
+        #[inline(always)]
+        pub const fn set_CQ_BURST(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 28usize)) | (((val as u32) & 0x01) << 28usize);
+        }
+        ///AES/DES CTR counter width: 0=32-bit, 1=64-bit.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CTR_64BIT(&self) -> bool {
+            let val = (self.0 >> 29usize) & 0x01;
+            val != 0
+        }
+        ///AES/DES CTR counter width: 0=32-bit, 1=64-bit.
+        #[inline(always)]
+        pub const fn set_CTR_64BIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 29usize)) | (((val as u32) & 0x01) << 29usize);
+        }
+        ///Register write source: 0=AHB (normal), 1=from CQ data.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CQ_REG_WR(&self) -> bool {
+            let val = (self.0 >> 30usize) & 0x01;
+            val != 0
+        }
+        ///Register write source: 0=AHB (normal), 1=from CQ data.
+        #[inline(always)]
+        pub const fn set_CQ_REG_WR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 30usize)) | (((val as u32) & 0x01) << 30usize);
+        }
+        ///Enable DRAM-based Command Queue.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CQ_EN(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///Enable DRAM-based Command Queue.
+        #[inline(always)]
+        pub const fn set_CQ_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for HACE_FEATURE {
+        #[inline(always)]
+        fn default() -> HACE_FEATURE {
+            HACE_FEATURE(0)
+        }
+    }
+    impl core::fmt::Debug for HACE_FEATURE {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("HACE_FEATURE")
+                .field("CQ_BURST", &self.CQ_BURST())
+                .field("CTR_64BIT", &self.CTR_64BIT())
+                .field("CQ_REG_WR", &self.CQ_REG_WR())
+                .field("CQ_EN", &self.CQ_EN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for HACE_FEATURE {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "HACE_FEATURE {{ CQ_BURST: {=bool:?}, CTR_64BIT: {=bool:?}, CQ_REG_WR: {=bool:?}, CQ_EN: {=bool:?} }}",
+                self.CQ_BURST(), self.CTR_64BIT(), self.CQ_REG_WR(), self.CQ_EN()
+            )
+        }
+    }
+    ///Hash engine command register (HACE30).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE_HASH_CMD(pub u32);
+    impl HACE_HASH_CMD {
+        ///Cascade mode: 0/1=independent, 2=Crypto→Hash, 3=Hash→Crypto.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CASCADE_MODE(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x03;
+            val as u8
+        }
+        ///Cascade mode: 0/1=independent, 2=Crypto→Hash, 3=Hash→Crypto.
+        #[inline(always)]
+        pub const fn set_CASCADE_MODE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 0usize)) | (((val as u32) & 0x03) << 0usize);
+        }
+        ///Byte swapping: 1=MD5 (little-endian), 2=SHA-x (big-endian).
+        #[must_use]
+        #[inline(always)]
+        pub const fn BYTE_SWAP(&self) -> u8 {
+            let val = (self.0 >> 2usize) & 0x03;
+            val as u8
+        }
+        ///Byte swapping: 1=MD5 (little-endian), 2=SHA-x (big-endian).
+        #[inline(always)]
+        pub const fn set_BYTE_SWAP(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 2usize)) | (((val as u32) & 0x03) << 2usize);
+        }
+        ///Hash algorithm: 0=MD5, 2=SHA-1, 4=SHA-224, 5=SHA-256, 6=SHA-512 series (use SHA512_SEL for variant). Others invalid.
+        #[must_use]
+        #[inline(always)]
+        pub const fn HASH_ALGO(&self) -> u8 {
+            let val = (self.0 >> 4usize) & 0x07;
+            val as u8
+        }
+        ///Hash algorithm: 0=MD5, 2=SHA-1, 4=SHA-224, 5=SHA-256, 6=SHA-512 series (use SHA512_SEL for variant). Others invalid.
+        #[inline(always)]
+        pub const fn set_HASH_ALGO(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 4usize)) | (((val as u32) & 0x07) << 4usize);
+        }
+        ///HMAC/accumulative: 0=digest only, 1=HMAC, 2=accumulative, 3=compute HMAC key.
+        #[must_use]
+        #[inline(always)]
+        pub const fn HMAC_CMD(&self) -> u8 {
+            let val = (self.0 >> 7usize) & 0x03;
+            val as u8
+        }
+        ///HMAC/accumulative: 0=digest only, 1=HMAC, 2=accumulative, 3=compute HMAC key.
+        #[inline(always)]
+        pub const fn set_HMAC_CMD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 7usize)) | (((val as u32) & 0x03) << 7usize);
+        }
+        ///Enable interrupt when hash command finishes.
+        #[must_use]
+        #[inline(always)]
+        pub const fn HASH_INT_EN(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///Enable interrupt when hash command finishes.
+        #[inline(always)]
+        pub const fn set_HASH_INT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///SHA-512 variant (when HASH_ALGO=6): 0=SHA-512, 1=SHA-384, 2=SHA-512/256, 3=SHA-512/224.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SHA512_SEL(&self) -> u8 {
+            let val = (self.0 >> 10usize) & 0x07;
+            val as u8
+        }
+        ///SHA-512 variant (when HASH_ALGO=6): 0=SHA-512, 1=SHA-384, 2=SHA-512/256, 3=SHA-512/224.
+        #[inline(always)]
+        pub const fn set_SHA512_SEL(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 10usize)) | (((val as u32) & 0x07) << 10usize);
+        }
+        ///This command includes the first block (accumulative mode).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ACC_FIRST(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///This command includes the first block (accumulative mode).
+        #[inline(always)]
+        pub const fn set_ACC_FIRST(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///This command includes the last block (accumulative mode). Requires HASH_PAD_LEN set.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ACC_LAST(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///This command includes the last block (accumulative mode). Requires HASH_PAD_LEN set.
+        #[inline(always)]
+        pub const fn set_ACC_LAST(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///Hash source: 0=direct access, 1=scatter-gather. Must be 0 when HMAC_CMD=3.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SRC_SG(&self) -> bool {
+            let val = (self.0 >> 18usize) & 0x01;
+            val != 0
+        }
+        ///Hash source: 0=direct access, 1=scatter-gather. Must be 0 when HMAC_CMD=3.
+        #[inline(always)]
+        pub const fn set_SRC_SG(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 18usize)) | (((val as u32) & 0x01) << 18usize);
+        }
+        ///Enable M-Bus request synchronization for Hash Engine Idle.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MBUS_SYNC(&self) -> bool {
+            let val = (self.0 >> 20usize) & 0x01;
+            val != 0
+        }
+        ///Enable M-Bus request synchronization for Hash Engine Idle.
+        #[inline(always)]
+        pub const fn set_MBUS_SYNC(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 20usize)) | (((val as u32) & 0x01) << 20usize);
+        }
+    }
+    impl Default for HACE_HASH_CMD {
+        #[inline(always)]
+        fn default() -> HACE_HASH_CMD {
+            HACE_HASH_CMD(0)
+        }
+    }
+    impl core::fmt::Debug for HACE_HASH_CMD {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("HACE_HASH_CMD")
+                .field("CASCADE_MODE", &self.CASCADE_MODE())
+                .field("BYTE_SWAP", &self.BYTE_SWAP())
+                .field("HASH_ALGO", &self.HASH_ALGO())
+                .field("HMAC_CMD", &self.HMAC_CMD())
+                .field("HASH_INT_EN", &self.HASH_INT_EN())
+                .field("SHA512_SEL", &self.SHA512_SEL())
+                .field("ACC_FIRST", &self.ACC_FIRST())
+                .field("ACC_LAST", &self.ACC_LAST())
+                .field("SRC_SG", &self.SRC_SG())
+                .field("MBUS_SYNC", &self.MBUS_SYNC())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for HACE_HASH_CMD {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "HACE_HASH_CMD {{ CASCADE_MODE: {=u8:?}, BYTE_SWAP: {=u8:?}, HASH_ALGO: {=u8:?}, HMAC_CMD: {=u8:?}, HASH_INT_EN: {=bool:?}, SHA512_SEL: {=u8:?}, ACC_FIRST: {=bool:?}, ACC_LAST: {=bool:?}, SRC_SG: {=bool:?}, MBUS_SYNC: {=bool:?} }}",
+                self.CASCADE_MODE(), self.BYTE_SWAP(), self.HASH_ALGO(), self.HMAC_CMD(),
+                self.HASH_INT_EN(), self.SHA512_SEL(), self.ACC_FIRST(), self.ACC_LAST(),
+                self.SRC_SG(), self.MBUS_SYNC()
+            )
+        }
+    }
+    ///HACE engine status and interrupt register (HACE1C).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE_STATUS(pub u32);
+    impl HACE_STATUS {
+        ///Hash engine busy.
+        #[must_use]
+        #[inline(always)]
+        pub const fn HASH_BUSY(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Hash engine busy.
+        #[inline(always)]
+        pub const fn set_HASH_BUSY(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Crypto engine busy.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CRYPTO_BUSY(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Crypto engine busy.
+        #[inline(always)]
+        pub const fn set_CRYPTO_BUSY(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Command queue busy.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CQ_BUSY(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Command queue busy.
+        #[inline(always)]
+        pub const fn set_CQ_BUSY(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Hash engine done interrupt (write 1 to clear).
+        #[must_use]
+        #[inline(always)]
+        pub const fn HASH_INT(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///Hash engine done interrupt (write 1 to clear).
+        #[inline(always)]
+        pub const fn set_HASH_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///Crypto engine done interrupt (write 1 to clear).
+        #[must_use]
+        #[inline(always)]
+        pub const fn CRYPTO_INT(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///Crypto engine done interrupt (write 1 to clear).
+        #[inline(always)]
+        pub const fn set_CRYPTO_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///Software tag interrupt — set when value written to HACE64 (write 1 to clear).
+        #[must_use]
+        #[inline(always)]
+        pub const fn SW_TAG_INT(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///Software tag interrupt — set when value written to HACE64 (write 1 to clear).
+        #[inline(always)]
+        pub const fn set_SW_TAG_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+    }
+    impl Default for HACE_STATUS {
+        #[inline(always)]
+        fn default() -> HACE_STATUS {
+            HACE_STATUS(0)
+        }
+    }
+    impl core::fmt::Debug for HACE_STATUS {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("HACE_STATUS")
+                .field("HASH_BUSY", &self.HASH_BUSY())
+                .field("CRYPTO_BUSY", &self.CRYPTO_BUSY())
+                .field("CQ_BUSY", &self.CQ_BUSY())
+                .field("HASH_INT", &self.HASH_INT())
+                .field("CRYPTO_INT", &self.CRYPTO_INT())
+                .field("SW_TAG_INT", &self.SW_TAG_INT())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for HACE_STATUS {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "HACE_STATUS {{ HASH_BUSY: {=bool:?}, CRYPTO_BUSY: {=bool:?}, CQ_BUSY: {=bool:?}, HASH_INT: {=bool:?}, CRYPTO_INT: {=bool:?}, SW_TAG_INT: {=bool:?} }}",
+                self.HASH_BUSY(), self.CRYPTO_BUSY(), self.CQ_BUSY(), self.HASH_INT(),
+                self.CRYPTO_INT(), self.SW_TAG_INT()
+            )
+        }
+    }
+    ///Software tag register (HACE64).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct HACE_SW_TAG(pub u32);
+    impl HACE_SW_TAG {
+        ///Software tag value \[27:0\]. Writing triggers SW_TAG_INT if enabled.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SW_TAG(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0x0fff_ffff;
+            val as u32
+        }
+        ///Software tag value \[27:0\]. Writing triggers SW_TAG_INT if enabled.
+        #[inline(always)]
+        pub const fn set_SW_TAG(&mut self, val: u32) {
+            self.0 = (self.0 & !(0x0fff_ffff << 0usize)) | (((val as u32) & 0x0fff_ffff) << 0usize);
+        }
+        ///Wait for hash engine idle before updating tag.
+        #[must_use]
+        #[inline(always)]
+        pub const fn WAIT_HASH(&self) -> bool {
+            let val = (self.0 >> 28usize) & 0x01;
+            val != 0
+        }
+        ///Wait for hash engine idle before updating tag.
+        #[inline(always)]
+        pub const fn set_WAIT_HASH(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 28usize)) | (((val as u32) & 0x01) << 28usize);
+        }
+        ///Wait for crypto engine idle before updating tag.
+        #[must_use]
+        #[inline(always)]
+        pub const fn WAIT_CRYPTO(&self) -> bool {
+            let val = (self.0 >> 29usize) & 0x01;
+            val != 0
+        }
+        ///Wait for crypto engine idle before updating tag.
+        #[inline(always)]
+        pub const fn set_WAIT_CRYPTO(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 29usize)) | (((val as u32) & 0x01) << 29usize);
+        }
+        ///Enable software tag interrupt on write to HACE64.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SW_TAG_INT_EN(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///Enable software tag interrupt on write to HACE64.
+        #[inline(always)]
+        pub const fn set_SW_TAG_INT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for HACE_SW_TAG {
+        #[inline(always)]
+        fn default() -> HACE_SW_TAG {
+            HACE_SW_TAG(0)
+        }
+    }
+    impl core::fmt::Debug for HACE_SW_TAG {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("HACE_SW_TAG")
+                .field("SW_TAG", &self.SW_TAG())
+                .field("WAIT_HASH", &self.WAIT_HASH())
+                .field("WAIT_CRYPTO", &self.WAIT_CRYPTO())
+                .field("SW_TAG_INT_EN", &self.SW_TAG_INT_EN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for HACE_SW_TAG {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "HACE_SW_TAG {{ SW_TAG: {=u32:?}, WAIT_HASH: {=bool:?}, WAIT_CRYPTO: {=bool:?}, SW_TAG_INT_EN: {=bool:?} }}",
+                self.SW_TAG(), self.WAIT_HASH(), self.WAIT_CRYPTO(), self.SW_TAG_INT_EN()
+            )
+        }
+    }
+}
+pub mod i2c_v1 {
+    ///ASPEED I2C/SMBus per-channel registers (new register mode). Base: 0x7E7B_0000 + 0x80 + (N × 0x80) for channel N (0–13). Requires I2CG0C\[2\]=1 (new register mode) to be enabled globally.
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C {
+        ptr: *mut u8,
+    }
+    unsafe impl Send for I2C {}
+    unsafe impl Sync for I2C {}
+    impl I2C {
+        #[inline(always)]
+        pub const unsafe fn from_ptr(ptr: *mut ()) -> Self {
+            Self { ptr: ptr as _ }
+        }
+        #[inline(always)]
+        pub const fn as_ptr(&self) -> *mut () {
+            self.ptr as _
+        }
+        ///Master/slave function control register (I2CC00). Enables master and/or slave function, selects operating modes. Clearing both ENBL_MASTER_FN and ENBL_SLAVE_FN simultaneously resets all state machines and clears interrupt status registers.
+        #[inline(always)]
+        pub const fn FUNC_CTRL(self) -> crate::common::Reg<I2C_FUNC_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
+        }
+        ///Master/slave clock and AC timing control register (I2CC04). Sets SCL frequency, data hold time, and timeout. SCL frequency = FreqBase / (tCKLow + tCKHigh).
+        #[inline(always)]
+        pub const fn CLK_TIMING(self) -> crate::common::Reg<I2C_CLK_TIMING, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
+        }
+        ///Master/slave byte buffer and bus state register (I2CC08). Upper 16 bits: bus state (read-only). Lower 16 bits: TX byte buffer \[15:8\], RX byte buffer \[7:0\]. Valid only in byte mode (pool and DMA modes bypass this register).
+        #[inline(always)]
+        pub const fn TX_RX_BUF(self) -> crate::common::Reg<I2C_TX_RX_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
+        }
+        ///Master/slave pool buffer control register (I2CC0C). Shared between master and slave — only one may use pool at a time. Pool and DMA modes are mutually exclusive.
+        #[inline(always)]
+        pub const fn POOL_CTRL(self) -> crate::common::Reg<I2C_POOL_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
+        }
+        ///Master interrupt enable register (I2CM10). In packet operation mode, only ENBL_PKT_CMD_DONE_INT and/or ENBL_SMBUS_ALERT_INT need enabling; all other bits have no effect.
+        #[inline(always)]
+        pub const fn MASTER_IRQ_CTRL(
+            self,
+        ) -> crate::common::Reg<I2C_MASTER_IRQ_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
+        }
+        ///Master interrupt status register (I2CM14). Write-1-to-clear. In packet mode, clearing PKT_CMD_DONE_STS also clears bits\[6:0,13:12,18:17\].
+        #[inline(always)]
+        pub const fn MASTER_IRQ_STATUS(
+            self,
+        ) -> crate::common::Reg<I2C_MASTER_IRQ_STATUS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
+        }
+        ///Master command and control register (I2CM18). Step mode: set START_CMD first (highest priority), then TX_CMD or RX_CMD, then STOP_CMD. Hardware auto-clears each command bit when executed. Packet mode: set ENBL_MASTER_PKT_OP plus TARGET_ADDR. Bit\[31\] (W1T_CTRL) allows write-1-to-set without read-modify-write.
+        #[inline(always)]
+        pub const fn MASTER_CMD(self) -> crate::common::Reg<I2C_MASTER_CMD, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
+        }
+        ///Master DMA transfer length register (I2CM1C). Configure before enabling DMA TX or RX. Bits\[31\] and \[15\] (W1T) allow updating TX and RX lengths independently.
+        #[inline(always)]
+        pub const fn MASTER_DMA_LEN(self) -> crate::common::Reg<I2C_DMA_LEN, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
+        }
+        ///Slave interrupt enable register (I2CS20). In packet mode, only ENBL_PKT_CMD_DONE_INT and/or ENBL_SLAVE_ADDR_NACKED_INT need enabling.
+        #[inline(always)]
+        pub const fn SLAVE_IRQ_CTRL(
+            self,
+        ) -> crate::common::Reg<I2C_SLAVE_IRQ_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _) }
+        }
+        ///Slave interrupt status register (I2CS24). Write-1-to-clear. In packet mode, clearing PKT_CMD_DONE_STS also clears bits\[0,2,4:5,7,15,17\]. Software must clear bits\[2:0\] after setting new commands.
+        #[inline(always)]
+        pub const fn SLAVE_IRQ_STATUS(
+            self,
+        ) -> crate::common::Reg<I2C_SLAVE_IRQ_STATUS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
+        }
+        ///Slave command and control register (I2CS28). Enables slave packet operation, sets active slave address, controls buffer selection, and issues transmit command. Bit\[31\] (W1T_CTRL) allows write-1-to-set without read-modify-write.
+        #[inline(always)]
+        pub const fn SLAVE_CMD(self) -> crate::common::Reg<I2C_SLAVE_CMD, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
+        }
+        ///Slave DMA transfer length register (I2CS2C). For slave RX, length may be set ≥ actual transfer (master may stop early).
+        #[inline(always)]
+        pub const fn SLAVE_DMA_LEN(self) -> crate::common::Reg<I2C_DMA_LEN, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _) }
+        }
+        ///Master DMA transmit buffer base address in SDRAM (I2CM30). Configure before enabling master DMA TX. Hardware increments during transfer.
+        #[inline(always)]
+        pub const fn MASTER_DMA_TX_BASE(
+            self,
+        ) -> crate::common::Reg<I2C_DMA_BASE_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _) }
+        }
+        ///Master DMA receive buffer base address in SDRAM (I2CM34).
+        #[inline(always)]
+        pub const fn MASTER_DMA_RX_BASE(
+            self,
+        ) -> crate::common::Reg<I2C_DMA_BASE_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _) }
+        }
+        ///Slave DMA transmit buffer base address in SDRAM (I2CS38).
+        #[inline(always)]
+        pub const fn SLAVE_DMA_TX_BASE(
+            self,
+        ) -> crate::common::Reg<I2C_DMA_BASE_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _) }
+        }
+        ///Slave DMA receive buffer base address in SDRAM (I2CS3C).
+        #[inline(always)]
+        pub const fn SLAVE_DMA_RX_BASE(
+            self,
+        ) -> crate::common::Reg<I2C_DMA_BASE_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _) }
+        }
+        ///Slave device address register (I2CS40). Up to three 7-bit slave addresses. Address range mode (I2CC00\[9\]=1): SLAVE_ADDR1 ≤ incoming address ≤ SLAVE_ADDR2.
+        #[inline(always)]
+        pub const fn SLAVE_ADDR(self) -> crate::common::Reg<I2C_SLAVE_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _) }
+        }
+        ///Master DMA actual transfer length status (I2CM48). Read-only; write clears to 0. Also cleared by master packet operation start and by DMA start (TX and RX cleared independently).
+        #[inline(always)]
+        pub const fn MASTER_DMA_STATUS(
+            self,
+        ) -> crate::common::Reg<I2C_DMA_STATUS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _) }
+        }
+        ///Slave DMA actual transfer length status (I2CS4C). Read-only; write clears to 0.
+        #[inline(always)]
+        pub const fn SLAVE_DMA_STATUS(
+            self,
+        ) -> crate::common::Reg<I2C_DMA_STATUS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x4cusize) as _) }
+        }
+        ///Current DMA operating address (I2CC50). Read-only. Increments during DMA transfer.
+        #[inline(always)]
+        pub const fn CUR_DMA_ADDR(self) -> crate::common::Reg<I2C_CUR_DMA_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _) }
+        }
+        ///Current DMA remaining length (I2CC54). Read-only. Decrements during DMA transfer.
+        #[inline(always)]
+        pub const fn CUR_DMA_LEN(self) -> crate::common::Reg<I2C_CUR_DMA_LEN, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _) }
+        }
+    }
+    ///I2C/SMBus clock and AC timing control register (I2CC04).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_CLK_TIMING(pub u32);
+    impl I2C_CLK_TIMING {
+        ///Base clock divisor selection. Old mode: 0=PCLK/1, 1=PCLK/2, ..., 15=PCLK/32768. New mode: 0=PCLK/1, 1–3=PCLK/base_divider_1..3, 4=1MHz, 5=baseclk4/2, ..., 15=baseclk4/2048.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BASE_CLK_DIV(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x0f;
+            val as u8
+        }
+        ///Base clock divisor selection. Old mode: 0=PCLK/1, 1=PCLK/2, ..., 15=PCLK/32768. New mode: 0=PCLK/1, 1–3=PCLK/base_divider_1..3, 4=1MHz, 5=baseclk4/2, ..., 15=baseclk4/2048.
+        #[inline(always)]
+        pub const fn set_BASE_CLK_DIV(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 0usize)) | (((val as u32) & 0x0f) << 0usize);
+        }
+        ///Timeout base clock divisor. Old mode: 00=PCLK/16384, 01=PCLK/65536, 10=PCLK/262144, 11=PCLK/1048576. New mode: 00=baseclk4/256, 01=baseclk4/1024, 10=baseclk4/4096, 11=baseclk4/8192.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TOUT_BASE_CLK_DIV(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x03;
+            val as u8
+        }
+        ///Timeout base clock divisor. Old mode: 00=PCLK/16384, 01=PCLK/65536, 10=PCLK/262144, 11=PCLK/1048576. New mode: 00=baseclk4/256, 01=baseclk4/1024, 10=baseclk4/4096, 11=baseclk4/8192.
+        #[inline(always)]
+        pub const fn set_TOUT_BASE_CLK_DIV(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 8usize)) | (((val as u32) & 0x03) << 8usize);
+        }
+        ///Data hold time (tHDDAT) in base clock units. Master: 0=1, 1=2, 2=3, 3=4. Slave: 0=0, 1=1, 2=2, 3=3.
+        #[must_use]
+        #[inline(always)]
+        pub const fn THDDAT(&self) -> u8 {
+            let val = (self.0 >> 10usize) & 0x03;
+            val as u8
+        }
+        ///Data hold time (tHDDAT) in base clock units. Master: 0=1, 1=2, 2=3, 3=4. Slave: 0=0, 1=1, 2=2, 3=3.
+        #[inline(always)]
+        pub const fn set_THDDAT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 10usize)) | (((val as u32) & 0x03) << 10usize);
+        }
+        ///Master SCL clock-low pulse width (tCKLow) in base clock units. 0–2 = no guarantee. 3=4 clocks. 15=16 clocks.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TCKLOW(&self) -> u8 {
+            let val = (self.0 >> 12usize) & 0x0f;
+            val as u8
+        }
+        ///Master SCL clock-low pulse width (tCKLow) in base clock units. 0–2 = no guarantee. 3=4 clocks. 15=16 clocks.
+        #[inline(always)]
+        pub const fn set_TCKLOW(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 12usize)) | (((val as u32) & 0x0f) << 12usize);
+        }
+        ///Master SCL clock-high pulse width (tCKHigh) in base clock units. 0–2 = no guarantee. 3=4 clocks. 15=16 clocks.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TCKIGH(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0x0f;
+            val as u8
+        }
+        ///Master SCL clock-high pulse width (tCKHigh) in base clock units. 0–2 = no guarantee. 3=4 clocks. 15=16 clocks.
+        #[inline(always)]
+        pub const fn set_TCKIGH(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 16usize)) | (((val as u32) & 0x0f) << 16usize);
+        }
+        ///Master SCL clock-high minimum pulse width (tCKHighMin) in base clock units. Hardware samples SCL feedback and extends high if needed. Must be ≤ tCKHigh.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TCKIGH_MIN(&self) -> u8 {
+            let val = (self.0 >> 20usize) & 0x0f;
+            val as u8
+        }
+        ///Master SCL clock-high minimum pulse width (tCKHighMin) in base clock units. Hardware samples SCL feedback and extends high if needed. Must be ≤ tCKHigh.
+        #[inline(always)]
+        pub const fn set_TCKIGH_MIN(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 20usize)) | (((val as u32) & 0x0f) << 20usize);
+        }
+        ///SCL-low / SDA-low / slave-active timeout (N × timeout base clock period). 0 = no timeout. 1–31 = N × timeout base period.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TIMEOUT_TIMER(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x1f;
+            val as u8
+        }
+        ///SCL-low / SDA-low / slave-active timeout (N × timeout base clock period). 0 = no timeout. 1–31 = N × timeout base period.
+        #[inline(always)]
+        pub const fn set_TIMEOUT_TIMER(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x1f << 24usize)) | (((val as u32) & 0x1f) << 24usize);
+        }
+    }
+    impl Default for I2C_CLK_TIMING {
+        #[inline(always)]
+        fn default() -> I2C_CLK_TIMING {
+            I2C_CLK_TIMING(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_CLK_TIMING {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_CLK_TIMING")
+                .field("BASE_CLK_DIV", &self.BASE_CLK_DIV())
+                .field("TOUT_BASE_CLK_DIV", &self.TOUT_BASE_CLK_DIV())
+                .field("THDDAT", &self.THDDAT())
+                .field("TCKLOW", &self.TCKLOW())
+                .field("TCKIGH", &self.TCKIGH())
+                .field("TCKIGH_MIN", &self.TCKIGH_MIN())
+                .field("TIMEOUT_TIMER", &self.TIMEOUT_TIMER())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_CLK_TIMING {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_CLK_TIMING {{ BASE_CLK_DIV: {=u8:?}, TOUT_BASE_CLK_DIV: {=u8:?}, THDDAT: {=u8:?}, TCKLOW: {=u8:?}, TCKIGH: {=u8:?}, TCKIGH_MIN: {=u8:?}, TIMEOUT_TIMER: {=u8:?} }}",
+                self.BASE_CLK_DIV(), self.TOUT_BASE_CLK_DIV(), self.THDDAT(), self
+                .TCKLOW(), self.TCKIGH(), self.TCKIGH_MIN(), self.TIMEOUT_TIMER()
+            )
+        }
+    }
+    ///Current DMA operating address (I2CC50). Read-only; increments during transfer.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_CUR_DMA_ADDR(pub u32);
+    impl I2C_CUR_DMA_ADDR {
+        ///Current DMA address counter.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CUR_ADDR(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0xffff_ffff;
+            val as u32
+        }
+        ///Current DMA address counter.
+        #[inline(always)]
+        pub const fn set_CUR_ADDR(&mut self, val: u32) {
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
+        }
+    }
+    impl Default for I2C_CUR_DMA_ADDR {
+        #[inline(always)]
+        fn default() -> I2C_CUR_DMA_ADDR {
+            I2C_CUR_DMA_ADDR(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_CUR_DMA_ADDR {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_CUR_DMA_ADDR")
+                .field("CUR_ADDR", &self.CUR_ADDR())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_CUR_DMA_ADDR {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_CUR_DMA_ADDR {{ CUR_ADDR: {=u32:?} }}",
+                self.CUR_ADDR()
+            )
+        }
+    }
+    ///Current DMA remaining length (I2CC54). Read-only; decrements during transfer.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_CUR_DMA_LEN(pub u32);
+    impl I2C_CUR_DMA_LEN {
+        ///Remaining DMA bytes.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CUR_LEN(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0x0fff;
+            val as u16
+        }
+        ///Remaining DMA bytes.
+        #[inline(always)]
+        pub const fn set_CUR_LEN(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x0fff << 0usize)) | (((val as u32) & 0x0fff) << 0usize);
+        }
+    }
+    impl Default for I2C_CUR_DMA_LEN {
+        #[inline(always)]
+        fn default() -> I2C_CUR_DMA_LEN {
+            I2C_CUR_DMA_LEN(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_CUR_DMA_LEN {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_CUR_DMA_LEN")
+                .field("CUR_LEN", &self.CUR_LEN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_CUR_DMA_LEN {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "I2C_CUR_DMA_LEN {{ CUR_LEN: {=u16:?} }}", self.CUR_LEN())
+        }
+    }
+    ///DMA buffer base address in SDRAM (I2CM30/34/I2CS38/3C). Hardware increments during transfer.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_DMA_BASE_ADDR(pub u32);
+    impl I2C_DMA_BASE_ADDR {
+        ///SDRAM DMA buffer base address (bits \[30:0\]).
+        #[must_use]
+        #[inline(always)]
+        pub const fn SDRAM_BASE_ADDR(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0x7fff_ffff;
+            val as u32
+        }
+        ///SDRAM DMA buffer base address (bits \[30:0\]).
+        #[inline(always)]
+        pub const fn set_SDRAM_BASE_ADDR(&mut self, val: u32) {
+            self.0 = (self.0 & !(0x7fff_ffff << 0usize)) | (((val as u32) & 0x7fff_ffff) << 0usize);
+        }
+    }
+    impl Default for I2C_DMA_BASE_ADDR {
+        #[inline(always)]
+        fn default() -> I2C_DMA_BASE_ADDR {
+            I2C_DMA_BASE_ADDR(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_DMA_BASE_ADDR {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_DMA_BASE_ADDR")
+                .field("SDRAM_BASE_ADDR", &self.SDRAM_BASE_ADDR())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_DMA_BASE_ADDR {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_DMA_BASE_ADDR {{ SDRAM_BASE_ADDR: {=u32:?} }}",
+                self.SDRAM_BASE_ADDR()
+            )
+        }
+    }
+    ///DMA transfer length register (I2CM1C / I2CS2C). Bits\[31\] and \[15\] (W1T) allow updating RX and TX lengths independently. Length value N = N+1 bytes transferred (0=1 byte, 4095=4096 bytes).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_DMA_LEN(pub u32);
+    impl I2C_DMA_LEN {
+        ///DMA TX buffer length (0=1 byte, 4095=4096 bytes).
+        #[must_use]
+        #[inline(always)]
+        pub const fn DMA_TX_LEN(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0x0fff;
+            val as u16
+        }
+        ///DMA TX buffer length (0=1 byte, 4095=4096 bytes).
+        #[inline(always)]
+        pub const fn set_DMA_TX_LEN(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x0fff << 0usize)) | (((val as u32) & 0x0fff) << 0usize);
+        }
+        ///Write-1 enable for TX length field (write-1-to-apply independently).
+        #[must_use]
+        #[inline(always)]
+        pub const fn DMA_TX_LEN_WE(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///Write-1 enable for TX length field (write-1-to-apply independently).
+        #[inline(always)]
+        pub const fn set_DMA_TX_LEN_WE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+        ///DMA RX buffer length (0=1 byte, 4095=4096 bytes).
+        #[must_use]
+        #[inline(always)]
+        pub const fn DMA_RX_LEN(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0x0fff;
+            val as u16
+        }
+        ///DMA RX buffer length (0=1 byte, 4095=4096 bytes).
+        #[inline(always)]
+        pub const fn set_DMA_RX_LEN(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x0fff << 16usize)) | (((val as u32) & 0x0fff) << 16usize);
+        }
+        ///Write-1 enable for RX length field.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DMA_RX_LEN_WE(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///Write-1 enable for RX length field.
+        #[inline(always)]
+        pub const fn set_DMA_RX_LEN_WE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for I2C_DMA_LEN {
+        #[inline(always)]
+        fn default() -> I2C_DMA_LEN {
+            I2C_DMA_LEN(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_DMA_LEN {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_DMA_LEN")
+                .field("DMA_TX_LEN", &self.DMA_TX_LEN())
+                .field("DMA_TX_LEN_WE", &self.DMA_TX_LEN_WE())
+                .field("DMA_RX_LEN", &self.DMA_RX_LEN())
+                .field("DMA_RX_LEN_WE", &self.DMA_RX_LEN_WE())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_DMA_LEN {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_DMA_LEN {{ DMA_TX_LEN: {=u16:?}, DMA_TX_LEN_WE: {=bool:?}, DMA_RX_LEN: {=u16:?}, DMA_RX_LEN_WE: {=bool:?} }}",
+                self.DMA_TX_LEN(), self.DMA_TX_LEN_WE(), self.DMA_RX_LEN(), self
+                .DMA_RX_LEN_WE()
+            )
+        }
+    }
+    ///DMA actual transfer length status (I2CM48 / I2CS4C). Write clears to 0.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_DMA_STATUS(pub u32);
+    impl I2C_DMA_STATUS {
+        ///DMA TX actual bytes transferred.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DMA_TX_ACTUAL_LEN(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0x1fff;
+            val as u16
+        }
+        ///DMA TX actual bytes transferred.
+        #[inline(always)]
+        pub const fn set_DMA_TX_ACTUAL_LEN(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x1fff << 0usize)) | (((val as u32) & 0x1fff) << 0usize);
+        }
+        ///DMA RX actual bytes transferred.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DMA_RX_ACTUAL_LEN(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0x1fff;
+            val as u16
+        }
+        ///DMA RX actual bytes transferred.
+        #[inline(always)]
+        pub const fn set_DMA_RX_ACTUAL_LEN(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x1fff << 16usize)) | (((val as u32) & 0x1fff) << 16usize);
+        }
+    }
+    impl Default for I2C_DMA_STATUS {
+        #[inline(always)]
+        fn default() -> I2C_DMA_STATUS {
+            I2C_DMA_STATUS(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_DMA_STATUS {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_DMA_STATUS")
+                .field("DMA_TX_ACTUAL_LEN", &self.DMA_TX_ACTUAL_LEN())
+                .field("DMA_RX_ACTUAL_LEN", &self.DMA_RX_ACTUAL_LEN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_DMA_STATUS {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_DMA_STATUS {{ DMA_TX_ACTUAL_LEN: {=u16:?}, DMA_RX_ACTUAL_LEN: {=u16:?} }}",
+                self.DMA_TX_ACTUAL_LEN(),
+                self.DMA_RX_ACTUAL_LEN()
+            )
+        }
+    }
+    ///I2C/SMBus function control register (I2CC00).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_FUNC_CTRL(pub u32);
+    impl I2C_FUNC_CTRL {
+        ///Enable master function. Clearing both master and slave resets state machines.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_MASTER_FN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Enable master function. Clearing both master and slave resets state machines.
+        #[inline(always)]
+        pub const fn set_ENBL_MASTER_FN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Enable slave function. Can coexist with master.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_FN(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave function. Can coexist with master.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_FN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Respond to I2C/SMBus General Call Address (0x00).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_RESPOND_GEN_CALL(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Respond to I2C/SMBus General Call Address (0x00).
+        #[inline(always)]
+        pub const fn set_ENBL_RESPOND_GEN_CALL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Respond to SMBus ARP Host Address (0b0001_000).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_RESPOND_ARP_HOST(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Respond to SMBus ARP Host Address (0b0001_000).
+        #[inline(always)]
+        pub const fn set_ENBL_RESPOND_ARP_HOST(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Respond to SMBus Alert Response Address (0b0001_100).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_RESPOND_ALERT_ADDR(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Respond to SMBus Alert Response Address (0b0001_100).
+        #[inline(always)]
+        pub const fn set_ENBL_RESPOND_ALERT_ADDR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Respond to I2C Default Address (0b1100_001).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_RESPOND_DEFAULT_ADDR(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///Respond to I2C Default Address (0b1100_001).
+        #[inline(always)]
+        pub const fn set_ENBL_RESPOND_DEFAULT_ADDR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///Enable High Speed master mode (3.4 Mbps). Requires buffer or DMA; clock from I2CC04\[19:12\] with baseclk 0.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_HIGH_SPEED_MODE(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///Enable High Speed master mode (3.4 Mbps). Requires buffer or DMA; clock from I2CC04\[19:12\] with baseclk 0.
+        #[inline(always)]
+        pub const fn set_ENBL_HIGH_SPEED_MODE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///Drive SCL actively high for 1 base clock, then tri-state (master only). Supports higher transfer rates; disallows slave clock stretching.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SCL_DRIVE_HIGH_1T(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///Drive SCL actively high for 1 base clock, then tri-state (master only). Supports higher transfer rates; disallows slave clock stretching.
+        #[inline(always)]
+        pub const fn set_ENBL_SCL_DRIVE_HIGH_1T(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///Drive SDA actively high for 1 PCLK cycle, then tri-state.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SDA_DRIVE_HIGH_1T(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///Drive SDA actively high for 1 PCLK cycle, then tri-state.
+        #[inline(always)]
+        pub const fn set_ENBL_SDA_DRIVE_HIGH_1T(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///Slave address range mode. 0 = exact match on addr1 and addr2. 1 = match if addr1 ≤ incoming ≤ addr2.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_ADDR_RANGE(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///Slave address range mode. 0 = exact match on addr1 and addr2. 1 = match if addr1 ≤ incoming ≤ addr2.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_ADDR_RANGE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///SCL direct drive mode (master only, no clock stretching allowed). 0 = open-drain. 1 = actively drive SCL.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SCL_DIRECT_DRIVE(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///SCL direct drive mode (master only, no clock stretching allowed). 0 = open-drain. 1 = actively drive SCL.
+        #[inline(always)]
+        pub const fn set_ENBL_SCL_DIRECT_DRIVE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///Disable multi-master capability (no arbitration loss detection). 0 = multi-master. 1 = single-master.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DIS_MULTI_MASTER(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///Disable multi-master capability (no arbitration loss detection). 0 = multi-master. 1 = single-master.
+        #[inline(always)]
+        pub const fn set_DIS_MULTI_MASTER(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+        ///Master auto SDA lock recovery (single-master only). Generates clock pulses to recover SDA if locked before START.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_MASTER_AUTO_SDA_RECOVERY(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///Master auto SDA lock recovery (single-master only). Generates clock pulses to recover SDA if locked before START.
+        #[inline(always)]
+        pub const fn set_ENBL_MASTER_AUTO_SDA_RECOVERY(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///Release bus on SCL-low, SDA-low, or slave inactive timeout. Requires timeout set in I2CC04\[28:24\]. Invalid in packet mode.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_BUS_AUTORELEASE_TIMEOUT(&self) -> bool {
+            let val = (self.0 >> 17usize) & 0x01;
+            val != 0
+        }
+        ///Release bus on SCL-low, SDA-low, or slave inactive timeout. Requires timeout set in I2CC04\[28:24\]. Invalid in packet mode.
+        #[inline(always)]
+        pub const fn set_ENBL_BUS_AUTORELEASE_TIMEOUT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 17usize)) | (((val as u32) & 0x01) << 17usize);
+        }
+        ///Master packet operation retry count. 0=none, 1=1 retry, 2=2 retries, 3=3 retries.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MASTER_PKT_RETRY_COUNT(&self) -> u8 {
+            let val = (self.0 >> 18usize) & 0x03;
+            val as u8
+        }
+        ///Master packet operation retry count. 0=none, 1=1 retry, 2=2 retries, 3=3 retries.
+        #[inline(always)]
+        pub const fn set_MASTER_PKT_RETRY_COUNT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 18usize)) | (((val as u32) & 0x03) << 18usize);
+        }
+    }
+    impl Default for I2C_FUNC_CTRL {
+        #[inline(always)]
+        fn default() -> I2C_FUNC_CTRL {
+            I2C_FUNC_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_FUNC_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_FUNC_CTRL")
+                .field("ENBL_MASTER_FN", &self.ENBL_MASTER_FN())
+                .field("ENBL_SLAVE_FN", &self.ENBL_SLAVE_FN())
+                .field("ENBL_RESPOND_GEN_CALL", &self.ENBL_RESPOND_GEN_CALL())
+                .field("ENBL_RESPOND_ARP_HOST", &self.ENBL_RESPOND_ARP_HOST())
+                .field("ENBL_RESPOND_ALERT_ADDR", &self.ENBL_RESPOND_ALERT_ADDR())
+                .field(
+                    "ENBL_RESPOND_DEFAULT_ADDR",
+                    &self.ENBL_RESPOND_DEFAULT_ADDR(),
+                )
+                .field("ENBL_HIGH_SPEED_MODE", &self.ENBL_HIGH_SPEED_MODE())
+                .field("ENBL_SCL_DRIVE_HIGH_1T", &self.ENBL_SCL_DRIVE_HIGH_1T())
+                .field("ENBL_SDA_DRIVE_HIGH_1T", &self.ENBL_SDA_DRIVE_HIGH_1T())
+                .field("ENBL_SLAVE_ADDR_RANGE", &self.ENBL_SLAVE_ADDR_RANGE())
+                .field("ENBL_SCL_DIRECT_DRIVE", &self.ENBL_SCL_DIRECT_DRIVE())
+                .field("DIS_MULTI_MASTER", &self.DIS_MULTI_MASTER())
+                .field(
+                    "ENBL_MASTER_AUTO_SDA_RECOVERY",
+                    &self.ENBL_MASTER_AUTO_SDA_RECOVERY(),
+                )
+                .field(
+                    "ENBL_BUS_AUTORELEASE_TIMEOUT",
+                    &self.ENBL_BUS_AUTORELEASE_TIMEOUT(),
+                )
+                .field("MASTER_PKT_RETRY_COUNT", &self.MASTER_PKT_RETRY_COUNT())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_FUNC_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_FUNC_CTRL {{ ENBL_MASTER_FN: {=bool:?}, ENBL_SLAVE_FN: {=bool:?}, ENBL_RESPOND_GEN_CALL: {=bool:?}, ENBL_RESPOND_ARP_HOST: {=bool:?}, ENBL_RESPOND_ALERT_ADDR: {=bool:?}, ENBL_RESPOND_DEFAULT_ADDR: {=bool:?}, ENBL_HIGH_SPEED_MODE: {=bool:?}, ENBL_SCL_DRIVE_HIGH_1T: {=bool:?}, ENBL_SDA_DRIVE_HIGH_1T: {=bool:?}, ENBL_SLAVE_ADDR_RANGE: {=bool:?}, ENBL_SCL_DIRECT_DRIVE: {=bool:?}, DIS_MULTI_MASTER: {=bool:?}, ENBL_MASTER_AUTO_SDA_RECOVERY: {=bool:?}, ENBL_BUS_AUTORELEASE_TIMEOUT: {=bool:?}, MASTER_PKT_RETRY_COUNT: {=u8:?} }}",
+                self.ENBL_MASTER_FN(), self.ENBL_SLAVE_FN(), self
+                .ENBL_RESPOND_GEN_CALL(), self.ENBL_RESPOND_ARP_HOST(), self
+                .ENBL_RESPOND_ALERT_ADDR(), self.ENBL_RESPOND_DEFAULT_ADDR(), self
+                .ENBL_HIGH_SPEED_MODE(), self.ENBL_SCL_DRIVE_HIGH_1T(), self
+                .ENBL_SDA_DRIVE_HIGH_1T(), self.ENBL_SLAVE_ADDR_RANGE(), self
+                .ENBL_SCL_DIRECT_DRIVE(), self.DIS_MULTI_MASTER(), self
+                .ENBL_MASTER_AUTO_SDA_RECOVERY(), self.ENBL_BUS_AUTORELEASE_TIMEOUT(),
+                self.MASTER_PKT_RETRY_COUNT()
+            )
+        }
+    }
+    ///Master command register (I2CM18).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_MASTER_CMD(pub u32);
+    impl I2C_MASTER_CMD {
+        ///Issue Start/Repeated-Start (highest priority). Hardware clears when Start is issued. Only effective when master enabled and bus idle.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MASTER_START_CMD(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Issue Start/Repeated-Start (highest priority). Hardware clears when Start is issued. Only effective when master enabled and bus idle.
+        #[inline(always)]
+        pub const fn set_MASTER_START_CMD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Transmit data from buffer (2nd priority). Hardware clears when buffer empty.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MASTER_TX_CMD(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Transmit data from buffer (2nd priority). Hardware clears when buffer empty.
+        #[inline(always)]
+        pub const fn set_MASTER_TX_CMD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Receive data into buffer (3rd priority). Hardware clears when done or terminated.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MASTER_RX_CMD(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Receive data into buffer (3rd priority). Hardware clears when done or terminated.
+        #[inline(always)]
+        pub const fn set_MASTER_RX_CMD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Last receive flag. 0=ACK after last byte. 1=NACK after last byte.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MASTER_RX_LAST(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Last receive flag. 0=ACK after last byte. 1=NACK after last byte.
+        #[inline(always)]
+        pub const fn set_MASTER_RX_LAST(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Issue Stop (4th priority). Hardware clears when Stop is issued.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MASTER_STOP_CMD(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///Issue Stop (4th priority). Hardware clears when Stop is issued.
+        #[inline(always)]
+        pub const fn set_MASTER_STOP_CMD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///Enable master transmit pool buffer.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_MASTER_TX_POOL(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///Enable master transmit pool buffer.
+        #[inline(always)]
+        pub const fn set_ENBL_MASTER_TX_POOL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///Enable master receive pool buffer.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_MASTER_RX_POOL(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///Enable master receive pool buffer.
+        #[inline(always)]
+        pub const fn set_ENBL_MASTER_RX_POOL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///Enable master transmit DMA. Configure I2CM30/I2CM1C first.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_MASTER_TX_DMA(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///Enable master transmit DMA. Configure I2CM30/I2CM1C first.
+        #[inline(always)]
+        pub const fn set_ENBL_MASTER_TX_DMA(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///Enable master receive DMA. TX and RX DMA cannot be active simultaneously.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_MASTER_RX_DMA(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///Enable master receive DMA. TX and RX DMA cannot be active simultaneously.
+        #[inline(always)]
+        pub const fn set_ENBL_MASTER_RX_DMA(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///Issue bus recover command. SCL must be high; state machine must be IDLE. Generates 1–8 SCL pulses to release SDA.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_BUS_RECOVER_CMD(&self) -> bool {
+            let val = (self.0 >> 11usize) & 0x01;
+            val != 0
+        }
+        ///Issue bus recover command. SCL must be high; state machine must be IDLE. Generates 1–8 SCL pulses to release SDA.
+        #[inline(always)]
+        pub const fn set_ENBL_BUS_RECOVER_CMD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 11usize)) | (((val as u32) & 0x01) << 11usize);
+        }
+        ///SCL GPIO output value (valid only when both master and slave disabled).
+        #[must_use]
+        #[inline(always)]
+        pub const fn SCL_O_GPIO(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///SCL GPIO output value (valid only when both master and slave disabled).
+        #[inline(always)]
+        pub const fn set_SCL_O_GPIO(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///SCL GPIO output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SCL_OE_GPIO(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///SCL GPIO output enable.
+        #[inline(always)]
+        pub const fn set_SCL_OE_GPIO(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///SDA GPIO output value.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SDA_O_GPIO(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///SDA GPIO output value.
+        #[inline(always)]
+        pub const fn set_SDA_O_GPIO(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///SDA GPIO output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SDA_OE_GPIO(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///SDA GPIO output enable.
+        #[inline(always)]
+        pub const fn set_SDA_OE_GPIO(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+        ///Enable master packet operation mode. Hardware auto-issues S→Aw→TxD→Sr→Ar→RxD→P with retry and SDA recovery.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_MASTER_PKT_OP(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///Enable master packet operation mode. Hardware auto-issues S→Aw→TxD→Sr→Ar→RxD→P with retry and SDA recovery.
+        #[inline(always)]
+        pub const fn set_ENBL_MASTER_PKT_OP(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///High Speed mode master code bits \[2:0\] (for 0b00001xxx). Packet mode only.
+        #[must_use]
+        #[inline(always)]
+        pub const fn HS_MASTER_CODE_LSB(&self) -> u8 {
+            let val = (self.0 >> 17usize) & 0x07;
+            val as u8
+        }
+        ///High Speed mode master code bits \[2:0\] (for 0b00001xxx). Packet mode only.
+        #[inline(always)]
+        pub const fn set_HS_MASTER_CODE_LSB(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 17usize)) | (((val as u32) & 0x07) << 17usize);
+        }
+        ///Target device address for packet operation mode (7-bit).
+        #[must_use]
+        #[inline(always)]
+        pub const fn TARGET_ADDR(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x7f;
+            val as u8
+        }
+        ///Target device address for packet operation mode (7-bit).
+        #[inline(always)]
+        pub const fn set_TARGET_ADDR(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x7f << 24usize)) | (((val as u32) & 0x7f) << 24usize);
+        }
+        ///Write-1 control. When set, register write only sets bits (no clear).
+        #[must_use]
+        #[inline(always)]
+        pub const fn W1T_CTRL(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///Write-1 control. When set, register write only sets bits (no clear).
+        #[inline(always)]
+        pub const fn set_W1T_CTRL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for I2C_MASTER_CMD {
+        #[inline(always)]
+        fn default() -> I2C_MASTER_CMD {
+            I2C_MASTER_CMD(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_MASTER_CMD {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_MASTER_CMD")
+                .field("MASTER_START_CMD", &self.MASTER_START_CMD())
+                .field("MASTER_TX_CMD", &self.MASTER_TX_CMD())
+                .field("MASTER_RX_CMD", &self.MASTER_RX_CMD())
+                .field("MASTER_RX_LAST", &self.MASTER_RX_LAST())
+                .field("MASTER_STOP_CMD", &self.MASTER_STOP_CMD())
+                .field("ENBL_MASTER_TX_POOL", &self.ENBL_MASTER_TX_POOL())
+                .field("ENBL_MASTER_RX_POOL", &self.ENBL_MASTER_RX_POOL())
+                .field("ENBL_MASTER_TX_DMA", &self.ENBL_MASTER_TX_DMA())
+                .field("ENBL_MASTER_RX_DMA", &self.ENBL_MASTER_RX_DMA())
+                .field("ENBL_BUS_RECOVER_CMD", &self.ENBL_BUS_RECOVER_CMD())
+                .field("SCL_O_GPIO", &self.SCL_O_GPIO())
+                .field("SCL_OE_GPIO", &self.SCL_OE_GPIO())
+                .field("SDA_O_GPIO", &self.SDA_O_GPIO())
+                .field("SDA_OE_GPIO", &self.SDA_OE_GPIO())
+                .field("ENBL_MASTER_PKT_OP", &self.ENBL_MASTER_PKT_OP())
+                .field("HS_MASTER_CODE_LSB", &self.HS_MASTER_CODE_LSB())
+                .field("TARGET_ADDR", &self.TARGET_ADDR())
+                .field("W1T_CTRL", &self.W1T_CTRL())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_MASTER_CMD {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_MASTER_CMD {{ MASTER_START_CMD: {=bool:?}, MASTER_TX_CMD: {=bool:?}, MASTER_RX_CMD: {=bool:?}, MASTER_RX_LAST: {=bool:?}, MASTER_STOP_CMD: {=bool:?}, ENBL_MASTER_TX_POOL: {=bool:?}, ENBL_MASTER_RX_POOL: {=bool:?}, ENBL_MASTER_TX_DMA: {=bool:?}, ENBL_MASTER_RX_DMA: {=bool:?}, ENBL_BUS_RECOVER_CMD: {=bool:?}, SCL_O_GPIO: {=bool:?}, SCL_OE_GPIO: {=bool:?}, SDA_O_GPIO: {=bool:?}, SDA_OE_GPIO: {=bool:?}, ENBL_MASTER_PKT_OP: {=bool:?}, HS_MASTER_CODE_LSB: {=u8:?}, TARGET_ADDR: {=u8:?}, W1T_CTRL: {=bool:?} }}",
+                self.MASTER_START_CMD(), self.MASTER_TX_CMD(), self.MASTER_RX_CMD(), self
+                .MASTER_RX_LAST(), self.MASTER_STOP_CMD(), self.ENBL_MASTER_TX_POOL(),
+                self.ENBL_MASTER_RX_POOL(), self.ENBL_MASTER_TX_DMA(), self
+                .ENBL_MASTER_RX_DMA(), self.ENBL_BUS_RECOVER_CMD(), self.SCL_O_GPIO(),
+                self.SCL_OE_GPIO(), self.SDA_O_GPIO(), self.SDA_OE_GPIO(), self
+                .ENBL_MASTER_PKT_OP(), self.HS_MASTER_CODE_LSB(), self.TARGET_ADDR(),
+                self.W1T_CTRL()
+            )
+        }
+    }
+    ///Master interrupt enable register (I2CM10).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_MASTER_IRQ_CTRL(pub u32);
+    impl I2C_MASTER_IRQ_CTRL {
+        ///Enable transmit ended with ACK interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_TX_ACK_INT(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Enable transmit ended with ACK interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_TX_ACK_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Enable transmit ended with NACK interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_TX_NACK_INT(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Enable transmit ended with NACK interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_TX_NACK_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Enable receive done interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_RX_DONE_INT(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Enable receive done interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_RX_DONE_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Enable arbitration loss interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_ARB_LOSS_INT(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Enable arbitration loss interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_ARB_LOSS_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Enable normal Stop condition interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_NORMAL_STOP_INT(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Enable normal Stop condition interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_NORMAL_STOP_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Enable abnormal Start/Stop detection interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_ABN_START_STOP_INT(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///Enable abnormal Start/Stop detection interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_ABN_START_STOP_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///Enable SCL clock-low timeout interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SCL_TIMEOUT_INT(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///Enable SCL clock-low timeout interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_SCL_TIMEOUT_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///Enable SMBus device alert interrupt (independent of packet done).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SMBUS_ALERT_INT(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///Enable SMBus device alert interrupt (independent of packet done).
+        #[inline(always)]
+        pub const fn set_ENBL_SMBUS_ALERT_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///Enable bus recover done interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_BUS_RECOVER_DONE_INT(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///Enable bus recover done interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_BUS_RECOVER_DONE_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///Enable SDA data-low timeout interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SDA_TIMEOUT_INT(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///Enable SDA data-low timeout interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_SDA_TIMEOUT_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///Enable packet command done interrupt. In packet mode, only this and/or ENBL_SMBUS_ALERT_INT are needed.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_PKT_CMD_DONE_INT(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///Enable packet command done interrupt. In packet mode, only this and/or ENBL_SMBUS_ALERT_INT are needed.
+        #[inline(always)]
+        pub const fn set_ENBL_PKT_CMD_DONE_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+    }
+    impl Default for I2C_MASTER_IRQ_CTRL {
+        #[inline(always)]
+        fn default() -> I2C_MASTER_IRQ_CTRL {
+            I2C_MASTER_IRQ_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_MASTER_IRQ_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_MASTER_IRQ_CTRL")
+                .field("ENBL_TX_ACK_INT", &self.ENBL_TX_ACK_INT())
+                .field("ENBL_TX_NACK_INT", &self.ENBL_TX_NACK_INT())
+                .field("ENBL_RX_DONE_INT", &self.ENBL_RX_DONE_INT())
+                .field("ENBL_ARB_LOSS_INT", &self.ENBL_ARB_LOSS_INT())
+                .field("ENBL_NORMAL_STOP_INT", &self.ENBL_NORMAL_STOP_INT())
+                .field("ENBL_ABN_START_STOP_INT", &self.ENBL_ABN_START_STOP_INT())
+                .field("ENBL_SCL_TIMEOUT_INT", &self.ENBL_SCL_TIMEOUT_INT())
+                .field("ENBL_SMBUS_ALERT_INT", &self.ENBL_SMBUS_ALERT_INT())
+                .field(
+                    "ENBL_BUS_RECOVER_DONE_INT",
+                    &self.ENBL_BUS_RECOVER_DONE_INT(),
+                )
+                .field("ENBL_SDA_TIMEOUT_INT", &self.ENBL_SDA_TIMEOUT_INT())
+                .field("ENBL_PKT_CMD_DONE_INT", &self.ENBL_PKT_CMD_DONE_INT())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_MASTER_IRQ_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_MASTER_IRQ_CTRL {{ ENBL_TX_ACK_INT: {=bool:?}, ENBL_TX_NACK_INT: {=bool:?}, ENBL_RX_DONE_INT: {=bool:?}, ENBL_ARB_LOSS_INT: {=bool:?}, ENBL_NORMAL_STOP_INT: {=bool:?}, ENBL_ABN_START_STOP_INT: {=bool:?}, ENBL_SCL_TIMEOUT_INT: {=bool:?}, ENBL_SMBUS_ALERT_INT: {=bool:?}, ENBL_BUS_RECOVER_DONE_INT: {=bool:?}, ENBL_SDA_TIMEOUT_INT: {=bool:?}, ENBL_PKT_CMD_DONE_INT: {=bool:?} }}",
+                self.ENBL_TX_ACK_INT(), self.ENBL_TX_NACK_INT(), self.ENBL_RX_DONE_INT(),
+                self.ENBL_ARB_LOSS_INT(), self.ENBL_NORMAL_STOP_INT(), self
+                .ENBL_ABN_START_STOP_INT(), self.ENBL_SCL_TIMEOUT_INT(), self
+                .ENBL_SMBUS_ALERT_INT(), self.ENBL_BUS_RECOVER_DONE_INT(), self
+                .ENBL_SDA_TIMEOUT_INT(), self.ENBL_PKT_CMD_DONE_INT()
+            )
+        }
+    }
+    ///Master interrupt status register (I2CM14). Write-1-to-clear.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_MASTER_IRQ_STATUS(pub u32);
+    impl I2C_MASTER_IRQ_STATUS {
+        ///Transmit ended with ACK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TX_ACK_STS(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Transmit ended with ACK.
+        #[inline(always)]
+        pub const fn set_TX_ACK_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Transmit ended with NACK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TX_NACK_STS(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Transmit ended with NACK.
+        #[inline(always)]
+        pub const fn set_TX_NACK_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Receive done. Must be cleared to enable next receive.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RX_DONE_STS(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Receive done. Must be cleared to enable next receive.
+        #[inline(always)]
+        pub const fn set_RX_DONE_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Master arbitration loss.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ARB_LOSS_STS(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Master arbitration loss.
+        #[inline(always)]
+        pub const fn set_ARB_LOSS_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Normal Stop condition detected.
+        #[must_use]
+        #[inline(always)]
+        pub const fn NORMAL_STOP_STS(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Normal Stop condition detected.
+        #[inline(always)]
+        pub const fn set_NORMAL_STOP_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Abnormal Start/Stop condition detected.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ABN_START_STOP_STS(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///Abnormal Start/Stop condition detected.
+        #[inline(always)]
+        pub const fn set_ABN_START_STOP_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///SCL clock-low timeout.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SCL_TIMEOUT_STS(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///SCL clock-low timeout.
+        #[inline(always)]
+        pub const fn set_SCL_TIMEOUT_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///SMBus device alert (independent of packet command).
+        #[must_use]
+        #[inline(always)]
+        pub const fn SMBUS_ALERT_STS(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///SMBus device alert (independent of packet command).
+        #[inline(always)]
+        pub const fn set_SMBUS_ALERT_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///Bus recover done.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BUS_RECOVER_DONE_STS(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///Bus recover done.
+        #[inline(always)]
+        pub const fn set_BUS_RECOVER_DONE_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///SDA data-low timeout.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SDA_TIMEOUT_STS(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///SDA data-low timeout.
+        #[inline(always)]
+        pub const fn set_SDA_TIMEOUT_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///Packet command done. Clearing also clears bits\[6:0,13:12,18:17\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn PKT_CMD_DONE_STS(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///Packet command done. Clearing also clears bits\[6:0,13:12,18:17\].
+        #[inline(always)]
+        pub const fn set_PKT_CMD_DONE_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///Packet command fail (detail in bits\[1,3,5,6,14,15,18\]).
+        #[must_use]
+        #[inline(always)]
+        pub const fn PKT_CMD_FAIL_STS(&self) -> bool {
+            let val = (self.0 >> 17usize) & 0x01;
+            val != 0
+        }
+        ///Packet command fail (detail in bits\[1,3,5,6,14,15,18\]).
+        #[inline(always)]
+        pub const fn set_PKT_CMD_FAIL_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 17usize)) | (((val as u32) & 0x01) << 17usize);
+        }
+        ///Packet command timeout.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PKT_CMD_TIMEOUT_STS(&self) -> bool {
+            let val = (self.0 >> 18usize) & 0x01;
+            val != 0
+        }
+        ///Packet command timeout.
+        #[inline(always)]
+        pub const fn set_PKT_CMD_TIMEOUT_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 18usize)) | (((val as u32) & 0x01) << 18usize);
+        }
+        ///Packet operation state machine (read-only). 0=IDLE, 1=STARTH, 2=STARTW, 3=STARTR, 4=TXMCODE, 5=TXAW, 6=TXAR, 8=INIT, 9=TXD, 10=RXD, 11=STOP, 12=RETRY, 13=FAIL, 14=WAIT, 15=PASS.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PKT_OP_STATE(&self) -> u8 {
+            let val = (self.0 >> 28usize) & 0x0f;
+            val as u8
+        }
+        ///Packet operation state machine (read-only). 0=IDLE, 1=STARTH, 2=STARTW, 3=STARTR, 4=TXMCODE, 5=TXAW, 6=TXAR, 8=INIT, 9=TXD, 10=RXD, 11=STOP, 12=RETRY, 13=FAIL, 14=WAIT, 15=PASS.
+        #[inline(always)]
+        pub const fn set_PKT_OP_STATE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 28usize)) | (((val as u32) & 0x0f) << 28usize);
+        }
+    }
+    impl Default for I2C_MASTER_IRQ_STATUS {
+        #[inline(always)]
+        fn default() -> I2C_MASTER_IRQ_STATUS {
+            I2C_MASTER_IRQ_STATUS(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_MASTER_IRQ_STATUS {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_MASTER_IRQ_STATUS")
+                .field("TX_ACK_STS", &self.TX_ACK_STS())
+                .field("TX_NACK_STS", &self.TX_NACK_STS())
+                .field("RX_DONE_STS", &self.RX_DONE_STS())
+                .field("ARB_LOSS_STS", &self.ARB_LOSS_STS())
+                .field("NORMAL_STOP_STS", &self.NORMAL_STOP_STS())
+                .field("ABN_START_STOP_STS", &self.ABN_START_STOP_STS())
+                .field("SCL_TIMEOUT_STS", &self.SCL_TIMEOUT_STS())
+                .field("SMBUS_ALERT_STS", &self.SMBUS_ALERT_STS())
+                .field("BUS_RECOVER_DONE_STS", &self.BUS_RECOVER_DONE_STS())
+                .field("SDA_TIMEOUT_STS", &self.SDA_TIMEOUT_STS())
+                .field("PKT_CMD_DONE_STS", &self.PKT_CMD_DONE_STS())
+                .field("PKT_CMD_FAIL_STS", &self.PKT_CMD_FAIL_STS())
+                .field("PKT_CMD_TIMEOUT_STS", &self.PKT_CMD_TIMEOUT_STS())
+                .field("PKT_OP_STATE", &self.PKT_OP_STATE())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_MASTER_IRQ_STATUS {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_MASTER_IRQ_STATUS {{ TX_ACK_STS: {=bool:?}, TX_NACK_STS: {=bool:?}, RX_DONE_STS: {=bool:?}, ARB_LOSS_STS: {=bool:?}, NORMAL_STOP_STS: {=bool:?}, ABN_START_STOP_STS: {=bool:?}, SCL_TIMEOUT_STS: {=bool:?}, SMBUS_ALERT_STS: {=bool:?}, BUS_RECOVER_DONE_STS: {=bool:?}, SDA_TIMEOUT_STS: {=bool:?}, PKT_CMD_DONE_STS: {=bool:?}, PKT_CMD_FAIL_STS: {=bool:?}, PKT_CMD_TIMEOUT_STS: {=bool:?}, PKT_OP_STATE: {=u8:?} }}",
+                self.TX_ACK_STS(), self.TX_NACK_STS(), self.RX_DONE_STS(), self
+                .ARB_LOSS_STS(), self.NORMAL_STOP_STS(), self.ABN_START_STOP_STS(), self
+                .SCL_TIMEOUT_STS(), self.SMBUS_ALERT_STS(), self.BUS_RECOVER_DONE_STS(),
+                self.SDA_TIMEOUT_STS(), self.PKT_CMD_DONE_STS(), self.PKT_CMD_FAIL_STS(),
+                self.PKT_CMD_TIMEOUT_STS(), self.PKT_OP_STATE()
+            )
+        }
+    }
+    ///I2C/SMBus pool buffer control register (I2CC0C).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_POOL_CTRL(pub u32);
+    impl I2C_POOL_CTRL {
+        ///Pool buffer organization. 0 = all 32 bytes for TX or RX. 1 = lower 16 bytes TX, upper 16 bytes RX.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BUF_ORGANIZATION(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Pool buffer organization. 0 = all 32 bytes for TX or RX. 1 = lower 16 bytes TX, upper 16 bytes RX.
+        #[inline(always)]
+        pub const fn set_BUF_ORGANIZATION(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Transmit pool buffer byte count. Value N = N+1 bytes (0=1, 31=32).
+        #[must_use]
+        #[inline(always)]
+        pub const fn TX_DATA_BYTE_COUNT(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x1f;
+            val as u8
+        }
+        ///Transmit pool buffer byte count. Value N = N+1 bytes (0=1, 31=32).
+        #[inline(always)]
+        pub const fn set_TX_DATA_BYTE_COUNT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x1f << 8usize)) | (((val as u32) & 0x1f) << 8usize);
+        }
+        ///Receive pool buffer size. Value N = N+1 bytes (0=1, 31=32). For slave: defines max receive size. For master: receive byte count.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RX_POOL_BUF_SIZE(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0x1f;
+            val as u8
+        }
+        ///Receive pool buffer size. Value N = N+1 bytes (0=1, 31=32). For slave: defines max receive size. For master: receive byte count.
+        #[inline(always)]
+        pub const fn set_RX_POOL_BUF_SIZE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x1f << 16usize)) | (((val as u32) & 0x1f) << 16usize);
+        }
+        ///Actual received bytes in pool buffer (0–32). Write clears to 0.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ACTUAL_RX_POOL_BUF_SIZE(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x3f;
+            val as u8
+        }
+        ///Actual received bytes in pool buffer (0–32). Write clears to 0.
+        #[inline(always)]
+        pub const fn set_ACTUAL_RX_POOL_BUF_SIZE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x3f << 24usize)) | (((val as u32) & 0x3f) << 24usize);
+        }
+    }
+    impl Default for I2C_POOL_CTRL {
+        #[inline(always)]
+        fn default() -> I2C_POOL_CTRL {
+            I2C_POOL_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_POOL_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_POOL_CTRL")
+                .field("BUF_ORGANIZATION", &self.BUF_ORGANIZATION())
+                .field("TX_DATA_BYTE_COUNT", &self.TX_DATA_BYTE_COUNT())
+                .field("RX_POOL_BUF_SIZE", &self.RX_POOL_BUF_SIZE())
+                .field("ACTUAL_RX_POOL_BUF_SIZE", &self.ACTUAL_RX_POOL_BUF_SIZE())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_POOL_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_POOL_CTRL {{ BUF_ORGANIZATION: {=bool:?}, TX_DATA_BYTE_COUNT: {=u8:?}, RX_POOL_BUF_SIZE: {=u8:?}, ACTUAL_RX_POOL_BUF_SIZE: {=u8:?} }}",
+                self.BUF_ORGANIZATION(), self.TX_DATA_BYTE_COUNT(), self
+                .RX_POOL_BUF_SIZE(), self.ACTUAL_RX_POOL_BUF_SIZE()
+            )
+        }
+    }
+    ///Slave device address register (I2CS40). Up to three 7-bit slave addresses.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_SLAVE_ADDR(pub u32);
+    impl I2C_SLAVE_ADDR {
+        ///Slave device address 1 (7-bit).
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_ADDR1(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x7f;
+            val as u8
+        }
+        ///Slave device address 1 (7-bit).
+        #[inline(always)]
+        pub const fn set_SLAVE_ADDR1(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x7f << 0usize)) | (((val as u32) & 0x7f) << 0usize);
+        }
+        ///Enable slave address 1.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_ADDR1(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave address 1.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_ADDR1(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///Slave device address 2 (7-bit). Upper bound in address range mode.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_ADDR2(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x7f;
+            val as u8
+        }
+        ///Slave device address 2 (7-bit). Upper bound in address range mode.
+        #[inline(always)]
+        pub const fn set_SLAVE_ADDR2(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x7f << 8usize)) | (((val as u32) & 0x7f) << 8usize);
+        }
+        ///Enable slave address 2.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_ADDR2(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave address 2.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_ADDR2(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+        ///Slave device address 3 (7-bit).
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_ADDR3(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0x7f;
+            val as u8
+        }
+        ///Slave device address 3 (7-bit).
+        #[inline(always)]
+        pub const fn set_SLAVE_ADDR3(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x7f << 16usize)) | (((val as u32) & 0x7f) << 16usize);
+        }
+        ///Enable slave address 3.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_ADDR3(&self) -> bool {
+            let val = (self.0 >> 23usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave address 3.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_ADDR3(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 23usize)) | (((val as u32) & 0x01) << 23usize);
+        }
+    }
+    impl Default for I2C_SLAVE_ADDR {
+        #[inline(always)]
+        fn default() -> I2C_SLAVE_ADDR {
+            I2C_SLAVE_ADDR(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_SLAVE_ADDR {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_SLAVE_ADDR")
+                .field("SLAVE_ADDR1", &self.SLAVE_ADDR1())
+                .field("ENBL_SLAVE_ADDR1", &self.ENBL_SLAVE_ADDR1())
+                .field("SLAVE_ADDR2", &self.SLAVE_ADDR2())
+                .field("ENBL_SLAVE_ADDR2", &self.ENBL_SLAVE_ADDR2())
+                .field("SLAVE_ADDR3", &self.SLAVE_ADDR3())
+                .field("ENBL_SLAVE_ADDR3", &self.ENBL_SLAVE_ADDR3())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_SLAVE_ADDR {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_SLAVE_ADDR {{ SLAVE_ADDR1: {=u8:?}, ENBL_SLAVE_ADDR1: {=bool:?}, SLAVE_ADDR2: {=u8:?}, ENBL_SLAVE_ADDR2: {=bool:?}, SLAVE_ADDR3: {=u8:?}, ENBL_SLAVE_ADDR3: {=bool:?} }}",
+                self.SLAVE_ADDR1(), self.ENBL_SLAVE_ADDR1(), self.SLAVE_ADDR2(), self
+                .ENBL_SLAVE_ADDR2(), self.SLAVE_ADDR3(), self.ENBL_SLAVE_ADDR3()
+            )
+        }
+    }
+    ///Slave command register (I2CS28).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_SLAVE_CMD(pub u32);
+    impl I2C_SLAVE_CMD {
+        ///Issue slave transmit command. Hardware clears when buffer empty or bus contention.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_TX_CMD(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Issue slave transmit command. Hardware clears when buffer empty or bus contention.
+        #[inline(always)]
+        pub const fn set_SLAVE_TX_CMD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Slave receive last. 0=ACK. 1=NACK after last byte.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_RX_LAST(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Slave receive last. 0=ACK. 1=NACK after last byte.
+        #[inline(always)]
+        pub const fn set_SLAVE_RX_LAST(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Enable slave transmit pool buffer.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_TX_POOL(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave transmit pool buffer.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_TX_POOL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///Enable slave receive pool buffer.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_RX_POOL(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave receive pool buffer.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_RX_POOL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///Enable slave transmit DMA.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_TX_DMA(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave transmit DMA.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_TX_DMA(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///Enable slave receive DMA.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_RX_DMA(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave receive DMA.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_RX_DMA(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///Issue SMBus slave alert. Hardware clears after address-matched packet received.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_ALERT_SIG(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///Issue SMBus slave alert. Hardware clears after address-matched packet received.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_ALERT_SIG(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+        ///Auto-NACK when active-address buffer not ready (packet mode, suggested).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_AUTO_NACK_ACTIVE_ADDR(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///Auto-NACK when active-address buffer not ready (packet mode, suggested).
+        #[inline(always)]
+        pub const fn set_ENBL_AUTO_NACK_ACTIVE_ADDR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///Auto-NACK to non-active address at address phase (packet mode).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_AUTO_NACK_NON_ACTIVE_ADDR(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///Auto-NACK to non-active address at address phase (packet mode).
+        #[inline(always)]
+        pub const fn set_ENBL_AUTO_NACK_NON_ACTIVE_ADDR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+        ///Enable slave packet operation mode. Disables byte mode.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_PKT_OP(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave packet operation mode. Disables byte mode.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_PKT_OP(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///Active address for packet operation. 0=addr1, 1=addr2, 2=addr3, 3=all.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ACTIVE_ADDR_SEL(&self) -> u8 {
+            let val = (self.0 >> 17usize) & 0x03;
+            val as u8
+        }
+        ///Active address for packet operation. 0=addr1, 1=addr2, 2=addr3, 3=all.
+        #[inline(always)]
+        pub const fn set_ACTIVE_ADDR_SEL(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 17usize)) | (((val as u32) & 0x03) << 17usize);
+        }
+        ///Write-1 control. When set, register write only sets bits (no clear).
+        #[must_use]
+        #[inline(always)]
+        pub const fn W1T_CTRL(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///Write-1 control. When set, register write only sets bits (no clear).
+        #[inline(always)]
+        pub const fn set_W1T_CTRL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for I2C_SLAVE_CMD {
+        #[inline(always)]
+        fn default() -> I2C_SLAVE_CMD {
+            I2C_SLAVE_CMD(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_SLAVE_CMD {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_SLAVE_CMD")
+                .field("SLAVE_TX_CMD", &self.SLAVE_TX_CMD())
+                .field("SLAVE_RX_LAST", &self.SLAVE_RX_LAST())
+                .field("ENBL_SLAVE_TX_POOL", &self.ENBL_SLAVE_TX_POOL())
+                .field("ENBL_SLAVE_RX_POOL", &self.ENBL_SLAVE_RX_POOL())
+                .field("ENBL_SLAVE_TX_DMA", &self.ENBL_SLAVE_TX_DMA())
+                .field("ENBL_SLAVE_RX_DMA", &self.ENBL_SLAVE_RX_DMA())
+                .field("ENBL_SLAVE_ALERT_SIG", &self.ENBL_SLAVE_ALERT_SIG())
+                .field(
+                    "ENBL_AUTO_NACK_ACTIVE_ADDR",
+                    &self.ENBL_AUTO_NACK_ACTIVE_ADDR(),
+                )
+                .field(
+                    "ENBL_AUTO_NACK_NON_ACTIVE_ADDR",
+                    &self.ENBL_AUTO_NACK_NON_ACTIVE_ADDR(),
+                )
+                .field("ENBL_SLAVE_PKT_OP", &self.ENBL_SLAVE_PKT_OP())
+                .field("ACTIVE_ADDR_SEL", &self.ACTIVE_ADDR_SEL())
+                .field("W1T_CTRL", &self.W1T_CTRL())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_SLAVE_CMD {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_SLAVE_CMD {{ SLAVE_TX_CMD: {=bool:?}, SLAVE_RX_LAST: {=bool:?}, ENBL_SLAVE_TX_POOL: {=bool:?}, ENBL_SLAVE_RX_POOL: {=bool:?}, ENBL_SLAVE_TX_DMA: {=bool:?}, ENBL_SLAVE_RX_DMA: {=bool:?}, ENBL_SLAVE_ALERT_SIG: {=bool:?}, ENBL_AUTO_NACK_ACTIVE_ADDR: {=bool:?}, ENBL_AUTO_NACK_NON_ACTIVE_ADDR: {=bool:?}, ENBL_SLAVE_PKT_OP: {=bool:?}, ACTIVE_ADDR_SEL: {=u8:?}, W1T_CTRL: {=bool:?} }}",
+                self.SLAVE_TX_CMD(), self.SLAVE_RX_LAST(), self.ENBL_SLAVE_TX_POOL(),
+                self.ENBL_SLAVE_RX_POOL(), self.ENBL_SLAVE_TX_DMA(), self
+                .ENBL_SLAVE_RX_DMA(), self.ENBL_SLAVE_ALERT_SIG(), self
+                .ENBL_AUTO_NACK_ACTIVE_ADDR(), self.ENBL_AUTO_NACK_NON_ACTIVE_ADDR(),
+                self.ENBL_SLAVE_PKT_OP(), self.ACTIVE_ADDR_SEL(), self.W1T_CTRL()
+            )
+        }
+    }
+    ///Slave interrupt enable register (I2CS20).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_SLAVE_IRQ_CTRL(pub u32);
+    impl I2C_SLAVE_IRQ_CTRL {
+        ///Enable transmit ended with ACK interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_TX_ACK_INT(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Enable transmit ended with ACK interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_TX_ACK_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Enable receive done interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_RX_DONE_INT(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Enable receive done interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_RX_DONE_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Enable normal Stop condition interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_NORMAL_STOP_INT(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Enable normal Stop condition interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_NORMAL_STOP_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Enable abnormal Start/Stop detection interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_ABN_START_STOP_INT(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///Enable abnormal Start/Stop detection interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_ABN_START_STOP_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///Enable slave inactive timeout interrupt (state machine stuck in slave-active).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_INACTIVE_TIMEOUT_INT(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave inactive timeout interrupt (state machine stuck in slave-active).
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_INACTIVE_TIMEOUT_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+        ///Enable slave packet command done interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_PKT_CMD_DONE_INT(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave packet command done interrupt.
+        #[inline(always)]
+        pub const fn set_ENBL_PKT_CMD_DONE_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///Enable slave address matched-but-NACKed interrupt. Valid in packet mode with auto-NACK enabled.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENBL_SLAVE_ADDR_NACKED_INT(&self) -> bool {
+            let val = (self.0 >> 17usize) & 0x01;
+            val != 0
+        }
+        ///Enable slave address matched-but-NACKed interrupt. Valid in packet mode with auto-NACK enabled.
+        #[inline(always)]
+        pub const fn set_ENBL_SLAVE_ADDR_NACKED_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 17usize)) | (((val as u32) & 0x01) << 17usize);
+        }
+    }
+    impl Default for I2C_SLAVE_IRQ_CTRL {
+        #[inline(always)]
+        fn default() -> I2C_SLAVE_IRQ_CTRL {
+            I2C_SLAVE_IRQ_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_SLAVE_IRQ_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_SLAVE_IRQ_CTRL")
+                .field("ENBL_TX_ACK_INT", &self.ENBL_TX_ACK_INT())
+                .field("ENBL_RX_DONE_INT", &self.ENBL_RX_DONE_INT())
+                .field("ENBL_NORMAL_STOP_INT", &self.ENBL_NORMAL_STOP_INT())
+                .field("ENBL_ABN_START_STOP_INT", &self.ENBL_ABN_START_STOP_INT())
+                .field(
+                    "ENBL_SLAVE_INACTIVE_TIMEOUT_INT",
+                    &self.ENBL_SLAVE_INACTIVE_TIMEOUT_INT(),
+                )
+                .field("ENBL_PKT_CMD_DONE_INT", &self.ENBL_PKT_CMD_DONE_INT())
+                .field(
+                    "ENBL_SLAVE_ADDR_NACKED_INT",
+                    &self.ENBL_SLAVE_ADDR_NACKED_INT(),
+                )
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_SLAVE_IRQ_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_SLAVE_IRQ_CTRL {{ ENBL_TX_ACK_INT: {=bool:?}, ENBL_RX_DONE_INT: {=bool:?}, ENBL_NORMAL_STOP_INT: {=bool:?}, ENBL_ABN_START_STOP_INT: {=bool:?}, ENBL_SLAVE_INACTIVE_TIMEOUT_INT: {=bool:?}, ENBL_PKT_CMD_DONE_INT: {=bool:?}, ENBL_SLAVE_ADDR_NACKED_INT: {=bool:?} }}",
+                self.ENBL_TX_ACK_INT(), self.ENBL_RX_DONE_INT(), self
+                .ENBL_NORMAL_STOP_INT(), self.ENBL_ABN_START_STOP_INT(), self
+                .ENBL_SLAVE_INACTIVE_TIMEOUT_INT(), self.ENBL_PKT_CMD_DONE_INT(), self
+                .ENBL_SLAVE_ADDR_NACKED_INT()
+            )
+        }
+    }
+    ///Slave interrupt status register (I2CS24). Write-1-to-clear.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_SLAVE_IRQ_STATUS(pub u32);
+    impl I2C_SLAVE_IRQ_STATUS {
+        ///Transmit ended with ACK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TX_ACK_STS(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Transmit ended with ACK.
+        #[inline(always)]
+        pub const fn set_TX_ACK_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Transmit ended with NACK. Also raises NORMAL_STOP_STS.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TX_NACK_STS(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Transmit ended with NACK. Also raises NORMAL_STOP_STS.
+        #[inline(always)]
+        pub const fn set_TX_NACK_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Receive done.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RX_DONE_STS(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Receive done.
+        #[inline(always)]
+        pub const fn set_RX_DONE_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Receive done ended with NACK returned (read-only; clears with NORMAL_STOP_STS).
+        #[must_use]
+        #[inline(always)]
+        pub const fn RX_DONE_WITH_NACK(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Receive done ended with NACK returned (read-only; clears with NORMAL_STOP_STS).
+        #[inline(always)]
+        pub const fn set_RX_DONE_WITH_NACK(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Normal Stop condition (Stop during RX, or NACK during TX).
+        #[must_use]
+        #[inline(always)]
+        pub const fn NORMAL_STOP_STS(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Normal Stop condition (Stop during RX, or NACK during TX).
+        #[inline(always)]
+        pub const fn set_NORMAL_STOP_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Abnormal Start/Stop condition detected.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ABN_START_STOP_STS(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///Abnormal Start/Stop condition detected.
+        #[inline(always)]
+        pub const fn set_ABN_START_STOP_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///Slave address received and matched.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_ADDR_MATCH_STS(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///Slave address received and matched.
+        #[inline(always)]
+        pub const fn set_SLAVE_ADDR_MATCH_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///Slave inactive timeout.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_INACTIVE_TIMEOUT_STS(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///Slave inactive timeout.
+        #[inline(always)]
+        pub const fn set_SLAVE_INACTIVE_TIMEOUT_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+        ///Slave packet command done. Clearing also clears bits\[0,2,4:5,7,15,17\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn PKT_CMD_DONE_STS(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///Slave packet command done. Clearing also clears bits\[0,2,4:5,7,15,17\].
+        #[inline(always)]
+        pub const fn set_PKT_CMD_DONE_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///Slave packet command fail.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PKT_CMD_FAIL_STS(&self) -> bool {
+            let val = (self.0 >> 17usize) & 0x01;
+            val != 0
+        }
+        ///Slave packet command fail.
+        #[inline(always)]
+        pub const fn set_PKT_CMD_FAIL_STS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 17usize)) | (((val as u32) & 0x01) << 17usize);
+        }
+        ///Current active slave address. 0=addr1, 1=addr2, 2=addr3.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CUR_ACTIVE_SLAVE_ADDR(&self) -> u8 {
+            let val = (self.0 >> 18usize) & 0x03;
+            val as u8
+        }
+        ///Current active slave address. 0=addr1, 1=addr2, 2=addr3.
+        #[inline(always)]
+        pub const fn set_CUR_ACTIVE_SLAVE_ADDR(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 18usize)) | (((val as u32) & 0x03) << 18usize);
+        }
+        ///Slave address 1 was NACKed.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_ADDR1_NACKED(&self) -> bool {
+            let val = (self.0 >> 20usize) & 0x01;
+            val != 0
+        }
+        ///Slave address 1 was NACKed.
+        #[inline(always)]
+        pub const fn set_SLAVE_ADDR1_NACKED(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 20usize)) | (((val as u32) & 0x01) << 20usize);
+        }
+        ///Slave address 2 was NACKed.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_ADDR2_NACKED(&self) -> bool {
+            let val = (self.0 >> 21usize) & 0x01;
+            val != 0
+        }
+        ///Slave address 2 was NACKed.
+        #[inline(always)]
+        pub const fn set_SLAVE_ADDR2_NACKED(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 21usize)) | (((val as u32) & 0x01) << 21usize);
+        }
+        ///Slave address 3 was NACKed.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_ADDR3_NACKED(&self) -> bool {
+            let val = (self.0 >> 22usize) & 0x01;
+            val != 0
+        }
+        ///Slave address 3 was NACKed.
+        #[inline(always)]
+        pub const fn set_SLAVE_ADDR3_NACKED(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 22usize)) | (((val as u32) & 0x01) << 22usize);
+        }
+        ///Current slave parking status. 0=idle, 1=waiting for RX buf, 2=waiting for TX buf.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CUR_SLAVE_PARKING_STS(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x03;
+            val as u8
+        }
+        ///Current slave parking status. 0=idle, 1=waiting for RX buf, 2=waiting for TX buf.
+        #[inline(always)]
+        pub const fn set_CUR_SLAVE_PARKING_STS(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 24usize)) | (((val as u32) & 0x03) << 24usize);
+        }
+        ///Previous slave DMA receive not yet processed; address match pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_ADDR_RXD_PENDING(&self) -> bool {
+            let val = (self.0 >> 29usize) & 0x01;
+            val != 0
+        }
+        ///Previous slave DMA receive not yet processed; address match pending.
+        #[inline(always)]
+        pub const fn set_SLAVE_ADDR_RXD_PENDING(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 29usize)) | (((val as u32) & 0x01) << 29usize);
+        }
+        ///Last slave address that matched. 0=addr1, 1=addr2, 2=addr3.
+        #[must_use]
+        #[inline(always)]
+        pub const fn LAST_SLAVE_ADDR_MATCH(&self) -> u8 {
+            let val = (self.0 >> 30usize) & 0x03;
+            val as u8
+        }
+        ///Last slave address that matched. 0=addr1, 1=addr2, 2=addr3.
+        #[inline(always)]
+        pub const fn set_LAST_SLAVE_ADDR_MATCH(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 30usize)) | (((val as u32) & 0x03) << 30usize);
+        }
+    }
+    impl Default for I2C_SLAVE_IRQ_STATUS {
+        #[inline(always)]
+        fn default() -> I2C_SLAVE_IRQ_STATUS {
+            I2C_SLAVE_IRQ_STATUS(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_SLAVE_IRQ_STATUS {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_SLAVE_IRQ_STATUS")
+                .field("TX_ACK_STS", &self.TX_ACK_STS())
+                .field("TX_NACK_STS", &self.TX_NACK_STS())
+                .field("RX_DONE_STS", &self.RX_DONE_STS())
+                .field("RX_DONE_WITH_NACK", &self.RX_DONE_WITH_NACK())
+                .field("NORMAL_STOP_STS", &self.NORMAL_STOP_STS())
+                .field("ABN_START_STOP_STS", &self.ABN_START_STOP_STS())
+                .field("SLAVE_ADDR_MATCH_STS", &self.SLAVE_ADDR_MATCH_STS())
+                .field(
+                    "SLAVE_INACTIVE_TIMEOUT_STS",
+                    &self.SLAVE_INACTIVE_TIMEOUT_STS(),
+                )
+                .field("PKT_CMD_DONE_STS", &self.PKT_CMD_DONE_STS())
+                .field("PKT_CMD_FAIL_STS", &self.PKT_CMD_FAIL_STS())
+                .field("CUR_ACTIVE_SLAVE_ADDR", &self.CUR_ACTIVE_SLAVE_ADDR())
+                .field("SLAVE_ADDR1_NACKED", &self.SLAVE_ADDR1_NACKED())
+                .field("SLAVE_ADDR2_NACKED", &self.SLAVE_ADDR2_NACKED())
+                .field("SLAVE_ADDR3_NACKED", &self.SLAVE_ADDR3_NACKED())
+                .field("CUR_SLAVE_PARKING_STS", &self.CUR_SLAVE_PARKING_STS())
+                .field("SLAVE_ADDR_RXD_PENDING", &self.SLAVE_ADDR_RXD_PENDING())
+                .field("LAST_SLAVE_ADDR_MATCH", &self.LAST_SLAVE_ADDR_MATCH())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_SLAVE_IRQ_STATUS {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_SLAVE_IRQ_STATUS {{ TX_ACK_STS: {=bool:?}, TX_NACK_STS: {=bool:?}, RX_DONE_STS: {=bool:?}, RX_DONE_WITH_NACK: {=bool:?}, NORMAL_STOP_STS: {=bool:?}, ABN_START_STOP_STS: {=bool:?}, SLAVE_ADDR_MATCH_STS: {=bool:?}, SLAVE_INACTIVE_TIMEOUT_STS: {=bool:?}, PKT_CMD_DONE_STS: {=bool:?}, PKT_CMD_FAIL_STS: {=bool:?}, CUR_ACTIVE_SLAVE_ADDR: {=u8:?}, SLAVE_ADDR1_NACKED: {=bool:?}, SLAVE_ADDR2_NACKED: {=bool:?}, SLAVE_ADDR3_NACKED: {=bool:?}, CUR_SLAVE_PARKING_STS: {=u8:?}, SLAVE_ADDR_RXD_PENDING: {=bool:?}, LAST_SLAVE_ADDR_MATCH: {=u8:?} }}",
+                self.TX_ACK_STS(), self.TX_NACK_STS(), self.RX_DONE_STS(), self
+                .RX_DONE_WITH_NACK(), self.NORMAL_STOP_STS(), self.ABN_START_STOP_STS(),
+                self.SLAVE_ADDR_MATCH_STS(), self.SLAVE_INACTIVE_TIMEOUT_STS(), self
+                .PKT_CMD_DONE_STS(), self.PKT_CMD_FAIL_STS(), self
+                .CUR_ACTIVE_SLAVE_ADDR(), self.SLAVE_ADDR1_NACKED(), self
+                .SLAVE_ADDR2_NACKED(), self.SLAVE_ADDR3_NACKED(), self
+                .CUR_SLAVE_PARKING_STS(), self.SLAVE_ADDR_RXD_PENDING(), self
+                .LAST_SLAVE_ADDR_MATCH()
+            )
+        }
+    }
+    ///I2C/SMBus byte transmit/receive buffer and bus state (I2CC08).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2C_TX_RX_BUF(pub u32);
+    impl I2C_TX_RX_BUF {
+        ///Transmit byte buffer (byte mode only). Write byte to send.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TX_BYTE_BUF(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///Transmit byte buffer (byte mode only). Write byte to send.
+        #[inline(always)]
+        pub const fn set_TX_BYTE_BUF(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///Receive byte buffer (byte mode only). Read received byte.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RX_BYTE_BUF(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0xff;
+            val as u8
+        }
+        ///Receive byte buffer (byte mode only). Read received byte.
+        #[inline(always)]
+        pub const fn set_RX_BYTE_BUF(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 8usize)) | (((val as u32) & 0xff) << 8usize);
+        }
+        ///Bus busy. 0=idle. 1=busy (transaction in progress or idle timing not met).
+        #[must_use]
+        #[inline(always)]
+        pub const fn BUS_BUSY(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///Bus busy. 0=idle. 1=busy (transaction in progress or idle timing not met).
+        #[inline(always)]
+        pub const fn set_BUS_BUSY(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///Sampled SDA line state.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SDA_LINE_STATE(&self) -> bool {
+            let val = (self.0 >> 17usize) & 0x01;
+            val != 0
+        }
+        ///Sampled SDA line state.
+        #[inline(always)]
+        pub const fn set_SDA_LINE_STATE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 17usize)) | (((val as u32) & 0x01) << 17usize);
+        }
+        ///Sampled SCL line state.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SCL_LINE_STATE(&self) -> bool {
+            let val = (self.0 >> 18usize) & 0x01;
+            val != 0
+        }
+        ///Sampled SCL line state.
+        #[inline(always)]
+        pub const fn set_SCL_LINE_STATE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 18usize)) | (((val as u32) & 0x01) << 18usize);
+        }
+        ///Transfer mode state machine. 0x0=IDLE, 0x8=MACTIVE, 0x9=MSTART, 0xA=MSTARTR, 0xB=MSTOP, 0xC=MTXD, 0xD=MRXACK, 0xE=MRXD, 0xF=MTXACK, 0x1=SWAIT, 0x4=SRXD, 0x5=STXACK, 0x6=STXD, 0x7=SRXACK, 0x3=RECOVER.
+        #[must_use]
+        #[inline(always)]
+        pub const fn XFER_STATE(&self) -> u8 {
+            let val = (self.0 >> 19usize) & 0x0f;
+            val as u8
+        }
+        ///Transfer mode state machine. 0x0=IDLE, 0x8=MACTIVE, 0x9=MSTART, 0xA=MSTARTR, 0xB=MSTOP, 0xC=MTXD, 0xD=MRXACK, 0xE=MRXD, 0xF=MTXACK, 0x1=SWAIT, 0x4=SRXD, 0x5=STXACK, 0x6=STXD, 0x7=SRXACK, 0x3=RECOVER.
+        #[inline(always)]
+        pub const fn set_XFER_STATE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 19usize)) | (((val as u32) & 0x0f) << 19usize);
+        }
+        ///Transfer timing stage. 0=T0, 1=T1, 2=T2, 3=T3.
+        #[must_use]
+        #[inline(always)]
+        pub const fn XFER_TIMING_STAGE(&self) -> u8 {
+            let val = (self.0 >> 23usize) & 0x03;
+            val as u8
+        }
+        ///Transfer timing stage. 0=T0, 1=T1, 2=T2, 3=T3.
+        #[inline(always)]
+        pub const fn set_XFER_TIMING_STAGE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 23usize)) | (((val as u32) & 0x03) << 23usize);
+        }
+        ///SCL output value.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SCL_OUTPUT(&self) -> bool {
+            let val = (self.0 >> 25usize) & 0x01;
+            val != 0
+        }
+        ///SCL output value.
+        #[inline(always)]
+        pub const fn set_SCL_OUTPUT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 25usize)) | (((val as u32) & 0x01) << 25usize);
+        }
+        ///SCL output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SCL_OUTPUT_EN(&self) -> bool {
+            let val = (self.0 >> 26usize) & 0x01;
+            val != 0
+        }
+        ///SCL output enable.
+        #[inline(always)]
+        pub const fn set_SCL_OUTPUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 26usize)) | (((val as u32) & 0x01) << 26usize);
+        }
+        ///SDA output value.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SDA_OUTPUT(&self) -> bool {
+            let val = (self.0 >> 27usize) & 0x01;
+            val != 0
+        }
+        ///SDA output value.
+        #[inline(always)]
+        pub const fn set_SDA_OUTPUT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 27usize)) | (((val as u32) & 0x01) << 27usize);
+        }
+        ///SDA output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SDA_OUTPUT_EN(&self) -> bool {
+            let val = (self.0 >> 28usize) & 0x01;
+            val != 0
+        }
+        ///SDA output enable.
+        #[inline(always)]
+        pub const fn set_SDA_OUTPUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 28usize)) | (((val as u32) & 0x01) << 28usize);
+        }
+        ///Transfer data direction. 0=IDLE, 1=WAIT, 4=MTX, 5=MRX, 6=STX, 7=SRX.
+        #[must_use]
+        #[inline(always)]
+        pub const fn XFER_DATA_DIR(&self) -> u8 {
+            let val = (self.0 >> 29usize) & 0x07;
+            val as u8
+        }
+        ///Transfer data direction. 0=IDLE, 1=WAIT, 4=MTX, 5=MRX, 6=STX, 7=SRX.
+        #[inline(always)]
+        pub const fn set_XFER_DATA_DIR(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 29usize)) | (((val as u32) & 0x07) << 29usize);
+        }
+    }
+    impl Default for I2C_TX_RX_BUF {
+        #[inline(always)]
+        fn default() -> I2C_TX_RX_BUF {
+            I2C_TX_RX_BUF(0)
+        }
+    }
+    impl core::fmt::Debug for I2C_TX_RX_BUF {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2C_TX_RX_BUF")
+                .field("TX_BYTE_BUF", &self.TX_BYTE_BUF())
+                .field("RX_BYTE_BUF", &self.RX_BYTE_BUF())
+                .field("BUS_BUSY", &self.BUS_BUSY())
+                .field("SDA_LINE_STATE", &self.SDA_LINE_STATE())
+                .field("SCL_LINE_STATE", &self.SCL_LINE_STATE())
+                .field("XFER_STATE", &self.XFER_STATE())
+                .field("XFER_TIMING_STAGE", &self.XFER_TIMING_STAGE())
+                .field("SCL_OUTPUT", &self.SCL_OUTPUT())
+                .field("SCL_OUTPUT_EN", &self.SCL_OUTPUT_EN())
+                .field("SDA_OUTPUT", &self.SDA_OUTPUT())
+                .field("SDA_OUTPUT_EN", &self.SDA_OUTPUT_EN())
+                .field("XFER_DATA_DIR", &self.XFER_DATA_DIR())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2C_TX_RX_BUF {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2C_TX_RX_BUF {{ TX_BYTE_BUF: {=u8:?}, RX_BYTE_BUF: {=u8:?}, BUS_BUSY: {=bool:?}, SDA_LINE_STATE: {=bool:?}, SCL_LINE_STATE: {=bool:?}, XFER_STATE: {=u8:?}, XFER_TIMING_STAGE: {=u8:?}, SCL_OUTPUT: {=bool:?}, SCL_OUTPUT_EN: {=bool:?}, SDA_OUTPUT: {=bool:?}, SDA_OUTPUT_EN: {=bool:?}, XFER_DATA_DIR: {=u8:?} }}",
+                self.TX_BYTE_BUF(), self.RX_BYTE_BUF(), self.BUS_BUSY(), self
+                .SDA_LINE_STATE(), self.SCL_LINE_STATE(), self.XFER_STATE(), self
+                .XFER_TIMING_STAGE(), self.SCL_OUTPUT(), self.SCL_OUTPUT_EN(), self
+                .SDA_OUTPUT(), self.SDA_OUTPUT_EN(), self.XFER_DATA_DIR()
+            )
+        }
+    }
+}
+pub mod i2cglobal_v1 {
+    ///ASPEED I2C/SMBus global control registers. Base: 0x7E7B_0000.
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2CGLOBAL {
+        ptr: *mut u8,
+    }
+    unsafe impl Send for I2CGLOBAL {}
+    unsafe impl Sync for I2CGLOBAL {}
+    impl I2CGLOBAL {
+        #[inline(always)]
+        pub const unsafe fn from_ptr(ptr: *mut ()) -> Self {
+            Self { ptr: ptr as _ }
+        }
+        #[inline(always)]
+        pub const fn as_ptr(&self) -> *mut () {
+            self.ptr as _
+        }
+        ///Master (or merged master+slave) interrupt status (I2CG00). Read-only. Bit N-1 is set when device N has a pending interrupt. When I2CG0C\[3\]=0 (default), both master and slave interrupts aggregate here. When I2CG0C\[3\]=1, only master interrupts appear here. No write-clear needed; clear at the device channel interrupt register.
+        #[inline(always)]
+        pub const fn IRQ_STATUS(self) -> crate::common::Reg<I2CG_IRQ_STATUS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
+        }
+        ///Slave interrupt status (I2CG04). Read-only. Valid only when I2CG0C\[3\]=1 (separate master/slave mode). Bit N-1 is set when device N has a pending slave interrupt.
+        #[inline(always)]
+        pub const fn SLAVE_IRQ_STATUS(
+            self,
+        ) -> crate::common::Reg<I2CG_IRQ_STATUS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
+        }
+        ///Global control register (I2CG0C). Controls register mode, clock divider mode, interrupt routing, and bus-recovery turnaround delay.
+        #[inline(always)]
+        pub const fn GLOBAL_CTRL(self) -> crate::common::Reg<I2CG_GLOBAL_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
+        }
+        ///New-mode clock divider control register (I2CG10). Valid when I2CG0C\[1\]=1 (new clock divider mode). Defines four base clock divisors used by per-channel I2CC04\[3:0\] selection. Divisor value N: effective divisor = N/2 + 0.5 (0x00=÷1, 0x01=÷1.5, ..., 0xFF=÷128.5).
+        #[inline(always)]
+        pub const fn CLK_DIV(self) -> crate::common::Reg<I2CG_CLK_DIV, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
+        }
+    }
+    ///I2C/SMBus new-mode clock divisor register (I2CG10). Valid when I2CG0C\[1\]=1 (new clock divider mode). Four 8-bit fields, each setting a base clock divisor. Effective divisor = value/2 + 0.5 (0x00=÷1, 0xFF=÷128.5).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2CG_CLK_DIV(pub u32);
+    impl I2CG_CLK_DIV {
+        ///Base clock 1 divisor (PCLK ÷ (N/2 + 0.5)).
+        #[must_use]
+        #[inline(always)]
+        pub const fn BASE_CLK1_DIV(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///Base clock 1 divisor (PCLK ÷ (N/2 + 0.5)).
+        #[inline(always)]
+        pub const fn set_BASE_CLK1_DIV(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///Base clock 2 divisor.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BASE_CLK2_DIV(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0xff;
+            val as u8
+        }
+        ///Base clock 2 divisor.
+        #[inline(always)]
+        pub const fn set_BASE_CLK2_DIV(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 8usize)) | (((val as u32) & 0xff) << 8usize);
+        }
+        ///Base clock 3 divisor.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BASE_CLK3_DIV(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0xff;
+            val as u8
+        }
+        ///Base clock 3 divisor.
+        #[inline(always)]
+        pub const fn set_BASE_CLK3_DIV(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 16usize)) | (((val as u32) & 0xff) << 16usize);
+        }
+        ///Base clock 4 divisor.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BASE_CLK4_DIV(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0xff;
+            val as u8
+        }
+        ///Base clock 4 divisor.
+        #[inline(always)]
+        pub const fn set_BASE_CLK4_DIV(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 24usize)) | (((val as u32) & 0xff) << 24usize);
+        }
+    }
+    impl Default for I2CG_CLK_DIV {
+        #[inline(always)]
+        fn default() -> I2CG_CLK_DIV {
+            I2CG_CLK_DIV(0)
+        }
+    }
+    impl core::fmt::Debug for I2CG_CLK_DIV {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2CG_CLK_DIV")
+                .field("BASE_CLK1_DIV", &self.BASE_CLK1_DIV())
+                .field("BASE_CLK2_DIV", &self.BASE_CLK2_DIV())
+                .field("BASE_CLK3_DIV", &self.BASE_CLK3_DIV())
+                .field("BASE_CLK4_DIV", &self.BASE_CLK4_DIV())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2CG_CLK_DIV {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2CG_CLK_DIV {{ BASE_CLK1_DIV: {=u8:?}, BASE_CLK2_DIV: {=u8:?}, BASE_CLK3_DIV: {=u8:?}, BASE_CLK4_DIV: {=u8:?} }}",
+                self.BASE_CLK1_DIV(), self.BASE_CLK2_DIV(), self.BASE_CLK3_DIV(), self
+                .BASE_CLK4_DIV()
+            )
+        }
+    }
+    ///I2C/SMBus global control register (I2CG0C).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2CG_GLOBAL_CTRL(pub u32);
+    impl I2CG_GLOBAL_CTRL {
+        ///Clock divider mode selection. 0 = old mode (per-channel PCLK power-of-2 divisors). 1 = new mode (I2CG10 programmable base clock divisors — recommended).
+        #[must_use]
+        #[inline(always)]
+        pub const fn CLK_DIVIDER_MODE(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Clock divider mode selection. 0 = old mode (per-channel PCLK power-of-2 divisors). 1 = new mode (I2CG10 programmable base clock divisors — recommended).
+        #[inline(always)]
+        pub const fn set_CLK_DIVIDER_MODE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Per-channel register mode selection. 0 = old mode (I2CDxx registers). 1 = new mode (I2CCxx/I2CMxx/I2CSxx — recommended; used by i2c_v1).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REG_MODE(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Per-channel register mode selection. 0 = old mode (I2CDxx registers). 1 = new mode (I2CCxx/I2CMxx/I2CSxx — recommended; used by i2c_v1).
+        #[inline(always)]
+        pub const fn set_REG_MODE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Master/slave interrupt separation. 0 = merged: all device interrupts in I2CG00. 1 = separated: master in I2CG00, slave in I2CG04.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEPARATE_MASTER_SLAVE_INTS(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Master/slave interrupt separation. 0 = merged: all device interrupts in I2CG00. 1 = separated: master in I2CG00, slave in I2CG04.
+        #[inline(always)]
+        pub const fn set_SEPARATE_MASTER_SLAVE_INTS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Slave packet mode: action when RX buffer is full. 0 = issue packet-done interrupt and pull SCL low (halt transfer). 1 = expect Repeated-Start or Stop; NACK if more data follows.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SLAVE_PKT_RX_FULL_ACTION(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Slave packet mode: action when RX buffer is full. 0 = issue packet-done interrupt and pull SCL low (halt transfer). 1 = expect Repeated-Start or Stop; NACK if more data follows.
+        #[inline(always)]
+        pub const fn set_SLAVE_PKT_RX_FULL_ACTION(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Master transmit-to-receive turnaround delay in base clock cycles. 0 = no delay. 1–15 = delay N base clock cycles. Applied in master packet operation mode only.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MASTER_TURNAROUND_DELAY(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x0f;
+            val as u8
+        }
+        ///Master transmit-to-receive turnaround delay in base clock cycles. 0 = no delay. 1–15 = delay N base clock cycles. Applied in master packet operation mode only.
+        #[inline(always)]
+        pub const fn set_MASTER_TURNAROUND_DELAY(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 8usize)) | (((val as u32) & 0x0f) << 8usize);
+        }
+    }
+    impl Default for I2CG_GLOBAL_CTRL {
+        #[inline(always)]
+        fn default() -> I2CG_GLOBAL_CTRL {
+            I2CG_GLOBAL_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for I2CG_GLOBAL_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2CG_GLOBAL_CTRL")
+                .field("CLK_DIVIDER_MODE", &self.CLK_DIVIDER_MODE())
+                .field("REG_MODE", &self.REG_MODE())
+                .field(
+                    "SEPARATE_MASTER_SLAVE_INTS",
+                    &self.SEPARATE_MASTER_SLAVE_INTS(),
+                )
+                .field("SLAVE_PKT_RX_FULL_ACTION", &self.SLAVE_PKT_RX_FULL_ACTION())
+                .field("MASTER_TURNAROUND_DELAY", &self.MASTER_TURNAROUND_DELAY())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2CG_GLOBAL_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2CG_GLOBAL_CTRL {{ CLK_DIVIDER_MODE: {=bool:?}, REG_MODE: {=bool:?}, SEPARATE_MASTER_SLAVE_INTS: {=bool:?}, SLAVE_PKT_RX_FULL_ACTION: {=bool:?}, MASTER_TURNAROUND_DELAY: {=u8:?} }}",
+                self.CLK_DIVIDER_MODE(), self.REG_MODE(), self
+                .SEPARATE_MASTER_SLAVE_INTS(), self.SLAVE_PKT_RX_FULL_ACTION(), self
+                .MASTER_TURNAROUND_DELAY()
+            )
+        }
+    }
+    ///I2C/SMBus global interrupt status (I2CG00 / I2CG04). Bit N-1 set = device N has a pending interrupt. Read-only — clear at the individual channel's interrupt status register.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct I2CG_IRQ_STATUS(pub u32);
+    impl I2CG_IRQ_STATUS {
+        ///Device 1 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV1_INT(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Device 1 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV1_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Device 2 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV2_INT(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Device 2 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV2_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Device 3 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV3_INT(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Device 3 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV3_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Device 4 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV4_INT(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Device 4 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV4_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Device 5 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV5_INT(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Device 5 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV5_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Device 6 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV6_INT(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///Device 6 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV6_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///Device 7 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV7_INT(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///Device 7 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV7_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///Device 8 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV8_INT(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///Device 8 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV8_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///Device 9 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV9_INT(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///Device 9 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV9_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///Device 10 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV10_INT(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///Device 10 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV10_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///Device 11 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV11_INT(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///Device 11 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV11_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+        ///Device 12 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV12_INT(&self) -> bool {
+            let val = (self.0 >> 11usize) & 0x01;
+            val != 0
+        }
+        ///Device 12 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV12_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 11usize)) | (((val as u32) & 0x01) << 11usize);
+        }
+        ///Device 13 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV13_INT(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///Device 13 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV13_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///Device 14 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV14_INT(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///Device 14 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV14_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///Device 15 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV15_INT(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///Device 15 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV15_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///Device 16 interrupt pending.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEV16_INT(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///Device 16 interrupt pending.
+        #[inline(always)]
+        pub const fn set_DEV16_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+    }
+    impl Default for I2CG_IRQ_STATUS {
+        #[inline(always)]
+        fn default() -> I2CG_IRQ_STATUS {
+            I2CG_IRQ_STATUS(0)
+        }
+    }
+    impl core::fmt::Debug for I2CG_IRQ_STATUS {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("I2CG_IRQ_STATUS")
+                .field("DEV1_INT", &self.DEV1_INT())
+                .field("DEV2_INT", &self.DEV2_INT())
+                .field("DEV3_INT", &self.DEV3_INT())
+                .field("DEV4_INT", &self.DEV4_INT())
+                .field("DEV5_INT", &self.DEV5_INT())
+                .field("DEV6_INT", &self.DEV6_INT())
+                .field("DEV7_INT", &self.DEV7_INT())
+                .field("DEV8_INT", &self.DEV8_INT())
+                .field("DEV9_INT", &self.DEV9_INT())
+                .field("DEV10_INT", &self.DEV10_INT())
+                .field("DEV11_INT", &self.DEV11_INT())
+                .field("DEV12_INT", &self.DEV12_INT())
+                .field("DEV13_INT", &self.DEV13_INT())
+                .field("DEV14_INT", &self.DEV14_INT())
+                .field("DEV15_INT", &self.DEV15_INT())
+                .field("DEV16_INT", &self.DEV16_INT())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for I2CG_IRQ_STATUS {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "I2CG_IRQ_STATUS {{ DEV1_INT: {=bool:?}, DEV2_INT: {=bool:?}, DEV3_INT: {=bool:?}, DEV4_INT: {=bool:?}, DEV5_INT: {=bool:?}, DEV6_INT: {=bool:?}, DEV7_INT: {=bool:?}, DEV8_INT: {=bool:?}, DEV9_INT: {=bool:?}, DEV10_INT: {=bool:?}, DEV11_INT: {=bool:?}, DEV12_INT: {=bool:?}, DEV13_INT: {=bool:?}, DEV14_INT: {=bool:?}, DEV15_INT: {=bool:?}, DEV16_INT: {=bool:?} }}",
+                self.DEV1_INT(), self.DEV2_INT(), self.DEV3_INT(), self.DEV4_INT(), self
+                .DEV5_INT(), self.DEV6_INT(), self.DEV7_INT(), self.DEV8_INT(), self
+                .DEV9_INT(), self.DEV10_INT(), self.DEV11_INT(), self.DEV12_INT(), self
+                .DEV13_INT(), self.DEV14_INT(), self.DEV15_INT(), self.DEV16_INT()
+            )
+        }
+    }
+}
 pub mod ipc_v1 {
     ///AST2600 IPC doorbell mailbox. Base: 0x7E6C_0000 (CM3 view). 15-channel doorbell between CM3 SSP (IRQs 182-196) and CA7.
     #[derive(Copy, Clone, Eq, PartialEq)]
@@ -2664,25 +6787,17 @@ pub mod ipc_v1 {
         ///IPC Trigger Register (offset 0x18). Write BIT(n) to ring doorbell on channel n to the CA7. Bits \[14:0\] correspond to channels 0-14. Writing this register is a pulse; it does not hold state.
         #[inline(always)]
         pub const fn TRIG(self) -> crate::common::Reg<IPC_CHANNELS, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///IPC Status Register (offset 0x28). Read-only. Each bit indicates a pending channel: - Bit set by CA7 write → bit is pending for CM3 to handle. - Bit set by CM3 TRIG → still waiting for CA7 acknowledgement. Read STATUS before TRIG to check if a send would be busy.
         #[inline(always)]
-        pub const fn STATUS(
-            self,
-        ) -> crate::common::Reg<IPC_CHANNELS, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+        pub const fn STATUS(self) -> crate::common::Reg<IPC_CHANNELS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
         ///IPC Clear Register (offset 0x2C). Write-only. Write the STATUS value (or BIT(n)) to acknowledge received CA7→CM3 interrupts. Clears the corresponding STATUS bits.
         #[inline(always)]
         pub const fn CLEAR(self) -> crate::common::Reg<IPC_CHANNELS, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _) }
         }
     }
     ///IPC 15-channel bitmask. Bit n corresponds to IPC channel n (n = 0..14).
@@ -2700,8 +6815,7 @@ pub mod ipc_v1 {
         ///IPC channel bitmask (bits \[14:0\]). Bit 0 = channel 0 (IRQ 182); bit 14 = channel 14 (IRQ 196).
         #[inline(always)]
         pub const fn set_CH(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x7fff << 0usize))
-                | (((val as u32) & 0x7fff) << 0usize);
+            self.0 = (self.0 & !(0x7fff << 0usize)) | (((val as u32) & 0x7fff) << 0usize);
         }
     }
     impl Default for IPC_CHANNELS {
@@ -2712,13 +6826,1730 @@ pub mod ipc_v1 {
     }
     impl core::fmt::Debug for IPC_CHANNELS {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("IPC_CHANNELS").field("CH", &self.CH()).finish()
+            f.debug_struct("IPC_CHANNELS")
+                .field("CH", &self.CH())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
     impl defmt::Format for IPC_CHANNELS {
         fn format(&self, f: defmt::Formatter) {
             defmt::write!(f, "IPC_CHANNELS {{ CH: {=u16:?} }}", self.CH())
+        }
+    }
+}
+pub mod peci_v1 {
+    ///ASPEED PECI controller. Implements the Platform Environment Control Interface (PECI) single-wire host protocol for reading Intel CPU telemetry. Base: 0x7E78_B000 (AST2600, CM3 view).
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PECI {
+        ptr: *mut u8,
+    }
+    unsafe impl Send for PECI {}
+    unsafe impl Sync for PECI {}
+    impl PECI {
+        #[inline(always)]
+        pub const unsafe fn from_ptr(ptr: *mut ()) -> Self {
+            Self { ptr: ptr as _ }
+        }
+        #[inline(always)]
+        pub const fn as_ptr(&self) -> *mut () {
+            self.ptr as _
+        }
+        ///PECI Control Register (PECI00, offset 0x00). Main control: enable PECI engine, clock source, clock divider, input/output signal inversion, bus contention detection.
+        #[inline(always)]
+        pub const fn CTRL(self) -> crate::common::Reg<PECI_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
+        }
+        ///PECI Timing Negotiation Register (PECI04, offset 0x04). Sets T_NEGO_MSG (message timing) and T_NEGO_ADDR (address timing) in units of PECI clock cycles. Both are negotiated with the target.
+        #[inline(always)]
+        pub const fn TIMING_NEG(self) -> crate::common::Reg<PECI_TIMING_NEG, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
+        }
+        ///PECI Command Register (PECI08, offset 0x08). Writing FIRE=1 launches a PECI transaction. STATUS holds the current state machine status. PIN_MONITORING lets software observe the PECI wire state.
+        #[inline(always)]
+        pub const fn CMD(self) -> crate::common::Reg<PECI_CMD, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
+        }
+        ///PECI Read/Write Length Register (PECI0C, offset 0x0C). Specifies the target device address, write byte count, read byte count, and whether to append an Assured Write FCS.
+        #[inline(always)]
+        pub const fn RW_LENGTH(self) -> crate::common::Reg<PECI_RW_LENGTH, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
+        }
+        ///PECI Expected FCS Register (PECI10, offset 0x10). Expected read FCS, auto-computed write FCS, and expected write FCS. Written by software before launching a transaction for FCS checking.
+        #[inline(always)]
+        pub const fn EXPECTED_FCS(
+            self,
+        ) -> crate::common::Reg<PECI_EXPECTED_FCS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
+        }
+        ///PECI Captured FCS Register (PECI14, offset 0x14). Read-only. Holds the FCS bytes captured from the last transaction. Compare CAPTURED_RD_FCS against EXPECTED_RD_FCS to verify integrity.
+        #[inline(always)]
+        pub const fn CAPTURED_FCS(
+            self,
+        ) -> crate::common::Reg<PECI_CAPTURED_FCS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
+        }
+        ///PECI Interrupt Control Register (PECI18, offset 0x18). Enable bits for each interrupt source and timing negotiation mode select.
+        #[inline(always)]
+        pub const fn INT_CTRL(self) -> crate::common::Reg<PECI_INT_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
+        }
+        ///PECI Interrupt Status Register (PECI1C, offset 0x1C). RW1C. Status bits mirror the INT_CTRL enable bit definitions. Also contains TIMING_RESULT \[29:16\] which holds the negotiated timing. Write 1 to a status bit to clear it.
+        #[inline(always)]
+        pub const fn INT_STS(self) -> crate::common::Reg<PECI_INT_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
+        }
+        ///PECI Write Data Buffer 0, bytes \[3:0\] (PECI20, offset 0x20).
+        #[inline(always)]
+        pub const fn WR_DATA0(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _) }
+        }
+        ///PECI Write Data Buffer 1, bytes \[7:4\] (PECI24, offset 0x24).
+        #[inline(always)]
+        pub const fn WR_DATA1(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
+        }
+        ///PECI Write Data Buffer 2, bytes \[11:8\] (PECI28, offset 0x28).
+        #[inline(always)]
+        pub const fn WR_DATA2(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
+        }
+        ///PECI Write Data Buffer 3, bytes \[15:12\] (PECI2C, offset 0x2C).
+        #[inline(always)]
+        pub const fn WR_DATA3(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _) }
+        }
+        ///PECI Read Data Buffer 0, bytes \[3:0\] (PECI30, offset 0x30).
+        #[inline(always)]
+        pub const fn RD_DATA0(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _) }
+        }
+        ///PECI Read Data Buffer 1, bytes \[7:4\] (PECI34, offset 0x34).
+        #[inline(always)]
+        pub const fn RD_DATA1(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _) }
+        }
+        ///PECI Read Data Buffer 2, bytes \[11:8\] (PECI38, offset 0x38).
+        #[inline(always)]
+        pub const fn RD_DATA2(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _) }
+        }
+        ///PECI Read Data Buffer 3, bytes \[15:12\] (PECI3C, offset 0x3C).
+        #[inline(always)]
+        pub const fn RD_DATA3(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _) }
+        }
+        ///PECI Write Data Buffer 4, bytes \[19:16\] (PECI40, offset 0x40).
+        #[inline(always)]
+        pub const fn WR_DATA4(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _) }
+        }
+        ///PECI Write Data Buffer 5, bytes \[23:20\] (PECI44, offset 0x44).
+        #[inline(always)]
+        pub const fn WR_DATA5(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _) }
+        }
+        ///PECI Write Data Buffer 6, bytes \[27:24\] (PECI48, offset 0x48).
+        #[inline(always)]
+        pub const fn WR_DATA6(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _) }
+        }
+        ///PECI Write Data Buffer 7, bytes \[31:28\] (PECI4C, offset 0x4C).
+        #[inline(always)]
+        pub const fn WR_DATA7(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x4cusize) as _) }
+        }
+        ///PECI Read Data Buffer 4, bytes \[19:16\] (PECI50, offset 0x50).
+        #[inline(always)]
+        pub const fn RD_DATA4(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _) }
+        }
+        ///PECI Read Data Buffer 5, bytes \[23:20\] (PECI54, offset 0x54).
+        #[inline(always)]
+        pub const fn RD_DATA5(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _) }
+        }
+        ///PECI Read Data Buffer 6, bytes \[27:24\] (PECI58, offset 0x58).
+        #[inline(always)]
+        pub const fn RD_DATA6(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x58usize) as _) }
+        }
+        ///PECI Read Data Buffer 7, bytes \[31:28\] (PECI5C, offset 0x5C).
+        #[inline(always)]
+        pub const fn RD_DATA7(self) -> crate::common::Reg<PECI_DATA_BUF, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x5cusize) as _) }
+        }
+    }
+    ///PECI Captured FCS Register (PECI14). Read-only.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PECI_CAPTURED_FCS(pub u32);
+    impl PECI_CAPTURED_FCS {
+        ///Write FCS byte captured from the last transaction \[7:0\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn CAPTURED_WR_FCS(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///Write FCS byte captured from the last transaction \[7:0\].
+        #[inline(always)]
+        pub const fn set_CAPTURED_WR_FCS(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///Read FCS byte captured from the last transaction \[23:16\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn CAPTURED_RD_FCS(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0xff;
+            val as u8
+        }
+        ///Read FCS byte captured from the last transaction \[23:16\].
+        #[inline(always)]
+        pub const fn set_CAPTURED_RD_FCS(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 16usize)) | (((val as u32) & 0xff) << 16usize);
+        }
+    }
+    impl Default for PECI_CAPTURED_FCS {
+        #[inline(always)]
+        fn default() -> PECI_CAPTURED_FCS {
+            PECI_CAPTURED_FCS(0)
+        }
+    }
+    impl core::fmt::Debug for PECI_CAPTURED_FCS {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PECI_CAPTURED_FCS")
+                .field("CAPTURED_WR_FCS", &self.CAPTURED_WR_FCS())
+                .field("CAPTURED_RD_FCS", &self.CAPTURED_RD_FCS())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PECI_CAPTURED_FCS {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "PECI_CAPTURED_FCS {{ CAPTURED_WR_FCS: {=u8:?}, CAPTURED_RD_FCS: {=u8:?} }}",
+                self.CAPTURED_WR_FCS(),
+                self.CAPTURED_RD_FCS()
+            )
+        }
+    }
+    ///PECI Command Register (PECI08).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PECI_CMD(pub u32);
+    impl PECI_CMD {
+        ///Fire PECI transaction \[0\]. Write 1 to start a transaction using the configured WR_DATA buffers, RW_LENGTH, and TIMING_NEG settings. Hardware clears this bit when the transaction completes.
+        #[must_use]
+        #[inline(always)]
+        pub const fn FIRE(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Fire PECI transaction \[0\]. Write 1 to start a transaction using the configured WR_DATA buffers, RW_LENGTH, and TIMING_NEG settings. Hardware clears this bit when the transaction completes.
+        #[inline(always)]
+        pub const fn set_FIRE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///PECI state machine status \[27:24\]. Read-only. 0x3 = address timing negotiation in progress. Other values indicate transaction phase.
+        #[must_use]
+        #[inline(always)]
+        pub const fn STATUS(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x0f;
+            val as u8
+        }
+        ///PECI state machine status \[27:24\]. Read-only. 0x3 = address timing negotiation in progress. Other values indicate transaction phase.
+        #[inline(always)]
+        pub const fn set_STATUS(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 24usize)) | (((val as u32) & 0x0f) << 24usize);
+        }
+        ///PECI wire monitor mode \[31\]. When set, the controller monitors the PECI wire and records activity without driving it. Used for debugging.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PIN_MONITORING(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///PECI wire monitor mode \[31\]. When set, the controller monitors the PECI wire and records activity without driving it. Used for debugging.
+        #[inline(always)]
+        pub const fn set_PIN_MONITORING(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for PECI_CMD {
+        #[inline(always)]
+        fn default() -> PECI_CMD {
+            PECI_CMD(0)
+        }
+    }
+    impl core::fmt::Debug for PECI_CMD {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PECI_CMD")
+                .field("FIRE", &self.FIRE())
+                .field("STATUS", &self.STATUS())
+                .field("PIN_MONITORING", &self.PIN_MONITORING())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PECI_CMD {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "PECI_CMD {{ FIRE: {=bool:?}, STATUS: {=u8:?}, PIN_MONITORING: {=bool:?} }}",
+                self.FIRE(),
+                self.STATUS(),
+                self.PIN_MONITORING()
+            )
+        }
+    }
+    ///PECI Control Register (PECI00).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PECI_CTRL(pub u32);
+    impl PECI_CTRL {
+        ///PECI clock enable \[0\]. Enable the PECI clock generator.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PECI_CLK_EN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///PECI clock enable \[0\]. Enable the PECI clock generator.
+        #[inline(always)]
+        pub const fn set_PECI_CLK_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///PECI controller enable \[4\]. Must be set before issuing commands.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PECI_EN(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///PECI controller enable \[4\]. Must be set before issuing commands.
+        #[inline(always)]
+        pub const fn set_PECI_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Bus contention detection enable \[5\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn BUS_CONTENTION_EN(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///Bus contention detection enable \[5\].
+        #[inline(always)]
+        pub const fn set_BUS_CONTENTION_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///Invert PECI input pin \[6\]. 0 = normal, 1 = inverted.
+        #[must_use]
+        #[inline(always)]
+        pub const fn INVERT_IN(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///Invert PECI input pin \[6\]. 0 = normal, 1 = inverted.
+        #[inline(always)]
+        pub const fn set_INVERT_IN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///Invert PECI output pin \[7\]. 0 = normal, 1 = inverted.
+        #[must_use]
+        #[inline(always)]
+        pub const fn INVERT_OUT(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///Invert PECI output pin \[7\]. 0 = normal, 1 = inverted.
+        #[inline(always)]
+        pub const fn set_INVERT_OUT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///PECI clock divider \[10:8\]. PECI_clk = HCLK / (4 × (msg_timing + 1) × 2^CLK_DIV). Lower values → faster PECI clock. Typical: 0 for 1 MHz PECI.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CLK_DIV(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x07;
+            val as u8
+        }
+        ///PECI clock divider \[10:8\]. PECI_clk = HCLK / (4 × (msg_timing + 1) × 2^CLK_DIV). Lower values → faster PECI clock. Typical: 0 for 1 MHz PECI.
+        #[inline(always)]
+        pub const fn set_CLK_DIV(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 8usize)) | (((val as u32) & 0x07) << 8usize);
+        }
+        ///Clock source select \[11\]. 0 = internal oscillator. 1 = HCLK. Use HCLK (1) for accurate timing.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CLK_SRC_HCLK(&self) -> bool {
+            let val = (self.0 >> 11usize) & 0x01;
+            val != 0
+        }
+        ///Clock source select \[11\]. 0 = internal oscillator. 1 = HCLK. Use HCLK (1) for accurate timing.
+        #[inline(always)]
+        pub const fn set_CLK_SRC_HCLK(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 11usize)) | (((val as u32) & 0x01) << 11usize);
+        }
+        ///Read mode \[13:12\]. Bit 12: COUNT mode — byte count driven by hardware. Bit 13: DBG mode — debug capture enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RD_MODE(&self) -> u8 {
+            let val = (self.0 >> 12usize) & 0x03;
+            val as u8
+        }
+        ///Read mode \[13:12\]. Bit 12: COUNT mode — byte count driven by hardware. Bit 13: DBG mode — debug capture enable.
+        #[inline(always)]
+        pub const fn set_RD_MODE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 12usize)) | (((val as u32) & 0x03) << 12usize);
+        }
+        ///Read sampling point \[19:16\]. Adjusts the bit sampling point within each PECI bit period. Default: 8. Valid range: 0–15.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SAMPLING(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0x0f;
+            val as u8
+        }
+        ///Read sampling point \[19:16\]. Adjusts the bit sampling point within each PECI bit period. Default: 8. Valid range: 0–15.
+        #[inline(always)]
+        pub const fn set_SAMPLING(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 16usize)) | (((val as u32) & 0x0f) << 16usize);
+        }
+    }
+    impl Default for PECI_CTRL {
+        #[inline(always)]
+        fn default() -> PECI_CTRL {
+            PECI_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for PECI_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PECI_CTRL")
+                .field("PECI_CLK_EN", &self.PECI_CLK_EN())
+                .field("PECI_EN", &self.PECI_EN())
+                .field("BUS_CONTENTION_EN", &self.BUS_CONTENTION_EN())
+                .field("INVERT_IN", &self.INVERT_IN())
+                .field("INVERT_OUT", &self.INVERT_OUT())
+                .field("CLK_DIV", &self.CLK_DIV())
+                .field("CLK_SRC_HCLK", &self.CLK_SRC_HCLK())
+                .field("RD_MODE", &self.RD_MODE())
+                .field("SAMPLING", &self.SAMPLING())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PECI_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "PECI_CTRL {{ PECI_CLK_EN: {=bool:?}, PECI_EN: {=bool:?}, BUS_CONTENTION_EN: {=bool:?}, INVERT_IN: {=bool:?}, INVERT_OUT: {=bool:?}, CLK_DIV: {=u8:?}, CLK_SRC_HCLK: {=bool:?}, RD_MODE: {=u8:?}, SAMPLING: {=u8:?} }}",
+                self.PECI_CLK_EN(), self.PECI_EN(), self.BUS_CONTENTION_EN(), self
+                .INVERT_IN(), self.INVERT_OUT(), self.CLK_DIV(), self.CLK_SRC_HCLK(),
+                self.RD_MODE(), self.SAMPLING()
+            )
+        }
+    }
+    ///PECI data buffer register (4 bytes). Write data: filled by software before issuing a command. Read data: filled by hardware after a command completes. Maximum total payload: 32 bytes (8 registers × 4 bytes).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PECI_DATA_BUF(pub u32);
+    impl PECI_DATA_BUF {
+        ///32-bit data buffer word (4 bytes of PECI payload).
+        #[must_use]
+        #[inline(always)]
+        pub const fn DATA(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0xffff_ffff;
+            val as u32
+        }
+        ///32-bit data buffer word (4 bytes of PECI payload).
+        #[inline(always)]
+        pub const fn set_DATA(&mut self, val: u32) {
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
+        }
+    }
+    impl Default for PECI_DATA_BUF {
+        #[inline(always)]
+        fn default() -> PECI_DATA_BUF {
+            PECI_DATA_BUF(0)
+        }
+    }
+    impl core::fmt::Debug for PECI_DATA_BUF {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PECI_DATA_BUF")
+                .field("DATA", &self.DATA())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PECI_DATA_BUF {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "PECI_DATA_BUF {{ DATA: {=u32:?} }}", self.DATA())
+        }
+    }
+    ///PECI Expected FCS Register (PECI10).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PECI_EXPECTED_FCS(pub u32);
+    impl PECI_EXPECTED_FCS {
+        ///Expected Write FCS byte \[7:0\]. Written by software.
+        #[must_use]
+        #[inline(always)]
+        pub const fn EXPECTED_WR_FCS(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///Expected Write FCS byte \[7:0\]. Written by software.
+        #[inline(always)]
+        pub const fn set_EXPECTED_WR_FCS(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///Auto-computed Assured Write FCS \[15:8\]. Filled by hardware when AW_FCS_EN=1 before the transaction fires.
+        #[must_use]
+        #[inline(always)]
+        pub const fn EXPECTED_AW_FCS_AUTO(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0xff;
+            val as u8
+        }
+        ///Auto-computed Assured Write FCS \[15:8\]. Filled by hardware when AW_FCS_EN=1 before the transaction fires.
+        #[inline(always)]
+        pub const fn set_EXPECTED_AW_FCS_AUTO(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 8usize)) | (((val as u32) & 0xff) << 8usize);
+        }
+        ///Expected Read FCS byte \[23:16\]. Written by software. Compare against CAPTURED_RD_FCS to verify data integrity.
+        #[must_use]
+        #[inline(always)]
+        pub const fn EXPECTED_RD_FCS(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0xff;
+            val as u8
+        }
+        ///Expected Read FCS byte \[23:16\]. Written by software. Compare against CAPTURED_RD_FCS to verify data integrity.
+        #[inline(always)]
+        pub const fn set_EXPECTED_RD_FCS(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 16usize)) | (((val as u32) & 0xff) << 16usize);
+        }
+    }
+    impl Default for PECI_EXPECTED_FCS {
+        #[inline(always)]
+        fn default() -> PECI_EXPECTED_FCS {
+            PECI_EXPECTED_FCS(0)
+        }
+    }
+    impl core::fmt::Debug for PECI_EXPECTED_FCS {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PECI_EXPECTED_FCS")
+                .field("EXPECTED_WR_FCS", &self.EXPECTED_WR_FCS())
+                .field("EXPECTED_AW_FCS_AUTO", &self.EXPECTED_AW_FCS_AUTO())
+                .field("EXPECTED_RD_FCS", &self.EXPECTED_RD_FCS())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PECI_EXPECTED_FCS {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "PECI_EXPECTED_FCS {{ EXPECTED_WR_FCS: {=u8:?}, EXPECTED_AW_FCS_AUTO: {=u8:?}, EXPECTED_RD_FCS: {=u8:?} }}",
+                self.EXPECTED_WR_FCS(), self.EXPECTED_AW_FCS_AUTO(), self
+                .EXPECTED_RD_FCS()
+            )
+        }
+    }
+    ///PECI Interrupt Control Register (PECI18).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PECI_INT_CTRL(pub u32);
+    impl PECI_INT_CTRL {
+        ///Interrupt enable for command completion \[0\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn CMD_DONE_EN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Interrupt enable for command completion \[0\].
+        #[inline(always)]
+        pub const fn set_CMD_DONE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Interrupt enable for write FCS abort \[1\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn WR_FCS_ABORT_EN(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Interrupt enable for write FCS abort \[1\].
+        #[inline(always)]
+        pub const fn set_WR_FCS_ABORT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Interrupt enable for write FCS mismatch \[2\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn WR_FCS_BAD_EN(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Interrupt enable for write FCS mismatch \[2\].
+        #[inline(always)]
+        pub const fn set_WR_FCS_BAD_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Interrupt enable for bus contention \[3\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn BUS_CONTENTION_EN(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Interrupt enable for bus contention \[3\].
+        #[inline(always)]
+        pub const fn set_BUS_CONTENTION_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Interrupt enable for bus timeout \[4\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn BUS_TIMEOUT_EN(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Interrupt enable for bus timeout \[4\].
+        #[inline(always)]
+        pub const fn set_BUS_TIMEOUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Timing negotiation interrupt trigger select \[31:30\]. 0 = on 1st bit of address negotiation. 1 = on 2nd bit of address negotiation. 2 = on message negotiation.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TIMING_NEGO_SEL(&self) -> u8 {
+            let val = (self.0 >> 30usize) & 0x03;
+            val as u8
+        }
+        ///Timing negotiation interrupt trigger select \[31:30\]. 0 = on 1st bit of address negotiation. 1 = on 2nd bit of address negotiation. 2 = on message negotiation.
+        #[inline(always)]
+        pub const fn set_TIMING_NEGO_SEL(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 30usize)) | (((val as u32) & 0x03) << 30usize);
+        }
+    }
+    impl Default for PECI_INT_CTRL {
+        #[inline(always)]
+        fn default() -> PECI_INT_CTRL {
+            PECI_INT_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for PECI_INT_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PECI_INT_CTRL")
+                .field("CMD_DONE_EN", &self.CMD_DONE_EN())
+                .field("WR_FCS_ABORT_EN", &self.WR_FCS_ABORT_EN())
+                .field("WR_FCS_BAD_EN", &self.WR_FCS_BAD_EN())
+                .field("BUS_CONTENTION_EN", &self.BUS_CONTENTION_EN())
+                .field("BUS_TIMEOUT_EN", &self.BUS_TIMEOUT_EN())
+                .field("TIMING_NEGO_SEL", &self.TIMING_NEGO_SEL())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PECI_INT_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "PECI_INT_CTRL {{ CMD_DONE_EN: {=bool:?}, WR_FCS_ABORT_EN: {=bool:?}, WR_FCS_BAD_EN: {=bool:?}, BUS_CONTENTION_EN: {=bool:?}, BUS_TIMEOUT_EN: {=bool:?}, TIMING_NEGO_SEL: {=u8:?} }}",
+                self.CMD_DONE_EN(), self.WR_FCS_ABORT_EN(), self.WR_FCS_BAD_EN(), self
+                .BUS_CONTENTION_EN(), self.BUS_TIMEOUT_EN(), self.TIMING_NEGO_SEL()
+            )
+        }
+    }
+    ///PECI Interrupt Status Register (PECI1C). RW1C on bits \[4:0\].
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PECI_INT_STS(pub u32);
+    impl PECI_INT_STS {
+        ///Command completed \[0\]. Write 1 to clear.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CMD_DONE(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Command completed \[0\]. Write 1 to clear.
+        #[inline(always)]
+        pub const fn set_CMD_DONE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Write FCS abort \[1\]. Write 1 to clear.
+        #[must_use]
+        #[inline(always)]
+        pub const fn WR_FCS_ABORT(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Write FCS abort \[1\]. Write 1 to clear.
+        #[inline(always)]
+        pub const fn set_WR_FCS_ABORT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Write FCS mismatch detected \[2\]. Write 1 to clear.
+        #[must_use]
+        #[inline(always)]
+        pub const fn WR_FCS_BAD(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Write FCS mismatch detected \[2\]. Write 1 to clear.
+        #[inline(always)]
+        pub const fn set_WR_FCS_BAD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Bus contention detected \[3\]. Write 1 to clear.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BUS_CONTENTION(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Bus contention detected \[3\]. Write 1 to clear.
+        #[inline(always)]
+        pub const fn set_BUS_CONTENTION(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Bus timeout \[4\]. Write 1 to clear.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BUS_TIMEOUT(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Bus timeout \[4\]. Write 1 to clear.
+        #[inline(always)]
+        pub const fn set_BUS_TIMEOUT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Timing negotiation result \[29:16\]. Read-only. Holds the negotiated timing value after a timing negotiation command.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TIMING_RESULT(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0x3fff;
+            val as u16
+        }
+        ///Timing negotiation result \[29:16\]. Read-only. Holds the negotiated timing value after a timing negotiation command.
+        #[inline(always)]
+        pub const fn set_TIMING_RESULT(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x3fff << 16usize)) | (((val as u32) & 0x3fff) << 16usize);
+        }
+    }
+    impl Default for PECI_INT_STS {
+        #[inline(always)]
+        fn default() -> PECI_INT_STS {
+            PECI_INT_STS(0)
+        }
+    }
+    impl core::fmt::Debug for PECI_INT_STS {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PECI_INT_STS")
+                .field("CMD_DONE", &self.CMD_DONE())
+                .field("WR_FCS_ABORT", &self.WR_FCS_ABORT())
+                .field("WR_FCS_BAD", &self.WR_FCS_BAD())
+                .field("BUS_CONTENTION", &self.BUS_CONTENTION())
+                .field("BUS_TIMEOUT", &self.BUS_TIMEOUT())
+                .field("TIMING_RESULT", &self.TIMING_RESULT())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PECI_INT_STS {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "PECI_INT_STS {{ CMD_DONE: {=bool:?}, WR_FCS_ABORT: {=bool:?}, WR_FCS_BAD: {=bool:?}, BUS_CONTENTION: {=bool:?}, BUS_TIMEOUT: {=bool:?}, TIMING_RESULT: {=u16:?} }}",
+                self.CMD_DONE(), self.WR_FCS_ABORT(), self.WR_FCS_BAD(), self
+                .BUS_CONTENTION(), self.BUS_TIMEOUT(), self.TIMING_RESULT()
+            )
+        }
+    }
+    ///PECI Read/Write Length Register (PECI0C).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PECI_RW_LENGTH(pub u32);
+    impl PECI_RW_LENGTH {
+        ///PECI target device address \[7:0\]. Intel CPU PECI address, typically 0x30 for the first CPU socket.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TARGET_ADDR(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///PECI target device address \[7:0\]. Intel CPU PECI address, typically 0x30 for the first CPU socket.
+        #[inline(always)]
+        pub const fn set_TARGET_ADDR(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///Write data length in bytes \[15:8\]. Number of bytes to transmit (from WR_DATA buffers), not counting FCS. Maximum: 32 bytes.
+        #[must_use]
+        #[inline(always)]
+        pub const fn WR_LEN(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0xff;
+            val as u8
+        }
+        ///Write data length in bytes \[15:8\]. Number of bytes to transmit (from WR_DATA buffers), not counting FCS. Maximum: 32 bytes.
+        #[inline(always)]
+        pub const fn set_WR_LEN(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 8usize)) | (((val as u32) & 0xff) << 8usize);
+        }
+        ///Read data length in bytes \[23:16\]. Number of bytes expected from the target, not counting FCS. Maximum: 32 bytes.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RD_LEN(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0xff;
+            val as u8
+        }
+        ///Read data length in bytes \[23:16\]. Number of bytes expected from the target, not counting FCS. Maximum: 32 bytes.
+        #[inline(always)]
+        pub const fn set_RD_LEN(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 16usize)) | (((val as u32) & 0xff) << 16usize);
+        }
+        ///Assured Write FCS enable \[31\]. When set, the controller appends an Assured Write FCS to the transaction. Required for write commands that modify CPU configuration.
+        #[must_use]
+        #[inline(always)]
+        pub const fn AW_FCS_EN(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///Assured Write FCS enable \[31\]. When set, the controller appends an Assured Write FCS to the transaction. Required for write commands that modify CPU configuration.
+        #[inline(always)]
+        pub const fn set_AW_FCS_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for PECI_RW_LENGTH {
+        #[inline(always)]
+        fn default() -> PECI_RW_LENGTH {
+            PECI_RW_LENGTH(0)
+        }
+    }
+    impl core::fmt::Debug for PECI_RW_LENGTH {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PECI_RW_LENGTH")
+                .field("TARGET_ADDR", &self.TARGET_ADDR())
+                .field("WR_LEN", &self.WR_LEN())
+                .field("RD_LEN", &self.RD_LEN())
+                .field("AW_FCS_EN", &self.AW_FCS_EN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PECI_RW_LENGTH {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "PECI_RW_LENGTH {{ TARGET_ADDR: {=u8:?}, WR_LEN: {=u8:?}, RD_LEN: {=u8:?}, AW_FCS_EN: {=bool:?} }}",
+                self.TARGET_ADDR(), self.WR_LEN(), self.RD_LEN(), self.AW_FCS_EN()
+            )
+        }
+    }
+    ///PECI Timing Negotiation Register (PECI04).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PECI_TIMING_NEG(pub u32);
+    impl PECI_TIMING_NEG {
+        ///Address timing parameter \[7:0\]. PECI bus address cycle timing in PECI clock units. Set before issuing an address timing negotiation command.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T_NEGO_ADDR(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///Address timing parameter \[7:0\]. PECI bus address cycle timing in PECI clock units. Set before issuing an address timing negotiation command.
+        #[inline(always)]
+        pub const fn set_T_NEGO_ADDR(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///Message timing parameter \[15:8\]. PECI bus message cycle timing in PECI clock units. Set before issuing a message timing negotiation command.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T_NEGO_MSG(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0xff;
+            val as u8
+        }
+        ///Message timing parameter \[15:8\]. PECI bus message cycle timing in PECI clock units. Set before issuing a message timing negotiation command.
+        #[inline(always)]
+        pub const fn set_T_NEGO_MSG(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 8usize)) | (((val as u32) & 0xff) << 8usize);
+        }
+    }
+    impl Default for PECI_TIMING_NEG {
+        #[inline(always)]
+        fn default() -> PECI_TIMING_NEG {
+            PECI_TIMING_NEG(0)
+        }
+    }
+    impl core::fmt::Debug for PECI_TIMING_NEG {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PECI_TIMING_NEG")
+                .field("T_NEGO_ADDR", &self.T_NEGO_ADDR())
+                .field("T_NEGO_MSG", &self.T_NEGO_MSG())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PECI_TIMING_NEG {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "PECI_TIMING_NEG {{ T_NEGO_ADDR: {=u8:?}, T_NEGO_MSG: {=u8:?} }}",
+                self.T_NEGO_ADDR(),
+                self.T_NEGO_MSG()
+            )
+        }
+    }
+}
+pub mod pwm_v1 {
+    ///ASPEED G6 PWM and Fan Tachometer controller. Base: 0x7E61_0000 (AST2600). 16 PWM outputs, 16 tachometer inputs. Each channel occupies 0x10 bytes; channels 0–15 at offsets 0x00–0xF0.
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PWM_TACH {
+        ptr: *mut u8,
+    }
+    unsafe impl Send for PWM_TACH {}
+    unsafe impl Sync for PWM_TACH {}
+    impl PWM_TACH {
+        #[inline(always)]
+        pub const unsafe fn from_ptr(ptr: *mut ()) -> Self {
+            Self { ptr: ptr as _ }
+        }
+        #[inline(always)]
+        pub const fn as_ptr(&self) -> *mut () {
+            self.ptr as _
+        }
+        ///PWM Channel 0 Control Register (offset 0x00).
+        #[inline(always)]
+        pub const fn CH0_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
+        }
+        ///PWM Channel 0 Duty Cycle Register (offset 0x04).
+        #[inline(always)]
+        pub const fn CH0_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
+        }
+        ///Tachometer Channel 0 Control Register (offset 0x08).
+        #[inline(always)]
+        pub const fn CH0_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
+        }
+        ///Tachometer Channel 0 Status Register (offset 0x0C).
+        #[inline(always)]
+        pub const fn CH0_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
+        }
+        ///PWM Channel 1 Control Register (offset 0x10).
+        #[inline(always)]
+        pub const fn CH1_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
+        }
+        ///PWM Channel 1 Duty Cycle Register (offset 0x14).
+        #[inline(always)]
+        pub const fn CH1_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
+        }
+        ///Tachometer Channel 1 Control Register (offset 0x18).
+        #[inline(always)]
+        pub const fn CH1_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
+        }
+        ///Tachometer Channel 1 Status Register (offset 0x1C).
+        #[inline(always)]
+        pub const fn CH1_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
+        }
+        ///PWM Channel 2 Control Register (offset 0x20).
+        #[inline(always)]
+        pub const fn CH2_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _) }
+        }
+        ///PWM Channel 2 Duty Cycle Register (offset 0x24).
+        #[inline(always)]
+        pub const fn CH2_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
+        }
+        ///Tachometer Channel 2 Control Register (offset 0x28).
+        #[inline(always)]
+        pub const fn CH2_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
+        }
+        ///Tachometer Channel 2 Status Register (offset 0x2C).
+        #[inline(always)]
+        pub const fn CH2_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _) }
+        }
+        ///PWM Channel 3 Control Register (offset 0x30).
+        #[inline(always)]
+        pub const fn CH3_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _) }
+        }
+        ///PWM Channel 3 Duty Cycle Register (offset 0x34).
+        #[inline(always)]
+        pub const fn CH3_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _) }
+        }
+        ///Tachometer Channel 3 Control Register (offset 0x38).
+        #[inline(always)]
+        pub const fn CH3_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _) }
+        }
+        ///Tachometer Channel 3 Status Register (offset 0x3C).
+        #[inline(always)]
+        pub const fn CH3_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _) }
+        }
+        ///PWM Channel 4 Control Register (offset 0x40).
+        #[inline(always)]
+        pub const fn CH4_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _) }
+        }
+        ///PWM Channel 4 Duty Cycle Register (offset 0x44).
+        #[inline(always)]
+        pub const fn CH4_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _) }
+        }
+        ///Tachometer Channel 4 Control Register (offset 0x48).
+        #[inline(always)]
+        pub const fn CH4_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _) }
+        }
+        ///Tachometer Channel 4 Status Register (offset 0x4C).
+        #[inline(always)]
+        pub const fn CH4_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x4cusize) as _) }
+        }
+        ///PWM Channel 5 Control Register (offset 0x50).
+        #[inline(always)]
+        pub const fn CH5_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _) }
+        }
+        ///PWM Channel 5 Duty Cycle Register (offset 0x54).
+        #[inline(always)]
+        pub const fn CH5_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _) }
+        }
+        ///Tachometer Channel 5 Control Register (offset 0x58).
+        #[inline(always)]
+        pub const fn CH5_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x58usize) as _) }
+        }
+        ///Tachometer Channel 5 Status Register (offset 0x5C).
+        #[inline(always)]
+        pub const fn CH5_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x5cusize) as _) }
+        }
+        ///PWM Channel 6 Control Register (offset 0x60).
+        #[inline(always)]
+        pub const fn CH6_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _) }
+        }
+        ///PWM Channel 6 Duty Cycle Register (offset 0x64).
+        #[inline(always)]
+        pub const fn CH6_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _) }
+        }
+        ///Tachometer Channel 6 Control Register (offset 0x68).
+        #[inline(always)]
+        pub const fn CH6_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _) }
+        }
+        ///Tachometer Channel 6 Status Register (offset 0x6C).
+        #[inline(always)]
+        pub const fn CH6_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x6cusize) as _) }
+        }
+        ///PWM Channel 7 Control Register (offset 0x70).
+        #[inline(always)]
+        pub const fn CH7_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _) }
+        }
+        ///PWM Channel 7 Duty Cycle Register (offset 0x74).
+        #[inline(always)]
+        pub const fn CH7_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _) }
+        }
+        ///Tachometer Channel 7 Control Register (offset 0x78).
+        #[inline(always)]
+        pub const fn CH7_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _) }
+        }
+        ///Tachometer Channel 7 Status Register (offset 0x7C).
+        #[inline(always)]
+        pub const fn CH7_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x7cusize) as _) }
+        }
+        ///PWM Channel 8 Control Register (offset 0x80).
+        #[inline(always)]
+        pub const fn CH8_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _) }
+        }
+        ///PWM Channel 8 Duty Cycle Register (offset 0x84).
+        #[inline(always)]
+        pub const fn CH8_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _) }
+        }
+        ///Tachometer Channel 8 Control Register (offset 0x88).
+        #[inline(always)]
+        pub const fn CH8_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _) }
+        }
+        ///Tachometer Channel 8 Status Register (offset 0x8C).
+        #[inline(always)]
+        pub const fn CH8_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x8cusize) as _) }
+        }
+        ///PWM Channel 9 Control Register (offset 0x90).
+        #[inline(always)]
+        pub const fn CH9_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x90usize) as _) }
+        }
+        ///PWM Channel 9 Duty Cycle Register (offset 0x94).
+        #[inline(always)]
+        pub const fn CH9_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x94usize) as _) }
+        }
+        ///Tachometer Channel 9 Control Register (offset 0x98).
+        #[inline(always)]
+        pub const fn CH9_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x98usize) as _) }
+        }
+        ///Tachometer Channel 9 Status Register (offset 0x9C).
+        #[inline(always)]
+        pub const fn CH9_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x9cusize) as _) }
+        }
+        ///PWM Channel 10 Control Register (offset 0xA0).
+        #[inline(always)]
+        pub const fn CH10_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa0usize) as _) }
+        }
+        ///PWM Channel 10 Duty Cycle Register (offset 0xA4).
+        #[inline(always)]
+        pub const fn CH10_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa4usize) as _) }
+        }
+        ///Tachometer Channel 10 Control Register (offset 0xA8).
+        #[inline(always)]
+        pub const fn CH10_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xa8usize) as _) }
+        }
+        ///Tachometer Channel 10 Status Register (offset 0xAC).
+        #[inline(always)]
+        pub const fn CH10_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xacusize) as _) }
+        }
+        ///PWM Channel 11 Control Register (offset 0xB0).
+        #[inline(always)]
+        pub const fn CH11_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xb0usize) as _) }
+        }
+        ///PWM Channel 11 Duty Cycle Register (offset 0xB4).
+        #[inline(always)]
+        pub const fn CH11_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xb4usize) as _) }
+        }
+        ///Tachometer Channel 11 Control Register (offset 0xB8).
+        #[inline(always)]
+        pub const fn CH11_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xb8usize) as _) }
+        }
+        ///Tachometer Channel 11 Status Register (offset 0xBC).
+        #[inline(always)]
+        pub const fn CH11_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xbcusize) as _) }
+        }
+        ///PWM Channel 12 Control Register (offset 0xC0).
+        #[inline(always)]
+        pub const fn CH12_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc0usize) as _) }
+        }
+        ///PWM Channel 12 Duty Cycle Register (offset 0xC4).
+        #[inline(always)]
+        pub const fn CH12_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc4usize) as _) }
+        }
+        ///Tachometer Channel 12 Control Register (offset 0xC8).
+        #[inline(always)]
+        pub const fn CH12_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xc8usize) as _) }
+        }
+        ///Tachometer Channel 12 Status Register (offset 0xCC).
+        #[inline(always)]
+        pub const fn CH12_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xccusize) as _) }
+        }
+        ///PWM Channel 13 Control Register (offset 0xD0).
+        #[inline(always)]
+        pub const fn CH13_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd0usize) as _) }
+        }
+        ///PWM Channel 13 Duty Cycle Register (offset 0xD4).
+        #[inline(always)]
+        pub const fn CH13_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd4usize) as _) }
+        }
+        ///Tachometer Channel 13 Control Register (offset 0xD8).
+        #[inline(always)]
+        pub const fn CH13_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xd8usize) as _) }
+        }
+        ///Tachometer Channel 13 Status Register (offset 0xDC).
+        #[inline(always)]
+        pub const fn CH13_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xdcusize) as _) }
+        }
+        ///PWM Channel 14 Control Register (offset 0xE0).
+        #[inline(always)]
+        pub const fn CH14_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe0usize) as _) }
+        }
+        ///PWM Channel 14 Duty Cycle Register (offset 0xE4).
+        #[inline(always)]
+        pub const fn CH14_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe4usize) as _) }
+        }
+        ///Tachometer Channel 14 Control Register (offset 0xE8).
+        #[inline(always)]
+        pub const fn CH14_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xe8usize) as _) }
+        }
+        ///Tachometer Channel 14 Status Register (offset 0xEC).
+        #[inline(always)]
+        pub const fn CH14_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xecusize) as _) }
+        }
+        ///PWM Channel 15 Control Register (offset 0xF0).
+        #[inline(always)]
+        pub const fn CH15_PWM_CTRL(self) -> crate::common::Reg<PWM_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf0usize) as _) }
+        }
+        ///PWM Channel 15 Duty Cycle Register (offset 0xF4).
+        #[inline(always)]
+        pub const fn CH15_PWM_DUTY(self) -> crate::common::Reg<PWM_DUTY, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf4usize) as _) }
+        }
+        ///Tachometer Channel 15 Control Register (offset 0xF8).
+        #[inline(always)]
+        pub const fn CH15_TACH_CTRL(self) -> crate::common::Reg<TACH_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xf8usize) as _) }
+        }
+        ///Tachometer Channel 15 Status Register (offset 0xFC).
+        #[inline(always)]
+        pub const fn CH15_TACH_STS(self) -> crate::common::Reg<TACH_STS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0xfcusize) as _) }
+        }
+    }
+    ///PWM channel control register. Controls PWM output enable, clock prescaler, polarity, and WDT-safe mode. Clock: input_clk / ((DIV_L + 1) << DIV_H)
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PWM_CTRL(pub u32);
+    impl PWM_CTRL {
+        ///Low-order clock divider \[7:0\]. Effective clock = input_clk / ((DIV_L + 1) << DIV_H).
+        #[must_use]
+        #[inline(always)]
+        pub const fn CLK_DIV_L(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///Low-order clock divider \[7:0\]. Effective clock = input_clk / ((DIV_L + 1) << DIV_H).
+        #[inline(always)]
+        pub const fn set_CLK_DIV_L(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///High-order clock divider (shift amount) \[11:8\]. Effective clock = input_clk / ((DIV_L + 1) << DIV_H). Range 0–15 giving divisors of 1–32768 × (DIV_L+1).
+        #[must_use]
+        #[inline(always)]
+        pub const fn CLK_DIV_H(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x0f;
+            val as u8
+        }
+        ///High-order clock divider (shift amount) \[11:8\]. Effective clock = input_clk / ((DIV_L + 1) << DIV_H). Range 0–15 giving divisors of 1–32768 × (DIV_L+1).
+        #[inline(always)]
+        pub const fn set_CLK_DIV_H(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 8usize)) | (((val as u32) & 0x0f) << 8usize);
+        }
+        ///PWM output pin enable \[12\]. 0 = output held at inactive level; PWM counter does not drive the pin. 1 = PWM signal drives the output pin. CLK_EN must also be set for the duty cycle to be non-zero.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PIN_EN(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///PWM output pin enable \[12\]. 0 = output held at inactive level; PWM counter does not drive the pin. 1 = PWM signal drives the output pin. CLK_EN must also be set for the duty cycle to be non-zero.
+        #[inline(always)]
+        pub const fn set_PIN_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///Open-drain output mode \[13\]. 0 = push-pull, 1 = open-drain.
+        #[must_use]
+        #[inline(always)]
+        pub const fn OPEN_DRAIN_EN(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///Open-drain output mode \[13\]. 0 = push-pull, 1 = open-drain.
+        #[inline(always)]
+        pub const fn set_OPEN_DRAIN_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///Output polarity inversion \[14\]. 0 = active high. 1 = active low (output is inverted immediately). Toggling this while PWM is running may generate a glitch.
+        #[must_use]
+        #[inline(always)]
+        pub const fn INVERSE(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///Output polarity inversion \[14\]. 0 = active high. 1 = active low (output is inverted immediately). Toggling this while PWM is running may generate a glitch.
+        #[inline(always)]
+        pub const fn set_INVERSE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///Force output to inactive level \[15\]. When set, the PWM output is forced to inactive regardless of CLK_EN.
+        #[must_use]
+        #[inline(always)]
+        pub const fn LEVEL_OUTPUT(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///Force output to inactive level \[15\]. When set, the PWM output is forced to inactive regardless of CLK_EN.
+        #[inline(always)]
+        pub const fn set_LEVEL_OUTPUT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+        ///PWM clock enable \[16\]. 0 = duty counter held in reset, output at inactive level. 1 = duty counter runs; duty cycle determined by PWM_DUTY. Use PIN_EN to gate the output without resetting the counter.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CLK_EN(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///PWM clock enable \[16\]. 0 = duty counter held in reset, output at inactive level. 1 = duty counter runs; duty cycle determined by PWM_DUTY. Use PIN_EN to gate the output without resetting the counter.
+        #[inline(always)]
+        pub const fn set_CLK_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///Duty cycle synchronisation disable \[17\]. 0 = new duty values take effect at the start of the next period (glitch-free). 1 = new duty values take effect immediately.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DUTY_SYNC_DIS(&self) -> bool {
+            let val = (self.0 >> 17usize) & 0x01;
+            val != 0
+        }
+        ///Duty cycle synchronisation disable \[17\]. 0 = new duty values take effect at the start of the next period (glitch-free). 1 = new duty values take effect immediately.
+        #[inline(always)]
+        pub const fn set_DUTY_SYNC_DIS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 17usize)) | (((val as u32) & 0x01) << 17usize);
+        }
+        ///Load duty cycle from WDT-safe value on watchdog event \[18\]. When set, a WDT reset causes the PWM to switch to the duty point programmed in PWM_DUTY.POINT_WDT.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DUTY_LOAD_WDT_EN(&self) -> bool {
+            let val = (self.0 >> 18usize) & 0x01;
+            val != 0
+        }
+        ///Load duty cycle from WDT-safe value on watchdog event \[18\]. When set, a WDT reset causes the PWM to switch to the duty point programmed in PWM_DUTY.POINT_WDT.
+        #[inline(always)]
+        pub const fn set_DUTY_LOAD_WDT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 18usize)) | (((val as u32) & 0x01) << 18usize);
+        }
+        ///WDT duty select: use rising point as WDT-safe duty \[19\]. 0 = use FALLING_POINT as WDT duty. 1 = use RISING_POINT as WDT duty.
+        #[must_use]
+        #[inline(always)]
+        pub const fn LOAD_SEL_RISING_WDT(&self) -> bool {
+            let val = (self.0 >> 19usize) & 0x01;
+            val != 0
+        }
+        ///WDT duty select: use rising point as WDT-safe duty \[19\]. 0 = use FALLING_POINT as WDT duty. 1 = use RISING_POINT as WDT duty.
+        #[inline(always)]
+        pub const fn set_LOAD_SEL_RISING_WDT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 19usize)) | (((val as u32) & 0x01) << 19usize);
+        }
+    }
+    impl Default for PWM_CTRL {
+        #[inline(always)]
+        fn default() -> PWM_CTRL {
+            PWM_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for PWM_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PWM_CTRL")
+                .field("CLK_DIV_L", &self.CLK_DIV_L())
+                .field("CLK_DIV_H", &self.CLK_DIV_H())
+                .field("PIN_EN", &self.PIN_EN())
+                .field("OPEN_DRAIN_EN", &self.OPEN_DRAIN_EN())
+                .field("INVERSE", &self.INVERSE())
+                .field("LEVEL_OUTPUT", &self.LEVEL_OUTPUT())
+                .field("CLK_EN", &self.CLK_EN())
+                .field("DUTY_SYNC_DIS", &self.DUTY_SYNC_DIS())
+                .field("DUTY_LOAD_WDT_EN", &self.DUTY_LOAD_WDT_EN())
+                .field("LOAD_SEL_RISING_WDT", &self.LOAD_SEL_RISING_WDT())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PWM_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "PWM_CTRL {{ CLK_DIV_L: {=u8:?}, CLK_DIV_H: {=u8:?}, PIN_EN: {=bool:?}, OPEN_DRAIN_EN: {=bool:?}, INVERSE: {=bool:?}, LEVEL_OUTPUT: {=bool:?}, CLK_EN: {=bool:?}, DUTY_SYNC_DIS: {=bool:?}, DUTY_LOAD_WDT_EN: {=bool:?}, LOAD_SEL_RISING_WDT: {=bool:?} }}",
+                self.CLK_DIV_L(), self.CLK_DIV_H(), self.PIN_EN(), self.OPEN_DRAIN_EN(),
+                self.INVERSE(), self.LEVEL_OUTPUT(), self.CLK_EN(), self.DUTY_SYNC_DIS(),
+                self.DUTY_LOAD_WDT_EN(), self.LOAD_SEL_RISING_WDT()
+            )
+        }
+    }
+    ///PWM channel duty cycle register. Period = (DUTY_PERIOD + 1) × Q, where Q = (DIV_L+1) << DIV_H / input_clk. Active time = (FALLING_POINT - RISING_POINT) × Q. RISING_POINT = 0 and FALLING_POINT = DUTY_PERIOD+1 → 100% duty cycle. FALLING_POINT = 0 (and CLK_EN=1) → 100% duty cycle (rising=falling=0).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct PWM_DUTY(pub u32);
+    impl PWM_DUTY {
+        ///Duty cycle rising edge point \[7:0\]. The PWM output goes active at this count within the period. Typically 0 (output active from start of period).
+        #[must_use]
+        #[inline(always)]
+        pub const fn RISING_POINT(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///Duty cycle rising edge point \[7:0\]. The PWM output goes active at this count within the period. Typically 0 (output active from start of period).
+        #[inline(always)]
+        pub const fn set_RISING_POINT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///Duty cycle falling edge point \[15:8\]. The PWM output goes inactive at this count. duty_cycle = (FALLING_POINT - RISING_POINT) / (DUTY_PERIOD + 1). Set equal to RISING_POINT for 100% duty cycle.
+        #[must_use]
+        #[inline(always)]
+        pub const fn FALLING_POINT(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0xff;
+            val as u8
+        }
+        ///Duty cycle falling edge point \[15:8\]. The PWM output goes inactive at this count. duty_cycle = (FALLING_POINT - RISING_POINT) / (DUTY_PERIOD + 1). Set equal to RISING_POINT for 100% duty cycle.
+        #[inline(always)]
+        pub const fn set_FALLING_POINT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 8usize)) | (((val as u32) & 0xff) << 8usize);
+        }
+        ///WDT-safe duty cycle point \[23:16\]. Used as the falling point when DUTY_LOAD_WDT_EN fires. Allows a safe fan speed fallback on watchdog reset.
+        #[must_use]
+        #[inline(always)]
+        pub const fn POINT_WDT(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0xff;
+            val as u8
+        }
+        ///WDT-safe duty cycle point \[23:16\]. Used as the falling point when DUTY_LOAD_WDT_EN fires. Allows a safe fan speed fallback on watchdog reset.
+        #[inline(always)]
+        pub const fn set_POINT_WDT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 16usize)) | (((val as u32) & 0xff) << 16usize);
+        }
+        ///PWM period length \[31:24\]. Period = (DUTY_PERIOD + 1) × Q. Maximum value (255) is recommended for fine-grained duty control.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DUTY_PERIOD(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0xff;
+            val as u8
+        }
+        ///PWM period length \[31:24\]. Period = (DUTY_PERIOD + 1) × Q. Maximum value (255) is recommended for fine-grained duty control.
+        #[inline(always)]
+        pub const fn set_DUTY_PERIOD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 24usize)) | (((val as u32) & 0xff) << 24usize);
+        }
+    }
+    impl Default for PWM_DUTY {
+        #[inline(always)]
+        fn default() -> PWM_DUTY {
+            PWM_DUTY(0)
+        }
+    }
+    impl core::fmt::Debug for PWM_DUTY {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("PWM_DUTY")
+                .field("RISING_POINT", &self.RISING_POINT())
+                .field("FALLING_POINT", &self.FALLING_POINT())
+                .field("POINT_WDT", &self.POINT_WDT())
+                .field("DUTY_PERIOD", &self.DUTY_PERIOD())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for PWM_DUTY {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "PWM_DUTY {{ RISING_POINT: {=u8:?}, FALLING_POINT: {=u8:?}, POINT_WDT: {=u8:?}, DUTY_PERIOD: {=u8:?} }}",
+                self.RISING_POINT(), self.FALLING_POINT(), self.POINT_WDT(), self
+                .DUTY_PERIOD()
+            )
+        }
+    }
+    ///Tachometer channel control register. Measures fan speed by timing edges on the TACH input pin. fan_rpm = (clk_hz × 60) / (tach_value × pulses_per_rev × 4^CLK_DIV_T)
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct TACH_CTRL(pub u32);
+    impl TACH_CTRL {
+        ///Fan stopped / timeout threshold \[19:0\]. If the tach counter exceeds this value between edges, the fan is considered stopped and the IRQ fires (if IER=1). Set to the counter value corresponding to ~0 RPM.
+        #[must_use]
+        #[inline(always)]
+        pub const fn THRESHOLD(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0x000f_ffff;
+            val as u32
+        }
+        ///Fan stopped / timeout threshold \[19:0\]. If the tach counter exceeds this value between edges, the fan is considered stopped and the IRQ fires (if IER=1). Set to the counter value corresponding to ~0 RPM.
+        #[inline(always)]
+        pub const fn set_THRESHOLD(&mut self, val: u32) {
+            self.0 = (self.0 & !(0x000f_ffff << 0usize)) | (((val as u32) & 0x000f_ffff) << 0usize);
+        }
+        ///Tachometer input clock divisor \[23:20\]. Actual divisor = 4^CLK_DIV_T. Values: 0→1, 1→4, 2→16, 3→64, …, 15→4^15. Use larger values for slow fans to avoid counter overflow.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CLK_DIV_T(&self) -> u8 {
+            let val = (self.0 >> 20usize) & 0x0f;
+            val as u8
+        }
+        ///Tachometer input clock divisor \[23:20\]. Actual divisor = 4^CLK_DIV_T. Values: 0→1, 1→4, 2→16, 3→64, …, 15→4^15. Use larger values for slow fans to avoid counter overflow.
+        #[inline(always)]
+        pub const fn set_CLK_DIV_T(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 20usize)) | (((val as u32) & 0x0f) << 20usize);
+        }
+        ///Edge detection mode \[25:24\]. 0 = falling-to-falling (F2F). 1 = rising-to-rising (R2R). 2 = both edges (period = half-cycle).
+        #[must_use]
+        #[inline(always)]
+        pub const fn IO_EDGE(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x03;
+            val as u8
+        }
+        ///Edge detection mode \[25:24\]. 0 = falling-to-falling (F2F). 1 = rising-to-rising (R2R). 2 = both edges (period = half-cycle).
+        #[inline(always)]
+        pub const fn set_IO_EDGE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 24usize)) | (((val as u32) & 0x03) << 24usize);
+        }
+        ///Input debounce filter \[27:26\]. 0 = 3 clock cycles. 1 = 2 cycles. 2 = 1 cycle. 3 = no debounce.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEBOUNCE(&self) -> u8 {
+            let val = (self.0 >> 26usize) & 0x03;
+            val as u8
+        }
+        ///Input debounce filter \[27:26\]. 0 = 3 clock cycles. 1 = 2 cycles. 2 = 1 cycle. 3 = no debounce.
+        #[inline(always)]
+        pub const fn set_DEBOUNCE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 26usize)) | (((val as u32) & 0x03) << 26usize);
+        }
+        ///Tachometer channel enable \[28\]. 1 = measuring; 0 = disabled.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENABLE(&self) -> bool {
+            let val = (self.0 >> 28usize) & 0x01;
+            val != 0
+        }
+        ///Tachometer channel enable \[28\]. 1 = measuring; 0 = disabled.
+        #[inline(always)]
+        pub const fn set_ENABLE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 28usize)) | (((val as u32) & 0x01) << 28usize);
+        }
+        ///PWM-to-tach loopback test \[29\]. When set, this tach channel monitors the corresponding PWM output. Used for self-test; disconnect external fan input first.
+        #[must_use]
+        #[inline(always)]
+        pub const fn LOOPBACK(&self) -> bool {
+            let val = (self.0 >> 29usize) & 0x01;
+            val != 0
+        }
+        ///PWM-to-tach loopback test \[29\]. When set, this tach channel monitors the corresponding PWM output. Used for self-test; disconnect external fan input first.
+        #[inline(always)]
+        pub const fn set_LOOPBACK(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 29usize)) | (((val as u32) & 0x01) << 29usize);
+        }
+        ///Interrupt on fan too-fast (below threshold) \[30\]. 0 = interrupt when tach_value > THRESHOLD (fan too slow / stopped). 1 = interrupt when tach_value < THRESHOLD (fan too fast).
+        #[must_use]
+        #[inline(always)]
+        pub const fn INVERS_LIMIT(&self) -> bool {
+            let val = (self.0 >> 30usize) & 0x01;
+            val != 0
+        }
+        ///Interrupt on fan too-fast (below threshold) \[30\]. 0 = interrupt when tach_value > THRESHOLD (fan too slow / stopped). 1 = interrupt when tach_value < THRESHOLD (fan too fast).
+        #[inline(always)]
+        pub const fn set_INVERS_LIMIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 30usize)) | (((val as u32) & 0x01) << 30usize);
+        }
+        ///Tachometer interrupt enable \[31\]. 1 = interrupt on threshold event.
+        #[must_use]
+        #[inline(always)]
+        pub const fn IER(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///Tachometer interrupt enable \[31\]. 1 = interrupt on threshold event.
+        #[inline(always)]
+        pub const fn set_IER(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for TACH_CTRL {
+        #[inline(always)]
+        fn default() -> TACH_CTRL {
+            TACH_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for TACH_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("TACH_CTRL")
+                .field("THRESHOLD", &self.THRESHOLD())
+                .field("CLK_DIV_T", &self.CLK_DIV_T())
+                .field("IO_EDGE", &self.IO_EDGE())
+                .field("DEBOUNCE", &self.DEBOUNCE())
+                .field("ENABLE", &self.ENABLE())
+                .field("LOOPBACK", &self.LOOPBACK())
+                .field("INVERS_LIMIT", &self.INVERS_LIMIT())
+                .field("IER", &self.IER())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for TACH_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "TACH_CTRL {{ THRESHOLD: {=u32:?}, CLK_DIV_T: {=u8:?}, IO_EDGE: {=u8:?}, DEBOUNCE: {=u8:?}, ENABLE: {=bool:?}, LOOPBACK: {=bool:?}, INVERS_LIMIT: {=bool:?}, IER: {=bool:?} }}",
+                self.THRESHOLD(), self.CLK_DIV_T(), self.IO_EDGE(), self.DEBOUNCE(), self
+                .ENABLE(), self.LOOPBACK(), self.INVERS_LIMIT(), self.IER()
+            )
+        }
+    }
+    ///Tachometer channel status register (read-only / RW1C on bit 31). Contains the captured tach value and status flags.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct TACH_STS(pub u32);
+    impl TACH_STS {
+        ///Captured tachometer count \[19:0\]. Number of input clock cycles between successive TACH edges (divided by 4^CLK_DIV_T). Convert to RPM: fan_rpm = (clk_hz × 60) / (VALUE × PPR × 4^CLK_DIV_T) where PPR = pulses per revolution of the fan (typically 2).
+        #[must_use]
+        #[inline(always)]
+        pub const fn VALUE(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0x000f_ffff;
+            val as u32
+        }
+        ///Captured tachometer count \[19:0\]. Number of input clock cycles between successive TACH edges (divided by 4^CLK_DIV_T). Convert to RPM: fan_rpm = (clk_hz × 60) / (VALUE × PPR × 4^CLK_DIV_T) where PPR = pulses per revolution of the fan (typically 2).
+        #[inline(always)]
+        pub const fn set_VALUE(&mut self, val: u32) {
+            self.0 = (self.0 & !(0x000f_ffff << 0usize)) | (((val as u32) & 0x000f_ffff) << 0usize);
+        }
+        ///Full measurement complete \[20\]. Set after the first complete edge-to-edge measurement. Clear until the first complete measurement since enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn FULL_MEASUREMENT(&self) -> bool {
+            let val = (self.0 >> 20usize) & 0x01;
+            val != 0
+        }
+        ///Full measurement complete \[20\]. Set after the first complete edge-to-edge measurement. Clear until the first complete measurement since enable.
+        #[inline(always)]
+        pub const fn set_FULL_MEASUREMENT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 20usize)) | (((val as u32) & 0x01) << 20usize);
+        }
+        ///Tach value updated flag \[21\]. Set when a new measurement completes. Poll or use interrupt to detect new results.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VALUE_UPDATE(&self) -> bool {
+            let val = (self.0 >> 21usize) & 0x01;
+            val != 0
+        }
+        ///Tach value updated flag \[21\]. Set when a new measurement completes. Poll or use interrupt to detect new results.
+        #[inline(always)]
+        pub const fn set_VALUE_UPDATE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 21usize)) | (((val as u32) & 0x01) << 21usize);
+        }
+        ///Raw (unlatched) tachometer pin state \[22\]. Read-only.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RAW_INPUT(&self) -> bool {
+            let val = (self.0 >> 22usize) & 0x01;
+            val != 0
+        }
+        ///Raw (unlatched) tachometer pin state \[22\]. Read-only.
+        #[inline(always)]
+        pub const fn set_RAW_INPUT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 22usize)) | (((val as u32) & 0x01) << 22usize);
+        }
+        ///Debounced tachometer input state \[23\]. Read-only.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEB_INPUT(&self) -> bool {
+            let val = (self.0 >> 23usize) & 0x01;
+            val != 0
+        }
+        ///Debounced tachometer input state \[23\]. Read-only.
+        #[inline(always)]
+        pub const fn set_DEB_INPUT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 23usize)) | (((val as u32) & 0x01) << 23usize);
+        }
+        ///Current state of the paired PWM output-enable \[24\]. Read-only.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PWM_OEN(&self) -> bool {
+            let val = (self.0 >> 24usize) & 0x01;
+            val != 0
+        }
+        ///Current state of the paired PWM output-enable \[24\]. Read-only.
+        #[inline(always)]
+        pub const fn set_PWM_OEN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 24usize)) | (((val as u32) & 0x01) << 24usize);
+        }
+        ///Current state of the paired PWM output pin \[25\]. Read-only.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PWM_OUT(&self) -> bool {
+            let val = (self.0 >> 25usize) & 0x01;
+            val != 0
+        }
+        ///Current state of the paired PWM output pin \[25\]. Read-only.
+        #[inline(always)]
+        pub const fn set_PWM_OUT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 25usize)) | (((val as u32) & 0x01) << 25usize);
+        }
+        ///Tachometer interrupt status / clear \[31\]. RW1C. Set by hardware when the threshold event fires (IER must be 1). Write 1 to clear.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ISR(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///Tachometer interrupt status / clear \[31\]. RW1C. Set by hardware when the threshold event fires (IER must be 1). Write 1 to clear.
+        #[inline(always)]
+        pub const fn set_ISR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for TACH_STS {
+        #[inline(always)]
+        fn default() -> TACH_STS {
+            TACH_STS(0)
+        }
+    }
+    impl core::fmt::Debug for TACH_STS {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("TACH_STS")
+                .field("VALUE", &self.VALUE())
+                .field("FULL_MEASUREMENT", &self.FULL_MEASUREMENT())
+                .field("VALUE_UPDATE", &self.VALUE_UPDATE())
+                .field("RAW_INPUT", &self.RAW_INPUT())
+                .field("DEB_INPUT", &self.DEB_INPUT())
+                .field("PWM_OEN", &self.PWM_OEN())
+                .field("PWM_OUT", &self.PWM_OUT())
+                .field("ISR", &self.ISR())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for TACH_STS {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "TACH_STS {{ VALUE: {=u32:?}, FULL_MEASUREMENT: {=bool:?}, VALUE_UPDATE: {=bool:?}, RAW_INPUT: {=bool:?}, DEB_INPUT: {=bool:?}, PWM_OEN: {=bool:?}, PWM_OUT: {=bool:?}, ISR: {=bool:?} }}",
+                self.VALUE(), self.FULL_MEASUREMENT(), self.VALUE_UPDATE(), self
+                .RAW_INPUT(), self.DEB_INPUT(), self.PWM_OEN(), self.PWM_OUT(), self
+                .ISR()
+            )
         }
     }
 }
@@ -2747,54 +8578,32 @@ pub mod ssp_v1 {
         ///CM3 Memory Base Address Register (SCUA04)
         #[inline(always)]
         pub const fn MEM_BASE(self) -> crate::common::Reg<MEM_BASE, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///CM3 Instruction Memory Address Limit Register (SCUA08)
         #[inline(always)]
-        pub const fn IMEM_LIMIT(
-            self,
-        ) -> crate::common::Reg<MEM_LIMIT, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+        pub const fn IMEM_LIMIT(self) -> crate::common::Reg<MEM_LIMIT, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///CM3 Data Memory Address Limit Register (SCUA0C)
         #[inline(always)]
-        pub const fn DMEM_LIMIT(
-            self,
-        ) -> crate::common::Reg<MEM_LIMIT, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+        pub const fn DMEM_LIMIT(self) -> crate::common::Reg<MEM_LIMIT, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///CM3 Cacheable Area Declaration Register (SCUA40)
         #[inline(always)]
-        pub const fn CACHE_AREA(
-            self,
-        ) -> crate::common::Reg<CACHE_AREA, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _)
-            }
+        pub const fn CACHE_AREA(self) -> crate::common::Reg<CACHE_AREA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _) }
         }
         ///CM3 Cache Invalidation Control Register (SCUA44)
         #[inline(always)]
-        pub const fn CACHE_INVAL(
-            self,
-        ) -> crate::common::Reg<CACHE_INVAL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _)
-            }
+        pub const fn CACHE_INVAL(self) -> crate::common::Reg<CACHE_INVAL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _) }
         }
         ///CM3 Cache Function Control Register (SCUA48)
         #[inline(always)]
-        pub const fn CACHE_FUNC(
-            self,
-        ) -> crate::common::Reg<CACHE_FUNC, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _)
-            }
+        pub const fn CACHE_FUNC(self) -> crate::common::Reg<CACHE_FUNC, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _) }
         }
     }
     ///CM3 Cacheable Area Declaration (SCUA40). Reset value 0xFFFF_FFFF. Modify only while CM3 is in reset (CTRL.RESET=1 or CTRL.EN=0).
@@ -2812,8 +8621,7 @@ pub mod ssp_v1 {
         ///Cacheable region bitmask (32 bits × 16 MB per bit). Bit 0 → CM3 0x0000_0000–0x00FF_FFFF cacheable when set. Bit 31 → CM3 0x1F00_0000–0x1FFF_FFFF cacheable when set. Non-cached accesses bypass the cache controller and go directly to DRAM. The CM3 non-cached DMA region (typically at 0x0100_0000, bit 1) must be kept clear so IPC shared-memory coherency is maintained without explicit invalidation.
         #[inline(always)]
         pub const fn set_REGION(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for CACHE_AREA {
@@ -2824,7 +8632,9 @@ pub mod ssp_v1 {
     }
     impl core::fmt::Debug for CACHE_AREA {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("CACHE_AREA").field("REGION", &self.REGION()).finish()
+            f.debug_struct("CACHE_AREA")
+                .field("REGION", &self.REGION())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -3061,8 +8871,7 @@ pub mod ssp_v1 {
         ///I-cache line address for targeted invalidation. 11-bit LSB of the cache line address (each cache line is 32 B, so bits \[15:5\] of the virtual address; hardware ignores \[4:0\]). Write together with ICACHE_EN=1.
         #[inline(always)]
         pub const fn set_ICACHE_ADDR(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x07ff << 0usize))
-                | (((val as u32) & 0x07ff) << 0usize);
+            self.0 = (self.0 & !(0x07ff << 0usize)) | (((val as u32) & 0x07ff) << 0usize);
         }
         ///I-cache line invalidation trigger. Write 1 to invalidate the instruction-cache line identified by ICACHE_ADDR. Self-clearing (reads back 0 after invalidation). Datasheet protocol: write 0x0000 first, then write {ICACHE_EN=1, ICACHE_ADDR=<line>} in a single write.
         #[must_use]
@@ -3086,8 +8895,7 @@ pub mod ssp_v1 {
         ///D-cache line address for targeted invalidation. 11-bit LSB of the cache line address. Corresponds to register bits \[26:16\]. Write together with DCACHE_EN=1.
         #[inline(always)]
         pub const fn set_DCACHE_ADDR(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x07ff << 16usize))
-                | (((val as u32) & 0x07ff) << 16usize);
+            self.0 = (self.0 & !(0x07ff << 16usize)) | (((val as u32) & 0x07ff) << 16usize);
         }
         ///D-cache line invalidation trigger. Write 1 to invalidate the data-cache line identified by DCACHE_ADDR. Self-clearing (reads back 0 after invalidation). Datasheet protocol: write 0x0000_0000 first, then write {DCACHE_EN=1, DCACHE_ADDR=<line>} in a single write.
         #[must_use]
@@ -3177,7 +8985,10 @@ pub mod ssp_v1 {
     impl defmt::Format for CTRL {
         fn format(&self, f: defmt::Formatter) {
             defmt::write!(
-                f, "CTRL {{ EN: {=bool:?}, RESET: {=bool:?} }}", self.EN(), self.RESET()
+                f,
+                "CTRL {{ EN: {=bool:?}, RESET: {=bool:?} }}",
+                self.EN(),
+                self.RESET()
             )
         }
     }
@@ -3196,8 +9007,7 @@ pub mod ssp_v1 {
         ///Physical DRAM base address bits \[31:20\]. CM3 virtual address 0x0000_0000 maps to this 1 MB-aligned physical address. The CA7-to-CM3 address window is CM3 \[0x0000_0000, 0x1FFF_FFFF\] ↔ phys \[BASE, BASE+512 MB).
         #[inline(always)]
         pub const fn set_BASE(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x0fff << 20usize))
-                | (((val as u32) & 0x0fff) << 20usize);
+            self.0 = (self.0 & !(0x0fff << 20usize)) | (((val as u32) & 0x0fff) << 20usize);
         }
     }
     impl Default for MEM_BASE {
@@ -3208,7 +9018,9 @@ pub mod ssp_v1 {
     }
     impl core::fmt::Debug for MEM_BASE {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("MEM_BASE").field("BASE", &self.BASE()).finish()
+            f.debug_struct("MEM_BASE")
+                .field("BASE", &self.BASE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -3232,8 +9044,7 @@ pub mod ssp_v1 {
         ///Physical DRAM upper-bound address bits \[31:20\]. Accesses at or above this 1 MB-aligned boundary are rejected by the hardware access-checker (generates an IRQ; see CACHE_FUNC).
         #[inline(always)]
         pub const fn set_LIMIT(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x0fff << 20usize))
-                | (((val as u32) & 0x0fff) << 20usize);
+            self.0 = (self.0 & !(0x0fff << 20usize)) | (((val as u32) & 0x0fff) << 20usize);
         }
     }
     impl Default for MEM_LIMIT {
@@ -3244,7 +9055,9 @@ pub mod ssp_v1 {
     }
     impl core::fmt::Debug for MEM_LIMIT {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("MEM_LIMIT").field("LIMIT", &self.LIMIT()).finish()
+            f.debug_struct("MEM_LIMIT")
+                .field("LIMIT", &self.LIMIT())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -3273,240 +9086,138 @@ pub mod timer_v1 {
         }
         ///Timer 1 Counter Status (TMC00). Read-only current count.
         #[inline(always)]
-        pub const fn T1_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+        pub const fn T1_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
             unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
         }
         ///Timer 1 Reload Value (TMC04). Loaded on enable or overflow.
         #[inline(always)]
-        pub const fn T1_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+        pub const fn T1_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///Timer 1 First Match Register (TMC08).
         #[inline(always)]
-        pub const fn T1_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+        pub const fn T1_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Timer 2 Counter Status (TMC10).
         #[inline(always)]
-        pub const fn T2_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
-            }
+        pub const fn T2_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
         }
         ///Timer 2 Reload Value (TMC14).
         #[inline(always)]
-        pub const fn T2_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
-            }
+        pub const fn T2_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
         }
         ///Timer 2 First Match Register (TMC18).
         #[inline(always)]
-        pub const fn T2_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+        pub const fn T2_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///Timer 3 Counter Status (TMC20).
         #[inline(always)]
-        pub const fn T3_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _)
-            }
+        pub const fn T3_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _) }
         }
         ///Timer 3 Reload Value (TMC24).
         #[inline(always)]
-        pub const fn T3_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
-            }
+        pub const fn T3_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
         }
         ///Timer 3 First Match Register (TMC28).
         #[inline(always)]
-        pub const fn T3_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+        pub const fn T3_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
         ///Global Timer Control Register (TMC30). Write 1 to set specific bits; write 1 to TMC3C to clear. 4 bits per timer: \[WDT_EN, OVF_INTR, CLK_SEL, EN\], timer 1 in bits \[3:0\].
         #[inline(always)]
         pub const fn CTRL(self) -> crate::common::Reg<TMC_CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _) }
         }
         ///Timer Interrupt Status Register (TMC34). RW1C. Bit N-1 set when timer N overflows and OVF_INTR is enabled. Clear by writing 1 to the bit.
         #[inline(always)]
-        pub const fn INT_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_INT_STATUS, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _)
-            }
+        pub const fn INT_STATUS(self) -> crate::common::Reg<TMC_INT_STATUS, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _) }
         }
         ///TMC30 Clear Register (TMC3C). Write-only. Write 1 to a bit to clear the same bit in CTRL (TMC30).
         #[inline(always)]
         pub const fn CTRL_CLR(self) -> crate::common::Reg<TMC_CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _) }
         }
         ///Timer 4 Counter Status (TMC40).
         #[inline(always)]
-        pub const fn T4_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _)
-            }
+        pub const fn T4_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _) }
         }
         ///Timer 4 Reload Value (TMC44).
         #[inline(always)]
-        pub const fn T4_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _)
-            }
+        pub const fn T4_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _) }
         }
         ///Timer 4 First Match Register (TMC48).
         #[inline(always)]
-        pub const fn T4_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _)
-            }
+        pub const fn T4_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _) }
         }
         ///Timer 5 Counter Status (TMC50).
         #[inline(always)]
-        pub const fn T5_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _)
-            }
+        pub const fn T5_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _) }
         }
         ///Timer 5 Reload Value (TMC54).
         #[inline(always)]
-        pub const fn T5_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _)
-            }
+        pub const fn T5_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _) }
         }
         ///Timer 5 First Match Register (TMC58).
         #[inline(always)]
-        pub const fn T5_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x58usize) as _)
-            }
+        pub const fn T5_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x58usize) as _) }
         }
         ///Timer 6 Counter Status (TMC60).
         #[inline(always)]
-        pub const fn T6_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _)
-            }
+        pub const fn T6_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _) }
         }
         ///Timer 6 Reload Value (TMC64).
         #[inline(always)]
-        pub const fn T6_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _)
-            }
+        pub const fn T6_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _) }
         }
         ///Timer 6 First Match Register (TMC68).
         #[inline(always)]
-        pub const fn T6_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _)
-            }
+        pub const fn T6_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _) }
         }
         ///Timer 7 Counter Status (TMC70).
         #[inline(always)]
-        pub const fn T7_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _)
-            }
+        pub const fn T7_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _) }
         }
         ///Timer 7 Reload Value (TMC74).
         #[inline(always)]
-        pub const fn T7_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _)
-            }
+        pub const fn T7_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _) }
         }
         ///Timer 7 First Match Register (TMC78).
         #[inline(always)]
-        pub const fn T7_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _)
-            }
+        pub const fn T7_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _) }
         }
         ///Timer 8 Counter Status (TMC80).
         #[inline(always)]
-        pub const fn T8_STATUS(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _)
-            }
+        pub const fn T8_STATUS(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _) }
         }
         ///Timer 8 Reload Value (TMC84).
         #[inline(always)]
-        pub const fn T8_RELOAD(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _)
-            }
+        pub const fn T8_RELOAD(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _) }
         }
         ///Timer 8 First Match Register (TMC88).
         #[inline(always)]
-        pub const fn T8_MATCH1(
-            self,
-        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _)
-            }
+        pub const fn T8_MATCH1(self) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _) }
         }
     }
     ///32-bit timer counter or reload value.
@@ -3524,8 +9235,7 @@ pub mod timer_v1 {
         ///Counter / reload value (32-bit).
         #[inline(always)]
         pub const fn set_VALUE(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for TMC_COUNTER {
@@ -3536,7 +9246,9 @@ pub mod timer_v1 {
     }
     impl core::fmt::Debug for TMC_COUNTER {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("TMC_COUNTER").field("VALUE", &self.VALUE()).finish()
+            f.debug_struct("TMC_COUNTER")
+                .field("VALUE", &self.VALUE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -4155,51 +9867,37 @@ pub mod uart_v1 {
         ///Interrupt Enable Register (DLAB=0) / Baud Divisor High byte (DLAB=1). DLAB=1 access handled in HAL code via raw pointer.
         #[inline(always)]
         pub const fn IER(self) -> crate::common::Reg<IER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///FIFO Control Register (write) / Interrupt Identification Register (read). Reads return IIR; writes configure FIFO via FCR fields. FCR is write-only; IIR is read-only.
         #[inline(always)]
         pub const fn FCR_IIR(self) -> crate::common::Reg<FCR_IIR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Line Control Register. Controls data format and DLAB.
         #[inline(always)]
         pub const fn LCR(self) -> crate::common::Reg<LCR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///Modem Control Register.
         #[inline(always)]
         pub const fn MCR(self) -> crate::common::Reg<MCR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
         }
         ///Line Status Register. TX/RX status flags.
         #[inline(always)]
         pub const fn LSR(self) -> crate::common::Reg<LSR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
         }
         ///Modem Status Register.
         #[inline(always)]
         pub const fn MSR(self) -> crate::common::Reg<MSR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///Scratch Register. Read/write with no hardware effect.
         #[inline(always)]
         pub const fn SCR(self) -> crate::common::Reg<DATA8, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
         }
     }
     ///8-bit data register (RBR/THR and SCR share this layout).
@@ -4420,7 +10118,10 @@ pub mod uart_v1 {
             defmt::write!(
                 f,
                 "IER {{ ERBFI: {=bool:?}, ETBEI: {=bool:?}, ELSI: {=bool:?}, EDSSI: {=bool:?} }}",
-                self.ERBFI(), self.ETBEI(), self.ELSI(), self.EDSSI()
+                self.ERBFI(),
+                self.ETBEI(),
+                self.ELSI(),
+                self.EDSSI()
             )
         }
     }
@@ -4929,43 +10630,31 @@ pub mod wdt_v1 {
         ///Counter Reload Value Register (WDT04). Value loaded into STATUS on reset or when 0x4755 is written to the RESTART register. Units: microseconds. Default: 0x014F_B180 (~22 s).
         #[inline(always)]
         pub const fn RELOAD(self) -> crate::common::Reg<WDT_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///Counter Restart Register (WDT08). Write-only trigger. Write 0x4755 to reload STATUS from RELOAD and restart the counter (provided CTRL.WDT_EN=1). Any other write value is ignored.
         #[inline(always)]
-        pub const fn RESTART(
-            self,
-        ) -> crate::common::Reg<WDT_RESTART, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+        pub const fn RESTART(self) -> crate::common::Reg<WDT_RESTART, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Control Register (WDT0C). Configures reset mode, interrupt, and enable. Default: 0x0010 (WDT_EN=0, RST_SYS=1 = SOC reset mode).
         #[inline(always)]
         pub const fn CTRL(self) -> crate::common::Reg<WDT_CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///Software Mode Reset Control Register (WDT24). Write 0xAEED_F123 to trigger an immediate software-mode SOC reset (after setting SW_RESET_MASK1 to select which blocks to reset). This bit clears automatically after reset.
         #[inline(always)]
         pub const fn SW_RESET_CTRL(
             self,
         ) -> crate::common::Reg<WDT_SW_RESET_CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
         }
         ///Software Mode Reset Mask Register #1 (WDT28). Each bit enables the corresponding subsystem to be reset when SW_RESET_CTRL is triggered. Zephyr uses 0x3FFF_FF1 to reset most subsystems.
         #[inline(always)]
         pub const fn SW_RESET_MASK1(
             self,
         ) -> crate::common::Reg<WDT_SW_RESET_MASK1, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
     }
     ///32-bit counter / reload value (WDT00 and WDT04 share this layout).
@@ -4983,8 +10672,7 @@ pub mod wdt_v1 {
         ///Counter value in microseconds.
         #[inline(always)]
         pub const fn set_VALUE(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for WDT_COUNTER {
@@ -4995,7 +10683,9 @@ pub mod wdt_v1 {
     }
     impl core::fmt::Debug for WDT_COUNTER {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("WDT_COUNTER").field("VALUE", &self.VALUE()).finish()
+            f.debug_struct("WDT_COUNTER")
+                .field("VALUE", &self.VALUE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -5126,8 +10816,7 @@ pub mod wdt_v1 {
         ///Write 0x4755 to reload and restart the counter. Read returns 0 (write-only hardware).
         #[inline(always)]
         pub const fn set_KEY(&mut self, val: u16) {
-            self.0 = (self.0 & !(0xffff << 0usize))
-                | (((val as u32) & 0xffff) << 0usize);
+            self.0 = (self.0 & !(0xffff << 0usize)) | (((val as u32) & 0xffff) << 0usize);
         }
     }
     impl Default for WDT_RESTART {
@@ -5138,7 +10827,9 @@ pub mod wdt_v1 {
     }
     impl core::fmt::Debug for WDT_RESTART {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("WDT_RESTART").field("KEY", &self.KEY()).finish()
+            f.debug_struct("WDT_RESTART")
+                .field("KEY", &self.KEY())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -5162,8 +10853,7 @@ pub mod wdt_v1 {
         ///Write 0xAEEDF123 to fire a software-mode SOC reset immediately. After reset this bit clears to 0 automatically. Only SOC reset mode is supported for software-triggered resets.
         #[inline(always)]
         pub const fn set_TRIGGER(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for WDT_SW_RESET_CTRL {
@@ -5182,7 +10872,11 @@ pub mod wdt_v1 {
     #[cfg(feature = "defmt")]
     impl defmt::Format for WDT_SW_RESET_CTRL {
         fn format(&self, f: defmt::Formatter) {
-            defmt::write!(f, "WDT_SW_RESET_CTRL {{ TRIGGER: {=u32:?} }}", self.TRIGGER())
+            defmt::write!(
+                f,
+                "WDT_SW_RESET_CTRL {{ TRIGGER: {=u32:?} }}",
+                self.TRIGGER()
+            )
         }
     }
     ///Software Mode Reset Mask Register #1 (WDT28). Each bit enables (1) or disables (0) the reset of the corresponding subsystem when SW_RESET_CTRL is triggered.
@@ -5200,8 +10894,7 @@ pub mod wdt_v1 {
         ///Subsystem reset enable bitmask. Zephyr sets 0x03FF_FFF1 to reset the standard set of subsystems (ARM, SDRAM, AHB bridges, coprocessor, SOC controllers, USB, etc.).
         #[inline(always)]
         pub const fn set_MASK(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for WDT_SW_RESET_MASK1 {
@@ -5212,7 +10905,9 @@ pub mod wdt_v1 {
     }
     impl core::fmt::Debug for WDT_SW_RESET_MASK1 {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("WDT_SW_RESET_MASK1").field("MASK", &self.MASK()).finish()
+            f.debug_struct("WDT_SW_RESET_MASK1")
+                .field("MASK", &self.MASK())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]

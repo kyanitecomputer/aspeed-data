@@ -394,226 +394,162 @@ pub mod gpr_v1 {
         ///General-Purpose Register 1.
         #[inline(always)]
         pub const fn GPR1(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///General-Purpose Register 2.
         #[inline(always)]
         pub const fn GPR2(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///General-Purpose Register 3.
         #[inline(always)]
         pub const fn GPR3(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///General-Purpose Register 4.
         #[inline(always)]
         pub const fn GPR4(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
         }
         ///General-Purpose Register 5.
         #[inline(always)]
         pub const fn GPR5(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
         }
         ///General-Purpose Register 6.
         #[inline(always)]
         pub const fn GPR6(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///General-Purpose Register 7.
         #[inline(always)]
         pub const fn GPR7(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
         }
         ///General-Purpose Register 8.
         #[inline(always)]
         pub const fn GPR8(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _) }
         }
         ///General-Purpose Register 9.
         #[inline(always)]
         pub const fn GPR9(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
         }
         ///General-Purpose Register 10.
         #[inline(always)]
         pub const fn GPR10(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
         ///General-Purpose Register 11.
         #[inline(always)]
         pub const fn GPR11(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _) }
         }
         ///General-Purpose Register 12.
         #[inline(always)]
         pub const fn GPR12(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _) }
         }
         ///General-Purpose Register 13.
         #[inline(always)]
         pub const fn GPR13(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _) }
         }
         ///General-Purpose Register 14.
         #[inline(always)]
         pub const fn GPR14(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _) }
         }
         ///General-Purpose Register 15.
         #[inline(always)]
         pub const fn GPR15(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _) }
         }
         ///General-Purpose Register 16.
         #[inline(always)]
         pub const fn GPR16(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x40usize) as _) }
         }
         ///General-Purpose Register 17.
         #[inline(always)]
         pub const fn GPR17(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _) }
         }
         ///General-Purpose Register 18.
         #[inline(always)]
         pub const fn GPR18(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _) }
         }
         ///General-Purpose Register 19.
         #[inline(always)]
         pub const fn GPR19(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x4cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x4cusize) as _) }
         }
         ///General-Purpose Register 20.
         #[inline(always)]
         pub const fn GPR20(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _) }
         }
         ///General-Purpose Register 21.
         #[inline(always)]
         pub const fn GPR21(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _) }
         }
         ///General-Purpose Register 22.
         #[inline(always)]
         pub const fn GPR22(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x58usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x58usize) as _) }
         }
         ///General-Purpose Register 23.
         #[inline(always)]
         pub const fn GPR23(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x5cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x5cusize) as _) }
         }
         ///General-Purpose Register 24.
         #[inline(always)]
         pub const fn GPR24(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _) }
         }
         ///General-Purpose Register 25.
         #[inline(always)]
         pub const fn GPR25(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _) }
         }
         ///General-Purpose Register 26.
         #[inline(always)]
         pub const fn GPR26(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _) }
         }
         ///General-Purpose Register 27.
         #[inline(always)]
         pub const fn GPR27(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x6cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x6cusize) as _) }
         }
         ///General-Purpose Register 28.
         #[inline(always)]
         pub const fn GPR28(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _) }
         }
         ///General-Purpose Register 29.
         #[inline(always)]
         pub const fn GPR29(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _) }
         }
         ///General-Purpose Register 30.
         #[inline(always)]
         pub const fn GPR30(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _) }
         }
         ///General-Purpose Register 31.
         #[inline(always)]
         pub const fn GPR31(self) -> crate::common::Reg<GPR_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x7cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x7cusize) as _) }
         }
         ///AHB Page Select Register (0x80). Selects which 512 KB page of the AHB address space is accessible for DMA operations by the CM4F.
         #[inline(always)]
         pub const fn S_PAGE(self) -> crate::common::Reg<S_PAGE_REG, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _) }
         }
     }
     ///General-purpose 32-bit read/write register.
@@ -631,8 +567,7 @@ pub mod gpr_v1 {
         ///Register value (32-bit, software-defined meaning).
         #[inline(always)]
         pub const fn set_VALUE(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for GPR_REG {
@@ -643,7 +578,9 @@ pub mod gpr_v1 {
     }
     impl core::fmt::Debug for GPR_REG {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("GPR_REG").field("VALUE", &self.VALUE()).finish()
+            f.debug_struct("GPR_REG")
+                .field("VALUE", &self.VALUE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -667,8 +604,7 @@ pub mod gpr_v1 {
         ///AHB page index (bits \[31:0\]; effective bits hardware-defined).
         #[inline(always)]
         pub const fn set_PAGE(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for S_PAGE_REG {
@@ -679,7 +615,9 @@ pub mod gpr_v1 {
     }
     impl core::fmt::Debug for S_PAGE_REG {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("S_PAGE_REG").field("PAGE", &self.PAGE()).finish()
+            f.debug_struct("S_PAGE_REG")
+                .field("PAGE", &self.PAGE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -713,111 +651,63 @@ pub mod ssp_v2 {
         }
         ///System SRAM Remap Base (SCU124/SCU164). Physical = field_value << 4. Maps system SRAM into CM4F virtual space.
         #[inline(always)]
-        pub const fn SRAM_REMAP_BASE(
-            self,
-        ) -> crate::common::Reg<REMAP_BASE, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+        pub const fn SRAM_REMAP_BASE(self) -> crate::common::Reg<REMAP_BASE, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///DRAM Remap Base (SCU128/SCU168). Physical = field_value << 4. Maps DRAM into CM4F virtual space.
         #[inline(always)]
-        pub const fn DRAM_REMAP_BASE(
-            self,
-        ) -> crate::common::Reg<REMAP_BASE, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+        pub const fn DRAM_REMAP_BASE(self) -> crate::common::Reg<REMAP_BASE, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///I-Bus Cacheable Area Declaration (SCU12C/SCU16C). Same 32×16 MB bitfield as AST2600 CACHE_AREA but I-bus only.
         #[inline(always)]
-        pub const fn ICACHE_AREA(
-            self,
-        ) -> crate::common::Reg<CACHE_AREA, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+        pub const fn ICACHE_AREA(self) -> crate::common::Reg<CACHE_AREA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///D-Bus Cacheable Area Declaration (SCU130/SCU170). Same 32×16 MB bitfield as AST2600 CACHE_AREA but D-bus only.
         #[inline(always)]
-        pub const fn DCACHE_AREA(
-            self,
-        ) -> crate::common::Reg<CACHE_AREA, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
-            }
+        pub const fn DCACHE_AREA(self) -> crate::common::Reg<CACHE_AREA, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
         }
         ///Cache Invalidation Control Register (SCU134/SCU174).
         #[inline(always)]
-        pub const fn CACHE_INVAL(
-            self,
-        ) -> crate::common::Reg<CACHE_INVAL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
-            }
+        pub const fn CACHE_INVAL(self) -> crate::common::Reg<CACHE_INVAL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
         }
         ///Cache Function Control Register (SCU138/SCU178). Incompatible with ssp_v1 — separate I/D enable bits, no CCM.
         #[inline(always)]
-        pub const fn CACHE_FUNC(
-            self,
-        ) -> crate::common::Reg<CACHE_FUNC, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+        pub const fn CACHE_FUNC(self) -> crate::common::Reg<CACHE_FUNC, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///TCM Virtual Start Address (SCU140/SCU180).
         #[inline(always)]
-        pub const fn TCM_VIRT_START(
-            self,
-        ) -> crate::common::Reg<VIRT_ADDR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _)
-            }
+        pub const fn TCM_VIRT_START(self) -> crate::common::Reg<VIRT_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _) }
         }
         ///TCM Virtual Size (SCU144/SCU184).
         #[inline(always)]
-        pub const fn TCM_VIRT_SIZE(
-            self,
-        ) -> crate::common::Reg<VIRT_SIZE, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
-            }
+        pub const fn TCM_VIRT_SIZE(self) -> crate::common::Reg<VIRT_SIZE, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
         }
         ///System SRAM Virtual Start Address (SCU148/SCU188).
         #[inline(always)]
-        pub const fn SRAM_VIRT_START(
-            self,
-        ) -> crate::common::Reg<VIRT_ADDR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+        pub const fn SRAM_VIRT_START(self) -> crate::common::Reg<VIRT_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
         ///System SRAM Virtual Size (SCU14C/SCU18C).
         #[inline(always)]
-        pub const fn SRAM_VIRT_SIZE(
-            self,
-        ) -> crate::common::Reg<VIRT_SIZE, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _)
-            }
+        pub const fn SRAM_VIRT_SIZE(self) -> crate::common::Reg<VIRT_SIZE, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _) }
         }
         ///DRAM Virtual Start Address (SCU150/SCU190).
         #[inline(always)]
-        pub const fn DRAM_VIRT_START(
-            self,
-        ) -> crate::common::Reg<VIRT_ADDR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _)
-            }
+        pub const fn DRAM_VIRT_START(self) -> crate::common::Reg<VIRT_ADDR, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _) }
         }
         ///DRAM Virtual Size (SCU154/SCU194).
         #[inline(always)]
-        pub const fn DRAM_VIRT_SIZE(
-            self,
-        ) -> crate::common::Reg<VIRT_SIZE, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _)
-            }
+        pub const fn DRAM_VIRT_SIZE(self) -> crate::common::Reg<VIRT_SIZE, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _) }
         }
     }
     ///Cacheable area bitmask for one bus (I-bus or D-bus). Same layout as AST2600 CACHE_AREA: 32 bits × 16 MB per bit.
@@ -835,8 +725,7 @@ pub mod ssp_v2 {
         ///Cacheable region bitmask (bit N = 16 MB region starting at N×16 MB).
         #[inline(always)]
         pub const fn set_REGION(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for CACHE_AREA {
@@ -847,7 +736,9 @@ pub mod ssp_v2 {
     }
     impl core::fmt::Debug for CACHE_AREA {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("CACHE_AREA").field("REGION", &self.REGION()).finish()
+            f.debug_struct("CACHE_AREA")
+                .field("REGION", &self.REGION())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -979,8 +870,7 @@ pub mod ssp_v2 {
         ///I-cache line address for targeted invalidation (bits \[10:0\]).
         #[inline(always)]
         pub const fn set_ICACHE_ADDR(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x07ff << 0usize))
-                | (((val as u32) & 0x07ff) << 0usize);
+            self.0 = (self.0 & !(0x07ff << 0usize)) | (((val as u32) & 0x07ff) << 0usize);
         }
         ///I-cache line invalidation trigger (bit 15).
         #[must_use]
@@ -1004,8 +894,7 @@ pub mod ssp_v2 {
         ///D-cache line address for targeted invalidation (bits \[26:16\]).
         #[inline(always)]
         pub const fn set_DCACHE_ADDR(&mut self, val: u16) {
-            self.0 = (self.0 & !(0x07ff << 16usize))
-                | (((val as u32) & 0x07ff) << 16usize);
+            self.0 = (self.0 & !(0x07ff << 16usize)) | (((val as u32) & 0x07ff) << 16usize);
         }
         ///D-cache line invalidation trigger (bit 31).
         #[must_use]
@@ -1169,8 +1058,7 @@ pub mod ssp_v2 {
         ///Physical base address bits \[31:4\] (bits \[30:0\] in register, << 4 to get address).
         #[inline(always)]
         pub const fn set_PHYS_BASE(&mut self, val: u32) {
-            self.0 = (self.0 & !(0x7fff_ffff << 0usize))
-                | (((val as u32) & 0x7fff_ffff) << 0usize);
+            self.0 = (self.0 & !(0x7fff_ffff << 0usize)) | (((val as u32) & 0x7fff_ffff) << 0usize);
         }
     }
     impl Default for REMAP_BASE {
@@ -1181,7 +1069,9 @@ pub mod ssp_v2 {
     }
     impl core::fmt::Debug for REMAP_BASE {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("REMAP_BASE").field("PHYS_BASE", &self.PHYS_BASE()).finish()
+            f.debug_struct("REMAP_BASE")
+                .field("PHYS_BASE", &self.PHYS_BASE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -1205,8 +1095,7 @@ pub mod ssp_v2 {
         ///Virtual start address (32-bit aligned).
         #[inline(always)]
         pub const fn set_ADDR(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for VIRT_ADDR {
@@ -1217,7 +1106,9 @@ pub mod ssp_v2 {
     }
     impl core::fmt::Debug for VIRT_ADDR {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("VIRT_ADDR").field("ADDR", &self.ADDR()).finish()
+            f.debug_struct("VIRT_ADDR")
+                .field("ADDR", &self.ADDR())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -1241,8 +1132,7 @@ pub mod ssp_v2 {
         ///Window size in bytes.
         #[inline(always)]
         pub const fn set_SIZE(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for VIRT_SIZE {
@@ -1253,7 +1143,9 @@ pub mod ssp_v2 {
     }
     impl core::fmt::Debug for VIRT_SIZE {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("VIRT_SIZE").field("SIZE", &self.SIZE()).finish()
+            f.debug_struct("VIRT_SIZE")
+                .field("SIZE", &self.SIZE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]

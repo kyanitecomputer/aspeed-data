@@ -30,19 +30,14 @@ mod _vectors {
 #[cfg(feature = "rt")]
 pub use Interrupt as interrupt;
 ///UART12 (16550, 4-byte stride, 1846153 Hz clock)
-pub const UART12: uart_v1::UART = unsafe {
-    uart_v1::UART::from_ptr(0x14c3_3b00usize as _)
-};
+pub const UART12: uart_v1::UART = unsafe { uart_v1::UART::from_ptr(0x14c3_3b00usize as _) };
 ///AST2700 BootMCU 64-bit timer @ 1 MHz (IRQ 7, MTIP)
-pub const TIMER: bootmcu_timer_v1::TIMER = unsafe {
-    bootmcu_timer_v1::TIMER::from_ptr(0x14c3_6000usize as _)
-};
+pub const TIMER: bootmcu_timer_v1::TIMER =
+    unsafe { bootmcu_timer_v1::TIMER::from_ptr(0x14c3_6000usize as _) };
 ///AST2700 G7 watchdog timer 0
 pub const WDT0: wdt_v1::WDT = unsafe { wdt_v1::WDT::from_ptr(0x14c3_7000usize as _) };
 ///IPC1 data-channel bus (4 sub-channels, polling)
-pub const IPC1: ipc1_v1::IPC1 = unsafe {
-    ipc1_v1::IPC1::from_ptr(0x14c3_9000usize as _)
-};
+pub const IPC1: ipc1_v1::IPC1 = unsafe { ipc1_v1::IPC1::from_ptr(0x14c3_9000usize as _) };
 pub mod bootmcu_timer_v1 {
     ///AST2700 BootMCU 64-bit free-running timer with alarm interrupt. Clocked at 1 MHz; INTR_STS is cleared by writing ALARM_L and ALARM_H. Base address: 0x14C36000 (IO-die, BootMCU view).
     #[derive(Copy, Clone, Eq, PartialEq)]
@@ -68,37 +63,27 @@ pub mod bootmcu_timer_v1 {
         ///Counter high 32 bits (read-only, free-running).
         #[inline(always)]
         pub const fn COUNT_H(self) -> crate::common::Reg<u32, crate::common::R> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///Alarm compare value — low 32 bits. Writing this register also clears TMR_CTRL.INTR_STS.
         #[inline(always)]
         pub const fn ALARM_L(self) -> crate::common::Reg<u32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Alarm compare value — high 32 bits. Writing this register also clears TMR_CTRL.INTR_STS.
         #[inline(always)]
         pub const fn ALARM_H(self) -> crate::common::Reg<u32, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///Timer control and interrupt status register. Bits written 1 in this register set the corresponding function. Use CTRL_CLR to clear bits.
         #[inline(always)]
         pub const fn CTRL(self) -> crate::common::Reg<CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
         }
         ///Write-1-clear mirror of CTRL. Write 1 to a bit to clear the corresponding CTRL bit. Example: write TMR_CTRL_EN to stop the timer.
         #[inline(always)]
         pub const fn CTRL_CLR(self) -> crate::common::Reg<CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
         }
     }
     ///Timer control register (used for both CTRL and CTRL_CLR).
@@ -282,67 +267,43 @@ pub mod ipc1_v1 {
         ///Per-ID receive enable mask. Write BIT(id) to enable reception of messages with that ID. Only enabled IDs set STATUS bits.
         #[inline(always)]
         pub const fn ENABLE(self) -> crate::common::Reg<ID_MASK, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///Pending message status. Bit n is set when a message with ID n has been received and not yet consumed. Write BIT(id) to clear (acknowledge) after reading the payload.
         #[inline(always)]
         pub const fn STATUS(self) -> crate::common::Reg<ID_MASK, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///32-byte payload for message ID 0 (8 × 32-bit words). The transmitter writes here before triggering; the receiver reads here after detecting STATUS\[0\].
         #[inline(always)]
-        pub const fn DATA0(
-            self,
-            n: usize,
-        ) -> crate::common::Reg<u32, crate::common::RW> {
+        pub const fn DATA0(self, n: usize) -> crate::common::Reg<u32, crate::common::RW> {
             assert!(n < 8usize);
             unsafe {
-                crate::common::Reg::from_ptr(
-                    self.ptr.wrapping_add(0x10usize + n * 4usize) as _,
-                )
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize + n * 4usize) as _)
             }
         }
         ///32-byte payload for message ID 1 (8 × 32-bit words).
         #[inline(always)]
-        pub const fn DATA1(
-            self,
-            n: usize,
-        ) -> crate::common::Reg<u32, crate::common::RW> {
+        pub const fn DATA1(self, n: usize) -> crate::common::Reg<u32, crate::common::RW> {
             assert!(n < 8usize);
             unsafe {
-                crate::common::Reg::from_ptr(
-                    self.ptr.wrapping_add(0x30usize + n * 4usize) as _,
-                )
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize + n * 4usize) as _)
             }
         }
         ///32-byte payload for message ID 2 (8 × 32-bit words).
         #[inline(always)]
-        pub const fn DATA2(
-            self,
-            n: usize,
-        ) -> crate::common::Reg<u32, crate::common::RW> {
+        pub const fn DATA2(self, n: usize) -> crate::common::Reg<u32, crate::common::RW> {
             assert!(n < 8usize);
             unsafe {
-                crate::common::Reg::from_ptr(
-                    self.ptr.wrapping_add(0x50usize + n * 4usize) as _,
-                )
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize + n * 4usize) as _)
             }
         }
         ///32-byte payload for message ID 3 (Caliptra/reserved).
         #[inline(always)]
-        pub const fn DATA3(
-            self,
-            n: usize,
-        ) -> crate::common::Reg<u32, crate::common::RW> {
+        pub const fn DATA3(self, n: usize) -> crate::common::Reg<u32, crate::common::RW> {
             assert!(n < 8usize);
             unsafe {
-                crate::common::Reg::from_ptr(
-                    self.ptr.wrapping_add(0x70usize + n * 4usize) as _,
-                )
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize + n * 4usize) as _)
             }
         }
     }
@@ -366,9 +327,7 @@ pub mod ipc1_v1 {
         #[inline(always)]
         pub const fn CH(self, n: usize) -> SUBCHAN {
             assert!(n < 4usize);
-            unsafe {
-                SUBCHAN::from_ptr(self.ptr.wrapping_add(0x0usize + n * 512usize) as _)
-            }
+            unsafe { SUBCHAN::from_ptr(self.ptr.wrapping_add(0x0usize + n * 512usize) as _) }
         }
     }
     ///One IPC1 sub-channel consisting of an RX half and a TX half. RX half (remote peer's TX) is at offset 0x000. TX half (this side's TX) is at offset 0x100.
@@ -474,7 +433,10 @@ pub mod ipc1_v1 {
             defmt::write!(
                 f,
                 "ID_MASK {{ ID0: {=bool:?}, ID1: {=bool:?}, ID2: {=bool:?}, ID3: {=bool:?} }}",
-                self.ID0(), self.ID1(), self.ID2(), self.ID3()
+                self.ID0(),
+                self.ID1(),
+                self.ID2(),
+                self.ID3()
             )
         }
     }
@@ -504,51 +466,37 @@ pub mod uart_v1 {
         ///Interrupt Enable Register (DLAB=0) / Baud Divisor High byte (DLAB=1). DLAB=1 access handled in HAL code via raw pointer.
         #[inline(always)]
         pub const fn IER(self) -> crate::common::Reg<IER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///FIFO Control Register (write) / Interrupt Identification Register (read). Reads return IIR; writes configure FIFO via FCR fields. FCR is write-only; IIR is read-only.
         #[inline(always)]
         pub const fn FCR_IIR(self) -> crate::common::Reg<FCR_IIR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Line Control Register. Controls data format and DLAB.
         #[inline(always)]
         pub const fn LCR(self) -> crate::common::Reg<LCR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///Modem Control Register.
         #[inline(always)]
         pub const fn MCR(self) -> crate::common::Reg<MCR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _) }
         }
         ///Line Status Register. TX/RX status flags.
         #[inline(always)]
         pub const fn LSR(self) -> crate::common::Reg<LSR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _) }
         }
         ///Modem Status Register.
         #[inline(always)]
         pub const fn MSR(self) -> crate::common::Reg<MSR, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _) }
         }
         ///Scratch Register. Read/write with no hardware effect.
         #[inline(always)]
         pub const fn SCR(self) -> crate::common::Reg<DATA8, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _) }
         }
     }
     ///8-bit data register (RBR/THR and SCR share this layout).
@@ -769,7 +717,10 @@ pub mod uart_v1 {
             defmt::write!(
                 f,
                 "IER {{ ERBFI: {=bool:?}, ETBEI: {=bool:?}, ELSI: {=bool:?}, EDSSI: {=bool:?} }}",
-                self.ERBFI(), self.ETBEI(), self.ELSI(), self.EDSSI()
+                self.ERBFI(),
+                self.ETBEI(),
+                self.ELSI(),
+                self.EDSSI()
             )
         }
     }
@@ -1278,43 +1229,31 @@ pub mod wdt_v1 {
         ///Counter Reload Value Register (WDT04). Value loaded into STATUS on reset or when 0x4755 is written to the RESTART register. Units: microseconds. Default: 0x014F_B180 (~22 s).
         #[inline(always)]
         pub const fn RELOAD(self) -> crate::common::Reg<WDT_COUNTER, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _) }
         }
         ///Counter Restart Register (WDT08). Write-only trigger. Write 0x4755 to reload STATUS from RELOAD and restart the counter (provided CTRL.WDT_EN=1). Any other write value is ignored.
         #[inline(always)]
-        pub const fn RESTART(
-            self,
-        ) -> crate::common::Reg<WDT_RESTART, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
-            }
+        pub const fn RESTART(self) -> crate::common::Reg<WDT_RESTART, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _) }
         }
         ///Control Register (WDT0C). Configures reset mode, interrupt, and enable. Default: 0x0010 (WDT_EN=0, RST_SYS=1 = SOC reset mode).
         #[inline(always)]
         pub const fn CTRL(self) -> crate::common::Reg<WDT_CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _) }
         }
         ///Software Mode Reset Control Register (WDT24). Write 0xAEED_F123 to trigger an immediate software-mode SOC reset (after setting SW_RESET_MASK1 to select which blocks to reset). This bit clears automatically after reset.
         #[inline(always)]
         pub const fn SW_RESET_CTRL(
             self,
         ) -> crate::common::Reg<WDT_SW_RESET_CTRL, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _) }
         }
         ///Software Mode Reset Mask Register #1 (WDT28). Each bit enables the corresponding subsystem to be reset when SW_RESET_CTRL is triggered. Zephyr uses 0x3FFF_FF1 to reset most subsystems.
         #[inline(always)]
         pub const fn SW_RESET_MASK1(
             self,
         ) -> crate::common::Reg<WDT_SW_RESET_MASK1, crate::common::RW> {
-            unsafe {
-                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
-            }
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _) }
         }
     }
     ///32-bit counter / reload value (WDT00 and WDT04 share this layout).
@@ -1332,8 +1271,7 @@ pub mod wdt_v1 {
         ///Counter value in microseconds.
         #[inline(always)]
         pub const fn set_VALUE(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for WDT_COUNTER {
@@ -1344,7 +1282,9 @@ pub mod wdt_v1 {
     }
     impl core::fmt::Debug for WDT_COUNTER {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("WDT_COUNTER").field("VALUE", &self.VALUE()).finish()
+            f.debug_struct("WDT_COUNTER")
+                .field("VALUE", &self.VALUE())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -1475,8 +1415,7 @@ pub mod wdt_v1 {
         ///Write 0x4755 to reload and restart the counter. Read returns 0 (write-only hardware).
         #[inline(always)]
         pub const fn set_KEY(&mut self, val: u16) {
-            self.0 = (self.0 & !(0xffff << 0usize))
-                | (((val as u32) & 0xffff) << 0usize);
+            self.0 = (self.0 & !(0xffff << 0usize)) | (((val as u32) & 0xffff) << 0usize);
         }
     }
     impl Default for WDT_RESTART {
@@ -1487,7 +1426,9 @@ pub mod wdt_v1 {
     }
     impl core::fmt::Debug for WDT_RESTART {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("WDT_RESTART").field("KEY", &self.KEY()).finish()
+            f.debug_struct("WDT_RESTART")
+                .field("KEY", &self.KEY())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]
@@ -1511,8 +1452,7 @@ pub mod wdt_v1 {
         ///Write 0xAEEDF123 to fire a software-mode SOC reset immediately. After reset this bit clears to 0 automatically. Only SOC reset mode is supported for software-triggered resets.
         #[inline(always)]
         pub const fn set_TRIGGER(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for WDT_SW_RESET_CTRL {
@@ -1531,7 +1471,11 @@ pub mod wdt_v1 {
     #[cfg(feature = "defmt")]
     impl defmt::Format for WDT_SW_RESET_CTRL {
         fn format(&self, f: defmt::Formatter) {
-            defmt::write!(f, "WDT_SW_RESET_CTRL {{ TRIGGER: {=u32:?} }}", self.TRIGGER())
+            defmt::write!(
+                f,
+                "WDT_SW_RESET_CTRL {{ TRIGGER: {=u32:?} }}",
+                self.TRIGGER()
+            )
         }
     }
     ///Software Mode Reset Mask Register #1 (WDT28). Each bit enables (1) or disables (0) the reset of the corresponding subsystem when SW_RESET_CTRL is triggered.
@@ -1549,8 +1493,7 @@ pub mod wdt_v1 {
         ///Subsystem reset enable bitmask. Zephyr sets 0x03FF_FFF1 to reset the standard set of subsystems (ARM, SDRAM, AHB bridges, coprocessor, SOC controllers, USB, etc.).
         #[inline(always)]
         pub const fn set_MASK(&mut self, val: u32) {
-            self.0 = (self.0 & !(0xffff_ffff << 0usize))
-                | (((val as u32) & 0xffff_ffff) << 0usize);
+            self.0 = (self.0 & !(0xffff_ffff << 0usize)) | (((val as u32) & 0xffff_ffff) << 0usize);
         }
     }
     impl Default for WDT_SW_RESET_MASK1 {
@@ -1561,7 +1504,9 @@ pub mod wdt_v1 {
     }
     impl core::fmt::Debug for WDT_SW_RESET_MASK1 {
         fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-            f.debug_struct("WDT_SW_RESET_MASK1").field("MASK", &self.MASK()).finish()
+            f.debug_struct("WDT_SW_RESET_MASK1")
+                .field("MASK", &self.MASK())
+                .finish()
         }
     }
     #[cfg(feature = "defmt")]

@@ -14,6 +14,8 @@ const (
     SPI2_BASE = 0x7e640000
     // HACE_BASE Hash and Crypto Engine (AES/DES/RC4 + SHA/MD5/HMAC)
     HACE_BASE = 0x7e6d0000
+    // ADC_BASE 10-bit ADC controller, 8 channels (CH0–7)
+    ADC_BASE = 0x7e6e9000
     // SECURE_BASE Secure Boot Controller and OTP engine
     SECURE_BASE = 0x7e6f2000
     // GPIO_BASE GPIO controller (ports A-U, 149 usable pins)
