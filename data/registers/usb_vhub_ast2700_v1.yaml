@@ -1,0 +1,613 @@
+# ASPEED AST2700 USB Virtual Hub (vHub) device/gadget controller registers.
+#
+# The AST2700 USB device controller presents itself to the host as a USB-2.0
+# hub with up to 7 downstream virtual ports, each an independent gadget, plus a
+# shared pool of up to 21 generic endpoints. 64-bit bus-master DMA.
+#
+# Controller instances (base addresses, from aspeed-g7.dtsi):
+#   Die0 / SoC0 (GIC SPI IRQs, SCU0 @ 0x12c0_2000):
+#     vhuba0  0x1206_0000  IRQ 33  clk PORTAUSB2CLK  rst PORTA_VHUB_EHCI  (DC-SCM)
+#     vhuba1  0x1201_1000  IRQ 32  clk PORTAUSB2CLK  rst PORTA_VHUB
+#     vhubb0  0x1206_2000  IRQ 37  clk PORTBUSB2CLK  rst PORTB_VHUB_EHCI  (DC-SCM)
+#     vhubb1  0x1202_1000  IRQ 36  clk PORTBUSB2CLK  rst PORTB_VHUB
+#   Die1 / SoC1 (INTC1_4 cascade, SCU1 @ 0x14c0_2000):
+#     vhubc   0x1412_0000  IRQ intc1_4/28  clk PORTCUSB2CLK  rst PORTC_VHUB_EHCI (DC-SCM)
+#     vhubd   0x1412_2000  IRQ intc1_4/29  clk PORTDUSB2CLK  rst PORTD_VHUB_EHCI
+#
+# The register file is laid out in three regions relative to the controller
+# base:
+#   0x000 .. 0x820  global/hub registers (block VHUB)
+#   0x100 + 0x10*n  per-downstream-device registers (block VHUB_DEV), n = 0..6
+#   0x200 + 0x10*g  per-generic-endpoint registers (block VHUB_EP), g = 0..20
+#   0x080 + 8*(n+1) per-device 8-byte SETUP packet buffer
+#   0x800           PHY control/status
+#
+# Downstream DMA uses 2-word little-endian descriptors (generic EPs, IN only in
+# the reference driver): w0 = buffer DMA address; w1 = length[11:0] +
+# SPID_DATA[15:14] + IN_INTERRUPT[31].
+#
+# Sources: linux/drivers/usb/gadget/udc/aspeed-vhub/vhub.h,
+#          u-boot/drivers/misc/ast_usb.c,
+#          zephyr/drivers/usb/udc/udc_aspeed.c (identical IP register model).
+
+# ── Global / root-hub register block ──────────────────────────────────────────
+
+block/VHUB:
+  description: >
+    AST2700 USB vHub global/root-hub registers. Base is the controller base
+    (e.g. 0x1206_0000 for vhuba0). Covers PHY/attach control, the shared
+    interrupt controller, the endpoint pool ACK/NACK interrupt banks, the soft
+    reset, and the hub's own EP0/EP1 (EP1 is the HW-managed interrupt-IN
+    status-change endpoint that reports downstream port changes).
+  items:
+    - name: CTRL
+      description: Root function control & status — PHY clock/reset, FIFO/descriptor mode, upstream attach.
+      byte_offset: 0x00
+      fieldset: VHUB_CTRL
+
+    - name: CONF
+      description: >
+        Root configuration — the vHub's own USB device address (0 until the
+        host issues SET_ADDRESS during hub enumeration).
+      byte_offset: 0x04
+      fieldset: VHUB_CONF
+
+    - name: IER
+      description: Interrupt enable (same bit layout as ISR).
+      byte_offset: 0x08
+      fieldset: VHUB_IRQ
+
+    - name: ISR
+      description: Interrupt status (write 1 to acknowledge; ACK_ALL = 0x1ff).
+      byte_offset: 0x0C
+      fieldset: VHUB_IRQ
+
+    - name: EP_ACK_IER
+      description: Programmable endpoint-pool ACK interrupt enable (bit g = generic EP g).
+      byte_offset: 0x10
+      fieldset: VHUB_EP_POOL
+
+    - name: EP_NACK_IER
+      description: Programmable endpoint-pool NACK interrupt enable.
+      byte_offset: 0x14
+      fieldset: VHUB_EP_POOL
+
+    - name: EP_ACK_ISR
+      description: Programmable endpoint-pool ACK interrupt status (write 1 to acknowledge).
+      byte_offset: 0x18
+      fieldset: VHUB_EP_POOL
+
+    - name: EP_NACK_ISR
+      description: Programmable endpoint-pool NACK interrupt status (write 1 to acknowledge).
+      byte_offset: 0x1C
+      fieldset: VHUB_EP_POOL
+
+    - name: SW_RESET
+      description: Device controller soft reset — per-device, EP pool, DMA controller, root hub.
+      byte_offset: 0x20
+      fieldset: VHUB_SW_RESET
+
+    - name: USBSTS
+      description: USB status — negotiated speed and current bus frame number.
+      byte_offset: 0x24
+      fieldset: VHUB_USBSTS
+
+    - name: EP_TOGGLE
+      description: Programmable endpoint-pool data-toggle set/clear.
+      byte_offset: 0x28
+      fieldset: VHUB_EP_TOGGLE
+
+    - name: ISO_FAIL_ACC
+      description: Isochronous transaction failure accumulator.
+      byte_offset: 0x2C
+
+    - name: EP0_CTRL
+      description: Hub EP0 control/status (control-transfer state machine for the hub's own EP0).
+      byte_offset: 0x30
+      fieldset: VHUB_EP0_CTRL
+
+    - name: EP0_DATA
+      description: Base DMA address of the hub EP0 IN/OUT 64-byte data buffer.
+      byte_offset: 0x34
+
+    - name: EP1_CTRL
+      description: >
+        Hub EP1 control — the interrupt-IN endpoint the host polls for hub
+        port status-change events.
+      byte_offset: 0x38
+      fieldset: VHUB_EP1_CTRL
+
+    - name: EP1_STS_CHG
+      description: >
+        Hub EP1 status-change bitmap. Bit (port+1) set marks a change on that
+        downstream port; bit 0 is the hub itself.
+      byte_offset: 0x3C
+
+    - name: SETUP0
+      description: Root/hub device SETUP packet buffer, low 4 bytes (bytes 0..3 of the 8-byte packet).
+      byte_offset: 0x80
+
+    - name: SETUP1
+      description: Root/hub device SETUP packet buffer, high 4 bytes (bytes 4..7).
+      byte_offset: 0x84
+
+    - name: PHY_CTRL
+      description: >
+        USB PHY control/status #1 (base + 0x800). Carries the CPU/IO-die SRAM
+        access-enable bits used during bring-up and the FIFO force-retry quirk
+        for AST2700 SoC0 vHub0/vHubB0.
+      byte_offset: 0x800
+      fieldset: VHUB_PHY
+
+# ── Per-downstream-device register block ──────────────────────────────────────
+# Instance base = controller_base + 0x100 + 0x10 * device_index (index 0..6).
+
+block/VHUB_DEV:
+  description: >
+    AST2700 vHub per-downstream-device registers. One instance per virtual
+    downstream port, located at controller_base + 0x100 + 0x10*index. Each
+    describes an independent gadget behind the emulated hub: its enable/port
+    state, USB address, EP0 control-transfer state, and EP0 data buffer.
+  items:
+    - name: EN_CTRL
+      description: Device enable control — port enable, high-speed select, USB address, EP0 IRQ enables.
+      byte_offset: 0x00
+      fieldset: VHUB_DEV_EN_CTRL
+
+    - name: ISR
+      description: Device EP0 interrupt status (setup / IN / OUT ACK-stall / NAK).
+      byte_offset: 0x04
+      fieldset: VHUB_DEV_ISR
+
+    - name: EP0_CTRL
+      description: Device EP0 control/status (same bit layout as the hub EP0_CTRL).
+      byte_offset: 0x08
+      fieldset: VHUB_EP0_CTRL
+
+    - name: EP0_DATA
+      description: Base DMA address of this device's EP0 64-byte data buffer.
+      byte_offset: 0x0C
+
+# ── Per-generic-endpoint register block ───────────────────────────────────────
+# Instance base = controller_base + 0x200 + 0x10 * generic_ep_index (0..20).
+
+block/VHUB_EP:
+  description: >
+    AST2700 vHub per-generic-endpoint registers. Up to 21 generic endpoints are
+    shared across all downstream devices; each is assigned to a device + EP
+    number via CONFIG. Located at controller_base + 0x200 + 0x10*g_index.
+    Supports single-stage DMA (typically OUT) and 256/32-entry descriptor-ring
+    DMA (IN).
+  items:
+    - name: CONFIG
+      description: Endpoint config — enable, direction, type, EP number, owning device, max packet.
+      byte_offset: 0x00
+      fieldset: VHUB_EP_CONFIG
+
+    - name: DMA_CTLSTAT
+      description: Endpoint DMA control/status — mode select, reset, long/contiguous mode, engine status.
+      byte_offset: 0x04
+      fieldset: VHUB_EP_DMA_CTLSTAT
+
+    - name: DESC_BASE
+      description: >
+        Endpoint DMA base address. In descriptor mode: base of the descriptor
+        ring. In single-stage mode: the data buffer DMA address.
+      byte_offset: 0x08
+
+    - name: DESC_STATUS
+      description: Endpoint DMA status — single-stage TX size/kick and descriptor read/write pointers.
+      byte_offset: 0x0C
+      fieldset: VHUB_EP_DESC_STATUS
+
+# ── Fieldsets ─────────────────────────────────────────────────────────────────
+
+fieldset/VHUB_CTRL:
+  description: Root function control & status register.
+  fields:
+    - name: UPSTREAM_CONNECT
+      description: Assert the upstream D+ pull-up so the host detects and enumerates the vHub.
+      bit_offset: 0
+      bit_size: 1
+    - name: FULL_SPEED_ONLY
+      description: Force full-speed operation (advertise FS instead of HS).
+      bit_offset: 1
+      bit_size: 1
+    - name: CLK_STOP_SUSPEND
+      description: Allow the PHY clock to stop while the bus is suspended.
+      bit_offset: 2
+      bit_size: 1
+    - name: AUTO_REMOTE_WAKEUP
+      description: Enable automatic remote-wakeup signalling.
+      bit_offset: 3
+      bit_size: 1
+    - name: MANUAL_REMOTE_WAKEUP
+      description: Trigger a manual remote-wakeup.
+      bit_offset: 4
+      bit_size: 1
+    - name: SET_TEST_MODE
+      description: USB2 electrical test-mode selector.
+      bit_offset: 8
+      bit_size: 3
+    - name: PHY_RESET_DIS
+      description: Disable (hold off) the internal PHY reset. Set together with PHY_CLK to bring the PHY up.
+      bit_offset: 11
+      bit_size: 1
+    - name: SPLIT_IN
+      description: Enable split-IN handling for the endpoint pool.
+      bit_offset: 16
+      bit_size: 1
+    - name: ISO_RSP_CTRL
+      description: Isochronous response control.
+      bit_offset: 17
+      bit_size: 1
+    - name: LONG_DESC
+      description: Use the 256-entry (long) descriptor mode instead of 32-entry.
+      bit_offset: 18
+      bit_size: 1
+    - name: ENLARGE_FIFO
+      description: Enlarge the endpoint FIFO (AST2700 SoC0 vHub1 workaround).
+      bit_offset: 21
+      bit_size: 1
+    - name: DP_PWN
+      description: D+ power/pull control (diagnostic).
+      bit_offset: 23
+      bit_size: 1
+    - name: DN_PWN
+      description: D- power/pull control (diagnostic).
+      bit_offset: 24
+      bit_size: 1
+    - name: PHY_LOOP_TEST
+      description: Enable PHY loopback test mode.
+      bit_offset: 25
+      bit_size: 1
+    - name: PHY_CLK
+      description: Enable the PHY clock. Required (with PHY_RESET_DIS) before any USB activity.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/VHUB_CONF:
+  description: Root configuration — the vHub's own USB device address.
+  fields:
+    - name: DEV_ADDR
+      description: USB device address assigned to the vHub by the host (0 at reset).
+      bit_offset: 0
+      bit_size: 7
+
+fieldset/VHUB_IRQ:
+  description: >
+    Shared interrupt enable/status layout. Downstream device n raises
+    DEVICE1 << n (bits 9..15). ACK_ALL = 0x1ff acknowledges every hub/bus event.
+  fields:
+    - name: HUB_EP0_SETUP
+      description: Hub EP0 received a SETUP packet.
+      bit_offset: 0
+      bit_size: 1
+    - name: HUB_EP0_OUT_ACK_STALL
+      description: Hub EP0 OUT ACK/STALL completed.
+      bit_offset: 1
+      bit_size: 1
+    - name: HUB_EP0_OUT_NAK
+      description: Hub EP0 OUT NAK.
+      bit_offset: 2
+      bit_size: 1
+    - name: HUB_EP0_IN_ACK_STALL
+      description: Hub EP0 IN ACK/STALL completed.
+      bit_offset: 3
+      bit_size: 1
+    - name: HUB_EP0_IN_DATA_NAK
+      description: Hub EP0 IN data NAK.
+      bit_offset: 4
+      bit_size: 1
+    - name: HUB_EP1_IN_DATA_ACK
+      description: Hub EP1 (port status-change interrupt-IN) data ACK.
+      bit_offset: 5
+      bit_size: 1
+    - name: BUS_RESET
+      description: Upstream bus reset detected.
+      bit_offset: 6
+      bit_size: 1
+    - name: BUS_SUSPEND
+      description: Upstream bus suspend detected.
+      bit_offset: 7
+      bit_size: 1
+    - name: BUS_RESUME
+      description: Upstream bus resume detected.
+      bit_offset: 8
+      bit_size: 1
+    - name: DEVICE1
+      description: >
+        Downstream device 1 interrupt. Devices 1..7 occupy bits 9..15
+        (device n at bit 9 + (n-1)).
+      bit_offset: 9
+      bit_size: 7
+    - name: EP_POOL_ACK_STALL
+      description: A generic endpoint-pool endpoint raised an ACK/STALL (see EP_ACK_ISR).
+      bit_offset: 16
+      bit_size: 1
+    - name: EP_POOL_NAK
+      description: A generic endpoint-pool endpoint raised a NAK (see EP_NACK_ISR).
+      bit_offset: 17
+      bit_size: 1
+    - name: USB_CMD_DEADLOCK
+      description: USB command deadlock detected.
+      bit_offset: 18
+      bit_size: 1
+
+fieldset/VHUB_EP_POOL:
+  description: Endpoint-pool per-endpoint interrupt bank (bit g = generic endpoint g).
+  fields:
+    - name: EP
+      description: One bit per generic endpoint in the shared pool (bit g for endpoint g).
+      bit_offset: 0
+      bit_size: 21
+
+fieldset/VHUB_SW_RESET:
+  description: Device controller soft reset enables (write 1 to assert, write 0 to release).
+  fields:
+    - name: ROOT_HUB
+      description: Reset the root hub.
+      bit_offset: 0
+      bit_size: 1
+    - name: DEVICE
+      description: Per-downstream-device reset bitmap (device n at bit n, 1..7).
+      bit_offset: 1
+      bit_size: 7
+    - name: DMA_CONTROLLER
+      description: Reset the DMA controller.
+      bit_offset: 8
+      bit_size: 1
+    - name: EP_POOL
+      description: Reset the generic endpoint pool.
+      bit_offset: 9
+      bit_size: 1
+
+fieldset/VHUB_USBSTS:
+  description: USB status register — bus frame number and negotiated speed.
+  fields:
+    - name: FRAME_NUMBER
+      description: Current USB (micro)frame number.
+      bit_offset: 16
+      bit_size: 11
+    - name: HISPEED
+      description: Upstream bus enumerated at high speed (480 Mbps).
+      bit_offset: 27
+      bit_size: 1
+
+fieldset/VHUB_EP_TOGGLE:
+  description: Programmable endpoint-pool data-toggle set/clear.
+  fields:
+    - name: SET_EPNUM
+      description: Generic endpoint number whose toggle is being set/read.
+      bit_offset: 0
+      bit_size: 5
+    - name: VALUE
+      description: Data toggle value to apply to the selected endpoint.
+      bit_offset: 8
+      bit_size: 1
+
+fieldset/VHUB_EP0_CTRL:
+  description: >
+    Control-transfer state/kick register for an EP0 (used by both the hub's own
+    EP0 and each downstream device's EP0; identical layout).
+  fields:
+    - name: STALL
+      description: Stall the control endpoint.
+      bit_offset: 0
+      bit_size: 1
+    - name: TX_BUFF_RDY
+      description: IN data buffer ready — kick the loaded IN (device-to-host) transfer.
+      bit_offset: 1
+      bit_size: 1
+    - name: RX_BUFF_RDY
+      description: OUT buffer ready — prime reception of an OUT (host-to-device) transfer.
+      bit_offset: 2
+      bit_size: 1
+    - name: SET_TX_LEN
+      description: Length (0..127) of the IN data stage to transmit.
+      bit_offset: 8
+      bit_size: 7
+    - name: RX_LEN
+      description: Length (0..127) of the received OUT data stage (read-only).
+      bit_offset: 16
+      bit_size: 7
+
+fieldset/VHUB_EP1_CTRL:
+  description: Hub EP1 (port status-change interrupt-IN) control.
+  fields:
+    - name: ENABLE
+      description: Enable EP1.
+      bit_offset: 0
+      bit_size: 1
+    - name: STALL
+      description: Stall EP1.
+      bit_offset: 1
+      bit_size: 1
+    - name: RESET_TOGGLE
+      description: Reset the EP1 data toggle.
+      bit_offset: 2
+      bit_size: 1
+
+fieldset/VHUB_PHY:
+  description: >
+    USB PHY control/status #1 (base + 0x800). During bring-up the driver sets
+    the die-specific SRAM access-enable bits and, on the affected parts, the
+    FIFO force-retry quirk.
+  fields:
+    - name: CPU_DIE_SRAM_EN
+      description: Enable SRAM access for CPU-die vHubs (vHubA/vHubB); set during init.
+      bit_offset: 4
+      bit_size: 1
+    - name: IO_DIE_AHBM_ADDR34
+      description: IO-die AHB master address bit 34 select (vHubC/vHubD); set during init.
+      bit_offset: 5
+      bit_size: 1
+    - name: IO_DIE_SRAM_EN
+      description: Enable SRAM access for IO-die vHubs (vHubC/vHubD); set during init.
+      bit_offset: 10
+      bit_size: 1
+    - name: FIFO_FORCE_RETRY
+      description: >
+        Force TX FIFO retry when DRAM is busy (AST2700 SoC0 vHub0/vHubB0
+        txfifo-retry-quirk).
+      bit_offset: 13
+      bit_size: 1
+
+fieldset/VHUB_DEV_EN_CTRL:
+  description: Per-downstream-device enable control.
+  fields:
+    - name: ENABLE_PORT
+      description: Enable this downstream device/port.
+      bit_offset: 0
+      bit_size: 1
+    - name: SPEED_SEL_HIGH
+      description: Advertise this device at high speed.
+      bit_offset: 1
+      bit_size: 1
+    - name: EP0_SETUP_IRQEN
+      description: Enable the device EP0 SETUP interrupt.
+      bit_offset: 2
+      bit_size: 1
+    - name: EP0_OUT_ACK_IRQEN
+      description: Enable the device EP0 OUT ACK interrupt.
+      bit_offset: 3
+      bit_size: 1
+    - name: EP0_OUT_NAK_IRQEN
+      description: Enable the device EP0 OUT NAK interrupt.
+      bit_offset: 4
+      bit_size: 1
+    - name: EP0_IN_ACK_IRQEN
+      description: Enable the device EP0 IN ACK interrupt.
+      bit_offset: 5
+      bit_size: 1
+    - name: EP0_NAK_IRQEN
+      description: Enable the device EP0 NAK interrupt.
+      bit_offset: 6
+      bit_size: 1
+    - name: SET_ADDR
+      description: USB device address assigned to this downstream device by the host.
+      bit_offset: 8
+      bit_size: 8
+
+fieldset/VHUB_DEV_ISR:
+  description: Per-downstream-device EP0 interrupt status.
+  fields:
+    - name: EP0_SETUP
+      description: Device EP0 received a SETUP packet.
+      bit_offset: 0
+      bit_size: 1
+    - name: EP0_OUT_ACK_STALL
+      description: Device EP0 OUT ACK/STALL completed.
+      bit_offset: 1
+      bit_size: 1
+    - name: EP0_OUT_DATA_NACK
+      description: Device EP0 OUT data NAK.
+      bit_offset: 2
+      bit_size: 1
+    - name: EP0_IN_ACK_STALL
+      description: Device EP0 IN ACK/STALL completed.
+      bit_offset: 3
+      bit_size: 1
+    - name: EP0_IN_DATA_NACK
+      description: Device EP0 IN data NAK.
+      bit_offset: 4
+      bit_size: 1
+
+fieldset/VHUB_EP_CONFIG:
+  description: Generic endpoint configuration.
+  fields:
+    - name: ENABLE
+      description: Enable this generic endpoint.
+      bit_offset: 0
+      bit_size: 1
+    - name: SET_DEV
+      description: Owning downstream device index (0 = hub).
+      bit_offset: 1
+      bit_size: 3
+    - name: DIR_OUT
+      description: Endpoint direction — 1 = OUT (host-to-device), 0 = IN.
+      bit_offset: 4
+      bit_size: 1
+    - name: SET_TYPE
+      description: "Transfer type: 0=off, 1=bulk, 2=interrupt, 3=isochronous."
+      bit_offset: 5
+      bit_size: 2
+    - name: SET_EP_NUM
+      description: USB endpoint number (1..15) presented to the host.
+      bit_offset: 8
+      bit_size: 4
+    - name: STALL_CTRL
+      description: Stall this endpoint.
+      bit_offset: 12
+      bit_size: 1
+    - name: AUTO_DATA_DISABLE
+      description: Disable automatic data-toggle handling.
+      bit_offset: 13
+      bit_size: 1
+    - name: SET_MAX_PKT
+      description: Maximum packet size in bytes (up to 1024).
+      bit_offset: 16
+      bit_size: 10
+
+fieldset/VHUB_EP_DMA_CTLSTAT:
+  description: Generic endpoint DMA control/status.
+  fields:
+    - name: DESC_MODE
+      description: Enable descriptor-ring DMA mode (vs single-stage).
+      bit_offset: 0
+      bit_size: 1
+    - name: SINGLE_STAGE
+      description: Enable single-stage DMA (one buffer, kicked via DESC_STATUS SINGLE_KICK).
+      bit_offset: 1
+      bit_size: 1
+    - name: CTRL_RESET
+      description: Reset this endpoint's DMA engine.
+      bit_offset: 2
+      bit_size: 1
+    - name: IN_LONG_MODE
+      description: >
+        IN long/contiguous mode (also OUT contiguous mode depending on
+        direction).
+      bit_offset: 3
+      bit_size: 1
+    - name: PROC_STATUS
+      description: "DMA engine processing status (0=RX idle, 8=TX idle; other = busy)."
+      bit_offset: 4
+      bit_size: 4
+
+fieldset/VHUB_EP_DESC_STATUS:
+  description: >
+    Generic endpoint DMA status/kick. In single-stage mode SET_TX_SIZE holds the
+    byte count and SINGLE_KICK starts it; in descriptor mode the read/write
+    pointers walk the ring.
+  fields:
+    - name: SINGLE_KICK
+      description: Start a single-stage transfer (write pointer = 1).
+      bit_offset: 0
+      bit_size: 1
+    - name: SET_RPTR
+      description: Descriptor read pointer.
+      bit_offset: 8
+      bit_size: 8
+    - name: SET_TX_SIZE
+      description: Single-stage transmit byte count.
+      bit_offset: 16
+      bit_size: 11
+
+fieldset/VHUB_DESC_W1:
+  description: >
+    Second word of a generic-endpoint DMA descriptor (word 0 is the buffer DMA
+    address). Reference driver uses descriptor DMA for IN endpoints only.
+  fields:
+    - name: LEN
+      description: Packet length in bytes (0..4095).
+      bit_offset: 0
+      bit_size: 12
+    - name: SPID_DATA
+      description: "Data PID override: 0=DATA0, 1=DATA2, 2=DATA1, 3=MDATA."
+      bit_offset: 14
+      bit_size: 2
+    - name: IN_INTERRUPT
+      description: Raise an interrupt when this descriptor completes.
+      bit_offset: 31
+      bit_size: 1
