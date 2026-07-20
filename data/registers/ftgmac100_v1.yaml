@@ -1,0 +1,138 @@
+# Faraday FTGMAC100 Gigabit Ethernet MAC registers.
+#
+# Sources:
+#   - linux/drivers/net/ethernet/faraday/ftgmac100.h
+#   - u-boot/drivers/net/ftgmac100.h
+# AST2700 adds 64-bit ring base address registers at 0x178..0x18c.
+
+block/FTGMAC100:
+  description: Faraday FTGMAC100 Gigabit Ethernet MAC register block.
+  items:
+    - { name: ISR,          byte_offset: 0x000, fieldset: INT_STATUS }
+    - { name: IER,          byte_offset: 0x004, fieldset: INT_STATUS }
+    - { name: MAC_MADR,     byte_offset: 0x008, fieldset: MAC_MADR }
+    - { name: MAC_LADR,     byte_offset: 0x00c, fieldset: MAC_LADR }
+    - { name: MAHT0,        byte_offset: 0x010 }
+    - { name: MAHT1,        byte_offset: 0x014 }
+    - { name: NPTXPD,       byte_offset: 0x018 }
+    - { name: RXPD,         byte_offset: 0x01c }
+    - { name: NPTXR_BADR,   byte_offset: 0x020 }
+    - { name: RXR_BADR,     byte_offset: 0x024 }
+    - { name: HPTXPD,       byte_offset: 0x028 }
+    - { name: HPTXR_BADR,   byte_offset: 0x02c }
+    - { name: ITC,          byte_offset: 0x030 }
+    - { name: APTC,         byte_offset: 0x034, fieldset: APTC }
+    - { name: DBLAC,        byte_offset: 0x038, fieldset: DBLAC }
+    - { name: DMAFIFOS,     byte_offset: 0x03c }
+    - { name: REVR,         byte_offset: 0x040 }
+    - { name: FEAR,         byte_offset: 0x044 }
+    - { name: TPAFCR,       byte_offset: 0x048 }
+    - { name: RBSR,         byte_offset: 0x04c, fieldset: RBSR }
+    - { name: MACCR,        byte_offset: 0x050, fieldset: MACCR }
+    - { name: MACSR,        byte_offset: 0x054 }
+    - { name: TM,           byte_offset: 0x058, fieldset: TM }
+    - { name: PHYCR,        byte_offset: 0x060, fieldset: PHYCR }
+    - { name: PHYDATA,      byte_offset: 0x064, fieldset: PHYDATA }
+    - { name: FCR,          byte_offset: 0x068 }
+    - { name: BPR,          byte_offset: 0x06c }
+    - { name: WOLCR,        byte_offset: 0x070 }
+    - { name: WOLSR,        byte_offset: 0x074 }
+    - { name: WFCRC,        byte_offset: 0x078 }
+    - { name: WFBM1,        byte_offset: 0x080 }
+    - { name: WFBM2,        byte_offset: 0x084 }
+    - { name: WFBM3,        byte_offset: 0x088 }
+    - { name: WFBM4,        byte_offset: 0x08c }
+    - { name: NPTXR_PTR,    byte_offset: 0x090 }
+    - { name: HPTXR_PTR,    byte_offset: 0x094 }
+    - { name: RXR_PTR,      byte_offset: 0x098 }
+    - { name: TX,           byte_offset: 0x0a0 }
+    - { name: RX,           byte_offset: 0x0b0 }
+    - { name: TXR_BADR_LOW, byte_offset: 0x178, description: AST2700 transmit ring base low word. }
+    - { name: TXR_BADR_HIGH, byte_offset: 0x17c, description: AST2700 transmit ring base high word. }
+    - { name: HPTXR_BADR_LOW, byte_offset: 0x180, description: AST2700 high-priority transmit ring base low word. }
+    - { name: HPTXR_BADR_HIGH, byte_offset: 0x184, description: AST2700 high-priority transmit ring base high word. }
+    - { name: RXR_BADR_LOW, byte_offset: 0x188, description: AST2700 receive ring base low word. }
+    - { name: RXR_BADR_HIGH, byte_offset: 0x18c, description: AST2700 receive ring base high word. }
+
+fieldset/INT_STATUS:
+  description: Interrupt status and enable bits.
+  fields:
+    - { name: RPKT_BUF,    bit_offset: 0, bit_size: 1 }
+    - { name: RPKT_FIFO,   bit_offset: 1, bit_size: 1 }
+    - { name: NO_RXBUF,    bit_offset: 2, bit_size: 1 }
+    - { name: RPKT_LOST,   bit_offset: 3, bit_size: 1 }
+    - { name: XPKT_ETH,    bit_offset: 4, bit_size: 1 }
+    - { name: XPKT_FIFO,   bit_offset: 5, bit_size: 1 }
+    - { name: NO_NPTXBUF,  bit_offset: 6, bit_size: 1 }
+    - { name: XPKT_LOST,   bit_offset: 7, bit_size: 1 }
+    - { name: AHB_ERR,     bit_offset: 8, bit_size: 1 }
+    - { name: PHYSTS_CHG,  bit_offset: 9, bit_size: 1 }
+    - { name: NO_HPTXBUF,  bit_offset: 10, bit_size: 1 }
+
+fieldset/MAC_MADR:
+  fields:
+    - { name: ADDR_47_32, bit_offset: 0, bit_size: 16 }
+
+fieldset/MAC_LADR:
+  fields:
+    - { name: ADDR_31_0, bit_offset: 0, bit_size: 32 }
+
+fieldset/APTC:
+  fields:
+    - { name: RXPOLL_CNT, bit_offset: 0, bit_size: 4 }
+    - { name: RXPOLL_TIME_SEL, bit_offset: 4, bit_size: 1 }
+    - { name: TXPOLL_CNT, bit_offset: 8, bit_size: 4 }
+    - { name: TXPOLL_TIME_SEL, bit_offset: 12, bit_size: 1 }
+
+fieldset/DBLAC:
+  fields:
+    - { name: RXFIFO_LTHR, bit_offset: 0, bit_size: 3 }
+    - { name: RXFIFO_HTHR, bit_offset: 3, bit_size: 3 }
+    - { name: RX_THR_EN, bit_offset: 6, bit_size: 1 }
+    - { name: RXBURST_SIZE, bit_offset: 8, bit_size: 2 }
+    - { name: TXBURST_SIZE, bit_offset: 10, bit_size: 2 }
+    - { name: RXDES_SIZE, bit_offset: 12, bit_size: 4 }
+    - { name: TXDES_SIZE, bit_offset: 16, bit_size: 4 }
+    - { name: IFG_CNT, bit_offset: 20, bit_size: 3 }
+    - { name: IFG_INC, bit_offset: 23, bit_size: 1 }
+
+fieldset/RBSR:
+  fields:
+    - { name: SIZE, bit_offset: 0, bit_size: 14 }
+
+fieldset/MACCR:
+  fields:
+    - { name: TXDMA_EN, bit_offset: 0, bit_size: 1 }
+    - { name: RXDMA_EN, bit_offset: 1, bit_size: 1 }
+    - { name: TXMAC_EN, bit_offset: 2, bit_size: 1 }
+    - { name: RXMAC_EN, bit_offset: 3, bit_size: 1 }
+    - { name: RM_VLAN, bit_offset: 4, bit_size: 1 }
+    - { name: HPTXR_EN, bit_offset: 5, bit_size: 1 }
+    - { name: LOOP_EN, bit_offset: 6, bit_size: 1 }
+    - { name: FULLDUP, bit_offset: 8, bit_size: 1 }
+    - { name: GIGA_MODE, bit_offset: 9, bit_size: 1 }
+    - { name: CRC_APD, bit_offset: 10, bit_size: 1 }
+    - { name: RX_RUNT, bit_offset: 12, bit_size: 1 }
+    - { name: RX_BROADPKT, bit_offset: 17, bit_size: 1 }
+    - { name: DISCARD_CRCERR, bit_offset: 18, bit_size: 1 }
+    - { name: FAST_MODE, bit_offset: 19, bit_size: 1 }
+    - { name: RMII_ENABLE, bit_offset: 20, bit_size: 1 }
+    - { name: SW_RST, bit_offset: 31, bit_size: 1 }
+
+fieldset/TM:
+  fields:
+    - { name: RQ_RR_IDLE_PREV, bit_offset: 27, bit_size: 1 }
+    - { name: RQ_TX_VALID_DIS, bit_offset: 28, bit_size: 1 }
+
+fieldset/PHYCR:
+  fields:
+    - { name: MDC_CYCTHR, bit_offset: 0, bit_size: 6 }
+    - { name: PHYAD, bit_offset: 16, bit_size: 5 }
+    - { name: REGAD, bit_offset: 21, bit_size: 5 }
+    - { name: MIIRD, bit_offset: 26, bit_size: 1 }
+    - { name: MIIWR, bit_offset: 27, bit_size: 1 }
+
+fieldset/PHYDATA:
+  fields:
+    - { name: MIIWDATA, bit_offset: 0, bit_size: 16 }
+    - { name: MIIRDATA, bit_offset: 16, bit_size: 16 }

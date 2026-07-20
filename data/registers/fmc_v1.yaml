@@ -15,7 +15,6 @@
 #   0x0CC  WRITE_ADDR_FILTER8  — 8th write address filter range (FMC only)
 #
 # Sources:
-#   ast1060v19.pdf  Chapter 13 – Firmware SPI Memory Controller (BSPI)
 
 block/FMC:
   description: >
@@ -54,7 +53,10 @@ block/FMC:
       fieldset: SPI_CE_N_CTRL
 
     - name: CE0_ADDR_RANGE
-      description: CE0 address decoding range (start/end bits[27:19] in 512 KB units).
+      description: >
+        CE0 address decoding range. Both halves store address bits A[31:16];
+        on AST2600/AST1030/AST1060 only A[27:20] are decoded (1 MB units) and
+        the end bound is inclusive. Segment disabled when start == end.
       byte_offset: 0x030
       fieldset: SPI_ADDR_RANGE
 
@@ -376,7 +378,10 @@ block/SPI:
       fieldset: SPI_CE_N_CTRL
 
     - name: CE0_ADDR_RANGE
-      description: CE0 address decoding range (start/end bits[27:20] in 1 MB units).
+      description: >
+        CE0 address decoding range. Both halves store address bits A[31:16];
+        on AST2600/AST1030/AST1060 only A[27:20] are decoded (1 MB units) and
+        the end bound is inclusive. Segment disabled when start == end.
       byte_offset: 0x030
       fieldset: SPI_ADDR_RANGE
 
@@ -389,6 +394,26 @@ block/SPI:
       description: Data output during head of dummy cycles.
       byte_offset: 0x054
       fieldset: SPI_DUMMY_DATA
+
+    - name: ALT_BOOT_CTRL
+      description: Alternate boot control and status register.
+      byte_offset: 0x064
+
+    - name: HOST_DIRECT_CMD0
+      description: Host direct access command register 0.
+      byte_offset: 0x06C
+
+    - name: HOST_DIRECT_CMD1
+      description: Host direct access command register 1.
+      byte_offset: 0x070
+
+    - name: HOST_DIRECT_CMD2
+      description: Host direct access command register 2.
+      byte_offset: 0x074
+
+    - name: HOST_DIRECT_CMD3
+      description: Host direct access command register 3.
+      byte_offset: 0x078
 
     - name: DMA_BUF_MODE_LEN
       description: DMA FIFO buffer mode length in 4-byte units.
@@ -774,14 +799,19 @@ fieldset/SPI_CE_N_CTRL:
       bit_size: 4
 
 fieldset/SPI_ADDR_RANGE:
-  description: CE address decoding range (start/end address in decoded space).
+  description: >
+    CE address decoding range. Each half stores address bits A[31:16] of the
+    window-relative bound. On AST2600/AST1030/AST1060 only A[27:20] participate
+    in decoding (1 MB granularity) and the end bound is inclusive; the low bits
+    are writable but ignored. Segment is disabled when start == end. Unit and
+    inclusive/exclusive semantics are SoC-specific and handled by the driver.
   fields:
     - name: START_ADDR
-      description: CE start address bits[31:16] (lower bound).
+      description: Start bound, address bits A[31:16] (lower bound).
       bit_offset: 0
       bit_size: 16
     - name: END_ADDR
-      description: CE end address bits[31:16] (upper bound). CE disabled when start=end.
+      description: End bound, address bits A[31:16] (upper bound). CE disabled when start == end.
       bit_offset: 16
       bit_size: 16
 

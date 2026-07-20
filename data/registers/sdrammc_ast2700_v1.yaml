@@ -1,0 +1,1061 @@
+# AST2700 SDRAM Memory Controller (DRAMC).
+#
+# One instance at 0x12C00000 (CPU-die, BootMCU view at same address).
+# PHY base address: 0x13000000 (DWC DDR PHY, 16-bit APB: byte_addr = phy_base + reg_addr * 2).
+#
+# Register access is protected.  Write 0x1688A8A8 to PROTECT to unlock.
+# Write 0xDEADDEAD to hard-lock until next reset.
+#
+# Training sequence:
+#   1. Unlock (PROTECT = 0x1688A8A8)
+#   2. Configure AC timing (DRAMC020–DRAMC03C)
+#   3. Configure DFI (DRAMC03C–DRAMC044)
+#   4. Power on PHY: MAIN_CTRL.PHY_POWER_ON=1, MAIN_CTRL.PHY_RESET_ASSERT=1→0
+#   5. Trigger init: MAIN_CTRL.INIT_TRIGGER=1 (W1T)
+#   6. Poll: INTR_STS.DDRPHY_INIT_DONE == 1
+#   7. Exit self-refresh: MAIN_CTRL.SELF_REF_TRIGGER=1 (W1T)
+#   8. Poll: INTR_STS.SELF_REF_DONE == 1
+#   9. Configure MRS, refresh, ZQ
+#  10. Run BIST to verify DRAM
+#  11. Lock (PROTECT = 0xDEADDEAD)
+#
+# Note: DWC DDR PHY PUB register programming is intentionally excluded —
+# the datasheet states "detailed PHY configuration falls outside the scope
+# of this document; refer to the software SDK" (§26.4.1).  PHY training
+# is performed by loading prebuilt firmware (IMEM/DMEM) from the ASTH
+# prebuilt table and triggering it via MAIN_CTRL.INIT_TRIGGER.
+#
+
+block/SDRAMMC:
+  description: >
+    AST2700 SDRAM Memory Controller (DRAMC).
+    Base address: 0x12C00000.
+    PHY base: 0x13000000 (DWC DDR PHY, 16-bit APB).
+    All registers require unlock via PROTECT = 0x1688A8A8 before write.
+  items:
+    - name: PROTECT
+      description: >
+        Register protection key.
+        Write 0x1688A8A8 to unlock all protected registers.
+        Write any other value to soft-lock.
+        Write 0xDEADDEAD to hard-lock until next system reset.
+        Read: 0x1 = unlocked, 0x0 = soft-locked, 0x10 = hard-locked.
+      byte_offset: 0x000
+
+    - name: INTR_STS
+      description: >
+        Interrupt status register. Bits are set by hardware events.
+        Write 1 to INTR_CLR to acknowledge.
+      byte_offset: 0x004
+      access: Read
+      fieldset: INTR
+
+    - name: INTR_CLR
+      description: >
+        Interrupt clear register. Write 1 to each bit to clear the
+        corresponding INTR_STS bit.
+      byte_offset: 0x008
+      fieldset: INTR
+
+    - name: INTR_MASK
+      description: >
+        Interrupt mask register. 0 = interrupt enabled, 1 = masked.
+      byte_offset: 0x00C
+      fieldset: INTR
+
+    - name: MAIN_CONF
+      description: >
+        Main configuration register (protected).
+        Must be written before triggering DDRPHY init.
+      byte_offset: 0x010
+      fieldset: MAIN_CONF
+
+    - name: MAIN_CTRL
+      description: >
+        Main control register (protected).
+        Trigger bits (W1T) are self-clearing after the operation starts.
+      byte_offset: 0x014
+      fieldset: MAIN_CTRL
+
+    - name: MAIN_STS
+      description: >
+        Main status register (read-only).
+      byte_offset: 0x018
+      access: Read
+      fieldset: MAIN_STS
+
+    - name: ERR_STS
+      description: >
+        Error status register (read-only).
+        Contains error codes for the most recent error event.
+      byte_offset: 0x01C
+      access: Read
+
+    # AC timing registers — computed from JEDEC timing parameters.
+    # Values are packed multi-field registers; driver computes from
+    # speed-grade tables (JEDEC JESD79-4/JESD79-5).
+
+    - name: AC_TIMING1
+      description: >
+        AC Timing Register 1 (protected).
+        [31:28]=tCCD_L, [27:24]=tRRD_L, [23:20]=tRRD, [15:8]=tMOD/tMRD.
+        Units: DRAM clock cycles.
+      byte_offset: 0x020
+
+    - name: AC_TIMING2
+      description: >
+        AC Timing Register 2 (protected).
+        [31:24]=tFAW, [23:16]=tRP, [15:8]=tRAS, [7:0]=tRCD.
+        Units: DRAM clock cycles.
+      byte_offset: 0x024
+
+    - name: AC_TIMING3
+      description: >
+        AC Timing Register 3 (protected).
+        [31:24]=WL+BL/2+tWTR (S), [23:16]=RTW, [15:8]=WL+BL/2+tWR, [7:0]=tRTP.
+        Units: DRAM clock cycles.
+      byte_offset: 0x028
+
+    - name: AC_TIMING4
+      description: >
+        AC Timing Register 4 (protected).
+        [31:24]=WL+BL/2+tWTRA (DDR5), [23:16]=WL+BL/2+tWTR_L.
+        Units: DRAM clock cycles.
+      byte_offset: 0x02C
+
+    - name: AC_TIMING5
+      description: >
+        AC Timing Register 5 (protected).
+        [31:20]=tREFSBRD (DDR5), [19:10]=tRFCsb (DDR5), [9:0]=tRFC.
+        Units: DRAM clock cycles.
+      byte_offset: 0x030
+
+    - name: AC_TIMING6
+      description: >
+        AC Timing Register 6 (protected).
+        [31:24]=tCSH_SRexit, [23:16]=tPD, [15:8]=tXP, [7:0]=tCKSRE/tCKSRX.
+        Units: DRAM clock cycles.
+      byte_offset: 0x034
+
+    - name: AC_TIMING7
+      description: >
+        AC Timing Register 7 (protected).
+        [31:16]=tZQCS/tZQLat, [15:0]=tDLLK.
+        Units: DRAM clock cycles.
+      byte_offset: 0x038
+
+    - name: DFI_TIMING
+      description: >
+        DFI Timing Register (protected).
+        [31:28]=ODT latency, [27:24]=t_phy_odtlat,
+        [23:16]=t_phy_rddata_en, [15:8]=t_phy_wrdata, [7:0]=t_phy_wrlat.
+      byte_offset: 0x03C
+
+    - name: DFI_CONF
+      description: >
+        DFI Configuration Register (protected).
+        [7]=DM-polarity, [6:5]=CKE-after-init, [4]=DFI-reset,
+        [3:2]=LP-wakeup, [1:0]=freq-encoding.
+      byte_offset: 0x040
+
+    - name: DFI_MSG
+      description: >
+        DFI Message Register (protected).
+        [23:8]=message-data, [7:0]=message (default 0x08 = PVT optimisation).
+      byte_offset: 0x044
+
+    - name: MR_CTRL
+      description: >
+        Mode Register Control (protected).
+        Write trigger bit (bit 0) to issue an MR read or write command.
+      byte_offset: 0x048
+      fieldset: MR_CTRL
+
+    - name: MR_WR_OPCODE
+      description: >
+        Mode Register Write Opcode — DDR5 only (protected).
+        [31:24]=MR-address, [15:8]=MR-op, [3:0]=rank-select.
+      byte_offset: 0x04C
+
+    - name: MR_RD_OPCODE
+      description: >
+        Mode Register Read Opcode — DDR5 only (read-only).
+        Filled by hardware after MRR; [15:8]=data, [7:0]=address.
+      byte_offset: 0x050
+      access: Read
+
+    # DDR4 mode registers (packed pairs) — DDR4 only.
+    # Values from JEDEC JESD79-4 specification.
+
+    - name: MR0_1
+      description: >
+        DDR4 Mode Register 0 and 1 (protected).
+        [31:16]=MR1, [15:0]=MR0.
+        MR0: CL, burst-type, burst-length, DLL-reset.
+        MR1: RTT_Nom, output-drive-strength, DLL-enable.
+      byte_offset: 0x054
+
+    - name: MR2_3
+      description: >
+        DDR4 Mode Register 2 and 3 (protected).
+        [31:16]=MR3, [15:0]=MR2.
+        MR2: CWL, RTT_WR, write-levelling.
+        MR3: MPR-read-format, per-DRAM-addressability.
+      byte_offset: 0x058
+
+    - name: MR4_5
+      description: >
+        DDR4 Mode Register 4 and 5 (protected).
+        [31:16]=MR5, [15:0]=MR4.
+        MR4: CAL, read-DBI, write-DBI, parity-error-status.
+        MR5: RTT_Park, DM-disable, parity-latency.
+      byte_offset: 0x05C
+
+    - name: MR6_7
+      description: >
+        DDR4 Mode Register 6 and 7 (protected).
+        [31:16]=MR7 (vendor-specific), [15:0]=MR6.
+        MR6: VrefDQ training range, VrefDQ training enable, tCCD_L.
+      byte_offset: 0x060
+
+    - name: REFRESH_CTRL
+      description: >
+        Refresh Control Register (protected).
+        Controls automatic refresh interval and mode.
+      byte_offset: 0x064
+      fieldset: REFRESH_CTRL
+
+    - name: REFRESH_MGMT
+      description: >
+        Refresh Management Register — DDR5 RAA (protected).
+      byte_offset: 0x068
+
+    - name: REFRESH_STS
+      description: >
+        Refresh Status Register (read-only).
+      byte_offset: 0x06C
+      access: Read
+
+    - name: ZQ_CTRL
+      description: >
+        ZQ Calibration Control Register (protected).
+      byte_offset: 0x070
+      fieldset: ZQ_CTRL
+
+    - name: ECC_ADDR
+      description: >
+        ECC Protected Address Range Register (protected).
+        Defines the address range covered by ECC.
+      byte_offset: 0x074
+
+    - name: ECC_FAIL_STS
+      description: >
+        ECC Failure Status Register (read-only).
+        [31:0]=failure type and location.
+      byte_offset: 0x078
+      access: Read
+
+    - name: ECC_FAIL_ADDR
+      description: >
+        ECC Failure Address Register (read-only).
+        Address of the most recent ECC failure.
+      byte_offset: 0x07C
+      access: Read
+
+    - name: ARB_CTRL
+      description: >
+        Arbitration Control Register (protected).
+        Controls the DRAM bus arbitration policy.
+      byte_offset: 0x088
+      fieldset: ARB_CTRL
+
+    - name: MPU_LOCK
+      description: >
+        MPU Region Lock Register.
+        Bit n locks region n (prevents further configuration changes).
+        Write 1 to lock; cannot be unlocked until next system reset.
+        16 bits used (one per region).
+      byte_offset: 0x090
+
+    - name: BIST_CONF
+      description: >
+        BIST Configuration Register (protected).
+        Configure and start the built-in self-test.
+      byte_offset: 0x0C0
+      fieldset: BIST_CONF
+
+    - name: BIST_ADDR
+      description: >
+        BIST Start Address Register (protected).
+        Physical DRAM address at which BIST begins.
+      byte_offset: 0x0C4
+
+    - name: BIST_SIZE
+      description: >
+        BIST Test Size Register (protected).
+        Number of bytes to test.
+      byte_offset: 0x0C8
+
+    - name: BIST_PATTERN
+      description: >
+        BIST Data Pattern Register (protected).
+        32-bit pattern used when BIST_CONF.PATTERN_MODE = fixed.
+      byte_offset: 0x0CC
+
+    - name: BIST_RESULT
+      description: >
+        BIST Result Register (read-only).
+        Poll until DONE=1 after asserting BIST_CONF.START.
+      byte_offset: 0x0D0
+      access: Read
+      fieldset: BIST_RESULT
+
+    - name: BIST_FAIL_ADDR
+      description: >
+        BIST Failure Address (read-only).
+        Physical address of the first BIST failure.
+      byte_offset: 0x0D4
+      access: Read
+
+    - name: PHY_IF_STS
+      description: >
+        PHY Interface Status Register (read-only).
+        DFI channel status and PHY-ready indicators.
+      byte_offset: 0x0F8
+      access: Read
+      fieldset: PHY_IF_STS
+
+    # ── QoS port registers — 5 ports, stride 0x80 ────────────────────────────
+    # Port 0 = CPU (CA35), 1 = display, 2 = video/2D, 3 = DAC, 4 = E2M (PCIe).
+    # Addresses: SDRAMMC_BASE + 0x200 + n * 0x80  (n = 0..4).
+
+    - name: PORT_CFG
+      description: >
+        QoS port configuration register.
+        [7:4] = urgent count threshold; [3] = urgent mode enable;
+        [2] = QoS enable.  Set by sdramc_qos_init() to (1<<2)|(1<<3)|(8<<4).
+      byte_offset: 0x200
+      array:
+        len: 5
+        stride: 0x80
+
+    - name: PORT_READ_QOS
+      description: >
+        QoS port read priority register.
+        Four 4-bit priority fields packed into 32 bits.
+        Field n (bits [4n+3:4n]) sets the AXI QoS priority for read
+        transaction class n.  Higher value = higher priority.
+      byte_offset: 0x208
+      array:
+        len: 5
+        stride: 0x80
+
+    - name: PORT_WRITE_QOS
+      description: >
+        QoS port write priority register.
+        Same encoding as PORT_READ_QOS but for write transactions.
+      byte_offset: 0x210
+      array:
+        len: 5
+        stride: 0x80
+
+    # ── DRAM MPU region registers — 16 regions, stride 0x40 ──────────────────
+    # Base: SDRAMMC_BASE + 0x600.  Region n starts at 0x600 + n * 0x40.
+    # All MPU registers are unprotected (do not require PROTECT unlock).
+    # Address fields store bits [35:4] of the physical address (>>4, 4KB granularity).
+
+    - name: MPU_CTRL
+      description: >
+        MPU region control register.
+        Bit 0 = enable.  Bits [7:4] = access permission matrix for CA35
+        (bit 4 = NS write, bit 5 = NS read, bit 6 = secure write,
+        bit 7 = secure read).  Must write permissions before setting enable.
+        Lock region after configuration via MPU_LOCK.
+      byte_offset: 0x600
+      array:
+        len: 16
+        stride: 0x40
+      fieldset: MPU_CTRL
+
+    - name: MPU_REGION_START
+      description: >
+        MPU region start address (physical address >> 4, 4 KB granularity).
+        Inclusive lower bound of the protected region.
+        For DRAM-relative regions: value = (dram_offset) >> 4.
+      byte_offset: 0x608
+      array:
+        len: 16
+        stride: 0x40
+
+    - name: MPU_REGION_END
+      description: >
+        MPU region end address (physical address >> 4, 4 KB granularity).
+        Inclusive upper bound of the protected region.
+      byte_offset: 0x60C
+      array:
+        len: 16
+        stride: 0x40
+
+    - name: MPU_WR_MASTER_0
+      description: >
+        Write master block mask — lower 32 masters.
+        Bit n = 1 blocks write access from master ID n.
+        Write 0xFFFFFFFF to block all lower masters.
+      byte_offset: 0x610
+      array:
+        len: 16
+        stride: 0x40
+
+    - name: MPU_WR_MASTER_1
+      description: >
+        Write master block mask — upper masters.
+        Bit 19 = SLIM (SLI MBUS); leave 0 to allow BootMCU DRAM access.
+      byte_offset: 0x614
+      array:
+        len: 16
+        stride: 0x40
+
+    - name: MPU_RD_MASTER_0
+      description: >
+        Read master block mask — lower 32 masters.
+        Bit n = 1 blocks read access from master ID n.
+      byte_offset: 0x618
+      array:
+        len: 16
+        stride: 0x40
+
+    - name: MPU_RD_MASTER_1
+      description: >
+        Read master block mask — upper masters.
+        Bit 19 = SLIM (SLI MBUS); leave 0 to allow BootMCU DRAM reads.
+      byte_offset: 0x61C
+      array:
+        len: 16
+        stride: 0x40
+
+    - name: MPU_WR_SECURE_0
+      description: >
+        Secure write override mask — lower 32 masters.
+        Bit n = 1 forces secure-write permission for master n
+        (overrides the AXI AxPROT secure bit).
+        Set to 0 to rely on AXI transaction attributes.
+      byte_offset: 0x620
+      array:
+        len: 16
+        stride: 0x40
+
+    - name: MPU_WR_SECURE_1
+      description: >
+        Secure write override mask — upper masters.
+      byte_offset: 0x624
+      array:
+        len: 16
+        stride: 0x40
+
+    - name: MPU_RD_SECURE_0
+      description: >
+        Secure read override mask — lower 32 masters.
+      byte_offset: 0x628
+      array:
+        len: 16
+        stride: 0x40
+
+    - name: MPU_RD_SECURE_1
+      description: >
+        Secure read override mask — upper masters.
+      byte_offset: 0x62C
+      array:
+        len: 16
+        stride: 0x40
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/INTR:
+  description: >
+    Interrupt status / clear / mask bits for SDRAMMC events.
+    Used by INTR_STS (read), INTR_CLR (write-to-clear), INTR_MASK (mask).
+  fields:
+    - name: DDRPHY_INIT_DONE
+      description: >
+        DDR PHY initialization complete.
+        Set when PHY training triggered via MAIN_CTRL.INIT_TRIGGER finishes.
+        Poll this bit after asserting INIT_TRIGGER.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: MR_DONE
+      description: Mode register read/write operation complete.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: OVERSIZE_ERR
+      description: Access to address beyond configured DRAM size.
+      bit_offset: 2
+      bit_size: 1
+
+    - name: PROT_ERR
+      description: Memory protection region violation.
+      bit_offset: 3
+      bit_size: 1
+
+    - name: ECC_ERR
+      description: ECC error detected (correctable or uncorrectable).
+      bit_offset: 4
+      bit_size: 1
+
+    - name: ECC_RECOV_ERR
+      description: ECC recovered (correctable single-bit) error.
+      bit_offset: 5
+      bit_size: 1
+
+    - name: BIST_DONE
+      description: BIST test completed. Check BIST_RESULT.FAIL for pass/fail.
+      bit_offset: 8
+      bit_size: 1
+
+    - name: ZQ_DONE
+      description: ZQ calibration operation complete.
+      bit_offset: 9
+      bit_size: 1
+
+    - name: SELF_REF_DONE
+      description: >
+        Self-refresh exit complete.
+        Set after MAIN_CTRL.SELF_REF_TRIGGER is asserted and DRAM
+        has exited self-refresh mode and completed initialization.
+      bit_offset: 10
+      bit_size: 1
+
+    - name: FREQ_CHG_DONE
+      description: Frequency change operation complete.
+      bit_offset: 11
+      bit_size: 1
+
+    - name: LP_DONE
+      description: Low-power entry/exit operation complete.
+      bit_offset: 12
+      bit_size: 1
+
+    - name: CTRL_UPDATE_DONE
+      description: DFI controller update handshake complete.
+      bit_offset: 13
+      bit_size: 1
+
+    - name: PHY_MASTER_REQ
+      description: PHY master interface request pending.
+      bit_offset: 14
+      bit_size: 1
+
+    - name: PHY_ERR
+      description: PHY reported a training or interface error.
+      bit_offset: 15
+      bit_size: 1
+
+    - name: PWR_CTRL_ERR
+      description: Power control operation error.
+      bit_offset: 16
+      bit_size: 1
+
+fieldset/MAIN_CONF:
+  description: >
+    SDRAMMC main configuration register (protected).
+    Must be set before triggering PHY initialization.
+  fields:
+    - name: DDR_TYPE
+      description: >
+        DRAM type selection.
+        0 = DDR4, 1 = DDR5.
+        Must match SCU1_HWSTRAP1[10] DDR type strap.
+      bit_offset: 0
+      bit_size: 1
+      enumm: DdrType
+
+    - name: DRAM_SIZE
+      description: >
+        Total installed DRAM size per rank.
+        000=256 MB (2 Gb), 001=512 MB (4 Gb), 010=1 GB (8 Gb),
+        011=2 GB (16 Gb), 100=4 GB (32 Gb), 101=8 GB (64 Gb),
+        111=3 GB (24 Gb, mixed).
+      bit_offset: 2
+      bit_size: 3
+      enumm: DramSize
+
+    - name: ECC_EN
+      description: >
+        ECC enable.
+        1 = ECC protection enabled for the full DRAM address range.
+        Requires ECC DRAM (x72 data bus width).
+      bit_offset: 6
+      bit_size: 1
+
+    - name: DUAL_DIE_PKG
+      description: >
+        Dual-die package (DDP) installed.
+        1 = DRAM is a dual-die package; controller uses interleaved access.
+      bit_offset: 7
+      bit_size: 1
+
+    - name: DATA_SCRAMBLE
+      description: >
+        Data scrambling enable.
+        1 = DRAM data bus is scrambled to reduce EMI and improve signal integrity.
+      bit_offset: 8
+      bit_size: 1
+
+    - name: ECC_AUTOSCRUB
+      description: >
+        ECC automatic scrubbing enable.
+        1 = controller periodically reads and rewrites DRAM to correct
+        accumulated single-bit errors before they become uncorrectable.
+      bit_offset: 9
+      bit_size: 1
+
+    - name: AUTO_PRECHARGE_DIS
+      description: >
+        Disable auto-precharge.
+        1 = controller keeps rows open (open-page policy) for lower
+        latency on consecutive accesses to the same row.
+      bit_offset: 10
+      bit_size: 1
+
+    - name: AUTO_POWERDOWN
+      description: >
+        Automatic power-down enable.
+        1 = controller enters power-down mode after tCKE idle cycles.
+      bit_offset: 11
+      bit_size: 1
+
+    - name: AUTO_LP_DATA
+      description: >
+        Automatic data low-power enable (DDR5).
+      bit_offset: 12
+      bit_size: 1
+
+    - name: CMD_2N_MODE
+      description: >
+        2N command mode (DDR5).
+        1 = two-cycle command timing for improved signal integrity at
+        high speed grades.
+      bit_offset: 14
+      bit_size: 1
+
+    - name: ECC_UNRECOV_CPU_RST
+      description: >
+        CPU reset on uncorrectable ECC error.
+        1 = an uncorrectable ECC error triggers a CPU reset.
+      bit_offset: 15
+      bit_size: 1
+
+fieldset/MAIN_CTRL:
+  description: >
+    SDRAMMC main control register (protected).
+    Trigger bits (W1T) are self-clearing and initiate asynchronous
+    operations; poll the corresponding INTR_STS bit for completion.
+  fields:
+    - name: INIT_TRIGGER
+      description: >
+        DDR PHY initialization trigger (write-1-to-trigger, self-clearing).
+        Starts the full DDR PHY training sequence.
+        Poll INTR_STS.DDRPHY_INIT_DONE for completion.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: SELF_REF_TRIGGER
+      description: >
+        Self-refresh exit trigger (write-1-to-trigger, self-clearing).
+        Commands DRAM to exit self-refresh and begin normal operation.
+        Poll INTR_STS.SELF_REF_DONE for completion.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: LP_TRIGGER
+      description: >
+        Low-power mode entry trigger (W1T).
+      bit_offset: 2
+      bit_size: 1
+
+    - name: FREQ_CHG_TRIGGER
+      description: >
+        Frequency change trigger (W1T).
+        Initiates a DFI frequency change handshake.
+      bit_offset: 3
+      bit_size: 1
+
+    - name: DFI_UPDATE_TRIGGER
+      description: >
+        DFI controller update trigger (W1T).
+        Forces a DFI PHY update handshake.
+      bit_offset: 4
+      bit_size: 1
+
+    - name: FREQ_CHG_SR_IND
+      description: >
+        Frequency change self-refresh indication (DDR5).
+        1 = indicate self-refresh to PHY during frequency change.
+      bit_offset: 8
+      bit_size: 1
+
+    - name: CTRL_UPDATE_MODE
+      description: >
+        DFI controller update mode.
+        0 = PHY-initiated update; 1 = controller-initiated update.
+      bit_offset: 9
+      bit_size: 1
+
+    - name: PHY_MASTER_ACK_DIS
+      description: >
+        Disable PHY master interface acknowledge.
+      bit_offset: 10
+      bit_size: 1
+
+    - name: PHY_UPDATE_ACK_DIS
+      description: >
+        Disable PHY update acknowledge.
+      bit_offset: 11
+      bit_size: 1
+
+    - name: PHY_POWER_ON
+      description: >
+        Enable PHY power supply.
+        1 = PHY power rails are enabled.
+        Must be set before asserting PHY_RESET_ASSERT.
+      bit_offset: 16
+      bit_size: 1
+
+    - name: PHY_RESET_ASSERT
+      description: >
+        Assert PHY reset (active-high).
+        1 = PHY is held in reset.
+        0 = PHY reset is de-asserted; PHY begins its internal init.
+        Sequence: set PHY_POWER_ON=1, PHY_RESET_ASSERT=1,
+        then clear PHY_RESET_ASSERT=0 to release.
+      bit_offset: 17
+      bit_size: 1
+
+    - name: PHY_CLK_DISABLE
+      description: >
+        Disable PHY clock.
+        1 = PHY reference clock gated off.
+        Must be 0 for PHY to function.
+      bit_offset: 18
+      bit_size: 1
+
+    - name: WB_SOFT_RESET
+      description: >
+        Write-buffer soft reset (W1T).
+        Clears the internal write buffer without a full reset.
+      bit_offset: 24
+      bit_size: 1
+
+fieldset/MAIN_STS:
+  description: SDRAMMC main status register (read-only).
+  fields:
+    - name: PHY_CTRL_BUSY
+      description: >
+        PHY control interface busy.
+        1 = a PHY operation is in progress; do not issue new commands.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: CTRL_IDLE
+      description: >
+        Controller idle.
+        1 = no DRAM transactions are in progress.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: IN_POWER_DOWN
+      description: 1 = DRAM is in power-down mode.
+      bit_offset: 2
+      bit_size: 1
+
+    - name: IN_SELF_REF
+      description: 1 = DRAM is in self-refresh mode.
+      bit_offset: 3
+      bit_size: 1
+
+fieldset/MR_CTRL:
+  description: >
+    Mode Register Control Register (protected).
+    Write CMD_WR and CMD_TYPE, then assert TRIGGER to issue an MR
+    read or write command.
+  fields:
+    - name: TRIGGER
+      description: >
+        Mode register command trigger (write-1-to-trigger, self-clearing).
+        Issues the configured MR read or write command.
+        Poll INTR_STS.MR_DONE for completion.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: CMD_WR
+      description: >
+        Command write/read select.
+        0 = read MR (MRR); 1 = write MR (MRW).
+      bit_offset: 1
+      bit_size: 1
+
+    - name: CMD_TYPE
+      description: >
+        Command type (DDR5).
+        00=MRR, 01=MRW, 10=MPC (Multi-Purpose Command).
+        DDR4: 00=write MR, 01=read MR.
+      bit_offset: 2
+      bit_size: 2
+
+    - name: MR_ADDR
+      description: >
+        DDR4 mode register address field. Vendor firmware writes the raw
+        mode-register number here as N << 8 before asserting TRIGGER.
+        Example: MR6 uses MR_ADDR=6.
+      bit_offset: 8
+      bit_size: 8
+
+    - name: MRR_READY
+      description: >
+        Mode register read data ready (DDR5, read-only).
+        1 = MR_RD_OPCODE contains valid read data from MRR.
+      bit_offset: 30
+      bit_size: 1
+
+fieldset/REFRESH_CTRL:
+  description: >
+    Refresh Control Register (protected).
+  fields:
+    - name: TRIGGER
+      description: >
+        Force immediate refresh (write-1-to-trigger).
+        Issues one refresh command outside the normal interval.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: FGR_MODE
+      description: >
+        Fine Granularity Refresh mode (DDR4).
+        00=1× (fixed), 01=2× (fine), 10=4× (very fine).
+      bit_offset: 2
+      bit_size: 2
+
+    - name: FLEX_EN
+      description: >
+        Flexible refresh enable.
+        1 = controller uses flexible refresh scheduling to minimize
+        latency impact.
+      bit_offset: 4
+      bit_size: 1
+
+    - name: TREFI
+      description: >
+        Average refresh interval (tREFI) in DRAM clock cycles.
+        From JEDEC: 3.9 µs (normal temp, 1× rate).
+        E.g. at 1600 MHz: 3.9e-6 × 1.6e9 = 6240 cycles.
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/ZQ_CTRL:
+  description: >
+    ZQ Calibration Control Register (protected).
+  fields:
+    - name: TRIGGER
+      description: >
+        ZQ short calibration trigger (write-1-to-trigger).
+        Poll INTR_STS.ZQ_DONE for completion.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: AUTO_ZQ_EN
+      description: >
+        Periodic automatic ZQ calibration enable.
+        1 = controller automatically issues ZQ short commands at the
+        configured interval.
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/BIST_CONF:
+  description: >
+    BIST Configuration Register (protected).
+    Configure test parameters, then write START=1 to begin.
+    Poll BIST_RESULT.DONE; check BIST_RESULT.FAIL.
+  fields:
+    - name: START
+      description: >
+        BIST start (write-1-to-start, self-clearing).
+        Must have ENABLE=1 first.
+        Poll BIST_RESULT.DONE for completion.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: ENABLE
+      description: >
+        BIST enable.
+        1 = BIST engine is ready to accept START.
+        Must be set before writing START.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: BMODE
+      description: >
+        Burst mode.
+        00=sequential, 01=interleaved, 10=random.
+      bit_offset: 2
+      bit_size: 2
+
+    - name: PATTERN_MODE
+      description: >
+        Test pattern mode.
+        000=all-zeros, 001=all-ones, 010=checkerboard, 011=inverse-checkerboard,
+        100=fixed (BIST_PATTERN value), 101=LFSR pseudo-random.
+      bit_offset: 4
+      bit_size: 3
+
+    - name: INIT_MODE
+      description: >
+        Initialise DRAM with pattern before read-back comparison.
+        1 = write phase is included before the read/compare phase.
+      bit_offset: 7
+      bit_size: 1
+
+fieldset/BIST_RESULT:
+  description: >
+    BIST Result Register (read-only).
+    Poll DONE bit after starting BIST.
+  fields:
+    - name: DONE
+      description: >
+        BIST complete.
+        1 = test has finished; check FAIL to determine pass/fail.
+      bit_offset: 8
+      bit_size: 1
+
+    - name: FAIL
+      description: >
+        BIST failure.
+        1 = at least one data mismatch was found.
+        BIST_FAIL_ADDR contains the first failure address.
+      bit_offset: 9
+      bit_size: 1
+
+    - name: RUNNING
+      description: 1 = BIST is currently in progress.
+      bit_offset: 10
+      bit_size: 1
+
+# ── Enumerations ───────────────────────────────────────────────────────────────
+
+enum/DdrType:
+  description: DRAM type selection (MAIN_CONF.DDR_TYPE).
+  bit_size: 1
+  variants:
+    - name: DDR4
+      description: DDR4 SDRAM (JESD79-4).
+      value: 0
+    - name: DDR5
+      description: DDR5 SDRAM (JESD79-5).
+      value: 1
+
+enum/DramSize:
+  description: Total DRAM size per rank (MAIN_CONF.DRAM_SIZE).
+  bit_size: 3
+  variants:
+    - name: MB256
+      description: 256 MB (2 Gb device).
+      value: 0
+    - name: MB512
+      description: 512 MB (4 Gb device).
+      value: 1
+    - name: GB1
+      description: 1 GB (8 Gb device).
+      value: 2
+    - name: GB2
+      description: 2 GB (16 Gb device).
+      value: 3
+    - name: GB4
+      description: 4 GB (32 Gb device).
+      value: 4
+    - name: GB8
+      description: 8 GB (64 Gb device).
+      value: 5
+    - name: GB3
+      description: 3 GB (24 Gb, dual-die mixed).
+      value: 7
+
+fieldset/ARB_CTRL:
+  description: SDRAMMC arbitration control register.
+  fields:
+    - name: HI_PRI_EN
+      description: >
+        High-priority port enable.
+        1 = the port designated by HI_PRI_PORT is granted elevated priority
+        over other AXI masters.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: HI_PRI_PORT
+      description: >
+        High-priority port selection.
+        Selects which AXI port receives elevated priority when HI_PRI_EN=1.
+      bit_offset: 1
+      bit_size: 3
+
+fieldset/PHY_IF_STS:
+  description: >
+    PHY Interface Status Register (read-only).
+    Reflects the current state of the DFI interface and PHY training FSM.
+  fields:
+    - name: DFI_INIT_COMPLETE
+      description: >
+        DFI initialization complete.
+        1 = the PHY has completed initialization and DFI is operational.
+        Mirrors INTR_STS.DDRPHY_INIT_DONE but without requiring a clear.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: PHY_READY
+      description: >
+        PHY ready for normal operation.
+        1 = PHY has locked clocks and completed calibration.
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/MPU_CTRL:
+  description: >
+    DRAM MPU region control register.
+    Programs access permissions for one 4 KB-granule address range.
+    Write permission bits first, then set ENABLE=1 to activate.
+  fields:
+    - name: ENABLE
+      description: >
+        MPU region enable.
+        1 = region is active and access checking is enforced.
+        0 = region is inactive; all access is permitted.
+        Set last, after programming all other region fields.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: CA35_NS_WRITE
+      description: >
+        Allow CA35 non-secure write access to this region.
+        1 = non-secure CA35 write transactions are permitted.
+        0 = non-secure write is blocked (secure CA35 write unaffected).
+      bit_offset: 4
+      bit_size: 1
+
+    - name: CA35_NS_READ
+      description: >
+        Allow CA35 non-secure read access to this region.
+      bit_offset: 5
+      bit_size: 1
+
+    - name: CA35_SEC_WRITE
+      description: >
+        Allow CA35 secure write access to this region.
+        1 = secure CA35 write transactions are permitted.
+      bit_offset: 6
+      bit_size: 1
+
+    - name: CA35_SEC_READ
+      description: >
+        Allow CA35 secure read access to this region.
+        Must be set before releasing CA35 from reset if ATF loads to this region.
+      bit_offset: 7
+      bit_size: 1

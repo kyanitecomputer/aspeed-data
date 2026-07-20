@@ -17,7 +17,6 @@
 # Select which vault key HACE uses via SEC80C[0].
 #
 # Sources:
-#   ast1060v19.pdf  Chapter 31 – Secure Boot Controller (SB)
 
 block/SECURE:
   description: >

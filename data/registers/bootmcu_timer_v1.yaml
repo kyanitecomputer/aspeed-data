@@ -1,19 +1,17 @@
 # AST2700 BootMCU 64-bit countdown timer.
 #
 # One instance at 0x14C36000 on the IO-die, visible to the BootMCU (RV32IMC).
-# The timer counts up continuously at 1 MHz and fires an alarm interrupt when
-# COUNT reaches ALARM.  Writing to ALARM_L/H also clears TMR_CTRL.INTR_STS.
+# The timer is a 64-bit free-running counter and fires an edge-triggered
+# interrupt when COUNT reaches MATCH. Writing MATCH_L/H clears CTRL.INTR_STS.
 #
 # Interrupt: IRQ 7 from riscv,cpu-intc (machine timer interrupt, MTIP).
 #
-# Sources:
-#   Zephyr drivers/timer/ast2700_bootmcu_timer.c
-#   Zephyr dts/riscv/aspeed/ast27xx.dtsi  (systick @ 0x14C36000, interrupts = <7 0>)
 
 block/TIMER:
   description: >
-    AST2700 BootMCU 64-bit free-running timer with alarm interrupt.
-    Clocked at 1 MHz; INTR_STS is cleared by writing ALARM_L and ALARM_H.
+    AST2700 BootMCU 64-bit free-running timer with match interrupt.
+    Clock source is selected by CTRL.CLK_SEL; INTR_STS is cleared by writing
+    MATCH_L or MATCH_H.
     Base address: 0x14C36000 (IO-die, BootMCU view).
   items:
     - name: COUNT_L
@@ -26,15 +24,15 @@ block/TIMER:
       byte_offset: 0x04
       access: Read
 
-    - name: ALARM_L
+    - name: MATCH_L
       description: >
-        Alarm compare value — low 32 bits.
+        Match compare value — low 32 bits.
         Writing this register also clears TMR_CTRL.INTR_STS.
       byte_offset: 0x08
 
-    - name: ALARM_H
+    - name: MATCH_H
       description: >
-        Alarm compare value — high 32 bits.
+        Match compare value — high 32 bits.
         Writing this register also clears TMR_CTRL.INTR_STS.
       byte_offset: 0x0C
 
@@ -50,41 +48,60 @@ block/TIMER:
       description: >
         Write-1-clear mirror of CTRL.
         Write 1 to a bit to clear the corresponding CTRL bit.
-        Example: write TMR_CTRL_EN to stop the timer.
       byte_offset: 0x14
       fieldset: CTRL
+
+    - name: WRITE_PROTECT
+      description: Counter write protection register (RVTMC1C).
+      byte_offset: 0x1C
+      fieldset: WRITE_PROTECT
 
 # ── Fieldsets ──────────────────────────────────────────────────────────────────
 
 fieldset/CTRL:
   description: Timer control register (used for both CTRL and CTRL_CLR).
   fields:
-    - name: EN
+    - name: INTR_EN
       description: >
-        Timer enable.
-        1 = timer counting enabled.
-        Write to CTRL_CLR to stop.
+        Timer interrupt enable.
+        0 = disable; 1 = enable counter/reload/interrupt actions.
       bit_offset: 0
       bit_size: 1
 
-    - name: RESET_EN
+    - name: CLK_SEL
       description: >
-        Reset-on-alarm enable.
-        1 = counter resets to 0 when ALARM is reached.
-      bit_offset: 3
+        Counter clock selection.
+        0 = APB PCLK; 1 = 1 MHz clock.
+      bit_offset: 1
       bit_size: 1
 
     - name: COUNT_CLR
       description: >
-        Counter clear (self-clearing).
-        Write 1 to reset the 64-bit counter to 0.
-      bit_offset: 4
+        Counter clear.
+        Write 1 to clear the 64-bit counter to 0.
+      bit_offset: 3
       bit_size: 1
 
     - name: INTR_STS
       description: >
         Interrupt status.
-        Set when COUNT reaches ALARM.
-        Cleared by writing ALARM_L or ALARM_H (not by writing CTRL_CLR).
+        Set when COUNT reaches MATCH.
+        Cleared by writing MATCH_L or MATCH_H.
       bit_offset: 16
+      bit_size: 1
+
+fieldset/WRITE_PROTECT:
+  description: BootMCU timer write protection register.
+  fields:
+    - name: MATCH_L_WP
+      bit_offset: 2
+      bit_size: 1
+    - name: MATCH_H_WP
+      bit_offset: 3
+      bit_size: 1
+    - name: CTRL_WP
+      bit_offset: 4
+      bit_size: 1
+    - name: CTRL_CLR_WP
+      bit_offset: 5
       bit_size: 1

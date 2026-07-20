@@ -1,5 +1,4 @@
 # Standard 16550-compatible UART registers (32-bit word spacing).
-# Verified against AST2600 datasheet v1.6 section 29.
 #
 # The UART11 base address (CM3 view) is 0x7E79_0500.
 # All registers are at 4-byte (word) stride, even though the hardware
@@ -17,9 +16,7 @@
 #   The PAC register is named FCR_IIR.  Reads return IIR bits; writes
 #   configure the FIFO.  HAL code interprets the returned value as IIR.
 #
-# Sources:
 #   ast2600.md v1.6  Chapter 8 – UART (16550-compatible)
-#   National Semiconductor PC16550D datasheet
 
 block/UART:
   description: >

@@ -3,9 +3,6 @@
 # The TSP is a second ARM Cortex-M4F coprocessor in the AST2700 SoC.
 # It is symmetric with the SSP (same register layout) but uses a different
 # SCU0 offset: SCU0+0x160 = 0x72C0_2160.
-#
-# Sources:
-#   ast2700_tsp.pdf v0.1f
 
 name:               AST2700_TSP
 family:             ast27xx
@@ -26,6 +23,100 @@ peripherals:
   - name:    GPR
     block:   gpr_v1::GPR
     address: 0x50000000
+
+  # ── Core service peripherals ───────────────────────────────────────────────
+
+  - name:    TIMER0
+    block:   timer_v1::TIMER
+    address: 0x72c10000
+    description: "CPU-die timer block"
+
+  - name:    UART4
+    block:   uart_v1::UART
+    address: 0x72c1a000
+    description: "CPU-die UART4"
+
+  - name:    UART7
+    block:   uart_v1::UART
+    address: 0x74c33600
+    description: "IO-die UART7"
+
+  - name:    GPIO0
+    block:   gpio_v1::GPIO
+    address: 0x72c11000
+    description: "CPU-die GPIO bank"
+
+  - name:    GPIO1
+    block:   gpio_v1::GPIO
+    address: 0x74c0b000
+    description: "IO-die GPIO bank"
+
+  - name:    WDT0
+    block:   wdt_ast2700_v1::WDT
+    address: 0x74c37000
+    description: "IO-die watchdog timer 0"
+
+  - name:    ADC0
+    block:   adc_v1::ADC
+    address: 0x74c00000
+    description: "IO-die ADC bank 0"
+
+  - name:    ADC1
+    block:   adc_v1::ADC
+    address: 0x74c00100
+    description: "IO-die ADC bank 1"
+
+  - name:    IPC0
+    block:   ipc0_v1::IPC0
+    address: 0x72c1c000
+    description: "IPC0 data-channel bus"
+
+  # ── Interrupt controllers ─────────────────────────────────────────────────
+
+  - name:    INTCG
+    block:   intcg_ast2700_v1::INTCG
+    address: 0x72100000
+    description: "CPU-die interrupt routing controller (INTCG)"
+
+  - name:    INTC1G
+    block:   intcg_ast2700_v1::INTC1G
+    address: 0x74c18000
+    description: "IO-die interrupt routing controller (INTC1G)"
+
+  - name:    INTC0_11
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x72102b00
+    description: "CPU-die L1 aggregator (NVIC 160-165, parent of INTC1_x)"
+
+  - name:    INTC1_0
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c18180
+    description: "IO-die L2 aggregator 0"
+
+  - name:    INTC1_1
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c18190
+    description: "IO-die L2 aggregator 1"
+
+  - name:    INTC1_2
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c181a0
+    description: "IO-die L2 aggregator 2"
+
+  - name:    INTC1_3
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c181b0
+    description: "IO-die L2 aggregator 3"
+
+  - name:    INTC1_4
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c181c0
+    description: "IO-die L2 aggregator 4"
+
+  - name:    INTC1_5
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c181d0
+    description: "IO-die L2 aggregator 5"
 
 # ── Interrupt table ───────────────────────────────────────────────────────────
 # Same NVIC topology as AST2700 SSP. TSP IRQ routing via same cascaded INTC.

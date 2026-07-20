@@ -1,0 +1,87 @@
+# Caliptra integration interface registers.
+#
+# Base address (AST2700 BootMCU view): 0x14C70000.
+
+block/IFC:
+  description: >
+    Caliptra integration interface used for boot status, error reporting, and TRNG handoff.
+  items:
+    - name: HW_ERROR_FATAL
+      description: Fatal hardware error status.
+      byte_offset: 0x000
+
+    - name: HW_ERROR_NONFATAL
+      description: Non-fatal hardware error status.
+      byte_offset: 0x004
+
+    - name: FW_ERROR_FATAL
+      description: Fatal firmware error status.
+      byte_offset: 0x008
+
+    - name: FW_ERROR_NONFATAL
+      description: Non-fatal firmware error status.
+      byte_offset: 0x00c
+
+    - name: BOOT_STS
+      description: Caliptra boot status register.
+      byte_offset: 0x038
+
+    - name: FLOW_STS
+      description: Caliptra boot/runtime flow status register.
+      byte_offset: 0x03c
+      fieldset: FLOW_STS
+
+    - name: RST_REASON
+      description: Caliptra reset reason register.
+      byte_offset: 0x040
+      fieldset: RST_REASON
+
+    - name: TRNG_DATA
+      description: External TRNG data words supplied by BootMCU.
+      byte_offset: 0x078
+      array:
+        len: 12
+        stride: 4
+
+    - name: TRNG_STS
+      description: External TRNG request/completion status.
+      byte_offset: 0x0ac
+      fieldset: TRNG_STS
+
+fieldset/FLOW_STS:
+  description: Caliptra flow status bits.
+  fields:
+    - name: RDY_FOR_FW
+      description: Caliptra is ready for firmware upload.
+      bit_offset: 28
+      bit_size: 1
+    - name: RDY_FOR_RT
+      description: Caliptra runtime is ready.
+      bit_offset: 29
+      bit_size: 1
+    - name: RDY_FOR_FUSES
+      description: Caliptra is ready for fuse delivery.
+      bit_offset: 30
+      bit_size: 1
+
+fieldset/RST_REASON:
+  description: Caliptra reset reason bits.
+  fields:
+    - name: FW_UPDATE_RESET
+      bit_offset: 0
+      bit_size: 1
+    - name: WARM_RESET
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/TRNG_STS:
+  description: Caliptra external TRNG handoff status.
+  fields:
+    - name: DATA_REQ
+      description: Caliptra requests external entropy.
+      bit_offset: 0
+      bit_size: 1
+    - name: DATA_WR_DONE
+      description: BootMCU has written TRNG_DATA words.
+      bit_offset: 1
+      bit_size: 1

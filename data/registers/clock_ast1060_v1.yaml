@@ -26,7 +26,6 @@
 #   5. Deassert reset (write 1 to SCU054)
 #
 # Sources:
-#   ast1060v19.pdf  Chapter 17 – System Control Unit (SCU) (SCU000–SCUA58)
 
 block/SCU:
   description: >
@@ -147,6 +146,58 @@ block/SCU:
         I3C clock divider: bits[30:28] — ÷2 to ÷8 (100=÷5 default).
       byte_offset: 0x310
       fieldset: SCU_CLK_SEL4
+
+    - name: RAW_060
+      description: SCU register at offset 0x060.
+      byte_offset: 0x060
+
+    - name: RAW_070
+      description: SCU register at offset 0x070.
+      byte_offset: 0x070
+
+    - name: RAW_074
+      description: SCU register at offset 0x074.
+      byte_offset: 0x074
+
+    - name: RAW_078
+      description: SCU register at offset 0x078.
+      byte_offset: 0x078
+
+    - name: RAW_0D0
+      description: SCU register range 0x0D0-0x0D8.
+      byte_offset: 0x0D0
+      array:
+        len: 3
+        stride: 4
+
+    - name: RAW_0F0
+      description: SCU register at offset 0x0F0.
+      byte_offset: 0x0F0
+
+    - name: RAW_314
+      description: SCU register at offset 0x314.
+      byte_offset: 0x314
+
+    - name: RAW_330
+      description: SCU register range 0x330-0x37C.
+      byte_offset: 0x330
+      array:
+        len: 20
+        stride: 4
+
+    - name: RAW_410
+      description: SCU register range 0x410-0x6D4.
+      byte_offset: 0x410
+      array:
+        len: 178
+        stride: 4
+
+    - name: RAW_F00
+      description: SCU register range 0xF00-0xFFC.
+      byte_offset: 0xF00
+      array:
+        len: 64
+        stride: 4
 
     # ── CM4F memory map registers ─────────────────────────────────────────────
     - name: CM4F_MEM_BASE

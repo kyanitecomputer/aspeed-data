@@ -1,0 +1,226 @@
+# ASPEED legacy I2C/SMBus registers used by AST2400/AST2500.
+#
+# Global base: 0x1E78_A000.
+# Per-bus registers are 0x40-byte legacy I2CD windows below this global block.
+
+block/I2CLEGACY_GLOBAL:
+  description: ASPEED legacy I2C/SMBus global control registers.
+  items:
+    - name: IRQ_STATUS
+      description: Device interrupt status register (I2CG00).
+      byte_offset: 0x00
+      fieldset: I2CG_IRQ_STATUS
+
+    - name: OWNER
+      description: Device owner assignment register (I2CG08).
+      byte_offset: 0x08
+      fieldset: I2CG_OWNER
+
+    - name: GLOBAL_CTRL
+      description: Global control register (I2CG0C).
+      byte_offset: 0x0c
+      fieldset: I2CG_GLOBAL_CTRL
+
+block/I2CLEGACY:
+  description: ASPEED legacy I2C/SMBus per-device register block.
+  items:
+    - name: FUNC_CTRL
+      description: Function control register (I2CD00).
+      byte_offset: 0x00
+      fieldset: I2CD_FUNC_CTRL
+
+    - name: CLK_AC_TIMING1
+      description: Clock and AC timing control register 1 (I2CD04).
+      byte_offset: 0x04
+      fieldset: I2CD_CLK_AC_TIMING1
+
+    - name: CLK_AC_TIMING2
+      description: Clock and AC timing control register 2 (I2CD08).
+      byte_offset: 0x08
+
+    - name: IRQ_CTRL
+      description: Interrupt control register (I2CD0C).
+      byte_offset: 0x0c
+      fieldset: I2CD_IRQ
+
+    - name: IRQ_STATUS
+      description: Interrupt status register (I2CD10).
+      byte_offset: 0x10
+      fieldset: I2CD_IRQ
+
+    - name: CMD_STATUS
+      description: Command/status register (I2CD14).
+      byte_offset: 0x14
+      fieldset: I2CD_CMD_STATUS
+
+    - name: SLAVE_ADDR
+      description: Slave device address register (I2CD18).
+      byte_offset: 0x18
+
+    - name: POOL_BUF_CTRL
+      description: Pool buffer control register (I2CD1C).
+      byte_offset: 0x1c
+
+    - name: TX_RX_BUF
+      description: Transmit/receive byte buffer register (I2CD20).
+      byte_offset: 0x20
+      fieldset: I2CD_TX_RX_BUF
+
+    - name: DMA_BUF_ADDR
+      description: DMA mode buffer address register (I2CD24; AST2500 only).
+      byte_offset: 0x24
+
+    - name: DMA_XFER_LEN
+      description: DMA transfer length register (I2CD28; AST2500 only).
+      byte_offset: 0x28
+
+fieldset/I2CG_IRQ_STATUS:
+  description: I2C/SMBus global interrupt status.
+  fields:
+    - name: DEV1_INT
+      bit_offset: 0
+      bit_size: 1
+    - name: DEV2_INT
+      bit_offset: 1
+      bit_size: 1
+    - name: DEV3_INT
+      bit_offset: 2
+      bit_size: 1
+    - name: DEV4_INT
+      bit_offset: 3
+      bit_size: 1
+    - name: DEV5_INT
+      bit_offset: 4
+      bit_size: 1
+    - name: DEV6_INT
+      bit_offset: 5
+      bit_size: 1
+    - name: DEV7_INT
+      bit_offset: 6
+      bit_size: 1
+    - name: DEV8_INT
+      bit_offset: 7
+      bit_size: 1
+    - name: DEV9_INT
+      bit_offset: 8
+      bit_size: 1
+    - name: DEV10_INT
+      bit_offset: 9
+      bit_size: 1
+    - name: DEV11_INT
+      bit_offset: 10
+      bit_size: 1
+    - name: DEV12_INT
+      bit_offset: 11
+      bit_size: 1
+    - name: DEV13_INT
+      bit_offset: 12
+      bit_size: 1
+    - name: DEV14_INT
+      bit_offset: 13
+      bit_size: 1
+
+fieldset/I2CG_OWNER:
+  description: Device owner assignment bits.
+  fields:
+    - name: OWNER
+      bit_offset: 0
+      bit_size: 14
+
+fieldset/I2CG_GLOBAL_CTRL:
+  description: Legacy I2C global control register.
+  fields:
+    - name: FIFO_ENABLE
+      description: Enable FIFO mode on AST2500.
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/I2CD_FUNC_CTRL:
+  description: Legacy I2C function control register.
+  fields:
+    - name: MASTER_EN
+      bit_offset: 0
+      bit_size: 1
+    - name: SLAVE_EN
+      bit_offset: 1
+      bit_size: 1
+    - name: HIGH_SPEED_EN
+      bit_offset: 6
+      bit_size: 1
+    - name: DIRECT_DRIVE
+      bit_offset: 7
+      bit_size: 2
+    - name: BUS_LOCK_AUTO_RELEASE
+      description: AST2500 bus lock auto-release enable.
+      bit_offset: 17
+      bit_size: 1
+    - name: BUFFER_PAGE_SEL
+      bit_offset: 20
+      bit_size: 3
+
+fieldset/I2CD_CLK_AC_TIMING1:
+  description: Legacy I2C clock and AC timing control register 1.
+  fields:
+    - name: BASE_CLK_DIV
+      bit_offset: 0
+      bit_size: 4
+    - name: SCL_LOW
+      bit_offset: 12
+      bit_size: 4
+    - name: SCL_HIGH
+      bit_offset: 16
+      bit_size: 4
+
+fieldset/I2CD_IRQ:
+  description: Legacy I2C interrupt control/status register.
+  fields:
+    - name: RX_DONE
+      bit_offset: 0
+      bit_size: 1
+    - name: TX_DONE
+      bit_offset: 1
+      bit_size: 1
+    - name: NORMAL_STOP
+      bit_offset: 4
+      bit_size: 1
+    - name: ABNORMAL
+      bit_offset: 5
+      bit_size: 1
+    - name: ARBIT_LOSS
+      bit_offset: 9
+      bit_size: 1
+    - name: SDA_DL_TIMEOUT
+      bit_offset: 14
+      bit_size: 1
+    - name: BUS_RECOVER_DONE
+      bit_offset: 15
+      bit_size: 1
+
+fieldset/I2CD_CMD_STATUS:
+  description: Legacy I2C command/status register.
+  fields:
+    - name: TX_COUNT
+      bit_offset: 0
+      bit_size: 5
+    - name: RX_COUNT
+      bit_offset: 8
+      bit_size: 5
+    - name: SCL_LINE
+      bit_offset: 16
+      bit_size: 1
+    - name: SDA_LINE
+      bit_offset: 17
+      bit_size: 1
+    - name: BUS_BUSY
+      bit_offset: 18
+      bit_size: 1
+
+fieldset/I2CD_TX_RX_BUF:
+  description: Legacy I2C transmit/receive byte buffer register.
+  fields:
+    - name: RX_BYTE
+      bit_offset: 0
+      bit_size: 8
+    - name: TX_BYTE
+      bit_offset: 8
+      bit_size: 8

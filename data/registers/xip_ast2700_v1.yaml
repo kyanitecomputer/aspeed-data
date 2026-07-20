@@ -1,0 +1,14 @@
+# AST2700 SPI flash execute-in-place window.
+
+block/XIP:
+  description: >
+    BootMCU memory-mapped SPI flash execute-in-place aperture. This is a data
+    window, not a control register block; SPI controller registers are modeled
+    in spi_ast2700_v1.
+  items:
+    - name: WORD
+      description: SPI flash data word array for the 0x20000000..0x3fffffff BootMCU XIP window.
+      byte_offset: 0x000000
+      array:
+        len: 134217728
+        stride: 4

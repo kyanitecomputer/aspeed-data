@@ -7,6 +7,73 @@
 
 
 typedef struct {
+    volatile uint32_t ENGINE_CTRL; /* 0x0000: ADC Engine Control Register (ADC0C, offset 0x00). Controls operating mode, reference voltage, compensation, and per-channel enable. Bit 8 (INIT_RDY) is read-only and indicates the engine has completed initialisation.
+ */
+    volatile uint32_t INT_CTRL; /* 0x0004: ADC Interrupt Control Register (ADC04, offset 0x04). Per-channel interrupt enable (bit N enables interrupt for channel N, N=0–7). Interrupt fires when the channel value crosses the threshold set in the VGA_DETECT_CTRL register.
+ */
+    volatile uint32_t VGA_DETECT_CTRL; /* 0x0008: VGA Detect Control Register (ADC08, offset 0x08). Holds a 10-bit threshold value and comparison direction per channel. When a channel crosses the threshold and the channel's interrupt is enabled, an ADC interrupt is generated.
+ */
+    volatile uint32_t CLK_CTRL; /* 0x000c: ADC Clock Control Register (ADC0C, offset 0x0C). 16-bit clock divider: sample_period = PCLK × 2 × (DIV + 1). Set DIV = (PCLK_Hz / (2 × sample_rate_Hz)) - 1.
+ */
+    volatile uint32_t CH0_DATA; /* 0x0010: Channel 0 ADC result register (ADC10). Read-only. Bits [9:0]. */
+    volatile uint32_t CH1_DATA; /* 0x0012: Channel 1 ADC result register (ADC12). Read-only. Bits [9:0]. */
+    volatile uint32_t CH2_DATA; /* 0x0014: Channel 2 ADC result register (ADC14). Read-only. Bits [9:0]. */
+    volatile uint32_t CH3_DATA; /* 0x0016: Channel 3 ADC result register (ADC16). Read-only. Bits [9:0]. */
+    volatile uint32_t CH4_DATA; /* 0x0018: Channel 4 ADC result register (ADC18). Read-only. Bits [9:0]. */
+    volatile uint32_t CH5_DATA; /* 0x001a: Channel 5 ADC result register (ADC1A). Read-only. Bits [9:0]. */
+    volatile uint32_t CH6_DATA; /* 0x001c: Channel 6 ADC result register (ADC1C). Read-only. Bits [9:0]. */
+    volatile uint32_t CH7_DATA; /* 0x001e: Channel 7 ADC result register (ADC1E). Read-only. Bits [9:0]. This channel can alternatively be used for battery voltage sensing (VBAT/3 or VBAT*2/3) when ENGINE_CTRL.CH7_BAT_MODE = 1.
+ */
+    volatile uint8_t _pad0xc4[162];
+    volatile uint32_t COMPENSATION_TRIM; /* 0x00c4: Compensation Trim Register (ADCC4, offset 0xC4). Factory-programmed calibration value read from OTP (SCU) during init. Written by software after reading SCU OTP; do not set manually.
+ */
+} ADC_V1_ADCTypeDef;
+
+/* Fieldset: adc_v1::ADC_ENGINE_CTRL */
+#define ADC_V1_ADC_ENGINE_CTRL_ENGINE_EN_Pos 0
+#define ADC_V1_ADC_ENGINE_CTRL_ENGINE_EN_Msk (1U << 0)
+#define ADC_V1_ADC_ENGINE_CTRL_OP_MODE_Pos 1
+#define ADC_V1_ADC_ENGINE_CTRL_OP_MODE_Msk (7U << 1)
+#define ADC_V1_ADC_ENGINE_CTRL_CTRL_COMPENSATION_Pos 4
+#define ADC_V1_ADC_ENGINE_CTRL_CTRL_COMPENSATION_Msk (1U << 4)
+#define ADC_V1_ADC_ENGINE_CTRL_AUTO_COMPENSATION_Pos 5
+#define ADC_V1_ADC_ENGINE_CTRL_AUTO_COMPENSATION_Msk (1U << 5)
+#define ADC_V1_ADC_ENGINE_CTRL_REF_VOLTAGE_Pos 6
+#define ADC_V1_ADC_ENGINE_CTRL_REF_VOLTAGE_Msk (3U << 6)
+#define ADC_V1_ADC_ENGINE_CTRL_INIT_RDY_Pos 8
+#define ADC_V1_ADC_ENGINE_CTRL_INIT_RDY_Msk (1U << 8)
+#define ADC_V1_ADC_ENGINE_CTRL_CH7_BAT_MODE_Pos 12
+#define ADC_V1_ADC_ENGINE_CTRL_CH7_BAT_MODE_Msk (1U << 12)
+#define ADC_V1_ADC_ENGINE_CTRL_BAT_SENSING_EN_Pos 13
+#define ADC_V1_ADC_ENGINE_CTRL_BAT_SENSING_EN_Msk (1U << 13)
+#define ADC_V1_ADC_ENGINE_CTRL_CH_EN_Pos 16
+#define ADC_V1_ADC_ENGINE_CTRL_CH_EN_Msk (65535U << 16)
+
+/* Fieldset: adc_v1::ADC_INT_CTRL */
+#define ADC_V1_ADC_INT_CTRL_CH_INT_EN_Pos 0
+#define ADC_V1_ADC_INT_CTRL_CH_INT_EN_Msk (255U << 0)
+
+/* Fieldset: adc_v1::ADC_VGA_DETECT */
+#define ADC_V1_ADC_VGA_DETECT_THRESHOLD_Pos 0
+#define ADC_V1_ADC_VGA_DETECT_THRESHOLD_Msk (1023U << 0)
+#define ADC_V1_ADC_VGA_DETECT_ABOVE_THRESHOLD_Pos 10
+#define ADC_V1_ADC_VGA_DETECT_ABOVE_THRESHOLD_Msk (1U << 10)
+
+/* Fieldset: adc_v1::ADC_CLK_CTRL */
+#define ADC_V1_ADC_CLK_CTRL_CLK_DIV_Pos 0
+#define ADC_V1_ADC_CLK_CTRL_CLK_DIV_Msk (65535U << 0)
+
+/* Fieldset: adc_v1::ADC_CH_DATA */
+#define ADC_V1_ADC_CH_DATA_VALUE_Pos 0
+#define ADC_V1_ADC_CH_DATA_VALUE_Msk (1023U << 0)
+
+/* Fieldset: adc_v1::ADC_COMP_TRIM */
+#define ADC_V1_ADC_COMP_TRIM_TRIM_VALUE_Pos 0
+#define ADC_V1_ADC_COMP_TRIM_TRIM_VALUE_Msk (4294967295U << 0)
+
+
+
+typedef struct {
     volatile uint32_t CTRL; /* 0x0000: ColdFire Coprocessor Control Register (SCU100). Controls enable and reset of the ColdFire core.
  */
     volatile uint32_t SEG0_BASE; /* 0x0004: Segment 0 Base Register (SCU104). Maps ColdFire 0x000000–0x1FFFFF to a 2 MB-aligned BMC address.
@@ -203,6 +270,454 @@ bits [24:20] = data (for INTERRUPT: bit0=int_enable,
 #define GPIO_V1_GPIO_CMD_SRC_SEL_MST5_Msk (31U << 20)
 #define GPIO_V1_GPIO_CMD_SRC_SEL_LOCK_Pos 31
 #define GPIO_V1_GPIO_CMD_SRC_SEL_LOCK_Msk (1U << 31)
+
+
+
+typedef struct {
+    volatile uint32_t FUNC_CTRL; /* 0x0000: Function control register (I2CD00). */
+    volatile uint32_t CLK_AC_TIMING1; /* 0x0004: Clock and AC timing control register 1 (I2CD04). */
+    volatile uint32_t CLK_AC_TIMING2; /* 0x0008: Clock and AC timing control register 2 (I2CD08). */
+    volatile uint32_t IRQ_CTRL; /* 0x000c: Interrupt control register (I2CD0C). */
+    volatile uint32_t IRQ_STATUS; /* 0x0010: Interrupt status register (I2CD10). */
+    volatile uint32_t CMD_STATUS; /* 0x0014: Command/status register (I2CD14). */
+    volatile uint32_t SLAVE_ADDR; /* 0x0018: Slave device address register (I2CD18). */
+    volatile uint32_t POOL_BUF_CTRL; /* 0x001c: Pool buffer control register (I2CD1C). */
+    volatile uint32_t TX_RX_BUF; /* 0x0020: Transmit/receive byte buffer register (I2CD20). */
+    volatile uint32_t DMA_BUF_ADDR; /* 0x0024: DMA mode buffer address register (I2CD24; AST2500 only). */
+    volatile uint32_t DMA_XFER_LEN; /* 0x0028: DMA transfer length register (I2CD28; AST2500 only). */
+} I2C_LEGACY_V1_I2CLEGACYTypeDef;
+
+/* Fieldset: i2c_legacy_v1::I2CD_FUNC_CTRL */
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_MASTER_EN_Pos 0
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_MASTER_EN_Msk (1U << 0)
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_SLAVE_EN_Pos 1
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_SLAVE_EN_Msk (1U << 1)
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_HIGH_SPEED_EN_Pos 6
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_HIGH_SPEED_EN_Msk (1U << 6)
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_DIRECT_DRIVE_Pos 7
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_DIRECT_DRIVE_Msk (3U << 7)
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_BUS_LOCK_AUTO_RELEASE_Pos 17
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_BUS_LOCK_AUTO_RELEASE_Msk (1U << 17)
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_BUFFER_PAGE_SEL_Pos 20
+#define I2C_LEGACY_V1_I2CD_FUNC_CTRL_BUFFER_PAGE_SEL_Msk (7U << 20)
+
+/* Fieldset: i2c_legacy_v1::I2CD_CLK_AC_TIMING1 */
+#define I2C_LEGACY_V1_I2CD_CLK_AC_TIMING1_BASE_CLK_DIV_Pos 0
+#define I2C_LEGACY_V1_I2CD_CLK_AC_TIMING1_BASE_CLK_DIV_Msk (15U << 0)
+#define I2C_LEGACY_V1_I2CD_CLK_AC_TIMING1_SCL_LOW_Pos 12
+#define I2C_LEGACY_V1_I2CD_CLK_AC_TIMING1_SCL_LOW_Msk (15U << 12)
+#define I2C_LEGACY_V1_I2CD_CLK_AC_TIMING1_SCL_HIGH_Pos 16
+#define I2C_LEGACY_V1_I2CD_CLK_AC_TIMING1_SCL_HIGH_Msk (15U << 16)
+
+/* Fieldset: i2c_legacy_v1::I2CD_IRQ */
+#define I2C_LEGACY_V1_I2CD_IRQ_RX_DONE_Pos 0
+#define I2C_LEGACY_V1_I2CD_IRQ_RX_DONE_Msk (1U << 0)
+#define I2C_LEGACY_V1_I2CD_IRQ_TX_DONE_Pos 1
+#define I2C_LEGACY_V1_I2CD_IRQ_TX_DONE_Msk (1U << 1)
+#define I2C_LEGACY_V1_I2CD_IRQ_NORMAL_STOP_Pos 4
+#define I2C_LEGACY_V1_I2CD_IRQ_NORMAL_STOP_Msk (1U << 4)
+#define I2C_LEGACY_V1_I2CD_IRQ_ABNORMAL_Pos 5
+#define I2C_LEGACY_V1_I2CD_IRQ_ABNORMAL_Msk (1U << 5)
+#define I2C_LEGACY_V1_I2CD_IRQ_ARBIT_LOSS_Pos 9
+#define I2C_LEGACY_V1_I2CD_IRQ_ARBIT_LOSS_Msk (1U << 9)
+#define I2C_LEGACY_V1_I2CD_IRQ_SDA_DL_TIMEOUT_Pos 14
+#define I2C_LEGACY_V1_I2CD_IRQ_SDA_DL_TIMEOUT_Msk (1U << 14)
+#define I2C_LEGACY_V1_I2CD_IRQ_BUS_RECOVER_DONE_Pos 15
+#define I2C_LEGACY_V1_I2CD_IRQ_BUS_RECOVER_DONE_Msk (1U << 15)
+
+/* Fieldset: i2c_legacy_v1::I2CD_CMD_STATUS */
+#define I2C_LEGACY_V1_I2CD_CMD_STATUS_TX_COUNT_Pos 0
+#define I2C_LEGACY_V1_I2CD_CMD_STATUS_TX_COUNT_Msk (31U << 0)
+#define I2C_LEGACY_V1_I2CD_CMD_STATUS_RX_COUNT_Pos 8
+#define I2C_LEGACY_V1_I2CD_CMD_STATUS_RX_COUNT_Msk (31U << 8)
+#define I2C_LEGACY_V1_I2CD_CMD_STATUS_SCL_LINE_Pos 16
+#define I2C_LEGACY_V1_I2CD_CMD_STATUS_SCL_LINE_Msk (1U << 16)
+#define I2C_LEGACY_V1_I2CD_CMD_STATUS_SDA_LINE_Pos 17
+#define I2C_LEGACY_V1_I2CD_CMD_STATUS_SDA_LINE_Msk (1U << 17)
+#define I2C_LEGACY_V1_I2CD_CMD_STATUS_BUS_BUSY_Pos 18
+#define I2C_LEGACY_V1_I2CD_CMD_STATUS_BUS_BUSY_Msk (1U << 18)
+
+/* Fieldset: i2c_legacy_v1::I2CD_TX_RX_BUF */
+#define I2C_LEGACY_V1_I2CD_TX_RX_BUF_RX_BYTE_Pos 0
+#define I2C_LEGACY_V1_I2CD_TX_RX_BUF_RX_BYTE_Msk (255U << 0)
+#define I2C_LEGACY_V1_I2CD_TX_RX_BUF_TX_BYTE_Pos 8
+#define I2C_LEGACY_V1_I2CD_TX_RX_BUF_TX_BYTE_Msk (255U << 8)
+
+
+
+typedef struct {
+    volatile uint32_t IRQ_STATUS; /* 0x0000: Device interrupt status register (I2CG00). */
+    volatile uint8_t _pad0x08[4];
+    volatile uint32_t OWNER; /* 0x0008: Device owner assignment register (I2CG08). */
+    volatile uint32_t GLOBAL_CTRL; /* 0x000c: Global control register (I2CG0C). */
+} I2C_LEGACY_V1_I2CLEGACY_GLOBALTypeDef;
+
+/* Fieldset: i2c_legacy_v1::I2CG_IRQ_STATUS */
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV1_INT_Pos 0
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV1_INT_Msk (1U << 0)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV2_INT_Pos 1
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV2_INT_Msk (1U << 1)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV3_INT_Pos 2
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV3_INT_Msk (1U << 2)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV4_INT_Pos 3
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV4_INT_Msk (1U << 3)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV5_INT_Pos 4
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV5_INT_Msk (1U << 4)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV6_INT_Pos 5
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV6_INT_Msk (1U << 5)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV7_INT_Pos 6
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV7_INT_Msk (1U << 6)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV8_INT_Pos 7
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV8_INT_Msk (1U << 7)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV9_INT_Pos 8
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV9_INT_Msk (1U << 8)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV10_INT_Pos 9
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV10_INT_Msk (1U << 9)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV11_INT_Pos 10
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV11_INT_Msk (1U << 10)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV12_INT_Pos 11
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV12_INT_Msk (1U << 11)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV13_INT_Pos 12
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV13_INT_Msk (1U << 12)
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV14_INT_Pos 13
+#define I2C_LEGACY_V1_I2CG_IRQ_STATUS_DEV14_INT_Msk (1U << 13)
+
+/* Fieldset: i2c_legacy_v1::I2CG_OWNER */
+#define I2C_LEGACY_V1_I2CG_OWNER_OWNER_Pos 0
+#define I2C_LEGACY_V1_I2CG_OWNER_OWNER_Msk (16383U << 0)
+
+/* Fieldset: i2c_legacy_v1::I2CG_GLOBAL_CTRL */
+#define I2C_LEGACY_V1_I2CG_GLOBAL_CTRL_FIFO_ENABLE_Pos 0
+#define I2C_LEGACY_V1_I2CG_GLOBAL_CTRL_FIFO_ENABLE_Msk (1U << 0)
+
+
+
+typedef struct {
+    volatile uint32_t CTRL; /* 0x0000: PECI Control Register (PECI00, offset 0x00). Main control: enable PECI engine, clock source, clock divider, input/output signal inversion, bus contention detection.
+ */
+    volatile uint32_t TIMING_NEG; /* 0x0004: PECI Timing Negotiation Register (PECI04, offset 0x04). Sets T_NEGO_MSG (message timing) and T_NEGO_ADDR (address timing) in units of PECI clock cycles.  Both are negotiated with the target.
+ */
+    volatile uint32_t CMD; /* 0x0008: PECI Command Register (PECI08, offset 0x08). Writing FIRE=1 launches a PECI transaction. STATUS holds the current state machine status. PIN_MONITORING lets software observe the PECI wire state.
+ */
+    volatile uint32_t RW_LENGTH; /* 0x000c: PECI Read/Write Length Register (PECI0C, offset 0x0C). Specifies the target device address, write byte count, read byte count, and whether to append an Assured Write FCS.
+ */
+    volatile uint32_t EXPECTED_FCS; /* 0x0010: PECI Expected FCS Register (PECI10, offset 0x10). Expected read FCS, auto-computed write FCS, and expected write FCS. Written by software before launching a transaction for FCS checking.
+ */
+    volatile uint32_t CAPTURED_FCS; /* 0x0014: PECI Captured FCS Register (PECI14, offset 0x14). Read-only. Holds the FCS bytes captured from the last transaction. Compare CAPTURED_RD_FCS against EXPECTED_RD_FCS to verify integrity.
+ */
+    volatile uint32_t INT_CTRL; /* 0x0018: PECI Interrupt Control Register (PECI18, offset 0x18). Enable bits for each interrupt source and timing negotiation mode select.
+ */
+    volatile uint32_t INT_STS; /* 0x001c: PECI Interrupt Status Register (PECI1C, offset 0x1C). RW1C. Status bits mirror the INT_CTRL enable bit definitions. Also contains TIMING_RESULT [29:16] which holds the negotiated timing. Write 1 to a status bit to clear it.
+ */
+    volatile uint32_t WR_DATA0; /* 0x0020: PECI Write Data Buffer 0, bytes [3:0] (PECI20, offset 0x20). */
+    volatile uint32_t WR_DATA1; /* 0x0024: PECI Write Data Buffer 1, bytes [7:4] (PECI24, offset 0x24). */
+    volatile uint32_t WR_DATA2; /* 0x0028: PECI Write Data Buffer 2, bytes [11:8] (PECI28, offset 0x28). */
+    volatile uint32_t WR_DATA3; /* 0x002c: PECI Write Data Buffer 3, bytes [15:12] (PECI2C, offset 0x2C). */
+    volatile uint32_t RD_DATA0; /* 0x0030: PECI Read Data Buffer 0, bytes [3:0] (PECI30, offset 0x30). */
+    volatile uint32_t RD_DATA1; /* 0x0034: PECI Read Data Buffer 1, bytes [7:4] (PECI34, offset 0x34). */
+    volatile uint32_t RD_DATA2; /* 0x0038: PECI Read Data Buffer 2, bytes [11:8] (PECI38, offset 0x38). */
+    volatile uint32_t RD_DATA3; /* 0x003c: PECI Read Data Buffer 3, bytes [15:12] (PECI3C, offset 0x3C). */
+    volatile uint32_t WR_DATA4; /* 0x0040: PECI Write Data Buffer 4, bytes [19:16] (PECI40, offset 0x40). */
+    volatile uint32_t WR_DATA5; /* 0x0044: PECI Write Data Buffer 5, bytes [23:20] (PECI44, offset 0x44). */
+    volatile uint32_t WR_DATA6; /* 0x0048: PECI Write Data Buffer 6, bytes [27:24] (PECI48, offset 0x48). */
+    volatile uint32_t WR_DATA7; /* 0x004c: PECI Write Data Buffer 7, bytes [31:28] (PECI4C, offset 0x4C). */
+    volatile uint32_t RD_DATA4; /* 0x0050: PECI Read Data Buffer 4, bytes [19:16] (PECI50, offset 0x50). */
+    volatile uint32_t RD_DATA5; /* 0x0054: PECI Read Data Buffer 5, bytes [23:20] (PECI54, offset 0x54). */
+    volatile uint32_t RD_DATA6; /* 0x0058: PECI Read Data Buffer 6, bytes [27:24] (PECI58, offset 0x58). */
+    volatile uint32_t RD_DATA7; /* 0x005c: PECI Read Data Buffer 7, bytes [31:28] (PECI5C, offset 0x5C). */
+} PECI_V1_PECITypeDef;
+
+/* Fieldset: peci_v1::PECI_CTRL */
+#define PECI_V1_PECI_CTRL_PECI_CLK_EN_Pos 0
+#define PECI_V1_PECI_CTRL_PECI_CLK_EN_Msk (1U << 0)
+#define PECI_V1_PECI_CTRL_PECI_EN_Pos 4
+#define PECI_V1_PECI_CTRL_PECI_EN_Msk (1U << 4)
+#define PECI_V1_PECI_CTRL_BUS_CONTENTION_EN_Pos 5
+#define PECI_V1_PECI_CTRL_BUS_CONTENTION_EN_Msk (1U << 5)
+#define PECI_V1_PECI_CTRL_INVERT_IN_Pos 6
+#define PECI_V1_PECI_CTRL_INVERT_IN_Msk (1U << 6)
+#define PECI_V1_PECI_CTRL_INVERT_OUT_Pos 7
+#define PECI_V1_PECI_CTRL_INVERT_OUT_Msk (1U << 7)
+#define PECI_V1_PECI_CTRL_CLK_DIV_Pos 8
+#define PECI_V1_PECI_CTRL_CLK_DIV_Msk (7U << 8)
+#define PECI_V1_PECI_CTRL_CLK_SRC_HCLK_Pos 11
+#define PECI_V1_PECI_CTRL_CLK_SRC_HCLK_Msk (1U << 11)
+#define PECI_V1_PECI_CTRL_RD_MODE_Pos 12
+#define PECI_V1_PECI_CTRL_RD_MODE_Msk (3U << 12)
+#define PECI_V1_PECI_CTRL_SAMPLING_Pos 16
+#define PECI_V1_PECI_CTRL_SAMPLING_Msk (15U << 16)
+
+/* Fieldset: peci_v1::PECI_TIMING_NEG */
+#define PECI_V1_PECI_TIMING_NEG_T_NEGO_ADDR_Pos 0
+#define PECI_V1_PECI_TIMING_NEG_T_NEGO_ADDR_Msk (255U << 0)
+#define PECI_V1_PECI_TIMING_NEG_T_NEGO_MSG_Pos 8
+#define PECI_V1_PECI_TIMING_NEG_T_NEGO_MSG_Msk (255U << 8)
+
+/* Fieldset: peci_v1::PECI_CMD */
+#define PECI_V1_PECI_CMD_FIRE_Pos 0
+#define PECI_V1_PECI_CMD_FIRE_Msk (1U << 0)
+#define PECI_V1_PECI_CMD_STATUS_Pos 24
+#define PECI_V1_PECI_CMD_STATUS_Msk (15U << 24)
+#define PECI_V1_PECI_CMD_PIN_MONITORING_Pos 31
+#define PECI_V1_PECI_CMD_PIN_MONITORING_Msk (1U << 31)
+
+/* Fieldset: peci_v1::PECI_RW_LENGTH */
+#define PECI_V1_PECI_RW_LENGTH_TARGET_ADDR_Pos 0
+#define PECI_V1_PECI_RW_LENGTH_TARGET_ADDR_Msk (255U << 0)
+#define PECI_V1_PECI_RW_LENGTH_WR_LEN_Pos 8
+#define PECI_V1_PECI_RW_LENGTH_WR_LEN_Msk (255U << 8)
+#define PECI_V1_PECI_RW_LENGTH_RD_LEN_Pos 16
+#define PECI_V1_PECI_RW_LENGTH_RD_LEN_Msk (255U << 16)
+#define PECI_V1_PECI_RW_LENGTH_AW_FCS_EN_Pos 31
+#define PECI_V1_PECI_RW_LENGTH_AW_FCS_EN_Msk (1U << 31)
+
+/* Fieldset: peci_v1::PECI_EXPECTED_FCS */
+#define PECI_V1_PECI_EXPECTED_FCS_EXPECTED_WR_FCS_Pos 0
+#define PECI_V1_PECI_EXPECTED_FCS_EXPECTED_WR_FCS_Msk (255U << 0)
+#define PECI_V1_PECI_EXPECTED_FCS_EXPECTED_AW_FCS_AUTO_Pos 8
+#define PECI_V1_PECI_EXPECTED_FCS_EXPECTED_AW_FCS_AUTO_Msk (255U << 8)
+#define PECI_V1_PECI_EXPECTED_FCS_EXPECTED_RD_FCS_Pos 16
+#define PECI_V1_PECI_EXPECTED_FCS_EXPECTED_RD_FCS_Msk (255U << 16)
+
+/* Fieldset: peci_v1::PECI_CAPTURED_FCS */
+#define PECI_V1_PECI_CAPTURED_FCS_CAPTURED_WR_FCS_Pos 0
+#define PECI_V1_PECI_CAPTURED_FCS_CAPTURED_WR_FCS_Msk (255U << 0)
+#define PECI_V1_PECI_CAPTURED_FCS_CAPTURED_RD_FCS_Pos 16
+#define PECI_V1_PECI_CAPTURED_FCS_CAPTURED_RD_FCS_Msk (255U << 16)
+
+/* Fieldset: peci_v1::PECI_INT_CTRL */
+#define PECI_V1_PECI_INT_CTRL_CMD_DONE_EN_Pos 0
+#define PECI_V1_PECI_INT_CTRL_CMD_DONE_EN_Msk (1U << 0)
+#define PECI_V1_PECI_INT_CTRL_WR_FCS_ABORT_EN_Pos 1
+#define PECI_V1_PECI_INT_CTRL_WR_FCS_ABORT_EN_Msk (1U << 1)
+#define PECI_V1_PECI_INT_CTRL_WR_FCS_BAD_EN_Pos 2
+#define PECI_V1_PECI_INT_CTRL_WR_FCS_BAD_EN_Msk (1U << 2)
+#define PECI_V1_PECI_INT_CTRL_BUS_CONTENTION_EN_Pos 3
+#define PECI_V1_PECI_INT_CTRL_BUS_CONTENTION_EN_Msk (1U << 3)
+#define PECI_V1_PECI_INT_CTRL_BUS_TIMEOUT_EN_Pos 4
+#define PECI_V1_PECI_INT_CTRL_BUS_TIMEOUT_EN_Msk (1U << 4)
+#define PECI_V1_PECI_INT_CTRL_TIMING_NEGO_SEL_Pos 30
+#define PECI_V1_PECI_INT_CTRL_TIMING_NEGO_SEL_Msk (3U << 30)
+
+/* Fieldset: peci_v1::PECI_INT_STS */
+#define PECI_V1_PECI_INT_STS_CMD_DONE_Pos 0
+#define PECI_V1_PECI_INT_STS_CMD_DONE_Msk (1U << 0)
+#define PECI_V1_PECI_INT_STS_WR_FCS_ABORT_Pos 1
+#define PECI_V1_PECI_INT_STS_WR_FCS_ABORT_Msk (1U << 1)
+#define PECI_V1_PECI_INT_STS_WR_FCS_BAD_Pos 2
+#define PECI_V1_PECI_INT_STS_WR_FCS_BAD_Msk (1U << 2)
+#define PECI_V1_PECI_INT_STS_BUS_CONTENTION_Pos 3
+#define PECI_V1_PECI_INT_STS_BUS_CONTENTION_Msk (1U << 3)
+#define PECI_V1_PECI_INT_STS_BUS_TIMEOUT_Pos 4
+#define PECI_V1_PECI_INT_STS_BUS_TIMEOUT_Msk (1U << 4)
+#define PECI_V1_PECI_INT_STS_TIMING_RESULT_Pos 16
+#define PECI_V1_PECI_INT_STS_TIMING_RESULT_Msk (16383U << 16)
+
+/* Fieldset: peci_v1::PECI_DATA_BUF */
+#define PECI_V1_PECI_DATA_BUF_DATA_Pos 0
+#define PECI_V1_PECI_DATA_BUF_DATA_Msk (4294967295U << 0)
+
+
+
+typedef struct {
+    volatile uint32_t CH0_PWM_CTRL; /* 0x0000: PWM Channel 0 Control Register (offset 0x00). */
+    volatile uint32_t CH0_PWM_DUTY; /* 0x0004: PWM Channel 0 Duty Cycle Register (offset 0x04). */
+    volatile uint32_t CH0_TACH_CTRL; /* 0x0008: Tachometer Channel 0 Control Register (offset 0x08). */
+    volatile uint32_t CH0_TACH_STS; /* 0x000c: Tachometer Channel 0 Status Register (offset 0x0C). */
+    volatile uint32_t CH1_PWM_CTRL; /* 0x0010: PWM Channel 1 Control Register (offset 0x10). */
+    volatile uint32_t CH1_PWM_DUTY; /* 0x0014: PWM Channel 1 Duty Cycle Register (offset 0x14). */
+    volatile uint32_t CH1_TACH_CTRL; /* 0x0018: Tachometer Channel 1 Control Register (offset 0x18). */
+    volatile uint32_t CH1_TACH_STS; /* 0x001c: Tachometer Channel 1 Status Register (offset 0x1C). */
+    volatile uint32_t CH2_PWM_CTRL; /* 0x0020: PWM Channel 2 Control Register (offset 0x20). */
+    volatile uint32_t CH2_PWM_DUTY; /* 0x0024: PWM Channel 2 Duty Cycle Register (offset 0x24). */
+    volatile uint32_t CH2_TACH_CTRL; /* 0x0028: Tachometer Channel 2 Control Register (offset 0x28). */
+    volatile uint32_t CH2_TACH_STS; /* 0x002c: Tachometer Channel 2 Status Register (offset 0x2C). */
+    volatile uint32_t CH3_PWM_CTRL; /* 0x0030: PWM Channel 3 Control Register (offset 0x30). */
+    volatile uint32_t CH3_PWM_DUTY; /* 0x0034: PWM Channel 3 Duty Cycle Register (offset 0x34). */
+    volatile uint32_t CH3_TACH_CTRL; /* 0x0038: Tachometer Channel 3 Control Register (offset 0x38). */
+    volatile uint32_t CH3_TACH_STS; /* 0x003c: Tachometer Channel 3 Status Register (offset 0x3C). */
+    volatile uint32_t CH4_PWM_CTRL; /* 0x0040: PWM Channel 4 Control Register (offset 0x40). */
+    volatile uint32_t CH4_PWM_DUTY; /* 0x0044: PWM Channel 4 Duty Cycle Register (offset 0x44). */
+    volatile uint32_t CH4_TACH_CTRL; /* 0x0048: Tachometer Channel 4 Control Register (offset 0x48). */
+    volatile uint32_t CH4_TACH_STS; /* 0x004c: Tachometer Channel 4 Status Register (offset 0x4C). */
+    volatile uint32_t CH5_PWM_CTRL; /* 0x0050: PWM Channel 5 Control Register (offset 0x50). */
+    volatile uint32_t CH5_PWM_DUTY; /* 0x0054: PWM Channel 5 Duty Cycle Register (offset 0x54). */
+    volatile uint32_t CH5_TACH_CTRL; /* 0x0058: Tachometer Channel 5 Control Register (offset 0x58). */
+    volatile uint32_t CH5_TACH_STS; /* 0x005c: Tachometer Channel 5 Status Register (offset 0x5C). */
+    volatile uint32_t CH6_PWM_CTRL; /* 0x0060: PWM Channel 6 Control Register (offset 0x60). */
+    volatile uint32_t CH6_PWM_DUTY; /* 0x0064: PWM Channel 6 Duty Cycle Register (offset 0x64). */
+    volatile uint32_t CH6_TACH_CTRL; /* 0x0068: Tachometer Channel 6 Control Register (offset 0x68). */
+    volatile uint32_t CH6_TACH_STS; /* 0x006c: Tachometer Channel 6 Status Register (offset 0x6C). */
+    volatile uint32_t CH7_PWM_CTRL; /* 0x0070: PWM Channel 7 Control Register (offset 0x70). */
+    volatile uint32_t CH7_PWM_DUTY; /* 0x0074: PWM Channel 7 Duty Cycle Register (offset 0x74). */
+    volatile uint32_t CH7_TACH_CTRL; /* 0x0078: Tachometer Channel 7 Control Register (offset 0x78). */
+    volatile uint32_t CH7_TACH_STS; /* 0x007c: Tachometer Channel 7 Status Register (offset 0x7C). */
+    volatile uint32_t CH8_PWM_CTRL; /* 0x0080: PWM Channel 8 Control Register (offset 0x80). */
+    volatile uint32_t CH8_PWM_DUTY; /* 0x0084: PWM Channel 8 Duty Cycle Register (offset 0x84). */
+    volatile uint32_t CH8_TACH_CTRL; /* 0x0088: Tachometer Channel 8 Control Register (offset 0x88). */
+    volatile uint32_t CH8_TACH_STS; /* 0x008c: Tachometer Channel 8 Status Register (offset 0x8C). */
+    volatile uint32_t CH9_PWM_CTRL; /* 0x0090: PWM Channel 9 Control Register (offset 0x90). */
+    volatile uint32_t CH9_PWM_DUTY; /* 0x0094: PWM Channel 9 Duty Cycle Register (offset 0x94). */
+    volatile uint32_t CH9_TACH_CTRL; /* 0x0098: Tachometer Channel 9 Control Register (offset 0x98). */
+    volatile uint32_t CH9_TACH_STS; /* 0x009c: Tachometer Channel 9 Status Register (offset 0x9C). */
+    volatile uint32_t CH10_PWM_CTRL; /* 0x00a0: PWM Channel 10 Control Register (offset 0xA0). */
+    volatile uint32_t CH10_PWM_DUTY; /* 0x00a4: PWM Channel 10 Duty Cycle Register (offset 0xA4). */
+    volatile uint32_t CH10_TACH_CTRL; /* 0x00a8: Tachometer Channel 10 Control Register (offset 0xA8). */
+    volatile uint32_t CH10_TACH_STS; /* 0x00ac: Tachometer Channel 10 Status Register (offset 0xAC). */
+    volatile uint32_t CH11_PWM_CTRL; /* 0x00b0: PWM Channel 11 Control Register (offset 0xB0). */
+    volatile uint32_t CH11_PWM_DUTY; /* 0x00b4: PWM Channel 11 Duty Cycle Register (offset 0xB4). */
+    volatile uint32_t CH11_TACH_CTRL; /* 0x00b8: Tachometer Channel 11 Control Register (offset 0xB8). */
+    volatile uint32_t CH11_TACH_STS; /* 0x00bc: Tachometer Channel 11 Status Register (offset 0xBC). */
+    volatile uint32_t CH12_PWM_CTRL; /* 0x00c0: PWM Channel 12 Control Register (offset 0xC0). */
+    volatile uint32_t CH12_PWM_DUTY; /* 0x00c4: PWM Channel 12 Duty Cycle Register (offset 0xC4). */
+    volatile uint32_t CH12_TACH_CTRL; /* 0x00c8: Tachometer Channel 12 Control Register (offset 0xC8). */
+    volatile uint32_t CH12_TACH_STS; /* 0x00cc: Tachometer Channel 12 Status Register (offset 0xCC). */
+    volatile uint32_t CH13_PWM_CTRL; /* 0x00d0: PWM Channel 13 Control Register (offset 0xD0). */
+    volatile uint32_t CH13_PWM_DUTY; /* 0x00d4: PWM Channel 13 Duty Cycle Register (offset 0xD4). */
+    volatile uint32_t CH13_TACH_CTRL; /* 0x00d8: Tachometer Channel 13 Control Register (offset 0xD8). */
+    volatile uint32_t CH13_TACH_STS; /* 0x00dc: Tachometer Channel 13 Status Register (offset 0xDC). */
+    volatile uint32_t CH14_PWM_CTRL; /* 0x00e0: PWM Channel 14 Control Register (offset 0xE0). */
+    volatile uint32_t CH14_PWM_DUTY; /* 0x00e4: PWM Channel 14 Duty Cycle Register (offset 0xE4). */
+    volatile uint32_t CH14_TACH_CTRL; /* 0x00e8: Tachometer Channel 14 Control Register (offset 0xE8). */
+    volatile uint32_t CH14_TACH_STS; /* 0x00ec: Tachometer Channel 14 Status Register (offset 0xEC). */
+    volatile uint32_t CH15_PWM_CTRL; /* 0x00f0: PWM Channel 15 Control Register (offset 0xF0). */
+    volatile uint32_t CH15_PWM_DUTY; /* 0x00f4: PWM Channel 15 Duty Cycle Register (offset 0xF4). */
+    volatile uint32_t CH15_TACH_CTRL; /* 0x00f8: Tachometer Channel 15 Control Register (offset 0xF8). */
+    volatile uint32_t CH15_TACH_STS; /* 0x00fc: Tachometer Channel 15 Status Register (offset 0xFC). */
+} PWM_V1_PWM_TACHTypeDef;
+
+/* Fieldset: pwm_v1::PWM_CTRL */
+#define PWM_V1_PWM_CTRL_CLK_DIV_L_Pos 0
+#define PWM_V1_PWM_CTRL_CLK_DIV_L_Msk (255U << 0)
+#define PWM_V1_PWM_CTRL_CLK_DIV_H_Pos 8
+#define PWM_V1_PWM_CTRL_CLK_DIV_H_Msk (15U << 8)
+#define PWM_V1_PWM_CTRL_PIN_EN_Pos 12
+#define PWM_V1_PWM_CTRL_PIN_EN_Msk (1U << 12)
+#define PWM_V1_PWM_CTRL_OPEN_DRAIN_EN_Pos 13
+#define PWM_V1_PWM_CTRL_OPEN_DRAIN_EN_Msk (1U << 13)
+#define PWM_V1_PWM_CTRL_INVERSE_Pos 14
+#define PWM_V1_PWM_CTRL_INVERSE_Msk (1U << 14)
+#define PWM_V1_PWM_CTRL_LEVEL_OUTPUT_Pos 15
+#define PWM_V1_PWM_CTRL_LEVEL_OUTPUT_Msk (1U << 15)
+#define PWM_V1_PWM_CTRL_CLK_EN_Pos 16
+#define PWM_V1_PWM_CTRL_CLK_EN_Msk (1U << 16)
+#define PWM_V1_PWM_CTRL_DUTY_SYNC_DIS_Pos 17
+#define PWM_V1_PWM_CTRL_DUTY_SYNC_DIS_Msk (1U << 17)
+#define PWM_V1_PWM_CTRL_DUTY_LOAD_WDT_EN_Pos 18
+#define PWM_V1_PWM_CTRL_DUTY_LOAD_WDT_EN_Msk (1U << 18)
+#define PWM_V1_PWM_CTRL_LOAD_SEL_RISING_WDT_Pos 19
+#define PWM_V1_PWM_CTRL_LOAD_SEL_RISING_WDT_Msk (1U << 19)
+
+/* Fieldset: pwm_v1::PWM_DUTY */
+#define PWM_V1_PWM_DUTY_RISING_POINT_Pos 0
+#define PWM_V1_PWM_DUTY_RISING_POINT_Msk (255U << 0)
+#define PWM_V1_PWM_DUTY_FALLING_POINT_Pos 8
+#define PWM_V1_PWM_DUTY_FALLING_POINT_Msk (255U << 8)
+#define PWM_V1_PWM_DUTY_POINT_WDT_Pos 16
+#define PWM_V1_PWM_DUTY_POINT_WDT_Msk (255U << 16)
+#define PWM_V1_PWM_DUTY_DUTY_PERIOD_Pos 24
+#define PWM_V1_PWM_DUTY_DUTY_PERIOD_Msk (255U << 24)
+
+/* Fieldset: pwm_v1::TACH_CTRL */
+#define PWM_V1_TACH_CTRL_THRESHOLD_Pos 0
+#define PWM_V1_TACH_CTRL_THRESHOLD_Msk (1048575U << 0)
+#define PWM_V1_TACH_CTRL_CLK_DIV_T_Pos 20
+#define PWM_V1_TACH_CTRL_CLK_DIV_T_Msk (15U << 20)
+#define PWM_V1_TACH_CTRL_IO_EDGE_Pos 24
+#define PWM_V1_TACH_CTRL_IO_EDGE_Msk (3U << 24)
+#define PWM_V1_TACH_CTRL_DEBOUNCE_Pos 26
+#define PWM_V1_TACH_CTRL_DEBOUNCE_Msk (3U << 26)
+#define PWM_V1_TACH_CTRL_ENABLE_Pos 28
+#define PWM_V1_TACH_CTRL_ENABLE_Msk (1U << 28)
+#define PWM_V1_TACH_CTRL_LOOPBACK_Pos 29
+#define PWM_V1_TACH_CTRL_LOOPBACK_Msk (1U << 29)
+#define PWM_V1_TACH_CTRL_INVERS_LIMIT_Pos 30
+#define PWM_V1_TACH_CTRL_INVERS_LIMIT_Msk (1U << 30)
+#define PWM_V1_TACH_CTRL_IER_Pos 31
+#define PWM_V1_TACH_CTRL_IER_Msk (1U << 31)
+
+/* Fieldset: pwm_v1::TACH_STS */
+#define PWM_V1_TACH_STS_VALUE_Pos 0
+#define PWM_V1_TACH_STS_VALUE_Msk (1048575U << 0)
+#define PWM_V1_TACH_STS_FULL_MEASUREMENT_Pos 20
+#define PWM_V1_TACH_STS_FULL_MEASUREMENT_Msk (1U << 20)
+#define PWM_V1_TACH_STS_VALUE_UPDATE_Pos 21
+#define PWM_V1_TACH_STS_VALUE_UPDATE_Msk (1U << 21)
+#define PWM_V1_TACH_STS_RAW_INPUT_Pos 22
+#define PWM_V1_TACH_STS_RAW_INPUT_Msk (1U << 22)
+#define PWM_V1_TACH_STS_DEB_INPUT_Pos 23
+#define PWM_V1_TACH_STS_DEB_INPUT_Msk (1U << 23)
+#define PWM_V1_TACH_STS_PWM_OEN_Pos 24
+#define PWM_V1_TACH_STS_PWM_OEN_Msk (1U << 24)
+#define PWM_V1_TACH_STS_PWM_OUT_Pos 25
+#define PWM_V1_TACH_STS_PWM_OUT_Msk (1U << 25)
+#define PWM_V1_TACH_STS_ISR_Pos 31
+#define PWM_V1_TACH_STS_ISR_Msk (1U << 31)
+
+
+
+typedef struct {
+    volatile uint32_t ABCD_DATA; /* 0x0000: Serial GPIO ABCD data value register (GPIO500). Output data: bits[7:0]=A, bits[15:8]=B, bits[23:16]=C, bits[31:24]=D. Also receives captured input data from SGPMI on each shift cycle.
+ */
+    volatile uint32_t ABCD_IRQ_EN; /* 0x0004: Serial GPIO ABCD interrupt enable (GPIO504). Per-bit: 1=enable interrupt for that pin.
+ */
+    volatile uint32_t ABCD_IRQ_SENS0; /* 0x0008: Serial GPIO ABCD interrupt sensitivity type 0 (GPIO508). Per-bit: 0=falling-edge or level-low, 1=rising-edge or level-high.
+ */
+    volatile uint32_t ABCD_IRQ_SENS1; /* 0x000c: Serial GPIO ABCD interrupt sensitivity type 1 (GPIO50C). Per-bit: 0=edge trigger, 1=level trigger.
+ */
+    volatile uint32_t ABCD_IRQ_SENS2; /* 0x0010: Serial GPIO ABCD interrupt sensitivity type 2 (GPIO510). Per-bit: 0=single-edge or level, 1=dual-edge trigger.
+ */
+    volatile uint32_t ABCD_IRQ_STATUS; /* 0x0014: Serial GPIO ABCD interrupt status (GPIO514). Write-1-to-clear per bit. 1=interrupt pending for that pin.
+ */
+    volatile uint32_t ABCD_WDT_TOL; /* 0x0018: Serial GPIO ABCD WDT reset tolerant (GPIO518). Per-bit: 1=preserve output data through WDT reset, 0=cleared by WDT.
+ */
+    volatile uint32_t EFGH_DATA; /* 0x001c: Serial GPIO EFGH data (GPIO51C). E=bits[7:0], F=[15:8], G=[23:16], H=[31:24]. */
+    volatile uint32_t EFGH_IRQ_EN; /* 0x0020: Serial GPIO EFGH interrupt enable (GPIO520). */
+    volatile uint32_t EFGH_IRQ_SENS0; /* 0x0024: Serial GPIO EFGH interrupt sensitivity type 0 (GPIO524). */
+    volatile uint32_t EFGH_IRQ_SENS1; /* 0x0028: Serial GPIO EFGH interrupt sensitivity type 1 (GPIO528). */
+    volatile uint32_t EFGH_IRQ_SENS2; /* 0x002c: Serial GPIO EFGH interrupt sensitivity type 2 (GPIO52C). */
+    volatile uint32_t EFGH_IRQ_STATUS; /* 0x0030: Serial GPIO EFGH interrupt status (GPIO530). Write-1-to-clear. */
+    volatile uint32_t EFGH_WDT_TOL; /* 0x0034: Serial GPIO EFGH WDT reset tolerant (GPIO534). */
+    volatile uint32_t IJKL_DATA; /* 0x0038: Serial GPIO IJKL data (GPIO538). I=bits[7:0], J=[15:8], K=[23:16], L=[31:24]. */
+    volatile uint32_t IJKL_IRQ_EN; /* 0x003c: Serial GPIO IJKL interrupt enable (GPIO53C). */
+    volatile uint32_t IJKL_IRQ_SENS0; /* 0x0040: Serial GPIO IJKL interrupt sensitivity type 0 (GPIO540). */
+    volatile uint32_t IJKL_IRQ_SENS1; /* 0x0044: Serial GPIO IJKL interrupt sensitivity type 1 (GPIO544). */
+    volatile uint32_t IJKL_IRQ_SENS2; /* 0x0048: Serial GPIO IJKL interrupt sensitivity type 2 (GPIO548). */
+    volatile uint32_t IJKL_IRQ_STATUS; /* 0x004c: Serial GPIO IJKL interrupt status (GPIO54C). Write-1-to-clear. */
+    volatile uint32_t IJKL_WDT_TOL; /* 0x0050: Serial GPIO IJKL WDT reset tolerant (GPIO550). */
+    volatile uint32_t SGPIO_CTRL; /* 0x0054: Serial GPIO master configuration register (GPIO554). Controls enable, PIN_COUNT (bytes to shift per cycle: 1–16 = 8–128 bits), and CLK_DIV (clock divider for SGPMCLK = PCLK / (2 × (CLK_DIV + 1))).
+ */
+    volatile uint32_t ABCD_INPUT_MASK; /* 0x0058: Serial GPIO ABCD input mask (GPIO558). Per-bit: 1=freeze that bit's captured input (do not update from shift register).
+ */
+    volatile uint32_t EFGH_INPUT_MASK; /* 0x005c: Serial GPIO EFGH input mask (GPIO55C). */
+    volatile uint32_t IJKL_INPUT_MASK; /* 0x0060: Serial GPIO IJKL input mask (GPIO560). */
+    volatile uint32_t MNOP_INPUT_MASK; /* 0x0064: Serial GPIO MNOP input mask (GPIO564). */
+    volatile uint8_t _pad0x70[8];
+    volatile uint32_t ABCD_DATA_READ; /* 0x0070: Serial GPIO ABCD data read (GPIO570). Read-only mirror of last ABCD_DATA driven. */
+    volatile uint32_t EFGH_DATA_READ; /* 0x0074: Serial GPIO EFGH data read (GPIO574). Read-only mirror of EFGH_DATA. */
+    volatile uint32_t IJKL_DATA_READ; /* 0x0078: Serial GPIO IJKL data read (GPIO578). Read-only mirror of IJKL_DATA. */
+    volatile uint32_t MNOP_DATA_READ; /* 0x007c: Serial GPIO MNOP data read (GPIO57C). Read-only mirror of MNOP_DATA. */
+    volatile uint8_t _pad0x90[16];
+    volatile uint32_t MNOP_DATA; /* 0x0090: Serial GPIO MNOP data (GPIO590). M=bits[7:0], N=[15:8], O=[23:16], P=[31:24]. */
+    volatile uint32_t MNOP_IRQ_EN; /* 0x0094: Serial GPIO MNOP interrupt enable (GPIO594). */
+    volatile uint32_t MNOP_IRQ_SENS0; /* 0x0098: Serial GPIO MNOP interrupt sensitivity type 0 (GPIO598). */
+    volatile uint32_t MNOP_IRQ_SENS1; /* 0x009c: Serial GPIO MNOP interrupt sensitivity type 1 (GPIO59C). */
+    volatile uint32_t MNOP_IRQ_SENS2; /* 0x00a0: Serial GPIO MNOP interrupt sensitivity type 2 (GPIO5A0). */
+    volatile uint32_t MNOP_IRQ_STATUS; /* 0x00a4: Serial GPIO MNOP interrupt status (GPIO5A4). Write-1-to-clear. */
+    volatile uint32_t MNOP_WDT_TOL; /* 0x00a8: Serial GPIO MNOP WDT reset tolerant (GPIO5A8). */
+} SGPIO_V1_SGPIOTypeDef;
+
+/* Fieldset: sgpio_v1::SGPIO32 */
+#define SGPIO_V1_SGPIO32_PINS_Pos 0
+#define SGPIO_V1_SGPIO32_PINS_Msk (4294967295U << 0)
+
+/* Fieldset: sgpio_v1::SGPIO_CTRL */
+#define SGPIO_V1_SGPIO_CTRL_SGPIO_EN_Pos 0
+#define SGPIO_V1_SGPIO_CTRL_SGPIO_EN_Msk (1U << 0)
+#define SGPIO_V1_SGPIO_CTRL_PIN_COUNT_Pos 6
+#define SGPIO_V1_SGPIO_CTRL_PIN_COUNT_Msk (31U << 6)
+#define SGPIO_V1_SGPIO_CTRL_CLK_DIV_Pos 16
+#define SGPIO_V1_SGPIO_CTRL_CLK_DIV_Msk (65535U << 16)
 
 
 
@@ -454,11 +969,20 @@ typedef struct {
  */
     volatile uint32_t CTRL; /* 0x000c: Control Register (WDT0C). Configures reset mode, interrupt, and enable. Default: 0x0010 (WDT_EN=0, RST_SYS=1 = SOC reset mode).
  */
-    volatile uint8_t _pad0x24[20];
+    volatile uint32_t TIMEOUT_STATUS; /* 0x0010: Timeout status register. */
+    volatile uint32_t CLEAR_TIMEOUT_STATUS; /* 0x0014: Clear timeout status register. */
+    volatile uint32_t RESET_WIDTH; /* 0x0018: Reset pulse width register. */
+    volatile uint32_t RESET_MASK1; /* 0x001c: Reset mask register 1. */
+    volatile uint32_t RESET_MASK2; /* 0x0020: Reset mask register 2. */
     volatile uint32_t SW_RESET_CTRL; /* 0x0024: Software Mode Reset Control Register (WDT24). Write 0xAEED_F123 to trigger an immediate software-mode SOC reset (after setting SW_RESET_MASK1 to select which blocks to reset). This bit clears automatically after reset.
  */
-    volatile uint32_t SW_RESET_MASK1; /* 0x0028: Software Mode Reset Mask Register #1 (WDT28). Each bit enables the corresponding subsystem to be reset when SW_RESET_CTRL is triggered. Zephyr uses 0x3FFF_FF1 to reset most subsystems.
+    volatile uint32_t SW_RESET_MASK1; /* 0x0028: Software Mode Reset Mask Register #1 (WDT28). Each bit enables the corresponding subsystem to be reset when SW_RESET_CTRL is triggered. Write 0x03FF_FFF1 to reset the standard set of subsystems.
  */
+    volatile uint32_t SW_RESET_MASK2; /* 0x002c: Software Mode Reset Mask Register */
+    volatile uint32_t SW_RESET_KEY; /* 0x0030: AST2700 software reset key/trigger register. */
+    volatile uint32_t SW_RESET_SEL0; /* 0x0034: AST2700 software reset selection register 0. */
+    volatile uint8_t _pad0x40[8];
+    volatile uint32_t WRITE_PROTECT[4]; /* 0x0040: Watchdog write protection registers. */
 } WDT_V1_WDTTypeDef;
 
 /* Fieldset: wdt_v1::WDT_COUNTER */
@@ -474,22 +998,24 @@ typedef struct {
 #define WDT_V1_WDT_CTRL_WDT_EN_Msk (1U << 0)
 #define WDT_V1_WDT_CTRL_RST_SYS_Pos 1
 #define WDT_V1_WDT_CTRL_RST_SYS_Msk (1U << 1)
+#define WDT_V1_WDT_CTRL_WDT_INTR_Pos 2
+#define WDT_V1_WDT_CTRL_WDT_INTR_Msk (1U << 2)
+#define WDT_V1_WDT_CTRL_WDT_EXT_Pos 3
+#define WDT_V1_WDT_CTRL_WDT_EXT_Msk (1U << 3)
 #define WDT_V1_WDT_CTRL_WDT_RESET_BY_SOC_Pos 4
 #define WDT_V1_WDT_CTRL_WDT_RESET_BY_SOC_Msk (1U << 4)
 #define WDT_V1_WDT_CTRL_RST_MODE_Pos 5
 #define WDT_V1_WDT_CTRL_RST_MODE_Msk (3U << 5)
-#define WDT_V1_WDT_CTRL_WDT_EXT_Pos 27
-#define WDT_V1_WDT_CTRL_WDT_EXT_Msk (1U << 27)
-#define WDT_V1_WDT_CTRL_WDT_INTR_Pos 28
-#define WDT_V1_WDT_CTRL_WDT_INTR_Msk (1U << 28)
-
-/* Fieldset: wdt_v1::WDT_SW_RESET_CTRL */
-#define WDT_V1_WDT_SW_RESET_CTRL_TRIGGER_Pos 0
-#define WDT_V1_WDT_SW_RESET_CTRL_TRIGGER_Msk (4294967295U << 0)
+#define WDT_V1_WDT_CTRL_PRE_TIMEOUT_Pos 10
+#define WDT_V1_WDT_CTRL_PRE_TIMEOUT_Msk (4194303U << 10)
 
 /* Fieldset: wdt_v1::WDT_SW_RESET_MASK1 */
 #define WDT_V1_WDT_SW_RESET_MASK1_MASK_Pos 0
 #define WDT_V1_WDT_SW_RESET_MASK1_MASK_Msk (4294967295U << 0)
+
+/* Fieldset: wdt_v1::WDT_SW_RESET_CTRL */
+#define WDT_V1_WDT_SW_RESET_CTRL_TRIGGER_Pos 0
+#define WDT_V1_WDT_SW_RESET_CTRL_TRIGGER_Msk (4294967295U << 0)
 
 
 
@@ -524,23 +1050,80 @@ typedef struct {
 /* GPIO controller (208 pins) */
 #define GPIO_BASE (0x00680000U)
 #define GPIO ((GPIO_V1_GPIOTypeDef *)GPIO_BASE)
+/* Serial GPIO master */
+#define SGPIO_BASE (0x00680500U)
+#define SGPIO ((SGPIO_V1_SGPIOTypeDef *)SGPIO_BASE)
+/* PWM and fan tachometer controller */
+#define PWM_TACH_BASE (0x00686000U)
+#define PWM_TACH ((PWM_V1_PWM_TACHTypeDef *)PWM_TACH_BASE)
+/* PECI controller */
+#define PECI_BASE (0x0068b000U)
+#define PECI ((PECI_V1_PECITypeDef *)PECI_BASE)
+/* ADC controller */
+#define ADC_BASE (0x002e9000U)
+#define ADC ((ADC_V1_ADCTypeDef *)ADC_BASE)
+/* Legacy I2C/SMBus global controller */
+#define I2C_GLOBAL_BASE (0x0068a000U)
+#define I2C_GLOBAL ((I2C_LEGACY_V1_I2CLEGACY_GLOBALTypeDef *)I2C_GLOBAL_BASE)
+#define I2C0_BASE (0x0068a040U)
+#define I2C0 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C0_BASE)
+#define I2C1_BASE (0x0068a080U)
+#define I2C1 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C1_BASE)
+#define I2C2_BASE (0x0068a0c0U)
+#define I2C2 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C2_BASE)
+#define I2C3_BASE (0x0068a100U)
+#define I2C3 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C3_BASE)
+#define I2C4_BASE (0x0068a140U)
+#define I2C4 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C4_BASE)
+#define I2C5_BASE (0x0068a180U)
+#define I2C5 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C5_BASE)
+#define I2C6_BASE (0x0068a1c0U)
+#define I2C6 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C6_BASE)
+#define I2C7_BASE (0x0068a300U)
+#define I2C7 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C7_BASE)
+#define I2C8_BASE (0x0068a340U)
+#define I2C8 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C8_BASE)
+#define I2C9_BASE (0x0068a380U)
+#define I2C9 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C9_BASE)
+#define I2C10_BASE (0x0068a3c0U)
+#define I2C10 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C10_BASE)
+#define I2C11_BASE (0x0068a400U)
+#define I2C11 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C11_BASE)
+#define I2C12_BASE (0x0068a440U)
+#define I2C12 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C12_BASE)
+#define I2C13_BASE (0x0068a480U)
+#define I2C13 ((I2C_LEGACY_V1_I2CLEGACYTypeDef *)I2C13_BASE)
 
 /* IRQ numbers */
-#define SW_IRQn (0U)
-#define UART1_IRQn (1U)
-#define UART2_IRQn (2U)
-#define UART3_IRQn (3U)
-#define UART4_IRQn (4U)
-#define UART5_IRQn (5U)
-#define WDT_IRQn (6U)
-#define TIMER1_IRQn (7U)
-#define TIMER2_IRQn (8U)
-#define TIMER3_IRQn (9U)
-#define TIMER4_IRQn (10U)
-#define TIMER5_IRQn (11U)
-#define GPIO_IRQn (12U)
-#define I2C_IRQn (13U)
-#define ARM_IRQn (14U)
-#define DMA_IRQn (15U)
+#define SDRAM_IRQn (0U)
+#define MIC_IRQn (1U)
+#define LPC_IRQn (2U)
+#define UART1_IRQn (3U)
+#define UART2_IRQn (4U)
+#define UART3_IRQn (5U)
+#define UART4_IRQn (6U)
+#define UART5_IRQn (7U)
+#define TIMER1_IRQn (8U)
+#define TIMER2_IRQn (9U)
+#define TIMER3_IRQn (10U)
+#define TIMER4_IRQn (11U)
+#define TIMER5_IRQn (12U)
+#define TIMER6_IRQn (13U)
+#define TIMER7_IRQn (14U)
+#define TIMER8_IRQn (15U)
+#define I2C_IRQn (16U)
+#define PECI_IRQn (17U)
+#define SMC_IRQn (18U)
+#define GPIO_IRQn (19U)
+#define SCU_IRQn (20U)
+#define RTC_IRQn (21U)
+#define WDT_IRQn (22U)
+#define PWM_TACH_IRQn (23U)
+#define ADC_IRQn (24U)
+#define SGPIO_MASTER_IRQn (25U)
+#define SGPIO_SLAVE_IRQn (26U)
+#define MAC1_IRQn (27U)
+#define MCTP_IRQn (28U)
+#define JTAG_MASTER_IRQn (29U)
 
 #endif /* ASPEED_AST2400_H */

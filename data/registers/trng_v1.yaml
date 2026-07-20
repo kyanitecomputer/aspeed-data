@@ -1,0 +1,71 @@
+# ASPEED Hardware True Random Number Generator (TRNG / hwrng).
+#
+# Base address: 0x7E6E_2530 (AST1060).
+# Register size: 0x10 (16 bytes).
+#
+# The TRNG is a 32-bit LFSR-based hardware entropy source embedded within
+# the SCU address space.  Each read of DATA produces a new 32-bit word;
+# RNG_READY (CTRL[31]) must be polled before each read.
+#
+# Enable sequence:
+#   1. Read CTRL.
+#   2. Clear RNG_DISABLE (bit 0) and set RNG_MODE (bits[5:1] = 0x18).
+#   3. Write CTRL back.
+#   4. Poll CTRL.RNG_READY until 1, then read DATA.
+#
+#   zephyr/drivers/entropy/entropy_aspeed_trng.c
+#   zephyr/dts/arm/aspeed/ast10x0.dtsi  (node: rng@7e6e2530)
+
+block/TRNG:
+  description: >
+    ASPEED Hardware True Random Number Generator (TRNG).
+    Base: 0x7E6E_2530 (AST1060).
+    Enable by clearing CTRL.RNG_DISABLE and setting CTRL.RNG_MODE.
+    Poll CTRL.RNG_READY before reading DATA.
+  items:
+    - name: CTRL
+      description: >
+        RNG control and status register (TRNG+0x00).
+        RNG_DISABLE (bit 0): 0=enabled, 1=disabled.
+        RNG_MODE (bits[5:1]): entropy source / LFSR mode — use 0x18 (default).
+        RNG_READY (bit 31): 1 when a fresh 32-bit word is available in DATA.
+        Reading DATA clears RNG_READY; re-poll before the next read.
+      byte_offset: 0x00
+      fieldset: TRNG_CTRL
+
+    - name: DATA
+      description: >
+        RNG data output register (TRNG+0x04, read-only).
+        Returns one 32-bit random word.  Reading clears CTRL.RNG_READY.
+        Only valid when CTRL.RNG_READY = 1.
+      byte_offset: 0x04
+      fieldset: TRNG_DATA
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/TRNG_CTRL:
+  description: RNG control and status register.
+  fields:
+    - name: RNG_DISABLE
+      description: "RNG disable: 0 = enabled, 1 = disabled."
+      bit_offset: 0
+      bit_size: 1
+    - name: RNG_MODE
+      description: >
+        Entropy source / LFSR mode selection.
+        Write 0x18 (decimal 24) for normal operation.
+        Other values reserved or vendor-specific.
+      bit_offset: 1
+      bit_size: 5
+    - name: RNG_READY
+      description: "Data ready (read-only): 1 = fresh 32-bit word available in DATA."
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/TRNG_DATA:
+  description: RNG 32-bit random output (read-only; reading clears RNG_READY).
+  fields:
+    - name: DATA
+      description: 32-bit random word.
+      bit_offset: 0
+      bit_size: 32

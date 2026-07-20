@@ -18,10 +18,6 @@
 # The PAC currently generates a flat 240-entry interrupt table which is correct
 # for direct NVIC IRQ programming.
 #
-# Sources:
-#   ast2700_ssp.pdf v0.1h
-#   Zephyr: soc/aspeed/ast2700/ DTS files
-
 name:               AST2700_SSP
 family:             ast27xx
 core:               cortex-m4f
@@ -42,6 +38,106 @@ peripherals:
     block:   gpr_v1::GPR
     address: 0x50000000
 
+  # ── Core service peripherals ───────────────────────────────────────────────
+
+  - name:    TIMER0
+    block:   timer_v1::TIMER
+    address: 0x72c10000
+    description: "CPU-die timer block"
+
+  - name:    UART4
+    block:   uart_v1::UART
+    address: 0x72c1a000
+    description: "CPU-die UART4"
+
+  - name:    UART6
+    block:   uart_v1::UART
+    address: 0x74c33500
+    description: "IO-die UART6"
+
+  - name:    GPIO0
+    block:   gpio_v1::GPIO
+    address: 0x72c11000
+    description: "CPU-die GPIO bank"
+
+  - name:    GPIO1
+    block:   gpio_v1::GPIO
+    address: 0x74c0b000
+    description: "IO-die GPIO bank"
+
+  - name:    WDT0
+    block:   wdt_ast2700_v1::WDT
+    address: 0x74c37000
+    description: "IO-die watchdog timer 0"
+
+  - name:    ADC0
+    block:   adc_v1::ADC
+    address: 0x74c00000
+    description: "IO-die ADC bank 0"
+
+  - name:    ADC1
+    block:   adc_v1::ADC
+    address: 0x74c00100
+    description: "IO-die ADC bank 1"
+
+  - name:    IPC0
+    block:   ipc0_v1::IPC0
+    address: 0x72c1c000
+    description: "IPC0 data-channel bus"
+
+  # ── Interrupt controllers ─────────────────────────────────────────────────
+  #
+  # CPU-die INTCG global: routes CPU-die IRQs to SSP/TSP/PSP/BootMCU.
+  - name:    INTCG
+    block:   intcg_ast2700_v1::INTCG
+    address: 0x72100000
+    description: "CPU-die interrupt routing controller (INTCG)"
+
+  # IO-die INTC1G global: routes IO-die IRQs to SSP/TSP/PSP/BootMCU.
+  - name:    INTC1G
+    block:   intcg_ast2700_v1::INTC1G
+    address: 0x74c18000
+    description: "IO-die interrupt routing controller (INTC1G)"
+
+  # INTC0_11: CPU-die level-1 aggregator (NVIC IRQ 160-165).
+  # Parent of all INTC1_x IO-die second-level controllers.
+  - name:    INTC0_11
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x72102b00
+    description: "CPU-die L1 aggregator (NVIC 160-165, parent of INTC1_x)"
+
+  # INTC1_0 through INTC1_5: IO-die level-2 aggregators.
+  # Each aggregates up to 32 IO-die peripheral IRQs into one INTC0_11 bit.
+  - name:    INTC1_0
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c18180
+    description: "IO-die L2 aggregator 0 (parent bit 0 of INTC0_11)"
+
+  - name:    INTC1_1
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c18190
+    description: "IO-die L2 aggregator 1 (parent bit 1 of INTC0_11)"
+
+  - name:    INTC1_2
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c181a0
+    description: "IO-die L2 aggregator 2 (parent bit 2 of INTC0_11)"
+
+  - name:    INTC1_3
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c181b0
+    description: "IO-die L2 aggregator 3 (parent bit 3 of INTC0_11)"
+
+  - name:    INTC1_4
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c181c0
+    description: "IO-die L2 aggregator 4 (parent bit 4 of INTC0_11)"
+
+  - name:    INTC1_5
+    block:   intc_ic_ast2700_v1::INTC_IC
+    address: 0x74c181d0
+    description: "IO-die L2 aggregator 5 (parent bit 5 of INTC0_11)"
+
 # ── Interrupt table ───────────────────────────────────────────────────────────
 # AST2700 has a 3-level cascaded INTC. The IRQ numbers here are the CM4F
 # NVIC lines, not the peripheral interrupt numbers. The cascaded INTC maps
@@ -53,7 +149,7 @@ peripherals:
 # IRQs 144-158 are reserved for SSP/TSP communication.
 
 interrupts:
-  # Direct NVIC IRQs (from AST2700 SSP datasheet)
+  # Direct NVIC IRQs
   - { name: TIMER1,         number: 16  }
   - { name: TIMER2,         number: 17  }
   - { name: TIMER3,         number: 18  }

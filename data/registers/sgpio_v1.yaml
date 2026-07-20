@@ -25,7 +25,6 @@
 #   TYPE1=1, TYPE0=1         → Level-high
 #
 # Sources:
-#   ast1060v19.pdf  Chapter 22 – GPIO Controller (SGPIO section, GPIO500–GPIO5A8)
 
 block/SGPIO:
   description: >

@@ -62,7 +62,6 @@
 #   0x280-0x29C  DAT              — Device Address Table (8 entries)
 #
 # Sources:
-#   ast1060v19.pdf  Chapter 29 – I3C Controller
 
 block/I3C:
   description: >

@@ -13,9 +13,7 @@
 #   - Channels triggered by CM3 still waiting for CA7 to acknowledge.
 # Polling STATUS after TRIG write allows the CM3 to wait for CA7 completion.
 #
-# Sources:
 #   ast2600_ssp.md v0.1f  Section 3.9 – IPC registers
-#   Zephyr: drivers/ipm/ipm_ast2600.c  (IPCR_TRIG=0x18, STATUS=0x28, CLEAR=0x2C)
 
 block/IPC:
   description: >

@@ -7,7 +7,7 @@
 # CPU: RV32IMC + Zicsr + Zifencei  (ibex, no FPU, no cache)
 # RAM: 4 MB DRAM at 0x80000000 (loaded by ROM from SPI flash)
 # Flash (storage): SPI FMC, memory-mapped at 0x20000000
-# Execution: firmware runs from DRAM (CONFIG_XIP is not set in Zephyr)
+# Execution: firmware runs from DRAM (no XIP)
 #
 # Address translation (DMA):
 #   virt >= 0x80000000  →  phys = (virt & ~0x80000000) | 0x4_0000_0000
@@ -18,14 +18,8 @@
 #   The system timer uses machine timer interrupt (MTIP, IRQ 7 from hlic),
 #   which is handled by riscv-rt's _machine_timer hook, NOT through the
 #   external interrupt dispatch table.
-#   UART12 and IPC1 use polling in Zephyr; no external IRQs assigned.
+#   UART12 and IPC1 use polling; no external IRQs assigned.
 #
-# Sources:
-#   Zephyr dts/riscv/aspeed/ast27xx.dtsi
-#   Zephyr soc/aspeed/ast27xx/Kconfig.defconfig.bootmcu
-#   Zephyr drivers/timer/ast2700_bootmcu_timer.c
-#   Zephyr drivers/ipm/ipm_bootmcu.c
-#   AST2700 datasheet v0.3 (ast2700v03.md)
 
 name:   AST2700_BOOTMCU
 family: ast27xx
@@ -38,17 +32,59 @@ num_irqs: 16
 # ── Peripheral instances ──────────────────────────────────────────────────────
 
 peripherals:
+  # ── IO-die peripherals (BootMCU-local) ───────────────────────────────────
+
   # 64-bit free-running timer at 1 MHz (machine timer interrupt, MTIP)
   - name:    TIMER
     block:   bootmcu_timer_v1::TIMER
     address: 0x14C36000
     description: "AST2700 BootMCU 64-bit timer @ 1 MHz (IRQ 7, MTIP)"
 
-  # WDT0 — same core register layout as AST2600/AST1060 wdt_v1
+  # AST2700 watchdog timers, 0x80-byte stride.
   - name:    WDT0
-    block:   wdt_v1::WDT
+    block:   wdt_ast2700_v1::WDT
     address: 0x14C37000
     description: "AST2700 G7 watchdog timer 0"
+
+  - name:    WDT1
+    block:   wdt_ast2700_v1::WDT
+    address: 0x14C37080
+    description: "AST2700 G7 watchdog timer 1"
+
+  - name:    WDT2
+    block:   wdt_ast2700_v1::WDT
+    address: 0x14C37100
+    description: "AST2700 G7 watchdog timer 2"
+
+  - name:    WDT3
+    block:   wdt_ast2700_v1::WDT
+    address: 0x14C37180
+    description: "AST2700 G7 watchdog timer 3"
+
+  - name:    WDT4
+    block:   wdt_ast2700_v1::WDT
+    address: 0x14C37200
+    description: "AST2700 G7 watchdog timer 4"
+
+  - name:    WDT5
+    block:   wdt_ast2700_v1::WDT
+    address: 0x14C37280
+    description: "AST2700 G7 watchdog timer 5"
+
+  - name:    WDT6
+    block:   wdt_ast2700_v1::WDT
+    address: 0x14C37300
+    description: "AST2700 G7 watchdog timer 6"
+
+  - name:    WDT7
+    block:   wdt_ast2700_v1::WDT
+    address: 0x14C37380
+    description: "AST2700 G7 watchdog timer 7"
+
+  - name:    WDTA
+    block:   wdt_ast2700_v1::WDT
+    address: 0x14C37400
+    description: "AST2700 G7 watchdog timer A"
 
   # UART12 — 16550-compatible, 4-byte register stride (reg-shift=2)
   # uart_v1.yaml already uses 4-byte stride; no new YAML needed.
@@ -62,6 +98,275 @@ peripherals:
     block:   ipc1_v1::IPC1
     address: 0x14C39000
     description: "IPC1 data-channel bus (4 sub-channels, polling)"
+
+  # SCU1 — IO-die system control unit
+  # Contains: hardware straps (DDR4/5 type), Caliptra control/status,
+  # IO-die PLL, system reset control for IO-die peripherals.
+  - name:    SCU1
+    block:   scu1_ast2700_v1::SCU1
+    address: 0x14C02000
+    description: "AST2700 IO-die System Control Unit 1 (SCU1)"
+
+  - name:    OTP
+    block:   otp_ast2700_v1::OTP
+    address: 0x14C07000
+    description: "AST2700 IO-die OTP controller (BootMCU master)"
+
+  # Caliptra mailbox and integration interface.
+  - name:    CPTRA_MBOX
+    block:   caliptra_mbox_v1::MBOX
+    address: 0x14C60000
+    description: "Caliptra mailbox command/data transport"
+
+  - name:    CPTRA_IFC
+    block:   caliptra_ifc_v1::IFC
+    address: 0x14C70000
+    description: "Caliptra integration interface"
+
+  # ── IO-die interrupt controller global ──────────────────────────────────────
+  # BootMCU accesses INTC1G only to clear the reset interrupt during SLI init.
+
+  - name:    INTC1G
+    block:   intcg_ast2700_v1::INTC1G
+    address: 0x14C18000
+    description: "IO-die interrupt routing controller (INTC1G, BootMCU view)"
+
+  # ── SLI sub-channels ────────────────────────────────────────────────────
+  #
+  # SLI0 = CPU-die (downstream) at 0x12C17000
+  # SLI1 = IO-die  (upstream)   at 0x14C1E000
+  #
+  # Each instance has 3 sub-channels at strides 0x000 (SLIM), 0x200 (SLIH),
+  # 0x400 (SLIV).  Both SLI0 and SLI1 must be calibrated in init_f/init_r.
+
+  - name:    SLI0_SLIM
+    block:   sli_ast2700_v1::SLI_CHANNEL
+    address: 0x12C17000
+    description: "SLI0 MBUS sub-channel (CPU-die, 4-lane memory bus)"
+
+  - name:    SLI0_SLIH
+    block:   sli_ast2700_v1::SLI_CHANNEL
+    address: 0x12C17200
+    description: "SLI0 AHB sub-channel (CPU-die, 2-lane AHB)"
+
+  - name:    SLI0_SLIV
+    block:   sli_ast2700_v1::SLI_CHANNEL
+    address: 0x12C17400
+    description: "SLI0 Video sub-channel (CPU-die, 2-lane video)"
+
+  - name:    SLI1_SLIM
+    block:   sli_ast2700_v1::SLI_CHANNEL
+    address: 0x14C1E000
+    description: "SLI1 MBUS sub-channel (IO-die, 4-lane memory bus)"
+
+  - name:    SLI1_SLIH
+    block:   sli_ast2700_v1::SLI_CHANNEL
+    address: 0x14C1E200
+    description: "SLI1 AHB sub-channel (IO-die, 2-lane AHB)"
+
+  - name:    SLI1_SLIV
+    block:   sli_ast2700_v1::SLI_CHANNEL
+    address: 0x14C1E400
+    description: "SLI1 Video sub-channel (IO-die, 2-lane video)"
+
+  # ── CPU-die peripherals (accessible by BootMCU over SLI) ─────────────────
+
+  # SCU0 — CPU-die system control unit
+  # Contains: silicon revision, DDR PHY reset, HPLL/MPLL, CPU straps.
+  - name:    SCU0
+    block:   scu0_ast2700_v1::SCU0
+    address: 0x12C02000
+    description: "AST2700 CPU-die System Control Unit 0 (SCU0)"
+
+  # SDRAMMC — DRAM memory controller (DRAMC)
+  # Registers require unlock via PROTECT = 0x1688A8A8.
+  # PHY base (DWC DDR PHY, 16-bit APB): 0x13000000.
+  # PHY IMEM: 0x130A0000, PHY DMEM: 0x130B0000 (word-addr×2 offset).
+  - name:    SDRAMMC
+    block:   sdrammc_ast2700_v1::SDRAMMC
+    address: 0x12C00000
+    description: "AST2700 SDRAM Memory Controller (DRAMC)"
+
+  - name:    DDRPHY_APB
+    block:   ddrphy_ast2700_v1::DDRPHY_APB
+    address: 0x13000000
+    description: "DWC DDR PHY APB register window"
+
+  - name:    DDRPHY_IMEM
+    block:   ddrphy_ast2700_v1::DDRPHY_MEM
+    address: 0x130A0000
+    description: "DWC DDR PHY instruction memory window"
+
+  - name:    DDRPHY_DMEM
+    block:   ddrphy_ast2700_v1::DDRPHY_MEM
+    address: 0x130B0000
+    description: "DWC DDR PHY data memory window"
+
+  - name:    AHBC0
+    block:   ahbc_ast2700_v1::AHBC
+    address: 0x12000000
+    description: "CPU-die AHB controller registers"
+
+  - name:    AHBC1
+    block:   ahbc_ast2700_v1::AHBC
+    address: 0x140B0000
+    description: "IO-die AHB controller registers"
+
+  - name:    FMC
+    block:   spi_ast2700_v1::SPI
+    address: 0x14000000
+    description: "AST2700 firmware SPI memory controller"
+
+  - name:    SPI0
+    block:   spi_ast2700_v1::SPI
+    address: 0x14010000
+    description: "AST2700 SPI flash controller 0"
+
+  - name:    SPI1
+    block:   spi_ast2700_v1::SPI
+    address: 0x14020000
+    description: "AST2700 SPI flash controller 1"
+
+  - name:    SPI2
+    block:   spi_ast2700_v1::SPI
+    address: 0x14030000
+    description: "AST2700 SPI flash controller 2"
+
+  - name:    MAC0
+    block:   ftgmac100_v1::FTGMAC100
+    address: 0x14050000
+    description: "AST2700 FTGMAC100 Ethernet MAC 0"
+
+  - name:    MAC1
+    block:   ftgmac100_v1::FTGMAC100
+    address: 0x14060000
+    description: "AST2700 FTGMAC100 Ethernet MAC 1"
+
+  - name:    MAC2
+    block:   ftgmac100_v1::FTGMAC100
+    address: 0x14070000
+    description: "AST2700 FTGMAC100 Ethernet MAC 2"
+
+  # PCIe PLDA/E2M windows used before CA35 release.
+  - name:    PLDA1
+    block:   pcie_ast2700_v1::PLDA
+    address: 0x12C15000
+    description: "CPU-die PCIe PLDA/E2M controller 1"
+
+  - name:    PLDA2
+    block:   pcie_ast2700_v1::PLDA
+    address: 0x12C15800
+    description: "CPU-die PCIe PLDA/E2M controller 2"
+
+  - name:    PLDA3
+    block:   pcie_ast2700_v1::PLDA
+    address: 0x14C1C000
+    description: "IO-die PCIe PLDA/E2M controller 3"
+
+  # UFS path setup used before CA35 release.
+  - name:    UFS
+    block:   ufs_ast2700_v1::UFS
+    address: 0x12C08000
+    description: "AST2700 UFS host controller"
+
+  - name:    SPI_XIP
+    block:   xip_ast2700_v1::XIP
+    address: 0x20000000
+    description: "SPI flash memory-mapped read window"
+
+  # DisplayPort controller and DPMCU windows.
+  - name:    DP
+    block:   dp_ast2700_v1::DP
+    address: 0x12C0A000
+    description: "AST2700 DisplayPort controller"
+
+  - name:    GFX
+    block:   gfx_ast2700_v1::GFX
+    address: 0x12C09000
+    description: "AST2700 SOC display controller / GFX CRT"
+
+  - name:    VIDEO0
+    block:   video_ast2700_v1::VIDEO
+    address: 0x120A0000
+    description: "AST2700 video capture/compression engine 0"
+
+  - name:    VIDEO1
+    block:   video_ast2700_v1::VIDEO
+    address: 0x120A1000
+    description: "AST2700 video capture/compression engine 1"
+
+  - name:    DPMCU_DMEM
+    block:   dp_ast2700_v1::DPMCU_DMEM
+    address: 0x11000000
+    description: "DisplayPort MCU data memory control window"
+
+  - name:    DPMCU_REG
+    block:   dp_ast2700_v1::DPMCU_REG
+    address: 0x11010000
+    description: "DisplayPort MCU register window"
+
+  # VGA link packer/retimer blocks.
+  - name:    VGA_PACKER_CPU
+    block:   vga_ast2700_v1::VGA_LINK
+    address: 0x12C1D000
+    description: "CPU-die VGA link packer"
+
+  - name:    VGA_RETIMER_CPU
+    block:   vga_ast2700_v1::VGA_LINK
+    address: 0x12C1D100
+    description: "CPU-die VGA link retimer"
+
+  - name:    VGA_PACKER_IO
+    block:   vga_ast2700_v1::VGA_LINK
+    address: 0x14C3A000
+    description: "IO-die VGA link packer"
+
+  - name:    VGA_RETIMER_IO
+    block:   vga_ast2700_v1::VGA_LINK
+    address: 0x14C3A100
+    description: "IO-die VGA link retimer"
+
+  # ── USB virtual-hub (vHub) gadget controllers ────────────────────────────────
+  # The BootMCU/u-boot bootusb DFU recovery path drives a vHub directly; the
+  # DC-SCM board enables vHubA0/vHubB0/vHubC as gadget ports (see
+  # usb_vhub_ast2700_v1.yaml for the register model and per-port clock/reset).
+  - name:    VHUBA0
+    block:   usb_vhub_ast2700_v1::VHUB
+    address: 0x12060000
+    description: "CPU-die vHub port A0 (DC-SCM gadget; clk PORTAUSB2CLK, rst PORTA_VHUB_EHCI)"
+
+  - name:    VHUBA1
+    block:   usb_vhub_ast2700_v1::VHUB
+    address: 0x12011000
+    description: "CPU-die vHub port A1 (bootusb recovery; clk PORTAUSB2CLK, rst PORTA_VHUB)"
+
+  - name:    VHUBB0
+    block:   usb_vhub_ast2700_v1::VHUB
+    address: 0x12062000
+    description: "CPU-die vHub port B0 (DC-SCM gadget; clk PORTBUSB2CLK, rst PORTB_VHUB_EHCI)"
+
+  - name:    VHUBB1
+    block:   usb_vhub_ast2700_v1::VHUB
+    address: 0x12021000
+    description: "CPU-die vHub port B1 (bootusb recovery; clk PORTBUSB2CLK, rst PORTB_VHUB)"
+
+  - name:    VHUBC
+    block:   usb_vhub_ast2700_v1::VHUB
+    address: 0x14120000
+    description: "IO-die vHub port C (DC-SCM gadget; clk PORTCUSB2CLK, rst PORTC_VHUB_EHCI)"
+
+  # Representative sub-region instances so the per-device and per-endpoint
+  # register models are generated. Actual instances are computed at
+  # base + 0x100 + 0x10*dev (devices 0..6) and base + 0x200 + 0x10*ep (0..20).
+  - name:    VHUBA0_DEV0
+    block:   usb_vhub_ast2700_v1::VHUB_DEV
+    address: 0x12060100
+    description: "vHubA0 downstream device 0 registers (stride 0x10, devices 0..6)"
+
+  - name:    VHUBA0_EP0
+    block:   usb_vhub_ast2700_v1::VHUB_EP
+    address: 0x12060200
+    description: "vHubA0 generic endpoint 0 registers (stride 0x10, endpoints 0..20)"
 
 # ── Interrupt table ───────────────────────────────────────────────────────────
 # Only external interrupts (routed via MEIP) are listed here.

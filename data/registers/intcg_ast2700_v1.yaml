@@ -1,0 +1,108 @@
+# AST2700 Interrupt Controller Global (INTCG / INTC1G) — routing controller.
+#
+# The AST2700 has two global interrupt routing controllers:
+#
+#   INTCG  (CPU-die): routes CPU-die IRQs to one of: PSP, SSP, TSP, BootMCU.
+#   INTC1G (IO-die):  routes IO-die IRQs to one of: PSP, SSP, TSP, BootMCU.
+#
+# Each IRQ source has three select bits spread across three register banks
+# (CSEL0/CSEL1/CSEL2). The combination selects the target processor:
+#
+#   CSEL2[n] CSEL1[n] CSEL0[n]  Target
+#     0        0        1       PSP (CA35)
+#     0        1        0       SSP
+#     0        1        1       TSP
+#     1        0        0       BootMCU
+#     (other)                   reserved / disabled
+#
+# INTCG register layout (CPU-die, base 0x72100000 SSP view):
+#   0x200 + 4*n: CSEL0[32*n .. 32*n+31]  — up to 12 words for 384 IRQs
+#   0x300 + 4*n: CSEL1[32*n .. 32*n+31]
+#   0x400 + 4*n: CSEL2[32*n .. 32*n+31]
+#
+# INTC1G register layout (IO-die, base 0x74C18000 SSP view / 0x14C18000 BootMCU):
+#   0x014: Interrupt status register (W1C)
+#   0x080 + 4*n: CSEL0[32*n .. 32*n+31]
+#   0x0A0 + 4*n: CSEL1[32*n .. 32*n+31]
+#   0x0C0 + 4*n: CSEL2[32*n .. 32*n+31]
+
+# ── INTCG (CPU-die global interrupt routing controller) ───────────────────────
+
+block/INTCG:
+  description: >
+    AST2700 CPU-die global interrupt routing controller (INTCG).
+    Routes CPU-die interrupt sources to PSP, SSP, TSP, or BootMCU.
+    Base address (SSP view): 0x72100000.
+    CSEL registers are 32-bit arrays indexed by IRQ group (4 bytes per 32 IRQs).
+  items:
+    - name: CSEL0
+      description: >
+        IRQ route select bank 0.
+        Bit n set: this IRQ source uses select code that includes bit 0 = 1.
+        See INTCG architecture description for the 3-bit code encoding.
+        Array: CSEL0[0] covers IRQs 0-31, CSEL0[1] covers IRQs 32-63, etc.
+      byte_offset: 0x200
+      array:
+        len: 12
+        stride: 4
+
+    - name: CSEL1
+      description: >
+        IRQ route select bank 1.
+        Bit n set: this IRQ source uses select code that includes bit 1 = 1.
+      byte_offset: 0x300
+      array:
+        len: 12
+        stride: 4
+
+    - name: CSEL2
+      description: >
+        IRQ route select bank 2.
+        Bit n set: this IRQ source uses select code that includes bit 2 = 1.
+      byte_offset: 0x400
+      array:
+        len: 12
+        stride: 4
+
+# ── INTC1G (IO-die global interrupt routing controller) ───────────────────────
+
+block/INTC1G:
+  description: >
+    AST2700 IO-die global interrupt routing controller (INTC1G).
+    Routes IO-die interrupt sources to PSP, SSP, TSP, or BootMCU.
+    Base address (SSP view): 0x74C18000. BootMCU view: 0x14C18000.
+    CSEL register arrays are at different offsets than the CPU-die INTCG.
+    Also contains a raw interrupt status register used during SLI init.
+  items:
+    - name: INTR_STATUS
+      description: >
+        Raw interrupt status register (write-1-to-clear).
+        Indicates which IO-die interrupt sources are currently pending.
+        Write the read-back value to clear all pending status bits.
+        Used during SLI init to flush the reset interrupt.
+      byte_offset: 0x014
+
+    - name: CSEL0
+      description: >
+        IRQ route select bank 0.
+        Same encoding as INTCG.CSEL0 but at offset 0x080.
+      byte_offset: 0x080
+      array:
+        len: 8
+        stride: 4
+
+    - name: CSEL1
+      description: >
+        IRQ route select bank 1.
+      byte_offset: 0x0A0
+      array:
+        len: 8
+        stride: 4
+
+    - name: CSEL2
+      description: >
+        IRQ route select bank 2.
+      byte_offset: 0x0C0
+      array:
+        len: 8
+        stride: 4

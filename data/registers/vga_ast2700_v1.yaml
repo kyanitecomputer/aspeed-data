@@ -1,0 +1,235 @@
+# AST2700 VGA link packer/retimer registers.
+
+block/VGA_LINK:
+  description: >
+    AST2700 VGA link packer/retimer block used to connect CPU-die and IO-die display paths.
+  items:
+    - name: VERSION
+      description: VGA link block version register.
+      byte_offset: 0x000
+
+    - name: SCRATCH0
+      description: VGA link scratch register 0.
+      byte_offset: 0x004
+
+    - name: CHECKSUM
+      description: VGA link checksum container.
+      byte_offset: 0x008
+
+    - name: SCRATCH1
+      description: VGA link scratch register 1.
+      byte_offset: 0x00c
+
+    - name: CTRL1
+      description: VGA link control register 1.
+      byte_offset: 0x010
+      fieldset: CTRL1
+
+    - name: CTRL2
+      description: VGA link FIFO threshold control register.
+      byte_offset: 0x014
+      fieldset: CTRL2
+
+    - name: ENC_STATUS
+      description: Encoder-side status register.
+      byte_offset: 0x018
+
+    - name: ENC_CFG
+      description: Encoder-side configuration register.
+      byte_offset: 0x01c
+
+    - name: INTR_STATUS
+      description: Interrupt status register.
+      byte_offset: 0x020
+      fieldset: INTR
+
+    - name: INTR_STATUS_EN
+      description: Interrupt status-enable register.
+      byte_offset: 0x024
+      fieldset: INTR
+
+    - name: INTR_SIGNAL_EN
+      description: Interrupt signal-enable register.
+      byte_offset: 0x028
+      fieldset: INTR
+
+    - name: INTR_FORCE
+      description: Interrupt force register.
+      byte_offset: 0x02c
+      fieldset: INTR
+
+    - name: H_TIMING0
+      description: Horizontal total and sync-end timing.
+      byte_offset: 0x030
+      fieldset: TIMING_PAIR
+
+    - name: H_TIMING1
+      description: Horizontal back-porch end and display-end timing.
+      byte_offset: 0x034
+      fieldset: TIMING_PAIR
+
+    - name: V_TIMING0
+      description: Vertical total and sync-end timing.
+      byte_offset: 0x038
+      fieldset: TIMING_PAIR
+
+    - name: V_TIMING1
+      description: Vertical back-porch end and display-end timing.
+      byte_offset: 0x03c
+      fieldset: TIMING_PAIR
+
+    - name: PATGEN
+      description: Pattern-generator control register.
+      byte_offset: 0x040
+      fieldset: PATGEN
+
+    - name: WAIT_FRAME
+      description: Wait-frame configuration and hold register.
+      byte_offset: 0x044
+      fieldset: WAIT_FRAME
+
+    - name: COLORBAR_SWITCH_HPOINT
+      description: Color-bar switch horizontal point.
+      byte_offset: 0x048
+
+    - name: FRAME_START_CFG
+      description: Frame-start configuration register.
+      byte_offset: 0x04c
+
+    - name: SRC_OVERWRITE
+      description: Source overwrite selection and enable control.
+      byte_offset: 0x050
+      fieldset: SRC_OVERWRITE
+
+    - name: SCRATCH2
+      description: VGA link scratch register 2.
+      byte_offset: 0x054
+
+    - name: DEC_STATUS
+      description: Decoder-side status register.
+      byte_offset: 0x058
+
+    - name: DEC_CFG
+      description: Decoder-side configuration register.
+      byte_offset: 0x05c
+
+    - name: SYNC_RESET
+      description: Sync reset write-through register.
+      byte_offset: 0x060
+      fieldset: SYNC_RESET
+
+    - name: LOW_POWER_CTRL
+      description: Low-power control register.
+      byte_offset: 0x064
+      fieldset: LOW_POWER_CTRL
+
+    - name: VPLL_CFG
+      description: IO-die VPLL configuration register.
+      byte_offset: 0x068
+      fieldset: VPLL_CFG
+
+    - name: VPLL_BJ
+      description: IO-die VPLL BJ configuration register.
+      byte_offset: 0x06c
+
+    - name: DEBUG
+      description: Debug register.
+      byte_offset: 0x070
+
+    - name: DUMMY
+      description: Dummy register.
+      byte_offset: 0x074
+
+    - name: MONITOR
+      description: Monitor register.
+      byte_offset: 0x078
+
+    - name: MONITOR_MUX
+      description: Monitor mux register.
+      byte_offset: 0x07c
+
+fieldset/CTRL1:
+  description: VGA link control register 1.
+  fields:
+    - { name: ENABLE, bit_offset: 0, bit_size: 1 }
+    - { name: SCREEN_OFF_ENABLE, bit_offset: 1, bit_size: 1 }
+    - { name: COLORBAR_ENABLE, bit_offset: 2, bit_size: 1 }
+    - { name: USE_ORIGINAL_POLARITY, bit_offset: 3, bit_size: 1 }
+    - { name: CHECKSUM_TRIGGER, bit_offset: 4, bit_size: 1 }
+    - { name: CHECKSUM_VALID, bit_offset: 5, bit_size: 1 }
+    - { name: USE_REGBANK_POLARITY, bit_offset: 6, bit_size: 1 }
+    - { name: DUAL_PIXEL_MODE, bit_offset: 7, bit_size: 1 }
+    - { name: INTERLACE_MODE, bit_offset: 8, bit_size: 1 }
+    - { name: HSYNC_POLARITY, bit_offset: 9, bit_size: 1 }
+    - { name: VSYNC_POLARITY, bit_offset: 10, bit_size: 1 }
+    - { name: FSYNC_POLARITY, bit_offset: 11, bit_size: 1 }
+    - { name: DE_POLARITY, bit_offset: 12, bit_size: 1 }
+    - { name: HSYNC_OFF, bit_offset: 13, bit_size: 1 }
+    - { name: VSYNC_FSYNC_OFF, bit_offset: 14, bit_size: 1 }
+    - { name: DE_OFF, bit_offset: 15, bit_size: 1 }
+    - { name: BYPASS_VGA_ENC, bit_offset: 16, bit_size: 1 }
+    - { name: BYPASS_VGA_DEC, bit_offset: 17, bit_size: 1 }
+    - { name: LOOPBACK_MODE, bit_offset: 18, bit_size: 1 }
+    - { name: OVERWRITE_LOOP_BYPASS, bit_offset: 19, bit_size: 1 }
+    - { name: RGB_ORDERING, bit_offset: 20, bit_size: 1 }
+    - { name: OVERWRITE_CPU_PLL, bit_offset: 21, bit_size: 1 }
+    - { name: OVERWRITE_IO_PLL, bit_offset: 22, bit_size: 1 }
+
+fieldset/CTRL2:
+  description: VGA link FIFO threshold control register.
+  fields:
+    - { name: IN_FIFO_THRESHOLD, bit_offset: 0, bit_size: 8 }
+    - { name: OUT_FIFO_THRESHOLD, bit_offset: 8, bit_size: 8 }
+
+fieldset/INTR:
+  description: VGA link interrupt bitmask.
+  fields:
+    - { name: VSYNC_LINE_COUNT0, bit_offset: 0, bit_size: 1 }
+    - { name: VSYNC_LINE_COUNT1, bit_offset: 1, bit_size: 1 }
+    - { name: DATA_UNDERFLOW, bit_offset: 2, bit_size: 1 }
+    - { name: DATA_OVERFLOW, bit_offset: 3, bit_size: 1 }
+    - { name: IBI_MSG_INVALID, bit_offset: 4, bit_size: 1 }
+
+fieldset/TIMING_PAIR:
+  description: Pair of 14-bit timing values packed into one word.
+  fields:
+    - { name: FIRST, bit_offset: 0, bit_size: 14 }
+    - { name: SECOND, bit_offset: 16, bit_size: 14 }
+
+fieldset/PATGEN:
+  description: VGA link pattern generator control.
+  fields:
+    - { name: SELECT, bit_offset: 0, bit_size: 2 }
+    - { name: TEST_CHANNEL, bit_offset: 8, bit_size: 3 }
+    - { name: ENABLE, bit_offset: 28, bit_size: 1 }
+
+fieldset/WAIT_FRAME:
+  description: Wait-frame configuration and hold register.
+  fields:
+    - { name: CONFIG, bit_offset: 0, bit_size: 16 }
+    - { name: HOLD, bit_offset: 16, bit_size: 16 }
+
+fieldset/SRC_OVERWRITE:
+  description: VGA link source overwrite control.
+  fields:
+    - { name: SELECT, bit_offset: 0, bit_size: 2 }
+    - { name: ENABLE, bit_offset: 28, bit_size: 1 }
+
+fieldset/SYNC_RESET:
+  description: Sync reset control.
+  fields:
+    - { name: RESET, bit_offset: 0, bit_size: 1 }
+
+fieldset/LOW_POWER_CTRL:
+  description: Low-power control register.
+  fields:
+    - { name: FORCE_CLK_ENABLE, bit_offset: 0, bit_size: 1 }
+
+fieldset/VPLL_CFG:
+  description: IO-die VPLL configuration register.
+  fields:
+    - { name: POSTDIV, bit_offset: 0, bit_size: 8 }
+    - { name: OD, bit_offset: 8, bit_size: 4 }
+    - { name: DENUM, bit_offset: 12, bit_size: 6 }
+    - { name: NUM, bit_offset: 18, bit_size: 13 }
+    - { name: TOGGLE, bit_offset: 31, bit_size: 1 }

@@ -16,8 +16,6 @@
 #   SEG3: CF 0x600000–0x7FFFFF
 #   SEG4: CF 0x800000–0x9FFFFF
 #
-# Sources:
-#   AST2400 datasheet (ast2400v14): Chapter 5 – SCU (registers SCU100–SCU114)
 
 block/COPROC:
   description: >

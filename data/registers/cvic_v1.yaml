@@ -12,9 +12,6 @@
 #   0x20: reserved
 #   0x30, 0x34: reserved
 #
-# Sources:
-#   AST2500 datasheet (ast2500v18): Chapter 9 – ColdFire interrupt controller
-#   AST2400 datasheet (ast2400v14): Chapter 9 – ColdFire interrupt controller
 
 block/CVIC:
   description: >

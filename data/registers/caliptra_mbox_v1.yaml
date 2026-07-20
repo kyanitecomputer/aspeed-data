@@ -1,0 +1,69 @@
+# Caliptra mailbox command/data transport.
+#
+# Base address (AST2700 BootMCU view): 0x14C60000.
+
+block/MBOX:
+  description: >
+    Caliptra mailbox command/data transport used by the BootMCU.
+  items:
+    - name: LOCK
+      description: Mailbox lock register. Read returns lock owner state; write requests the lock.
+      byte_offset: 0x00
+
+    - name: USER
+      description: Mailbox user register identifying the current lock owner.
+      byte_offset: 0x04
+
+    - name: CMD
+      description: Four-byte mailbox command code.
+      byte_offset: 0x08
+
+    - name: DLEN
+      description: Mailbox data length in bytes.
+      byte_offset: 0x0c
+
+    - name: DATAIN
+      description: Mailbox input FIFO. Write checksum word first, then command payload words.
+      byte_offset: 0x10
+
+    - name: DATAOUT
+      description: Mailbox output FIFO. Read response words before releasing the mailbox lock.
+      byte_offset: 0x14
+
+    - name: EXEC
+      description: Execute register. Write 1 after CMD, DLEN, and DATAIN are prepared.
+      byte_offset: 0x18
+      fieldset: EXEC
+
+    - name: STS
+      description: Mailbox status and finite-state-machine state.
+      byte_offset: 0x1c
+      fieldset: STS
+
+    - name: UNLOCK
+      description: Mailbox unlock register. Write after command completion and DATAOUT drain.
+      byte_offset: 0x20
+
+fieldset/EXEC:
+  description: Mailbox execute control.
+  fields:
+    - name: EXECUTE
+      description: Start execution of the prepared command.
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/STS:
+  description: Mailbox status register.
+  fields:
+    - name: PS
+      description: "Protocol status: 0=busy, 1=data ready, 2=complete, 3=failure."
+      bit_offset: 0
+      bit_size: 4
+    - name: FSM_PS
+      description: Mailbox FSM state.
+      bit_offset: 6
+      bit_size: 3
+    - name: SOC_LOCK
+      description: Mailbox is locked by the SoC side.
+      bit_offset: 9
+      bit_size: 1

@@ -1,0 +1,367 @@
+# AST2700 system SPI flash controller registers.
+#
+# Controller bases (BootMCU/IO-die view):
+#   FMC  0x1400_0000, memory window 0x1_0000_0000
+#   SPI0 0x1401_0000, memory window 0x1_8000_0000
+#   SPI1 0x1402_0000, memory window 0x2_0000_0000
+#   SPI2 0x1403_0000, memory window 0x2_8000_0000
+#
+# Each controller also owns a filter block at +0x400 (SPIPF) and a protection
+# block at +0x800 (SPROT); those are modelled separately when needed.
+#
+# The AST2700 SPI block differs from earlier FMC/SPI blocks: it has CE0-CE3
+# control/range/timing registers, DMA high-address support, and lock/status
+# registers at 0x1E0-0x1FC instead of the older FQCD/AQCD tables.
+
+block/SPI:
+  description: AST2700 system SPI flash controller register block.
+  items:
+    - name: FLASH_CONFIG
+      description: SPI flash configuration register (SPI000).
+      byte_offset: 0x000
+      fieldset: AST2700_SPI_FLASH_CONFIG
+
+    - name: CE_CTRL
+      description: CE control register (SPI004).
+      byte_offset: 0x004
+      fieldset: AST2700_SPI_CE_CTRL
+
+    - name: IRQ_CTRL
+      description: Interrupt control and status register (SPI008).
+      byte_offset: 0x008
+      fieldset: AST2700_SPI_IRQ_CTRL
+
+    - name: CMD_CTRL
+      description: Command control register (SPI00C).
+      byte_offset: 0x00C
+      fieldset: AST2700_SPI_CMD_CTRL
+
+    - name: CE_CTRL_N
+      description: CE0-CE3 control registers (SPI010-SPI01C).
+      byte_offset: 0x010
+      array:
+        len: 4
+        stride: 4
+      fieldset: AST2700_SPI_CE_N_CTRL
+
+    - name: CE_ADDR_RANGE
+      description: CE0-CE3 address decoding range registers (SPI030-SPI03C).
+      byte_offset: 0x030
+      array:
+        len: 4
+        stride: 4
+      fieldset: AST2700_SPI_ADDR_RANGE
+
+    - name: DUMMY_CYCLE_DATA
+      description: SPI dummy cycle data register (SPI054).
+      byte_offset: 0x054
+      fieldset: AST2700_SPI_DUMMY_DATA
+
+    - name: DMA_DRAM_ADDR_HI
+      description: DMA DRAM side address high part (SPI07C), bits [39:32].
+      byte_offset: 0x07C
+      fieldset: AST2700_SPI_DMA_DRAM_ADDR_HI
+
+    - name: DMA_CTRL
+      description: DMA control/status register (SPI080).
+      byte_offset: 0x080
+      fieldset: AST2700_SPI_DMA_CTRL
+
+    - name: DMA_FLASH_ADDR
+      description: DMA flash side address register (SPI084).
+      byte_offset: 0x084
+
+    - name: DMA_DRAM_ADDR
+      description: DMA DRAM/SRAM side address register (SPI088).
+      byte_offset: 0x088
+
+    - name: DMA_LEN
+      description: DMA length register (SPI08C), 1 byte to 32 MiB.
+      byte_offset: 0x08C
+      fieldset: AST2700_SPI_DMA_LEN
+
+    - name: DMA_CHECKSUM
+      description: DMA checksum result register (SPI090).
+      byte_offset: 0x090
+      access: Read
+
+    - name: CE_READ_TIMING
+      description: CE0-CE3 read timing compensation registers (SPI094-SPI0A0).
+      byte_offset: 0x094
+      array:
+        len: 4
+        stride: 4
+      fieldset: AST2700_SPI_READ_TIMING
+
+    - name: DMA_FIFO_LEN
+      description: DMA FIFO length/status register (SPI1C0).
+      byte_offset: 0x1C0
+      fieldset: AST2700_SPI_DMA_FIFO_LEN
+
+    - name: ENGINE_STATUS
+      description: SPI engine status report (SPI1E0).
+      byte_offset: 0x1E0
+      access: Read
+
+    - name: DATA_IN_MONITOR
+      description: SPI data-in monitor register (SPI1E4).
+      byte_offset: 0x1E4
+      access: Read
+
+    - name: SOC_RESET_INFO
+      description: SPI SOC reset information register (SPI1E8).
+      byte_offset: 0x1E8
+      access: Read
+      fieldset: AST2700_SPI_SOC_RESET_INFO
+
+    - name: LOCK_UNTIL_SRST
+      description: Write lock status until SRST# (SPI1F0).
+      byte_offset: 0x1F0
+      fieldset: AST2700_SPI_LOCK_STATUS
+
+    - name: LOCK_SOC_RESET
+      description: Write lock status when SOC reset is coming (SPI1F4).
+      byte_offset: 0x1F4
+      fieldset: AST2700_SPI_LOCK_STATUS
+
+    - name: LOCK_UNTIL_SOC_RESET
+      description: Write lock status until SOC reset (SPI1F8).
+      byte_offset: 0x1F8
+      fieldset: AST2700_SPI_LOCK_STATUS
+
+    - name: LOCK_EFFECTIVE
+      description: Effective write lock status (SPI1FC = SPI1F0 OR SPI1F8).
+      byte_offset: 0x1FC
+      access: Read
+      fieldset: AST2700_SPI_LOCK_STATUS
+
+fieldset/AST2700_SPI_FLASH_CONFIG:
+  description: SPI flash configuration register.
+  fields:
+    - name: CE_FLASH_TYPE
+      bit_offset: 0
+      bit_size: 8
+    - name: CE_WRITE_ENABLE
+      bit_offset: 16
+      bit_size: 4
+    - name: TRAP_VALUE
+      bit_offset: 20
+      bit_size: 12
+
+fieldset/AST2700_SPI_CE_CTRL:
+  description: CE timing and 4-byte address control register.
+  fields:
+    - name: ADDR_4B
+      bit_offset: 0
+      bit_size: 4
+    - name: AUTO_READ_4B
+      bit_offset: 4
+      bit_size: 4
+    - name: TCS_HIGH
+      bit_offset: 8
+      bit_size: 8
+    - name: TCS_LOW_COUNT
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/AST2700_SPI_IRQ_CTRL:
+  description: Interrupt control and status register.
+  fields:
+    - name: IRQ_EN
+      bit_offset: 0
+      bit_size: 8
+    - name: DMA_DONE
+      bit_offset: 11
+      bit_size: 1
+    - name: DMA_FIFO_EMPTY
+      bit_offset: 12
+      bit_size: 1
+    - name: DMA_FIFO_FULL
+      bit_offset: 13
+      bit_size: 1
+    - name: IRQ_STATUS
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/AST2700_SPI_CMD_CTRL:
+  description: Address and data byte-lane disable control.
+  fields:
+    - name: DATA_BYTE_DISABLE
+      bit_offset: 0
+      bit_size: 4
+    - name: ADDR_BYTE_DISABLE
+      bit_offset: 4
+      bit_size: 4
+
+fieldset/AST2700_SPI_CE_N_CTRL:
+  description: Per-CE SPI command, clock, I/O mode and access-mode control.
+  fields:
+    - name: CMD_MODE
+      bit_offset: 0
+      bit_size: 2
+    - name: CE_STOP
+      bit_offset: 2
+      bit_size: 1
+    - name: BYTE_ENABLE_MODE
+      bit_offset: 3
+      bit_size: 2
+    - name: LSB_FIRST
+      bit_offset: 5
+      bit_size: 1
+    - name: DUMMY_CYCLES_LOW
+      bit_offset: 6
+      bit_size: 2
+    - name: CLOCK_RATE_LOW
+      bit_offset: 8
+      bit_size: 4
+    - name: DISABLE_MERGE
+      bit_offset: 12
+      bit_size: 1
+    - name: DUMMY_CYCLES_HIGH
+      bit_offset: 14
+      bit_size: 1
+    - name: DUMMY_COMMAND
+      bit_offset: 15
+      bit_size: 1
+    - name: COMMAND
+      bit_offset: 16
+      bit_size: 8
+    - name: CLOCK_RATE_HIGH
+      bit_offset: 24
+      bit_size: 4
+    - name: IO_MODE
+      bit_offset: 28
+      bit_size: 4
+
+fieldset/AST2700_SPI_ADDR_RANGE:
+  description: Per-CE address decoding range in 64 KiB units.
+  fields:
+    - name: START
+      bit_offset: 0
+      bit_size: 16
+    - name: END
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/AST2700_SPI_DUMMY_DATA:
+  description: Dummy-cycle output data and mode controls.
+  fields:
+    - name: DUMMY_COMMAND_DATA
+      bit_offset: 0
+      bit_size: 8
+    - name: ADDRESS_4K_BOUNDARY
+      bit_offset: 16
+      bit_size: 1
+    - name: MODE_SEL
+      bit_offset: 24
+      bit_size: 4
+
+fieldset/AST2700_SPI_DMA_DRAM_ADDR_HI:
+  description: DMA DRAM side address high part.
+  fields:
+    - name: ADDR_HI
+      bit_offset: 0
+      bit_size: 8
+
+fieldset/AST2700_SPI_DMA_CTRL:
+  description: DMA control/status register.
+  fields:
+    - name: ENABLE
+      bit_offset: 0
+      bit_size: 1
+    - name: DIR_TX
+      bit_offset: 1
+      bit_size: 1
+    - name: CHECKSUM_ONLY
+      bit_offset: 2
+      bit_size: 1
+    - name: CALIBRATION_MODE
+      bit_offset: 3
+      bit_size: 1
+    - name: BUFFER_MODE
+      bit_offset: 4
+      bit_size: 1
+    - name: CALIBRATION_DELAY
+      bit_offset: 8
+      bit_size: 8
+    - name: CALIBRATION_CLOCK_RATE
+      bit_offset: 16
+      bit_size: 4
+
+fieldset/AST2700_SPI_DMA_LEN:
+  description: DMA length register.
+  fields:
+    - name: LEN
+      bit_offset: 0
+      bit_size: 25
+
+fieldset/AST2700_SPI_READ_TIMING:
+  description: SPI flash read timing compensation register.
+  fields:
+    - name: DIDLY0
+      bit_offset: 0
+      bit_size: 8
+    - name: DIDLY1
+      bit_offset: 8
+      bit_size: 8
+    - name: DIDLY2
+      bit_offset: 16
+      bit_size: 8
+    - name: DIDLY3
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/AST2700_SPI_DMA_FIFO_LEN:
+  description: DMA FIFO length/status register.
+  fields:
+    - name: DMA_FIFO_LEN
+      bit_offset: 0
+      bit_size: 7
+
+fieldset/AST2700_SPI_SOC_RESET_INFO:
+  description: SOC reset information register.
+  fields:
+    - name: SOC_RESET
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/AST2700_SPI_LOCK_STATUS:
+  description: >
+    SPI configuration write-lock bitmap, one field group per protected
+    register set. Each 4-bit group holds one bit per chip-enable (CE0..CE3,
+    LSB = CE0). Used by SPI1F0 (lock until SRST#), SPI1F4 (keep value across
+    SOC reset), SPI1F8 (lock until SOC reset) and the read-only composite
+    SPI1FC (= SPI1F0 OR SPI1F8). Bits [27:25] are reserved.
+  fields:
+    - name: LOCK_WRITE_EN
+      description: Lock FLASH_CONFIG (SPI000) CEx_WRITE_ENABLE bits [19:16].
+      bit_offset: 0
+      bit_size: 4
+    - name: LOCK_ADDR_4B
+      description: Lock CE_CTRL (SPI004) CEx_ADDR_4B bits [3:0].
+      bit_offset: 4
+      bit_size: 4
+    - name: LOCK_AUTO_READ_4B
+      description: Lock CE_CTRL (SPI004) CEx_AUTO_READ_4B (a4byte_sel) bits [7:4].
+      bit_offset: 8
+      bit_size: 4
+    - name: LOCK_TCS_HIGH
+      description: Lock CE_CTRL (SPI004) CEx_TCS_HIGH 2-bit groups in [15:8].
+      bit_offset: 12
+      bit_size: 4
+    - name: LOCK_CE_CTRL
+      description: Lock per-CE control registers CE_CTRL_N (SPI010..SPI01C).
+      bit_offset: 16
+      bit_size: 4
+    - name: LOCK_ADDR_RANGE
+      description: Lock per-CE address range registers CE_ADDR_RANGE (SPI030..SPI03C).
+      bit_offset: 20
+      bit_size: 4
+    - name: LOCK_DUMMY_DATA
+      description: Lock DUMMY_CYCLE_DATA (SPI054) incl. ADDRESS_4K_BOUNDARY.
+      bit_offset: 24
+      bit_size: 1
+    - name: LOCK_READ_TIMING
+      description: Lock per-CE read timing registers CE_READ_TIMING (SPI094..SPI0A0).
+      bit_offset: 28
+      bit_size: 4

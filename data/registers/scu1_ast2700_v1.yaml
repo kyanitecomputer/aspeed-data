@@ -1,0 +1,819 @@
+# AST2700 System Control Unit 1 (SCU1) — IO-die.
+#
+# Base address: 0x14C02000 (BootMCU view).
+# This block covers the SCU1 registers documented for early IO-die bring-up:
+# straps/security, reset and clock control, Caliptra controls, PLLs, pinmux,
+# scratch, PCIe/USB/display/flash/DDR-related controls.
+#
+
+block/SCU1:
+  description: >
+    AST2700 System Control Unit 1 (SCU1), IO-die.
+    Base address: 0x14C02000.
+    Controls IO-die hardware straps (including DDR type),
+    Caliptra subsystem power and status, system resets,
+    and PLL configuration for IO-die peripherals.
+  items:
+    - name: SIL_REV
+      description: >
+        Silicon Revision ID Register (read-only).
+        Same layout as SCU0.SIL_REV.
+        [31:24]=BMC generation, [23:16]=HW revision,
+        [15:8]=EFUSE device ID, [7:0]=compat ID.
+      byte_offset: 0x000
+      access: Read
+      fieldset: SIL_REV
+
+    - name: HWSTRAP1
+      description: >
+        Hardware/OTP Strap Register 1 (read-only at runtime).
+        Reflects strap pins and OTP fuse state sampled at power-on.
+        Key bit: [10]=DDR4/DDR5 selection (0=DDR5, 1=DDR4).
+      byte_offset: 0x010
+      access: Read
+      fieldset: HWSTRAP1
+
+    - name: HWSTRAP1_CLR
+      description: >
+        Hardware Strap 1 Clear Register (write-1-to-clear).
+        Software override for strap bits (dev/test use only).
+      byte_offset: 0x014
+
+    - name: HWSTRAP1_LOCK
+      description: Hardware/OTP Strap 1 write-protection register.
+      byte_offset: 0x020
+
+    - name: HWSTRAP1_SECURE
+      description: Hardware/OTP Strap 1 secure-control registers.
+      byte_offset: 0x024
+      array:
+        len: 3
+        stride: 4
+
+    - name: HWSTRAP2
+      description: >
+        Hardware/OTP Strap Register 2 (read-only at runtime).
+        Boot media, flash, and CPTRA debug configuration.
+      byte_offset: 0x030
+      access: Read
+
+    - name: HWSTRAP2_CLR
+      description: Hardware/OTP Strap 2 clear register.
+      byte_offset: 0x034
+
+    - name: HWSTRAP2_LOCK
+      description: Hardware/OTP Strap 2 write-protection register.
+      byte_offset: 0x040
+
+    - name: HWSTRAP2_SECURE
+      description: Hardware/OTP Strap 2 secure-control registers.
+      byte_offset: 0x044
+      array:
+        len: 3
+        stride: 4
+
+    - name: RESET_LOG
+      description: System reset event log and secure-control registers.
+      byte_offset: 0x050
+      array:
+        len: 16
+        stride: 4
+
+    - name: DEBUG_MISC
+      description: Debug, heartbeat, DAC, video input, RNG and interrupt registers.
+      byte_offset: 0x0AC
+      array:
+        len: 27
+        stride: 4
+
+    # ── Caliptra (CPTRA) Control ───────────────────────────────────────────
+
+    - name: CPTRA_CTRL
+      description: >
+        Caliptra Control and Status Register.
+        [31:24] = read-only Caliptra status flags (RDY_FOR_RT etc.)
+        [3:0]   = read-write Caliptra control bits (PWRGOOD etc.)
+        SoC ROM writes PWRGOOD at early boot; FMC code reads status bits.
+      byte_offset: 0x130
+      fieldset: CPTRA_CTRL
+
+    - name: CPTRA_WR_PROT
+      description: >
+        Caliptra Write Protection Register (write-1-to-set, RW1S).
+        Writing 1 permanently locks the corresponding CPTRA register
+        for this boot cycle.
+      byte_offset: 0x138
+
+    - name: CPTRA_RST_CTRL
+      description: >
+        Caliptra Reset Control Register.
+        [2]=reset-tolerance enable.
+      byte_offset: 0x13C
+
+    - name: CPTRA_OBF_KEY
+      description: >
+        Caliptra Obfuscation Key Words [0..7].
+        Write-only (BootMCU access only).
+        8 × 32-bit words providing the 256-bit obfuscation key.
+      byte_offset: 0x140
+      array:
+        len: 8
+        stride: 4
+
+    - name: CPTRA_GENERIC_IN0
+      description: >
+        Caliptra Generic Input Register [31:0].
+        BootMCU writable; Caliptra readable. Used for boot state passing.
+      byte_offset: 0x160
+
+    - name: CPTRA_GENERIC_IN1
+      description: >
+        Caliptra Generic Input Register [63:32].
+        BootMCU writable; Caliptra readable.
+      byte_offset: 0x164
+
+    - name: CPTRA_GENERIC_OUT0
+      description: >
+        Caliptra Generic Output Register [31:0] (read-only from BootMCU).
+        Written by Caliptra firmware; read by BootMCU for status.
+      byte_offset: 0x168
+      access: Read
+
+    - name: CPTRA_GENERIC_OUT1
+      description: >
+        Caliptra Generic Output Register [63:32] (read-only from BootMCU).
+      byte_offset: 0x16C
+      access: Read
+
+    - name: CPTRA_INTR_STS
+      description: >
+        Caliptra Interrupt Status Register.
+        Edge-triggered; write-1-to-clear (RW1C).
+      byte_offset: 0x170
+      fieldset: CPTRA_INTR
+
+    - name: CPTRA_INTR_EN
+      description: >
+        Caliptra Interrupt Enable Register.
+        1 = enable corresponding interrupt to BootMCU.
+      byte_offset: 0x174
+      fieldset: CPTRA_INTR
+
+    - name: CPTRA_MISC
+      description: Caliptra integration registers not modeled individually.
+      byte_offset: 0x178
+      array:
+        len: 30
+        stride: 4
+
+    - name: SCRATCH
+      description: IO-die scratch registers used for SLI and boot handoff.
+      byte_offset: 0x1F0
+      array:
+        len: 4
+        stride: 4
+
+    # ── Reset Control ──────────────────────────────────────────────────────
+
+    - name: RST_CTRL1
+      description: >
+        IO-die System Reset Control Register 1.
+        Write 1 to assert reset. Write to RST_CLR1 to de-assert.
+        Key bit: [9]=CPTRA — reset the Caliptra subsystem.
+      byte_offset: 0x200
+      fieldset: RST_CTRL1
+
+    - name: RST_CLR1
+      description: >
+        IO-die System Reset Clear Register 1 (write-to-clear).
+      byte_offset: 0x204
+      fieldset: RST_CTRL1
+
+    - name: RST_CTRL2
+      description: IO-die System Reset Control Register 2.
+      byte_offset: 0x220
+      fieldset: RST_CTRL2
+
+    - name: RST_CLR2
+      description: IO-die System Reset Clear Register 2.
+      byte_offset: 0x224
+      fieldset: RST_CTRL2
+
+    - name: EXTRST_MASK
+      description: External reset mask registers.
+      byte_offset: 0x2F0
+      array:
+        len: 3
+        stride: 4
+
+    # ── PLL Registers ─────────────────────────────────────────────────────
+    #
+    # Same formula and layout as SCU0 PLLs:
+    # F_out = 25 MHz × (M+1) / (N+1) / (P+1)
+
+    - name: HPLL_PARAM
+      description: >
+        IO-die HPLL Parameter Register.
+        Drives IO-die high-speed clocks (UART, I2C, I3C, etc.).
+        Same field layout as SCU0.HPLL_PARAM.
+      byte_offset: 0x300
+      fieldset: PLL_PARAM
+
+    - name: HPLL_EXT
+      description: IO-die HPLL Extended Register (BWADJ + LOCK).
+      byte_offset: 0x304
+      fieldset: PLL_EXT
+
+    - name: APLL_PARAM
+      description: >
+        IO-die APLL (Audio PLL) Parameter Register.
+        Drives USB and audio clocks.
+        Same field layout as SCU0.HPLL_PARAM.
+      byte_offset: 0x310
+      fieldset: PLL_PARAM
+
+    - name: APLL_EXT
+      description: IO-die APLL Extended Register.
+      byte_offset: 0x314
+      fieldset: PLL_EXT
+
+    - name: DPLL_PARAM
+      description: IO-die DPLL Parameter Register.
+      byte_offset: 0x320
+      fieldset: PLL_PARAM
+
+    - name: DPLL_EXT
+      description: IO-die DPLL Extended Parameter Register.
+      byte_offset: 0x324
+      fieldset: PLL_EXT
+
+    - name: DPLL_PARAM_READ
+      description: IO-die DPLL Parameter Read Register.
+      byte_offset: 0x328
+      access: Read
+      fieldset: PLL_PARAM
+
+    - name: DPLL_EXT_READ
+      description: IO-die DPLL Extended Parameter Read Register.
+      byte_offset: 0x32C
+      access: Read
+      fieldset: PLL_EXT
+
+    - name: UARTCLK_GEN
+      description: UART clock generation registers.
+      byte_offset: 0x330
+      array:
+        len: 2
+        stride: 4
+
+    - name: LINK_PLL
+      description: L0/L1 PLL parameter and extended registers.
+      byte_offset: 0x340
+      array:
+        len: 6
+        stride: 4
+
+    - name: CLOCK_MEASURE
+      description: Clock duty measurement and frequency counter registers.
+      byte_offset: 0x380
+      array:
+        len: 13
+        stride: 4
+
+    - name: USB_CTRL
+      description: USB controller and lock registers.
+      byte_offset: 0x3B0
+      array:
+        len: 2
+        stride: 4
+
+    - name: PINMUX_CTRL
+      description: Multi-function pin control registers.
+      byte_offset: 0x400
+      array:
+        len: 28
+        stride: 4
+
+    - name: IO_SECURE
+      description: IO/VOLT secure-control registers.
+      byte_offset: 0x500
+      array:
+        len: 105
+        stride: 4
+
+    - name: MCU0_CTRL
+      description: BootMCU remap/control register.
+      byte_offset: 0x110
+      fieldset: MCU_CTRL
+
+    - name: RESET_POLICY
+      description: Reset policy programming window.
+      byte_offset: 0x214
+      array:
+        len: 11
+        stride: 4
+
+    - name: CLOCK_POLICY
+      description: Clock policy programming window.
+      byte_offset: 0x254
+      array:
+        len: 15
+        stride: 4
+
+    - name: RESET_POLICY_LOCK
+      description: Reset policy lock register.
+      byte_offset: 0xE10
+
+    - name: CLKGATE2
+      description: Clock Stop Control 2 register.
+      byte_offset: 0x260
+
+    - name: CLKGATE2_CLR
+      description: Clock Stop Clear 2 register.
+      byte_offset: 0x264
+
+    - name: CLOCK_SELECT
+      description: Clock selection registers.
+      byte_offset: 0x280
+      array:
+        len: 2
+        stride: 4
+
+    - name: CLOCK_SELECT_LOCK
+      description: Clock selection lock registers.
+      byte_offset: 0x2A0
+      array:
+        len: 2
+        stride: 0x10
+
+    - name: EFUSE_CTRL
+      description: EFUSE control/data/command registers.
+      byte_offset: 0x800
+      array:
+        len: 3
+        stride: 4
+
+    - name: CHIP_ID
+      description: Chip unique and reserved read-only ID registers.
+      byte_offset: 0x810
+      array:
+        len: 8
+        stride: 4
+      access: Read
+
+    - name: MCU_SCRATCH
+      description: Scratch registers for MCU firmware.
+      byte_offset: 0x880
+      array:
+        len: 16
+        stride: 4
+
+    - name: PCIE3_CONFIG
+      description: PCIe 3 BMC device/control registers.
+      byte_offset: 0x900
+      array:
+        len: 3
+        stride: 4
+
+    - name: HOST_CONFIG
+      description: Host configuration, clear, lock, and secure-control registers.
+      byte_offset: 0xA00
+      array:
+        len: 16
+        stride: 4
+
+    - name: SECURE_CONTROL
+      description: SCU1 secure-control registers.
+      byte_offset: 0xC00
+      array:
+        len: 86
+        stride: 4
+
+    - name: WRITE_PROTECT
+      description: SCU1 write-protection registers.
+      byte_offset: 0xE00
+      array:
+        len: 32
+        stride: 4
+
+    - name: RESET_SOURCE_CTRL
+      description: SCU1 reset source control registers.
+      byte_offset: 0xF00
+      array:
+        len: 32
+        stride: 4
+
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/SIL_REV:
+  description: Silicon revision ID fields (shared with SCU0).
+  fields:
+    - name: COMPAT_ID
+      description: Compatibility ID (always 0x03 for AST2700 family).
+      bit_offset: 0
+      bit_size: 8
+
+    - name: DEVICE_ID
+      description: >
+        EFUSE device identifier.
+        0x00=AST2750, 0x01=AST2700, 0x02=AST2720.
+      bit_offset: 8
+      bit_size: 8
+
+    - name: HW_REV
+      description: >
+        Hardware revision.
+        0x00=A0 silicon, 0x01=A1 silicon.
+      bit_offset: 16
+      bit_size: 8
+
+    - name: BMC_GEN
+      description: BMC generation (0x06=AST2700 series, G7).
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/HWSTRAP1:
+  description: >
+    SCU1 Hardware/OTP Strap Register 1.
+    Reflects strap pins and OTP fuse state sampled at power-on.
+  fields:
+    - name: LTPI_MODE
+      description: LTPI mode enable.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: LTPI1_EN
+      description: LTPI1 interface enable.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: LTPI0_EN
+      description: LTPI0 interface enable.
+      bit_offset: 3
+      bit_size: 1
+
+    - name: EN_RECOVERY_BOOT
+      description: Enable recovery boot path.
+      bit_offset: 4
+      bit_size: 1
+
+    - name: EN_SECBOOT
+      description: Enable secure boot enforcement.
+      bit_offset: 5
+      bit_size: 1
+
+    - name: GPIO_PASSTHROUGH
+      description: GPIO passthrough mode enable.
+      bit_offset: 6
+      bit_size: 1
+
+    - name: LOW_SECURE
+      description: Low-security mode (reduced secure boot enforcement).
+      bit_offset: 8
+      bit_size: 1
+
+    - name: DDR_TYPE
+      description: >
+        DDR type selection strap (from GPIOG0 pin).
+        0 = DDR5 (JESD79-5) installed.
+        1 = DDR4 (JESD79-4) installed.
+        This bit must be read before programming SDRAMMC.MAIN_CONF.DDR_TYPE.
+      bit_offset: 10
+      bit_size: 1
+      enumm: DdrTypeStrap
+
+    - name: BOOT_MEDIA
+      description: Boot media select strap.
+      bit_offset: 11
+      bit_size: 1
+
+    - name: NODE0_ACPI
+      description: Node 0 ACPI enable.
+      bit_offset: 12
+      bit_size: 1
+
+    - name: NODE1_ACPI
+      description: Node 1 ACPI enable.
+      bit_offset: 13
+      bit_size: 1
+
+    - name: LTPI0_DRIVE
+      description: LTPI0 drive strength selection.
+      bit_offset: 14
+      bit_size: 2
+
+    - name: DIS_DEBUG
+      description: Disable external JTAG/debug access.
+      bit_offset: 16
+      bit_size: 1
+
+    - name: DIS_WDT_FULL
+      description: Disable WDT full-chip reset.
+      bit_offset: 17
+      bit_size: 1
+
+    - name: DIS_UART_DEBUG
+      description: Disable UART debug console output.
+      bit_offset: 18
+      bit_size: 1
+
+    - name: DIS_FMC_HASH
+      description: Disable FMC hash verification.
+      bit_offset: 21
+      bit_size: 1
+
+    - name: SPI_4B
+      description: SPI flash 4-byte address mode.
+      bit_offset: 25
+      bit_size: 1
+
+    - name: RECOVERY_IFACE
+      description: >
+        Recovery interface selection.
+        00=UART, 01=USB, 10=I2C, 11=I3C.
+      bit_offset: 26
+      bit_size: 2
+
+    - name: USB_RECOVERY_SEL
+      description: USB recovery port selection.
+      bit_offset: 28
+      bit_size: 2
+
+    - name: DIS_CALIPTRA
+      description: Disable Caliptra subsystem.
+      bit_offset: 30
+      bit_size: 1
+
+fieldset/CPTRA_CTRL:
+  description: >
+    Caliptra Control and Status Register (SCU1 +0x130).
+    Lower bits are BootMCU-writable control; upper bits are
+    read-only Caliptra status signals.
+  fields:
+    - name: PWRGOOD
+      description: >
+        Caliptra power-good signal (BootMCU write).
+        1 = assert PWRGOOD to Caliptra; begins Caliptra internal boot.
+        Written by SoC ROM at early boot; BootMCU FMC reads status only.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: BOOTFSM_BKPT
+      description: >
+        BootFSM breakpoint enable (BootMCU write, debug use).
+        1 = halt Caliptra BootFSM at the next breakpoint.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: TRNG_DATA
+      description: >
+        TRNG data available bits (BootMCU write).
+        Written by BootMCU when providing external TRNG entropy.
+        See IFC TRNG registers for the data path.
+      bit_offset: 2
+      bit_size: 2
+
+    - name: SECURE_STATE
+      description: >
+        Security lifecycle state (BootMCU write).
+        [10:8] = security state encoding.
+      bit_offset: 8
+      bit_size: 3
+
+    - name: RDY_FOR_FUSE
+      description: >
+        Caliptra ready for fuse data (read-only).
+        1 = Caliptra BootFSM is waiting for fuse values from SoC.
+        SoC ROM handles fuse delivery; FMC monitors this for diagnostics.
+      bit_offset: 16
+      bit_size: 1
+
+    - name: RDY_FOR_FW
+      description: >
+        Caliptra ready for firmware (read-only).
+        1 = Caliptra has completed ROM verification and awaits FW upload.
+      bit_offset: 17
+      bit_size: 1
+
+    - name: RDY_FOR_RT
+      description: >
+        Caliptra runtime ready (read-only mirror).
+        1 = Caliptra FMC+RT firmware has started; mailbox commands accepted.
+        Mirror of IFC FLOW_STS[29].  Faster to poll than reading over
+        the Caliptra APB bus.
+        BootMCU FMC waits for this bit before issuing mailbox commands.
+      bit_offset: 18
+      bit_size: 1
+
+    - name: MBOX_DATA_AVAIL
+      description: >
+        Caliptra mailbox data available (read-only).
+        1 = Caliptra has written response data to the mailbox DATAOUT FIFO.
+      bit_offset: 19
+      bit_size: 1
+
+    - name: MBOX_FLOW_DONE
+      description: >
+        Caliptra mailbox flow done (read-only).
+        1 = a mailbox command has completed (success or failure).
+      bit_offset: 20
+      bit_size: 1
+
+    - name: FATAL_ERR
+      description: >
+        Caliptra fatal error (read-only).
+        1 = Caliptra has encountered an unrecoverable hardware error.
+        Check IFC HW_ERROR_FATAL register for details.
+      bit_offset: 21
+      bit_size: 1
+
+    - name: NFATAL_ERR
+      description: >
+        Caliptra non-fatal error (read-only).
+        1 = Caliptra has encountered a recoverable firmware error.
+      bit_offset: 22
+      bit_size: 1
+
+    - name: TRNG_REQ
+      description: >
+        Caliptra TRNG entropy request (read-only).
+        1 = Caliptra is requesting external entropy.
+        BootMCU should write 12 words to IFC TRNG_DATA and set TRNG_STS.DATA_WR_DONE.
+        Mirror of IFC TRNG_STS.DATA_REQ.
+      bit_offset: 23
+      bit_size: 1
+
+fieldset/CPTRA_INTR:
+  description: Caliptra interrupt status and enable bits.
+  fields:
+    - name: GENERIC_OUT_TOGGLE
+      description: Caliptra generic output register changed.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: RDY_FOR_FUSE
+      description: Caliptra ready-for-fuse edge.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: RDY_FOR_FW
+      description: Caliptra ready-for-firmware edge.
+      bit_offset: 2
+      bit_size: 1
+
+    - name: RDY_FOR_RT
+      description: Caliptra runtime-ready edge.
+      bit_offset: 3
+      bit_size: 1
+
+    - name: MBOX_DATA_AVAIL
+      description: Mailbox data available edge.
+      bit_offset: 4
+      bit_size: 1
+
+    - name: MBOX_FLOW_DONE
+      description: Mailbox flow complete edge.
+      bit_offset: 5
+      bit_size: 1
+
+    - name: FATAL_ERR
+      description: Caliptra fatal error edge.
+      bit_offset: 6
+      bit_size: 1
+
+    - name: NFATAL_ERR
+      description: Caliptra non-fatal error edge.
+      bit_offset: 7
+      bit_size: 1
+
+    - name: TRNG_REQ
+      description: Caliptra TRNG entropy request edge.
+      bit_offset: 8
+      bit_size: 1
+
+fieldset/RST_CTRL1:
+  description: >
+    IO-die System Reset Control / Clear 1.
+    Shared layout for RST_CTRL1 (assert) and RST_CLR1 (de-assert).
+  fields:
+    - name: USB2D
+      description: USB 2.0 device controller reset.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: CPTRA
+      description: >
+        Caliptra subsystem reset.
+        Assert to perform a Caliptra warm reset.
+        De-assert after PWRGOOD is stable.
+      bit_offset: 9
+      bit_size: 1
+
+    - name: I2C
+      description: I2C controller reset.
+      bit_offset: 15
+      bit_size: 1
+
+    - name: LTPI0
+      description: LTPI0 interface reset.
+      bit_offset: 20
+      bit_size: 1
+
+    - name: LTPI1
+      description: LTPI1 interface reset.
+      bit_offset: 22
+      bit_size: 1
+
+    - name: USB2C
+      description: USB 2.0 controller C reset.
+      bit_offset: 27
+      bit_size: 1
+
+    - name: USB2D2
+      description: USB 2.0 device controller 2 reset.
+      bit_offset: 29
+      bit_size: 1
+
+fieldset/RST_CTRL2:
+  description: IO-die System Reset Control / Clear 2.
+  fields:
+    - name: UART12
+      description: UART12 reset.
+      bit_offset: 15
+      bit_size: 1
+
+fieldset/MCU_CTRL:
+  description: BootMCU control/remap register.
+  fields:
+    - name: MAP1
+      description: Upper BootMCU window remap selector.
+      bit_offset: 16
+      bit_size: 7
+
+fieldset/PLL_PARAM:
+  description: >
+    PLL parameter register (shared layout for HPLL, APLL on SCU1).
+    F_out = 25 MHz × (M+1) / (N+1) / (P+1).
+  fields:
+    - name: M
+      description: PLL multiplier minus 1. Valid range 0–8191.
+      bit_offset: 0
+      bit_size: 13
+
+    - name: N
+      description: PLL pre-divider minus 1. Valid range 0–63.
+      bit_offset: 13
+      bit_size: 6
+
+    - name: P
+      description: PLL post-divider minus 1. Valid range 0–15.
+      bit_offset: 19
+      bit_size: 4
+
+    - name: OFF
+      description: PLL power off. 1 = PLL powered down.
+      bit_offset: 23
+      bit_size: 1
+
+    - name: BYPASS
+      description: PLL bypass. 1 = 25 MHz reference drives output directly.
+      bit_offset: 24
+      bit_size: 1
+
+    - name: RESET
+      description: >
+        PLL reset. 1 = held in reset.
+        Set while reprogramming M/N/P; clear and wait for LOCK.
+      bit_offset: 25
+      bit_size: 1
+
+fieldset/PLL_EXT:
+  description: PLL extended register (bandwidth adjustment and lock).
+  fields:
+    - name: BWADJ
+      description: >
+        PLL bandwidth adjustment.
+        Set to M/2 for recommended loop bandwidth.
+      bit_offset: 0
+      bit_size: 12
+
+    - name: LOCK
+      description: >
+        PLL lock indicator (read-only).
+        1 = PLL locked at target frequency.
+      bit_offset: 31
+      bit_size: 1
+
+# ── Enumerations ───────────────────────────────────────────────────────────────
+
+enum/DdrTypeStrap:
+  description: DDR type from hardware strap (SCU1_HWSTRAP1[10]).
+  bit_size: 1
+  variants:
+    - name: DDR5
+      description: DDR5 SDRAM installed (JESD79-5).
+      value: 0
+    - name: DDR4
+      description: DDR4 SDRAM installed (JESD79-4).
+      value: 1

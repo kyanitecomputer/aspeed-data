@@ -13,6 +13,7 @@ publish     = false
 # ── Chip selection ─────────────────────────────────────────────────────────────
 # Exactly one chip feature must be enabled.
 [features]
+ast1030         = []   # ASPEED AST1030       — ARM Cortex-M4F standalone SoC
 ast1060         = []   # ASPEED AST1060       — ARM Cortex-M4F standalone SoC
 ast2600         = []   # ASPEED AST2600       — ARM Cortex-M3, 200 MHz
 ast2700         = []   # ASPEED AST2700       — (alias, deprecated; use ast2700-ssp)

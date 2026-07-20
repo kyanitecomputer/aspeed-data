@@ -8,7 +8,6 @@
 # SCU base (0x7E6E_2000) + 0xA00 = 0x7E6E_2A00.  Offsets within the block
 # are therefore relative to SCUA00.
 #
-# Sources:
 #   ast2600_ssp.md  v0.1f  Section 3 – SSP Registers
 #   ast2600_ssp.md  v0.1f  Section 4 – Cache Controller
 #   ast2600.md      v1.6   CM3 Coprocessor registers (SCUA00–SCUA48)

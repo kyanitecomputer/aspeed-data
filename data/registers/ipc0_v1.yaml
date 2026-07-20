@@ -1,0 +1,103 @@
+# AST2700 IPC0 data-channel bus.
+#
+# Base addresses:
+#   SSP/TSP view: 0x72C1C000
+#   BootMCU view: 0x12C1C000
+#
+# IPC0 contains five 0x200-byte sub-channels:
+#   0: SSP  ↔ secure CA35
+#   1: SSP  ↔ non-secure CA35
+#   2: TSP  ↔ secure CA35
+#   3: TSP  ↔ non-secure CA35
+#   4: SSP  ↔ TSP
+
+block/CHAN:
+  description: >
+    One half (TX or RX) of an IPC0 sub-channel.
+    Each half supports four message IDs with a 32-byte payload per ID.
+  items:
+    - name: TRIG
+      description: Message trigger register. Write bit n to dispatch message ID n.
+      byte_offset: 0x00
+      fieldset: ID_MASK
+
+    - name: ENABLE
+      description: Per-ID receive enable mask.
+      byte_offset: 0x04
+      fieldset: ID_MASK
+
+    - name: STATUS
+      description: Pending message status. Write bit n to acknowledge message ID n.
+      byte_offset: 0x08
+      fieldset: ID_MASK
+
+    - name: DATA0
+      description: 32-byte payload for message ID 0.
+      byte_offset: 0x10
+      array:
+        len: 8
+        stride: 4
+
+    - name: DATA1
+      description: 32-byte payload for message ID 1.
+      byte_offset: 0x30
+      array:
+        len: 8
+        stride: 4
+
+    - name: DATA2
+      description: 32-byte payload for message ID 2.
+      byte_offset: 0x50
+      array:
+        len: 8
+        stride: 4
+
+    - name: DATA3
+      description: 32-byte payload for message ID 3.
+      byte_offset: 0x70
+      array:
+        len: 8
+        stride: 4
+
+block/SUBCHAN:
+  description: >
+    One IPC0 sub-channel consisting of an RX half and a TX half.
+    Firmware selects which half is TX/RX based on the local endpoint.
+  items:
+    - name: A
+      description: First half of the sub-channel at offset 0x000.
+      byte_offset: 0x000
+      block: CHAN
+
+    - name: B
+      description: Second half of the sub-channel at offset 0x100.
+      byte_offset: 0x100
+      block: CHAN
+
+block/IPC0:
+  description: >
+    AST2700 IPC0 bus: five data-channel sub-channels at stride 0x200.
+  items:
+    - name: CH
+      description: Sub-channels 0-4 at 0x200-byte stride.
+      byte_offset: 0x000
+      array:
+        len: 5
+        stride: 0x200
+      block: SUBCHAN
+
+fieldset/ID_MASK:
+  description: Four-bit mask, one bit per message ID.
+  fields:
+    - name: ID0
+      bit_offset: 0
+      bit_size: 1
+    - name: ID1
+      bit_offset: 1
+      bit_size: 1
+    - name: ID2
+      bit_offset: 2
+      bit_size: 1
+    - name: ID3
+      bit_offset: 3
+      bit_size: 1

@@ -25,7 +25,6 @@
 # blocked transactions for inspection.
 #
 # Sources:
-#   ast1060v19.pdf  Chapter 32 – QSPI Monitor Controller (SPIPF)
 
 block/SPIPF:
   description: >

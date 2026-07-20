@@ -1,0 +1,417 @@
+# AST2700 DisplayPort controller and DPMCU control registers.
+
+block/DP:
+  description: AST2700 DisplayPort transmitter controller registers.
+  items:
+    - { name: CPU_INTR_CTRL, byte_offset: 0x000, fieldset: INTR_CTRL, description: Interrupt-to-CPU configuration. }
+    - { name: CPU_INTR_STATUS, byte_offset: 0x004, access: Read, fieldset: INTR_STATUS, description: Interrupt-to-CPU status. }
+    - { name: CPU_SW_INTR_CTRL, byte_offset: 0x008, fieldset: SW_INTR_CTRL, description: Software interrupt-to-CPU configuration. }
+    - { name: CPU_SW_INTR_STATUS, byte_offset: 0x00c, access: Read, fieldset: SW_INTR_STATUS, description: Software interrupt-to-CPU status. }
+    - { name: CPU_TIMER0_CTRL, byte_offset: 0x010, fieldset: TIMER_CTRL, description: CPU timer 0 warning configuration. }
+    - { name: CPU_TIMER0_RELOAD, byte_offset: 0x014, fieldset: TIMER_RELOAD, description: CPU timer 0 reload configuration. }
+    - { name: CPU_TIMER0_STATUS, byte_offset: 0x018, fieldset: TIMER_STATUS, description: CPU timer 0 status and current count. }
+    - { name: VERSION, byte_offset: 0x01c, access: Read, description: DisplayPort controller version register. }
+    - { name: CPU_TIMER1_CTRL, byte_offset: 0x020, fieldset: TIMER_CTRL, description: CPU timer 1 warning configuration. }
+    - { name: CPU_TIMER1_RELOAD, byte_offset: 0x024, fieldset: TIMER_RELOAD, description: CPU timer 1 reload configuration. }
+    - { name: CPU_TIMER1_STATUS, byte_offset: 0x028, fieldset: TIMER_STATUS, description: CPU timer 1 status and current count. }
+    - { name: MCU_INTR_CTRL, byte_offset: 0x040, fieldset: INTR_CTRL, description: Interrupt-to-MCU configuration. }
+    - { name: MCU_INTR_STATUS, byte_offset: 0x044, access: Read, fieldset: INTR_STATUS, description: Interrupt-to-MCU status. }
+    - { name: MCU_SW_INTR_CTRL, byte_offset: 0x048, fieldset: SW_INTR_CTRL, description: Software interrupt-to-MCU configuration. }
+    - { name: MCU_SW_INTR_STATUS, byte_offset: 0x04c, access: Read, fieldset: SW_INTR_STATUS, description: Software interrupt-to-MCU status. }
+    - { name: MCU_TIMER0_CTRL, byte_offset: 0x050, fieldset: TIMER_CTRL, description: MCU timer 0 warning configuration. }
+    - { name: MCU_TIMER0_RELOAD, byte_offset: 0x054, fieldset: TIMER_RELOAD, description: MCU timer 0 reload configuration. }
+    - { name: MCU_TIMER0_STATUS, byte_offset: 0x058, fieldset: TIMER_STATUS, description: MCU timer 0 status and current count. }
+    - { name: MCU_TIMER1_CTRL, byte_offset: 0x060, fieldset: TIMER_CTRL, description: MCU timer 1 warning configuration. }
+    - { name: MCU_TIMER1_RELOAD, byte_offset: 0x064, fieldset: TIMER_RELOAD, description: MCU timer 1 reload configuration. }
+    - { name: MCU_TIMER1_STATUS, byte_offset: 0x068, fieldset: TIMER_STATUS, description: MCU timer 1 status and current count. }
+    - { name: HPD_STATUS, byte_offset: 0x07c, access: Read, fieldset: HPD_STATUS, description: Hot-plug detect status. }
+    - { name: HPD_IRQ_CFG, byte_offset: 0x080, fieldset: HPD_IRQ_CFG, description: HPD IRQ low-period bounds. }
+    - { name: HPD_EVENT_CFG, byte_offset: 0x084, fieldset: HPD_EVENT_CFG, description: HPD event low-period threshold. }
+    - { name: AUX_REQ_CTRL, byte_offset: 0x088, fieldset: AUX_REQ_CTRL, description: AUX request command control and status. }
+    - { name: AUX_REQ_ADDR, byte_offset: 0x08c, fieldset: AUX_REQ_ADDR, description: AUX request length and address. }
+    - { name: AUX_REQ_DATA, byte_offset: 0x090, array: { len: 4, stride: 4 }, description: AUX request data bytes 0..15. }
+    - { name: AUX_REPLY_DATA, byte_offset: 0x0a0, access: Read, array: { len: 4, stride: 4 }, description: AUX reply data bytes 0..15. }
+    - { name: AUX_REPLY_STATUS, byte_offset: 0x0b0, access: Read, fieldset: AUX_REPLY_STATUS, description: AUX reply command and status. }
+    - { name: AUX_REPLY_CFG, byte_offset: 0x0b4, fieldset: AUX_REPLY_CFG, description: AUX reply timeout and loopback configuration. }
+    - { name: HANDSHAKE, byte_offset: 0x0b8, fieldset: HANDSHAKE, description: Display ownership and EDID handoff control. }
+    - { name: LINK_CFG, byte_offset: 0x0c0, fieldset: LINK_CFG, description: Main link configuration. }
+    - { name: LINK_MVID_HW, byte_offset: 0x0c4, fieldset: LINK_MVID_HW, description: Hardware MVID and VB-ID configuration. }
+    - { name: MSA_MVID, byte_offset: 0x0c8, fieldset: MSA_24, description: MSA MVID set by firmware. }
+    - { name: MSA_NVID, byte_offset: 0x0cc, fieldset: MSA_24, description: MSA NVID. }
+    - { name: MSA_TOTAL, byte_offset: 0x0d0, fieldset: MSA_PAIR, description: MSA vertical and horizontal total. }
+    - { name: MSA_START, byte_offset: 0x0d4, fieldset: MSA_PAIR, description: MSA vertical and horizontal start. }
+    - { name: MSA_SIZE, byte_offset: 0x0d8, fieldset: MSA_PAIR, description: MSA vertical height and horizontal width. }
+    - { name: MSA_SYNC, byte_offset: 0x0dc, fieldset: MSA_PAIR, description: MSA vertical and horizontal sync width. }
+    - { name: MSA_MISC, byte_offset: 0x0e0, fieldset: MSA_MISC, description: MSA misc0 and misc1 packet bytes. }
+    - { name: TRAINING_PATTERN, byte_offset: 0x0e4, fieldset: TRAINING_PATTERN, description: Link training and quality pattern configuration. }
+    - { name: DIGITAL_PHY_CFG, byte_offset: 0x0e8, fieldset: DIGITAL_PHY_CFG, description: Main link digital PHY configuration. }
+    - { name: CUSTOM_PATTERN, byte_offset: 0x0ec, array: { len: 3, stride: 4 }, description: 80-bit custom encoder test pattern. }
+    - { name: LINK_FW_CFG, byte_offset: 0x0f8, fieldset: LINK_FW_CFG, description: Firmware-defined main link configuration. }
+    - { name: LINK_STATUS, byte_offset: 0x0fc, fieldset: LINK_STATUS, description: Link training and packet FSM status. }
+    - { name: TX_CFG, byte_offset: 0x100, fieldset: TX_CFG, description: DisplayPort transmitter reset and clock configuration. }
+    - { name: PHY_CTRL, byte_offset: 0x104, fieldset: PHY_CTRL, description: DP PHY power, reset, AUX, and main-link control. }
+    - { name: PHY_LANE_CFG, byte_offset: 0x108, fieldset: PHY_LANE_CFG, description: DP PHY lane swing, pre-emphasis, and rate configuration. }
+    - { name: PHY_AUX_STATUS, byte_offset: 0x10c, access: Read, fieldset: PHY_AUX_STATUS, description: DP PHY AUX status. }
+    - { name: PHY_VENDOR_CFG0, byte_offset: 0x110, fieldset: PHY_VENDOR_CFG0, description: DP PHY vendor control and debug selection. }
+    - { name: PHY_VENDOR_STATUS, byte_offset: 0x114, access: Read, fieldset: PHY_VENDOR_STATUS, description: DP PHY vendor status. }
+    - { name: PHY_VENDOR_CFG, byte_offset: 0x118, array: { len: 5, stride: 4 }, description: DP PHY vendor reserved configuration words. }
+    - { name: PHY_CLK_CFG, byte_offset: 0x12c, fieldset: PHY_CLK_CFG, description: DP PHY reference clock selection. }
+    - { name: PHY_RXDATA_LATCH, byte_offset: 0x138, fieldset: PHY_RXDATA_LATCH, description: Feedback symbol latch command and shift selection. }
+    - { name: PHY_RXDATA_LATCH_AUTO, byte_offset: 0x13c, access: Read, fieldset: PHY_RXDATA_LATCH_AUTO, description: Automatic feedback symbol shift selection. }
+    - { name: PHY_MAIN0_RXDATA, byte_offset: 0x140, access: Read, array: { len: 4, stride: 4 }, description: Latched feedback symbols for lane 0. }
+    - { name: PHY_MAIN1_RXDATA, byte_offset: 0x150, access: Read, array: { len: 4, stride: 4 }, description: Latched feedback symbols for lane 1. }
+    - { name: VGA_INTR_CTRL, byte_offset: 0x160, fieldset: INTR_CTRL, description: Interrupt-to-VGA configuration. }
+    - { name: VGA_INTR_STATUS, byte_offset: 0x164, access: Read, fieldset: INTR_STATUS, description: Interrupt-to-VGA status. }
+    - { name: VGA_SW_INTR_CTRL, byte_offset: 0x168, fieldset: SW_INTR_CTRL, description: Software interrupt-to-VGA configuration. }
+    - { name: VGA_SW_INTR_STATUS, byte_offset: 0x16c, access: Read, fieldset: SW_INTR_STATUS, description: Software interrupt-to-VGA status. }
+    - { name: VIDEO_LINEBUF_CFG, byte_offset: 0x180, fieldset: VIDEO_LINEBUF_CFG, description: Video line buffer configuration. }
+
+block/DPMCU_DMEM:
+  description: >
+    DisplayPort MCU data memory window used for runtime handoff state.
+  items:
+    - name: DISPLAY_FORMAT
+      description: Display format and region enable handoff word.
+      byte_offset: 0x0de0
+
+block/DPMCU_REG:
+  description: >
+    DisplayPort MCU control register window.
+  items:
+    - { name: REG_BANK, byte_offset: 0x000, access: Read, array: { len: 32, stride: 4 }, description: DP MCU register bank words 0..31. }
+    - { name: PAUSE_CTRL, byte_offset: 0x080, fieldset: DPMCU_PAUSE_CTRL, description: DP MCU pause control and status. }
+    - { name: BREAKPOINT, byte_offset: 0x084, fieldset: DPMCU_BREAKPOINT, description: DP MCU program-counter breakpoint configuration. }
+    - { name: PC_NEXT, byte_offset: 0x088, access: Read, fieldset: DPMCU_PC, description: DP MCU next program counter. }
+    - { name: PC_CURRENT, byte_offset: 0x08c, access: Read, fieldset: DPMCU_PC, description: DP MCU current program counter. }
+    - { name: INST_NEXT, byte_offset: 0x090, access: Read, description: Instruction at the next program counter. }
+    - { name: INST_CURRENT, byte_offset: 0x094, access: Read, description: Instruction at the current program counter. }
+    - { name: INT_ENABLE_STATUS, byte_offset: 0x098, access: Read, description: Interrupt enable bits controlled by DPMCU INTEN. }
+    - { name: INT_SOURCE_STATUS, byte_offset: 0x09c, access: Read, description: Interrupt sources viewed by DP MCU. }
+    - { name: VERSION, byte_offset: 0x0d0, access: Read, description: DP MCU version. }
+    - { name: CTRL, byte_offset: 0x0e0, fieldset: MCU_CTRL, description: DisplayPort MCU memory, bus, and core reset control. }
+    - { name: INTR_CTRL, byte_offset: 0x0e8, fieldset: MCU_INTR_CTRL, description: DisplayPort MCU interrupt clear, mask, and enable control. }
+    - { name: INTR_STATUS, byte_offset: 0x0ec, access: Read, fieldset: MCU_INTR_STATUS, description: DisplayPort MCU interrupt status. }
+
+fieldset/HANDSHAKE:
+  description: DisplayPort handshake register.
+  fields:
+    - { name: VIDEO_FMT_SRC, bit_offset: 24, bit_size: 1, description: Video format source selection. }
+    - { name: HOST_READ_EDID, bit_offset: 28, bit_size: 1, description: Host EDID read handoff control. }
+
+fieldset/INTR_CTRL:
+  fields:
+    - { name: TIMER0_CLR, bit_offset: 0, bit_size: 1 }
+    - { name: TIMER1_CLR, bit_offset: 1, bit_size: 1 }
+    - { name: HPD_IRQ_CLR, bit_offset: 3, bit_size: 1 }
+    - { name: HPD_LOW_CLR, bit_offset: 4, bit_size: 1 }
+    - { name: HPD_EVENT_CLR, bit_offset: 5, bit_size: 1 }
+    - { name: AUX_REPLY_DONE_CLR, bit_offset: 6, bit_size: 1 }
+    - { name: AUX_REPLY_TIMEOUT_CLR, bit_offset: 7, bit_size: 1 }
+    - { name: TIMER0_MASK, bit_offset: 8, bit_size: 1 }
+    - { name: TIMER1_MASK, bit_offset: 9, bit_size: 1 }
+    - { name: HPD_IRQ_MASK, bit_offset: 11, bit_size: 1 }
+    - { name: HPD_LOW_MASK, bit_offset: 12, bit_size: 1 }
+    - { name: HPD_EVENT_MASK, bit_offset: 13, bit_size: 1 }
+    - { name: AUX_REPLY_DONE_MASK, bit_offset: 14, bit_size: 1 }
+    - { name: AUX_REPLY_TIMEOUT_MASK, bit_offset: 15, bit_size: 1 }
+    - { name: TIMER0_EN, bit_offset: 16, bit_size: 1 }
+    - { name: TIMER1_EN, bit_offset: 17, bit_size: 1 }
+    - { name: TIMER2_EN, bit_offset: 18, bit_size: 1 }
+    - { name: HPD_IRQ_EN, bit_offset: 19, bit_size: 1 }
+    - { name: HPD_LOW_EN, bit_offset: 20, bit_size: 1 }
+    - { name: HPD_EVENT_EN, bit_offset: 21, bit_size: 1 }
+    - { name: AUX_REPLY_DONE_EN, bit_offset: 22, bit_size: 1 }
+    - { name: AUX_REPLY_TIMEOUT_EN, bit_offset: 23, bit_size: 1 }
+    - { name: AUX_CLK_FREQ, bit_offset: 24, bit_size: 6 }
+    - { name: AUX_CLK_SEL, bit_offset: 30, bit_size: 1 }
+    - { name: AUX_BY_GPIO_EN, bit_offset: 31, bit_size: 1 }
+
+fieldset/INTR_STATUS:
+  fields:
+    - { name: TIMER0, bit_offset: 0, bit_size: 1 }
+    - { name: TIMER1, bit_offset: 1, bit_size: 1 }
+    - { name: TIMER2, bit_offset: 2, bit_size: 1 }
+    - { name: HPD_IRQ, bit_offset: 3, bit_size: 1 }
+    - { name: HPD_LOW, bit_offset: 4, bit_size: 1 }
+    - { name: HPD_EVENT, bit_offset: 5, bit_size: 1 }
+    - { name: AUX_REPLY_DONE, bit_offset: 6, bit_size: 1 }
+    - { name: AUX_REPLY_TIMEOUT, bit_offset: 7, bit_size: 1 }
+    - { name: TIMER0_RAW, bit_offset: 8, bit_size: 1 }
+    - { name: TIMER1_RAW, bit_offset: 9, bit_size: 1 }
+    - { name: TIMER2_RAW, bit_offset: 10, bit_size: 1 }
+    - { name: HPD_IRQ_RAW, bit_offset: 11, bit_size: 1 }
+    - { name: HPD_LOW_RAW, bit_offset: 12, bit_size: 1 }
+    - { name: HPD_EVENT_RAW, bit_offset: 13, bit_size: 1 }
+    - { name: AUX_REPLY_DONE_RAW, bit_offset: 14, bit_size: 1 }
+    - { name: AUX_REPLY_TIMEOUT_RAW, bit_offset: 15, bit_size: 1 }
+
+fieldset/SW_INTR_CTRL:
+  fields:
+    - { name: CLR, bit_offset: 0, bit_size: 8 }
+    - { name: MASK, bit_offset: 8, bit_size: 8 }
+    - { name: EN, bit_offset: 16, bit_size: 8 }
+
+fieldset/SW_INTR_STATUS:
+  fields:
+    - { name: STATUS, bit_offset: 0, bit_size: 8 }
+    - { name: RAW, bit_offset: 8, bit_size: 8 }
+
+fieldset/TIMER_CTRL:
+  fields:
+    - { name: CNT_WARN, bit_offset: 0, bit_size: 30 }
+    - { name: MODE_SEL, bit_offset: 30, bit_size: 1 }
+    - { name: EN, bit_offset: 31, bit_size: 1 }
+
+fieldset/TIMER_RELOAD:
+  fields:
+    - { name: CNT_INIT, bit_offset: 0, bit_size: 30 }
+    - { name: TICKSEL, bit_offset: 30, bit_size: 2 }
+
+fieldset/TIMER_STATUS:
+  fields:
+    - { name: CNT_CURR, bit_offset: 0, bit_size: 30 }
+    - { name: WARN_FLAG, bit_offset: 30, bit_size: 1 }
+    - { name: ZERO_FLAG, bit_offset: 31, bit_size: 1 }
+
+fieldset/HPD_STATUS:
+  fields:
+    - { name: LOW_CNT, bit_offset: 0, bit_size: 12 }
+    - { name: LOW_CNT_EN, bit_offset: 24, bit_size: 1 }
+    - { name: IN, bit_offset: 28, bit_size: 1 }
+
+fieldset/HPD_IRQ_CFG:
+  fields:
+    - { name: MIN_US_NUM, bit_offset: 0, bit_size: 10 }
+    - { name: MAX_US_NUM, bit_offset: 16, bit_size: 12 }
+
+fieldset/HPD_EVENT_CFG:
+  fields:
+    - { name: MIN_US_NUM, bit_offset: 0, bit_size: 12 }
+
+fieldset/AUX_REQ_CTRL:
+  fields:
+    - { name: RESET_CMD, bit_offset: 0, bit_size: 1 }
+    - { name: TRIG_CMD, bit_offset: 4, bit_size: 1 }
+    - { name: DONE_FLAG, bit_offset: 8, bit_size: 1 }
+    - { name: AWAITING_REPLY_FLAG, bit_offset: 12, bit_size: 1 }
+    - { name: ADDR_END_EN, bit_offset: 16, bit_size: 1 }
+    - { name: LENGTH_END_EN, bit_offset: 20, bit_size: 1 }
+    - { name: CMD, bit_offset: 28, bit_size: 4 }
+
+fieldset/AUX_REQ_ADDR:
+  fields:
+    - { name: ADDR, bit_offset: 0, bit_size: 20 }
+    - { name: LENGTH, bit_offset: 24, bit_size: 4 }
+
+fieldset/AUX_REPLY_STATUS:
+  fields:
+    - { name: CMD, bit_offset: 4, bit_size: 4 }
+    - { name: DATA_NUM, bit_offset: 8, bit_size: 5 }
+    - { name: FALL_NUM, bit_offset: 16, bit_size: 8 }
+    - { name: RISE_NUM, bit_offset: 24, bit_size: 8 }
+
+fieldset/AUX_REPLY_CFG:
+  fields:
+    - { name: TIMEOUT_US_NUM, bit_offset: 0, bit_size: 9 }
+    - { name: TIMEOUT_RETRY_EN, bit_offset: 12, bit_size: 1 }
+    - { name: TEST_EN, bit_offset: 16, bit_size: 1 }
+
+fieldset/LINK_CFG:
+  fields:
+    - { name: PKT_RESET_CMD, bit_offset: 0, bit_size: 1 }
+    - { name: LANE_NUM, bit_offset: 4, bit_size: 3 }
+    - { name: LINKRATE_SEL, bit_offset: 8, bit_size: 2 }
+    - { name: FRAMING_MODE_SEL, bit_offset: 12, bit_size: 1 }
+
+fieldset/LINK_MVID_HW:
+  fields:
+    - { name: MSA_MVID_HW, bit_offset: 0, bit_size: 24 }
+    - { name: MSA_MVID_HW_SEL, bit_offset: 24, bit_size: 1 }
+    - { name: VB_ID_5, bit_offset: 29, bit_size: 1 }
+
+fieldset/MSA_24:
+  fields:
+    - { name: VALUE, bit_offset: 0, bit_size: 24 }
+
+fieldset/MSA_PAIR:
+  fields:
+    - { name: HORIZONTAL, bit_offset: 0, bit_size: 16 }
+    - { name: VERTICAL, bit_offset: 16, bit_size: 16 }
+
+fieldset/MSA_MISC:
+  fields:
+    - { name: MISC0, bit_offset: 0, bit_size: 8 }
+    - { name: MISC1, bit_offset: 8, bit_size: 8 }
+
+fieldset/TRAINING_PATTERN:
+  fields:
+    - { name: QUAL_PAT_5_SYMBOL_NUM, bit_offset: 0, bit_size: 16 }
+    - { name: QUAL_PAT_SEL, bit_offset: 16, bit_size: 3 }
+    - { name: IDLEPAT_SEL, bit_offset: 24, bit_size: 1 }
+    - { name: LINKPAT_SEL, bit_offset: 28, bit_size: 2 }
+
+fieldset/DIGITAL_PHY_CFG:
+  fields:
+    - { name: SKEW_0_1_SEL, bit_offset: 0, bit_size: 2 }
+    - { name: SKEW_0_2_SEL, bit_offset: 4, bit_size: 3 }
+    - { name: SKEW_0_3_SEL, bit_offset: 8, bit_size: 3 }
+    - { name: SCRAMBLE_EN, bit_offset: 12, bit_size: 1 }
+    - { name: SCRAMBLE_ALTRESET_SEL, bit_offset: 13, bit_size: 1 }
+    - { name: ENC_BITORDER_SEL, bit_offset: 16, bit_size: 1 }
+    - { name: ENC_OUT_ZERO_EN, bit_offset: 20, bit_size: 1 }
+    - { name: ENC_OUT_PRBS7_EN, bit_offset: 24, bit_size: 1 }
+    - { name: ENC_OUT_CUSTOM_EN, bit_offset: 28, bit_size: 1 }
+
+fieldset/LINK_FW_CFG:
+  fields:
+    - { name: LANE1_DUPLICATE_EN, bit_offset: 0, bit_size: 1 }
+    - { name: SSCG_EN_FW, bit_offset: 1, bit_size: 1 }
+    - { name: LANE_NUM_FW, bit_offset: 4, bit_size: 3 }
+    - { name: LINKRATE_SEL_FW, bit_offset: 8, bit_size: 2 }
+    - { name: FRAMING_MODE_SEL_FW, bit_offset: 12, bit_size: 1 }
+    - { name: TU_VALID_SYMBOL_NUM_FRC_256X, bit_offset: 16, bit_size: 8 }
+    - { name: TU_VALID_SYMBOL_NUM_INTEGER, bit_offset: 24, bit_size: 7 }
+
+fieldset/LINK_STATUS:
+  fields:
+    - { name: PKT_FSM, bit_offset: 0, bit_size: 12 }
+    - { name: DEBUG_SEL, bit_offset: 16, bit_size: 4 }
+    - { name: TRAINING_DOING_1ST, bit_offset: 20, bit_size: 1 }
+    - { name: TRAINING_DOING_2ND, bit_offset: 21, bit_size: 1 }
+    - { name: TRAINING_DONE_1ST, bit_offset: 24, bit_size: 1 }
+    - { name: TRAINING_DONE_2ND, bit_offset: 25, bit_size: 1 }
+    - { name: TRAINING_FAIL_1ST, bit_offset: 28, bit_size: 1 }
+    - { name: TRAINING_FAIL_2ND, bit_offset: 29, bit_size: 1 }
+    - { name: TRAINING_FAIL_2ND_CR, bit_offset: 30, bit_size: 1 }
+    - { name: TRAINING_FAIL_2ND_EQ, bit_offset: 31, bit_size: 1 }
+
+fieldset/TX_CFG:
+  fields:
+    - { name: TXLANE0_CLK_INV_SEL, bit_offset: 0, bit_size: 1 }
+    - { name: TXLANE1_CLK_INV_SEL, bit_offset: 1, bit_size: 1 }
+    - { name: TXLANE2_CLK_INV_SEL, bit_offset: 2, bit_size: 1 }
+    - { name: TXLANE3_CLK_INV_SEL, bit_offset: 3, bit_size: 1 }
+    - { name: TXLANE0_RX_CLK_INV_SEL, bit_offset: 8, bit_size: 1 }
+    - { name: TXLANE1_RX_CLK_INV_SEL, bit_offset: 9, bit_size: 1 }
+    - { name: TXLANE2_RX_CLK_INV_SEL, bit_offset: 10, bit_size: 1 }
+    - { name: TXLANE3_RX_CLK_INV_SEL, bit_offset: 11, bit_size: 1 }
+    - { name: TXCLK_INV_SEL, bit_offset: 16, bit_size: 1 }
+    - { name: TXPHY_TESTMODE_SEL, bit_offset: 20, bit_size: 1 }
+    - { name: TXSYMBOL_ORDER_SEL, bit_offset: 21, bit_size: 1 }
+    - { name: TXSYMBOL_BITINV_SEL, bit_offset: 22, bit_size: 1 }
+    - { name: AUX_RESETN, bit_offset: 24, bit_size: 1 }
+    - { name: TXRESETN, bit_offset: 28, bit_size: 1 }
+
+fieldset/PHY_CTRL:
+  fields:
+    - { name: IMAIN_DATAWIDTH, bit_offset: 0, bit_size: 1 }
+    - { name: IMAIN_SSCG_ON, bit_offset: 4, bit_size: 1 }
+    - { name: IMAIN_ON, bit_offset: 8, bit_size: 1 }
+    - { name: O_MAIN_RDY, bit_offset: 9, bit_size: 1 }
+    - { name: IAUX_ON, bit_offset: 12, bit_size: 1 }
+    - { name: O_AUX_RDY, bit_offset: 13, bit_size: 1 }
+    - { name: IINTERNAL_LOOPBACK_EN, bit_offset: 16, bit_size: 1 }
+    - { name: IPLL_EN, bit_offset: 20, bit_size: 1 }
+    - { name: IDP_RESETN, bit_offset: 24, bit_size: 1 }
+    - { name: IPONRST, bit_offset: 28, bit_size: 1 }
+
+fieldset/PHY_LANE_CFG:
+  fields:
+    - { name: I_AUX_IE, bit_offset: 0, bit_size: 1 }
+    - { name: IXTLSEL, bit_offset: 4, bit_size: 2 }
+    - { name: IRATE, bit_offset: 8, bit_size: 2 }
+    - { name: I_DP_PORT_SEL, bit_offset: 12, bit_size: 2 }
+    - { name: IMAIN0_TXPREEMP_EN, bit_offset: 24, bit_size: 2 }
+    - { name: IMAIN0_TX_SWING, bit_offset: 26, bit_size: 2 }
+    - { name: IMAIN1_TXPREEMP_EN, bit_offset: 28, bit_size: 2 }
+    - { name: IMAIN1_TX_SWING, bit_offset: 30, bit_size: 2 }
+
+fieldset/PHY_AUX_STATUS:
+  fields:
+    - { name: O_AUX_HSSQ, bit_offset: 0, bit_size: 1 }
+    - { name: O_AUX_RCV, bit_offset: 4, bit_size: 1 }
+    - { name: I_AUX_VI, bit_offset: 8, bit_size: 1 }
+    - { name: I_AUX_OE, bit_offset: 12, bit_size: 1 }
+
+fieldset/PHY_VENDOR_CFG0:
+  fields:
+    - { name: O_DEBUG_OUT, bit_offset: 0, bit_size: 16 }
+    - { name: I_DEBUG_SEL, bit_offset: 16, bit_size: 4 }
+    - { name: IVCONTROL, bit_offset: 24, bit_size: 4 }
+
+fieldset/PHY_VENDOR_STATUS:
+  fields:
+    - { name: O_XCFGO, bit_offset: 0, bit_size: 15 }
+
+fieldset/PHY_CLK_CFG:
+  fields:
+    - { name: ICORECLKIN_SEL, bit_offset: 0, bit_size: 2 }
+
+fieldset/PHY_RXDATA_LATCH:
+  fields:
+    - { name: CMD, bit_offset: 0, bit_size: 1 }
+    - { name: READY, bit_offset: 4, bit_size: 1 }
+    - { name: MAIN0_SEL, bit_offset: 16, bit_size: 7 }
+    - { name: MAIN1_SEL, bit_offset: 24, bit_size: 7 }
+
+fieldset/PHY_RXDATA_LATCH_AUTO:
+  fields:
+    - { name: MAIN0_SEL_AUTO, bit_offset: 16, bit_size: 8 }
+    - { name: MAIN1_SEL_AUTO, bit_offset: 24, bit_size: 8 }
+
+fieldset/VIDEO_LINEBUF_CFG:
+  fields:
+    - { name: READY_LATENCY, bit_offset: 0, bit_size: 7 }
+    - { name: EMPTY_LATENCY, bit_offset: 8, bit_size: 7 }
+    - { name: TIMING_SEL, bit_offset: 16, bit_size: 1 }
+    - { name: VSYNC_POL_SEL, bit_offset: 17, bit_size: 1 }
+    - { name: HSYNC_POL_SEL, bit_offset: 18, bit_size: 1 }
+    - { name: EN, bit_offset: 20, bit_size: 1 }
+    - { name: PAT_SEL, bit_offset: 24, bit_size: 4 }
+    - { name: PAT_EN, bit_offset: 28, bit_size: 1 }
+
+fieldset/MCU_CTRL:
+  description: DisplayPort MCU control register.
+  fields:
+    - { name: AHBS_IMEM_EN, bit_offset: 0, bit_size: 1, description: Enable external AHB access to instruction memory. }
+    - { name: AHBS_SW_RST, bit_offset: 4, bit_size: 1, description: AHB slave software reset control. }
+    - { name: AHBM_SW_RST, bit_offset: 8, bit_size: 1, description: AHB master software reset control. }
+    - { name: CORE_SW_RST, bit_offset: 12, bit_size: 1, description: MCU core software reset control. }
+    - { name: DMEM_SHUT_DOWN, bit_offset: 16, bit_size: 1, description: Data memory shutdown control. }
+    - { name: DMEM_SLEEP, bit_offset: 17, bit_size: 1, description: Data memory sleep control. }
+    - { name: DMEM_CLK_OFF, bit_offset: 18, bit_size: 1, description: Data memory clock-off control. }
+    - { name: IMEM_SHUT_DOWN, bit_offset: 20, bit_size: 1, description: Instruction memory shutdown control. }
+    - { name: IMEM_SLEEP, bit_offset: 21, bit_size: 1, description: Instruction memory sleep control. }
+    - { name: IMEM_CLK_OFF, bit_offset: 22, bit_size: 1, description: Instruction memory clock-off control. }
+    - { name: IMEM_SEL, bit_offset: 24, bit_size: 1, description: Instruction memory selection control. }
+    - { name: CONFIG, bit_offset: 28, bit_size: 1, description: MCU configuration mode control. }
+
+fieldset/MCU_INTR_CTRL:
+  description: DisplayPort MCU interrupt control register.
+  fields:
+    - { name: CLR, bit_offset: 0, bit_size: 8, description: Interrupt clear mask. }
+    - { name: MASK, bit_offset: 8, bit_size: 8, description: Interrupt mask bits. }
+    - { name: EN, bit_offset: 16, bit_size: 8, description: Interrupt enable bits. }
+
+fieldset/MCU_INTR_STATUS:
+  fields:
+    - { name: STATUS, bit_offset: 0, bit_size: 8 }
+    - { name: RAW, bit_offset: 8, bit_size: 8 }
+
+fieldset/DPMCU_PAUSE_CTRL:
+  fields:
+    - { name: PAUSE_EN, bit_offset: 0, bit_size: 1 }
+    - { name: PAUSE_EN_BP, bit_offset: 4, bit_size: 1 }
+    - { name: PAUSE_EN_WFI, bit_offset: 8, bit_size: 1 }
+    - { name: PAUSE_EN_FORCE, bit_offset: 12, bit_size: 1 }
+    - { name: PAUSE_STEP_PULSE, bit_offset: 16, bit_size: 1 }
+
+fieldset/DPMCU_BREAKPOINT:
+  fields:
+    - { name: PC_BP, bit_offset: 2, bit_size: 15 }
+    - { name: PC_BP_EN, bit_offset: 20, bit_size: 1 }
+
+fieldset/DPMCU_PC:
+  fields:
+    - { name: PC, bit_offset: 0, bit_size: 17 }
+    - { name: IMEM_BASE, bit_offset: 17, bit_size: 15 }

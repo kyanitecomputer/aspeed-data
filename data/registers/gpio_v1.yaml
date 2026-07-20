@@ -13,7 +13,7 @@
 # The register map is NOT a simple uniform array. Groups 0 and 1 have their
 # int/status registers contiguous with data/dir at 0x000 and 0x020.
 # Groups 2-6 have data/dir registers scattered and int registers offset.
-# All offsets are verified against the Zephyr gpio_aspeed.h struct layout.
+# All offsets are verified against the gpio_aspeed.h struct layout.
 #
 # Index register (0x2AC): command-based interface for per-pin configuration.
 #   Write: {index_data[24:20], index_type[19:16], 0[15:13], index_cmd[12],
@@ -27,10 +27,7 @@
 # Command source selection (0x2D0): selects which bus master can control GPIO.
 #   SSP master index = 6 (ASPEED_GPIO_SEL_SSP).
 #
-# Sources:
 #   ast2600.md v1.6  Chapter 42 – GPIO (GPIO000–GPIO47C, GPIO800+)
-#   Zephyr: drivers/gpio/gpio_aspeed.h  (gpio_register_t layout, offsets)
-#   Zephyr: drivers/gpio/gpio_aspeed.c  (interrupt type encoding)
 
 block/GPIO:
   description: >

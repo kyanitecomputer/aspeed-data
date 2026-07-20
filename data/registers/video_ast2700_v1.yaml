@@ -1,0 +1,239 @@
+# AST2700 Video Engine registers.
+#
+# Sources:
+#   - linux/drivers/media/platform/aspeed/aspeed-video.c
+#   - aspeed_app/video/video.h
+#   - aspeed_app/video/regs-video.h
+
+block/VIDEO:
+  description: AST2700 video capture/compression engine register block.
+  items:
+    - { name: PROTECTION_KEY, byte_offset: 0x000, description: Write 0x1a038aa8 to unlock protected registers. }
+    - { name: SEQ_CTRL, byte_offset: 0x004, fieldset: SEQ_CTRL }
+    - { name: CTRL, byte_offset: 0x008, fieldset: CTRL }
+    - { name: TGS0, byte_offset: 0x00c, fieldset: TGS, description: Timing generation horizontal/direct-fetch base setting. }
+    - { name: TGS1, byte_offset: 0x010, fieldset: TGS, description: Timing generation vertical/direct-fetch offset setting. }
+    - { name: SCALING_FACTOR, byte_offset: 0x014, fieldset: SCALING_FACTOR }
+    - { name: SCALING_FILTER, byte_offset: 0x018, array: { len: 4, stride: 4 }, description: Scaling filter parameter registers 0..3. }
+    - { name: BCD_CTRL, byte_offset: 0x02c, fieldset: BCD_CTRL }
+    - { name: CAP_WINDOW, byte_offset: 0x030, fieldset: WINDOW }
+    - { name: COMP_WINDOW, byte_offset: 0x034, fieldset: WINDOW }
+    - { name: COMP_PROC_OFFSET, byte_offset: 0x038 }
+    - { name: COMP_OFFSET, byte_offset: 0x03c }
+    - { name: JPEG_ADDR, byte_offset: 0x040 }
+    - { name: SRC0_ADDR, byte_offset: 0x044 }
+    - { name: SRC_SCANLINE_OFFSET, byte_offset: 0x048 }
+    - { name: SRC1_ADDR, byte_offset: 0x04c }
+    - { name: BCD_ADDR, byte_offset: 0x050 }
+    - { name: COMP_ADDR, byte_offset: 0x054 }
+    - { name: STREAM_BUF_SIZE, byte_offset: 0x058, fieldset: STREAM_BUF_SIZE }
+    - { name: COMP_WRITE_OFFSET_READ_BACK, byte_offset: 0x05c, access: Read }
+    - { name: COMP_CTRL, byte_offset: 0x060, fieldset: COMP_CTRL }
+    - { name: JPEG_EFFECTIVE_BIT_CTRL, byte_offset: 0x064 }
+    - { name: QUANTIZATION_VALUE, byte_offset: 0x068 }
+    - { name: CB_ADDR, byte_offset: 0x06c }
+    - { name: COMP_TOTAL_SIZE_READ_BACK, byte_offset: 0x070, access: Read }
+    - { name: COMP_BLOCK_COUNT_READ_BACK, byte_offset: 0x074, access: Read }
+    - { name: FRAME_END_OFFSET_READ_BACK, byte_offset: 0x078, access: Read }
+    - { name: COMP_FRAME_COUNT_READ_BACK, byte_offset: 0x07c }
+    - { name: USER_HEADER_PARAM, byte_offset: 0x080 }
+    - { name: COMP_SIZE_READ_BACK, byte_offset: 0x084, access: Read }
+    - { name: SRC_LR_EDGE_DET, byte_offset: 0x090, fieldset: SRC_LR_EDGE_DET }
+    - { name: SRC_TB_EDGE_DET, byte_offset: 0x094, fieldset: SRC_TB_EDGE_DET }
+    - { name: MODE_DETECT_STATUS, byte_offset: 0x098, fieldset: MODE_DETECT_STATUS }
+    - { name: SYNC_STATUS, byte_offset: 0x09c, fieldset: SYNC_STATUS }
+    - { name: H_TOTAL_PIXELS, byte_offset: 0x0a0 }
+    - { name: EXT_MODE_DETECT_CTRL1, byte_offset: 0x0a4 }
+    - { name: EXT_CTRL1, byte_offset: 0x0a8 }
+    - { name: DIRECT_ACCESS_TIMING1, byte_offset: 0x0ac }
+    - { name: DIRECT_ACCESS_TIMING2, byte_offset: 0x0b0 }
+    - { name: EXT_CTRL2, byte_offset: 0x0b4 }
+    - { name: SRC_LR_EDGE_DET_4K2K, byte_offset: 0x0b8, fieldset: SRC_LR_EDGE_DET }
+    - { name: MODE_DETECT_STATUS_4K2K, byte_offset: 0x0bc, fieldset: MODE_DETECT_STATUS }
+    - { name: ENGINE_STATUS, byte_offset: 0x0c0, access: Read, array: { len: 4, stride: 4 }, description: Video engine status readback registers 1..4. }
+    - { name: EXTRA_MODE_DETECT_STATUS, byte_offset: 0x0d0, access: Read }
+    - { name: BCD_BOUNDING_BOX1, byte_offset: 0x0d4, access: Read }
+    - { name: BCD_BOUNDING_BOX2, byte_offset: 0x0d8, access: Read }
+    - { name: MGMT_SEQ_CTRL, byte_offset: 0x204, fieldset: SEQ_CTRL, description: Management compression sequence control. }
+    - { name: MGMT_CTRL, byte_offset: 0x208, fieldset: CTRL, description: Management compression control. }
+    - { name: MGMT_COMP_PROC_OFFSET, byte_offset: 0x238 }
+    - { name: MGMT_COMP_OFFSET, byte_offset: 0x23c }
+    - { name: MGMT_SRC0_ADDR, byte_offset: 0x244 }
+    - { name: MGMT_SRC_SCANLINE_OFFSET, byte_offset: 0x248 }
+    - { name: MGMT_SRC1_ADDR, byte_offset: 0x24c }
+    - { name: MGMT_BCD_ADDR, byte_offset: 0x250 }
+    - { name: MGMT_COMP_ADDR, byte_offset: 0x254 }
+    - { name: MGMT_COMP_CTRL, byte_offset: 0x260, fieldset: COMP_CTRL }
+    - { name: MGMT_QUANTIZATION_VALUE, byte_offset: 0x268 }
+    - { name: MGMT_COMP_TOTAL_SIZE_READ_BACK, byte_offset: 0x270, access: Read }
+    - { name: MGMT_FRAME_END_OFFSET_READ_BACK, byte_offset: 0x278, access: Read }
+    - { name: MGMT_USER_HEADER_PARAM, byte_offset: 0x280 }
+    - { name: GLOBAL_CTRL, byte_offset: 0x300, fieldset: GLOBAL_CTRL, description: Video control and SRAM table mapping. }
+    - { name: INTERRUPT_CTRL, byte_offset: 0x304, fieldset: INTERRUPT }
+    - { name: INTERRUPT_STATUS, byte_offset: 0x308, fieldset: INTERRUPT }
+    - { name: MODE_DETECT, byte_offset: 0x30c, fieldset: MODE_DETECT }
+    - { name: MEM_RESTRICT_START, byte_offset: 0x310 }
+    - { name: MEM_RESTRICT_END, byte_offset: 0x314 }
+    - { name: MEM_RESTRICT_START2, byte_offset: 0x318 }
+    - { name: DATA_TRUNCATION, byte_offset: 0x328, fieldset: DATA_TRUNCATION }
+    - { name: WATCHDOG_READ_BACK, byte_offset: 0x33c, access: Read }
+    - { name: VGA_SCRATCH_REMAP, byte_offset: 0x340, access: Read, array: { len: 10, stride: 4 }, description: VGA scratch remap readback registers. }
+    - { name: TABLE_SRAM, byte_offset: 0x400, array: { len: 128, stride: 4 }, description: Quantization/Huffman table SRAM window selected by GLOBAL_CTRL. }
+
+fieldset/SEQ_CTRL:
+  fields:
+    - { name: TRIG_MODE_DET, bit_offset: 0, bit_size: 1 }
+    - { name: TRIG_CAPTURE, bit_offset: 1, bit_size: 1 }
+    - { name: FORCE_IDLE, bit_offset: 2, bit_size: 1 }
+    - { name: MULT_FRAME, bit_offset: 3, bit_size: 1 }
+    - { name: TRIG_COMP, bit_offset: 4, bit_size: 1 }
+    - { name: AUTO_COMP, bit_offset: 5, bit_size: 1 }
+    - { name: EN_WATCHDOG, bit_offset: 7, bit_size: 1 }
+    - { name: YUV420, bit_offset: 10, bit_size: 1 }
+    - { name: COMP_FMT, bit_offset: 10, bit_size: 2 }
+    - { name: HALT, bit_offset: 12, bit_size: 1 }
+    - { name: JPEG_MODE, bit_offset: 13, bit_size: 1 }
+    - { name: EN_WATCHDOG_COMP, bit_offset: 14, bit_size: 1 }
+    - { name: TRIG_JPG, bit_offset: 15, bit_size: 1 }
+    - { name: CAP_BUSY, bit_offset: 16, bit_size: 1 }
+    - { name: COMP_BUSY, bit_offset: 18, bit_size: 1 }
+
+fieldset/CTRL:
+  fields:
+    - { name: HSYNC_POL, bit_offset: 0, bit_size: 1 }
+    - { name: VSYNC_POL, bit_offset: 1, bit_size: 1 }
+    - { name: SOURCE, bit_offset: 2, bit_size: 1 }
+    - { name: INT_DE, bit_offset: 4, bit_size: 1 }
+    - { name: DIRECT_FETCH, bit_offset: 5, bit_size: 1 }
+    - { name: CAPTURE_FMT, bit_offset: 6, bit_size: 2 }
+    - { name: AUTO_OR_CURSOR, bit_offset: 8, bit_size: 1 }
+    - { name: CLK_DELAY, bit_offset: 9, bit_size: 3 }
+    - { name: CLK_INVERSE, bit_offset: 11, bit_size: 1 }
+    - { name: INTERLACE, bit_offset: 14, bit_size: 1 }
+    - { name: HSYNC_POL_CTRL, bit_offset: 15, bit_size: 1 }
+    - { name: FRC, bit_offset: 16, bit_size: 8 }
+    - { name: EN_COMPARE_ONLY, bit_offset: 31, bit_size: 1 }
+
+fieldset/TGS:
+  fields:
+    - { name: LAST, bit_offset: 0, bit_size: 13 }
+    - { name: FIRST, bit_offset: 16, bit_size: 13 }
+
+fieldset/SCALING_FACTOR:
+  fields:
+    - { name: HORIZONTAL, bit_offset: 0, bit_size: 16 }
+    - { name: VERTICAL, bit_offset: 16, bit_size: 16 }
+
+fieldset/BCD_CTRL:
+  fields:
+    - { name: EN_BCD, bit_offset: 0, bit_size: 1 }
+    - { name: EN_ABCD, bit_offset: 1, bit_size: 1 }
+    - { name: EN_CB, bit_offset: 2, bit_size: 1 }
+    - { name: THR, bit_offset: 16, bit_size: 8 }
+    - { name: ABCD_THR, bit_offset: 24, bit_size: 8 }
+
+fieldset/WINDOW:
+  fields:
+    - { name: WIDTH, bit_offset: 0, bit_size: 13 }
+    - { name: HEIGHT, bit_offset: 16, bit_size: 13 }
+
+fieldset/STREAM_BUF_SIZE:
+  fields:
+    - { name: PACKET_SIZE, bit_offset: 0, bit_size: 3 }
+    - { name: N_PACKETS, bit_offset: 3, bit_size: 3 }
+
+fieldset/COMP_CTRL:
+  fields:
+    - { name: VQ_DCT_ONLY, bit_offset: 0, bit_size: 1 }
+    - { name: VQ_4COLOR, bit_offset: 1, bit_size: 1 }
+    - { name: QUANTIZE, bit_offset: 2, bit_size: 1 }
+    - { name: EN_BQ, bit_offset: 4, bit_size: 1 }
+    - { name: EN_CRYPTO, bit_offset: 5, bit_size: 1 }
+    - { name: DCT_CHR, bit_offset: 6, bit_size: 5 }
+    - { name: DCT_LUM, bit_offset: 11, bit_size: 5 }
+    - { name: EN_HQ, bit_offset: 16, bit_size: 1 }
+    - { name: RSVD, bit_offset: 19, bit_size: 1 }
+    - { name: ENCODE, bit_offset: 20, bit_size: 2 }
+    - { name: HQ_DCT_CHR, bit_offset: 22, bit_size: 5 }
+    - { name: HQ_DCT_LUM, bit_offset: 27, bit_size: 5 }
+
+fieldset/SRC_LR_EDGE_DET:
+  fields:
+    - { name: LEFT, bit_offset: 0, bit_size: 12 }
+    - { name: NO_V, bit_offset: 12, bit_size: 1 }
+    - { name: NO_H, bit_offset: 13, bit_size: 1 }
+    - { name: NO_DISP, bit_offset: 14, bit_size: 1 }
+    - { name: NO_CLK, bit_offset: 15, bit_size: 1 }
+    - { name: RIGHT, bit_offset: 16, bit_size: 12 }
+    - { name: INTERLACE, bit_offset: 31, bit_size: 1 }
+
+fieldset/SRC_TB_EDGE_DET:
+  fields:
+    - { name: TOP, bit_offset: 0, bit_size: 13 }
+    - { name: BOTTOM, bit_offset: 16, bit_size: 13 }
+
+fieldset/MODE_DETECT_STATUS:
+  fields:
+    - { name: H_PERIOD, bit_offset: 0, bit_size: 12 }
+    - { name: EXTSRC_ADC, bit_offset: 12, bit_size: 1 }
+    - { name: H_STABLE, bit_offset: 13, bit_size: 1 }
+    - { name: V_STABLE, bit_offset: 14, bit_size: 1 }
+    - { name: V_LINES, bit_offset: 16, bit_size: 12 }
+    - { name: VSYNC, bit_offset: 28, bit_size: 1 }
+    - { name: HSYNC, bit_offset: 29, bit_size: 1 }
+    - { name: VSYNC_RDY, bit_offset: 30, bit_size: 1 }
+    - { name: HSYNC_RDY, bit_offset: 31, bit_size: 1 }
+
+fieldset/SYNC_STATUS:
+  fields:
+    - { name: HSYNC, bit_offset: 0, bit_size: 12 }
+    - { name: VSYNC, bit_offset: 16, bit_size: 12 }
+
+fieldset/INTERRUPT:
+  fields:
+    - { name: MODE_DETECT_WD, bit_offset: 0, bit_size: 1 }
+    - { name: CAPTURE_COMPLETE, bit_offset: 1, bit_size: 1 }
+    - { name: COMP_READY, bit_offset: 2, bit_size: 1 }
+    - { name: COMP_COMPLETE, bit_offset: 3, bit_size: 1 }
+    - { name: MODE_DETECT, bit_offset: 4, bit_size: 1 }
+    - { name: FRAME_COMPLETE, bit_offset: 5, bit_size: 1 }
+    - { name: DECODE_ERR, bit_offset: 6, bit_size: 1 }
+    - { name: HALT_READY, bit_offset: 8, bit_size: 1 }
+    - { name: HANG_WD, bit_offset: 9, bit_size: 1 }
+    - { name: STREAM_DESC, bit_offset: 10, bit_size: 1 }
+    - { name: VSYNC_DESC, bit_offset: 11, bit_size: 1 }
+    - { name: MGMT_CAPTURE_COMPLETE, bit_offset: 16, bit_size: 1 }
+    - { name: MGMT_COMP_COMPLETE, bit_offset: 17, bit_size: 1 }
+
+fieldset/GLOBAL_CTRL:
+  fields:
+    - { name: DELAY_INTERNAL_VSYNC, bit_offset: 2, bit_size: 2 }
+    - { name: RC4_INITIAL_RESET, bit_offset: 8, bit_size: 1 }
+    - { name: RC4_TEST_MODE, bit_offset: 9, bit_size: 1 }
+    - { name: COMP_FB_ADDR_MODE, bit_offset: 10, bit_size: 2 }
+    - { name: CAPTURE_FB_ADDR_MODE, bit_offset: 12, bit_size: 2 }
+    - { name: RC4_VECTOR_READ_MODE, bit_offset: 14, bit_size: 1 }
+    - { name: CRYPTO_STATUS_SW_RESET, bit_offset: 15, bit_size: 1 }
+    - { name: FAST_CRYPTO_MODE, bit_offset: 16, bit_size: 1 }
+    - { name: CRYPTO_MODE, bit_offset: 17, bit_size: 1 }
+    - { name: PROGRAMMABLE_QUANT_TABLE_EN, bit_offset: 18, bit_size: 1 }
+    - { name: PROGRAMMABLE_HUFFMAN_TABLE_EN, bit_offset: 19, bit_size: 1 }
+    - { name: VERTICAL_BORDER_AUTO_MASK, bit_offset: 23, bit_size: 1 }
+    - { name: DECODE_ROTATE_SEL, bit_offset: 24, bit_size: 3 }
+    - { name: DECODE_OUTPUT_RGB, bit_offset: 27, bit_size: 1 }
+    - { name: CAPTURE_LINEAR_RGB_FORMAT, bit_offset: 28, bit_size: 2 }
+    - { name: TABLE_ADDR_MAPPING, bit_offset: 30, bit_size: 2 }
+
+fieldset/DATA_TRUNCATION:
+  fields:
+    - { name: B_REDUCTION, bit_offset: 0, bit_size: 3 }
+    - { name: G_REDUCTION, bit_offset: 3, bit_size: 3 }
+    - { name: R_REDUCTION, bit_offset: 6, bit_size: 3 }
+
+fieldset/MODE_DETECT:
+  fields:
+    - { name: EDG_THROD, bit_offset: 8, bit_size: 8 }
+    - { name: VER_STABLE, bit_offset: 16, bit_size: 4 }
+    - { name: HOR_STABLE, bit_offset: 20, bit_size: 4 }
+    - { name: VER_TOLER, bit_offset: 24, bit_size: 4 }
+    - { name: HOR_TOLER, bit_offset: 28, bit_size: 4 }

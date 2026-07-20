@@ -3,12 +3,9 @@
 # The CLOCK peripheral base is the SCU base: 0x7E6E_2000 (CM3 view).
 # Offsets are SCU register offsets.
 #
-# Sources:
 #   ast2600.md    v1.6   SCU080/084/090/094 – Clock Stop Control
 #   ast2600.md    v1.6   SCU200/210         – HPLL / APLL parameters
 #   ast2600.md    v1.6   SCU300/310/314     – Clock selection
-#   Zephyr: drivers/clock_control/clock_control_ast26xx.c
-#   Zephyr: include/zephyr/dt-bindings/clock/ast26xx_clock.h
 
 block/CLOCK:
   description: >
@@ -84,7 +81,7 @@ fieldset/CLK_STOP0:
     Clock Stop Control, Group 0 (SCU080 / SCU084).
     Each bit controls one clock gate.  Writing the SET register stops the
     clock; writing the CLR register starts it.  Bit positions match
-    ASPEED_CLK_GRP_0_OFFSET values from Zephyr ast26xx_clock.h.
+    ASPEED_CLK_GRP_0_OFFSET values from ast26xx_clock.h.
   fields:
     - name: MCLK
       description: Memory controller clock (MCLK).

@@ -8,13 +8,8 @@
 # Default reload: 0x014F_B180 = ~22 seconds.
 #
 # Software reboot:
-#   Write 0x3FFF_FF1 to SW_RESET_MASK1 (WDT28).
+#   Write 0x03FF_FFF1 to SW_RESET_MASK1 (WDT28).
 #   Write 0xAEED_F123 to SW_RESET_CTRL (WDT24) to trigger.
-#
-# Sources:
-#   ast2600.md v1.6  Chapter 46 – Watchdog Timer (WDT00–WDT2C)
-#   Zephyr: soc/aspeed/ast26xx/soc.c  (sys_arch_reboot)
-#   Zephyr: drivers/watchdog/wdt_aspeed.c
 
 block/WDT:
   description: >
@@ -58,6 +53,28 @@ block/WDT:
       byte_offset: 0x0C
       fieldset: WDT_CTRL
 
+    - name: TIMEOUT_STATUS
+      description: Timeout status register.
+      byte_offset: 0x10
+
+    - name: CLEAR_TIMEOUT_STATUS
+      description: Clear timeout status register.
+      byte_offset: 0x14
+
+    - name: RESET_WIDTH
+      description: Reset pulse width register.
+      byte_offset: 0x18
+
+    - name: RESET_MASK1
+      description: Reset mask register 1.
+      byte_offset: 0x1C
+      fieldset: WDT_SW_RESET_MASK1
+
+    - name: RESET_MASK2
+      description: Reset mask register 2.
+      byte_offset: 0x20
+      fieldset: WDT_SW_RESET_MASK1
+
     - name: SW_RESET_CTRL
       description: >
         Software Mode Reset Control Register (WDT24).
@@ -72,9 +89,31 @@ block/WDT:
         Software Mode Reset Mask Register #1 (WDT28).
         Each bit enables the corresponding subsystem to be reset when
         SW_RESET_CTRL is triggered.
-        Zephyr uses 0x3FFF_FF1 to reset most subsystems.
+        Write 0x03FF_FFF1 to reset the standard set of subsystems.
       byte_offset: 0x28
       fieldset: WDT_SW_RESET_MASK1
+
+    - name: SW_RESET_MASK2
+      description: Software Mode Reset Mask Register #2.
+      byte_offset: 0x2C
+      fieldset: WDT_SW_RESET_MASK1
+
+    - name: SW_RESET_KEY
+      description: AST2700 software reset key/trigger register.
+      byte_offset: 0x30
+      fieldset: WDT_SW_RESET_CTRL
+
+    - name: SW_RESET_SEL0
+      description: AST2700 software reset selection register 0.
+      byte_offset: 0x34
+      fieldset: WDT_SW_RESET_MASK1
+
+    - name: WRITE_PROTECT
+      description: Watchdog write protection registers.
+      byte_offset: 0x40
+      array:
+        len: 4
+        stride: 4
 
 # ── Fieldsets ──────────────────────────────────────────────────────────────────
 
@@ -126,14 +165,14 @@ fieldset/WDT_CTRL:
       description: >
         External signal enable after timeout.
         1 = pulse generated on an external output pin.
-      bit_offset: 27
+      bit_offset: 3
       bit_size: 1
     - name: WDT_INTR
       description: >
         Interrupt before timeout.
         1 = generate interrupt when counter reaches pre-timeout value
         (set in CTRL bits [31:10]).
-      bit_offset: 28
+      bit_offset: 2
       bit_size: 1
     - name: WDT_RESET_BY_SOC
       description: >
@@ -142,6 +181,11 @@ fieldset/WDT_CTRL:
         1 = SOC system reset also resets this WDT.
       bit_offset: 4
       bit_size: 1
+
+    - name: PRE_TIMEOUT
+      description: Pre-timeout counter field.
+      bit_offset: 10
+      bit_size: 22
 
 fieldset/WDT_SW_RESET_CTRL:
   description: Software Mode Reset Control Register (WDT24).
@@ -163,7 +207,7 @@ fieldset/WDT_SW_RESET_MASK1:
     - name: MASK
       description: >
         Subsystem reset enable bitmask.
-        Zephyr sets 0x03FF_FFF1 to reset the standard set of subsystems
+        Write 0x03FF_FFF1 to reset the standard set of subsystems
         (ARM, SDRAM, AHB bridges, coprocessor, SOC controllers, USB, etc.).
       bit_offset: 0
       bit_size: 32

@@ -19,7 +19,6 @@
 #   1 = Master interrupts in I2CG00; slave interrupts in I2CG04
 #
 # Sources:
-#   ast1060v19.pdf  Chapter 27 – I2C/SMBus (I2CG00–I2CG10)
 
 block/I2CGLOBAL:
   description: >

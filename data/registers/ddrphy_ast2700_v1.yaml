@@ -1,0 +1,82 @@
+# AST2700 Synopsys DWC DDR PHY APB and firmware-memory windows.
+
+block/DDRPHY_APB:
+  description: >
+    DWC DDR PHY APB register aperture. PHY register addresses are 16-bit word
+    addresses; the BootMCU byte offset is APB address * 2. The public datasheet
+    leaves PUB/training details to the SDK, while the internal bring-up notes
+    identify the INITENG, UCT mailbox, and DRTUB control sub-windows below.
+  items:
+    - name: WORD
+      description: 16-bit PHY APB word array covering PUB, INITENG, UCT, and DRTUB windows.
+      byte_offset: 0x00000
+      bit_size: 16
+      array:
+        len: 1048576
+        stride: 2
+
+    - name: CAL_ZAP
+      description: PHY calibration zap control used before mission-mode DFI initialization.
+      byte_offset: 0x40112
+      bit_size: 16
+
+    - name: INITENG
+      description: PHY Init Engine (PIE) sequencer program window.
+      byte_offset: 0x120000
+      bit_size: 16
+      array:
+        len: 256
+        stride: 2
+
+    - name: UCT_MAILBOX
+      description: PHY microcontroller mailbox window.
+      byte_offset: 0x180000
+      bit_size: 16
+      array:
+        len: 32
+        stride: 2
+
+    - name: MICRO_CONT_MUX_SEL
+      description: Microcontroller/APB CSR mux selection; set to isolate APB while firmware runs.
+      byte_offset: 0x1a0000
+      bit_size: 16
+      fieldset: MICRO_CONT_MUX_SEL
+
+    - name: MICRO_RESET
+      description: PHY microcontroller reset/stall control.
+      byte_offset: 0x1a0132
+      bit_size: 16
+      fieldset: MICRO_RESET
+
+block/DDRPHY_MEM:
+  description: >
+    DWC DDR PHY instruction/data memory window used for loading training firmware.
+    Although the PHY firmware is organized as 16-bit words, this AHB-to-APB SRAM
+    path requires word-aligned 32-bit transactions.
+  items:
+    - name: DWORD
+      description: 32-bit access words for PHY IMEM/DMEM firmware loading.
+      byte_offset: 0x00000
+      array:
+        len: 16384
+        stride: 4
+
+fieldset/MICRO_CONT_MUX_SEL:
+  bit_size: 16
+  fields:
+    - name: ENABLE
+      description: Select PHY microcontroller ownership of internal CSRs.
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/MICRO_RESET:
+  bit_size: 16
+  fields:
+    - name: STALL_TO_MICRO
+      description: Stall the PHY microcontroller.
+      bit_offset: 0
+      bit_size: 1
+    - name: RESET_TO_MICRO
+      description: Reset the PHY microcontroller.
+      bit_offset: 3
+      bit_size: 1

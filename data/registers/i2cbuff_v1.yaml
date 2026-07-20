@@ -18,7 +18,6 @@
 #   - After receive, read I2CC0C[29:24] for actual received byte count.
 #
 # Sources:
-#   ast1060v19.pdf  Chapter 27 – I2C/SMBus (I2C pool buffer SRAM layout)
 
 block/I2CBUFF:
   description: >

@@ -21,8 +21,6 @@
 #   CF addr = 0x200000 + (BMC_addr - 0x1E600000)  for BMC 0x1E6xxxxx (SEG1)
 #   CF addr = 0x600000 + (BMC_addr - 0x1E700000)  for BMC 0x1E7xxxxx (SEG3)
 #
-# Sources:
-#   AST2400 datasheet v1.4 (ast2400v14): chapters 5 (SCU), 9 (CVIC), 8 (UART),
 #     43 (Timer), 46 (WDT), 44 (GPIO)
 #   OpenBMC: meta-aspeed AST2400 machine configuration
 
@@ -108,24 +106,127 @@ peripherals:
     address: 0x680000
     description: "GPIO controller (208 pins)"
 
+  # Serial GPIO master.
+  # BMC: 0x1E780500 → CF: 0x680500
+  - name:    SGPIO
+    block:   sgpio_v1::SGPIO
+    address: 0x680500
+    description: "Serial GPIO master"
+
+  # PWM and fan tachometer controller.
+  # BMC: 0x1E786000 → CF: 0x686000
+  - name:    PWM_TACH
+    block:   pwm_v1::PWM_TACH
+    address: 0x686000
+    description: "PWM and fan tachometer controller"
+
+  # PECI controller.
+  # BMC: 0x1E78B000 → CF: 0x68B000
+  - name:    PECI
+    block:   peci_v1::PECI
+    address: 0x68B000
+    description: "PECI controller"
+
+  # ADC controller.
+  # BMC: 0x1E6E9000 → CF: 0x2E9000
+  - name:    ADC
+    block:   adc_v1::ADC
+    address: 0x2E9000
+    description: "ADC controller"
+
+  - name:    I2C_GLOBAL
+    block:   i2c_legacy_v1::I2CLEGACY_GLOBAL
+    address: 0x68A000
+    description: "Legacy I2C/SMBus global controller"
+
+  - name:    I2C0
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A040
+
+  - name:    I2C1
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A080
+
+  - name:    I2C2
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A0C0
+
+  - name:    I2C3
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A100
+
+  - name:    I2C4
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A140
+
+  - name:    I2C5
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A180
+
+  - name:    I2C6
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A1C0
+
+  - name:    I2C7
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A300
+
+  - name:    I2C8
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A340
+
+  - name:    I2C9
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A380
+
+  - name:    I2C10
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A3C0
+
+  - name:    I2C11
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A400
+
+  - name:    I2C12
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A440
+
+  - name:    I2C13
+    block:   i2c_legacy_v1::I2CLEGACY
+    address: 0x68A480
+
 # ── Interrupt table (CVIC, 32 sources) ───────────────────────────────────────
 #
-# AST2400 CVIC interrupt assignments mirror AST2500; extend as verified.
+# AST2400 coprocessor interrupt assignments from datasheet table 56.
 
 interrupts:
-  - { name: SW,       number: 0  }  # Software-generated interrupt
-  - { name: UART1,    number: 1  }  # UART1
-  - { name: UART2,    number: 2  }  # UART2
-  - { name: UART3,    number: 3  }  # UART3
-  - { name: UART4,    number: 4  }  # UART4
-  - { name: UART5,    number: 5  }  # UART5
-  - { name: WDT,      number: 6  }  # Watchdog timer
-  - { name: TIMER1,   number: 7  }  # Hardware timer 1
-  - { name: TIMER2,   number: 8  }  # Hardware timer 2
-  - { name: TIMER3,   number: 9  }  # Hardware timer 3
-  - { name: TIMER4,   number: 10 }  # Hardware timer 4
-  - { name: TIMER5,   number: 11 }  # Hardware timer 5
-  - { name: GPIO,     number: 12 }  # GPIO
-  - { name: I2C,      number: 13 }  # I2C
-  - { name: ARM,      number: 14 }  # ARM→ColdFire IPI
-  - { name: DMA,      number: 15 }  # DMA
+  - { name: SDRAM,        number: 0  }
+  - { name: MIC,          number: 1  }
+  - { name: LPC,          number: 2  }
+  - { name: UART1,        number: 3  }
+  - { name: UART2,        number: 4  }
+  - { name: UART3,        number: 5  }
+  - { name: UART4,        number: 6  }
+  - { name: UART5,        number: 7  }
+  - { name: TIMER1,       number: 8  }
+  - { name: TIMER2,       number: 9  }
+  - { name: TIMER3,       number: 10 }
+  - { name: TIMER4,       number: 11 }
+  - { name: TIMER5,       number: 12 }
+  - { name: TIMER6,       number: 13 }
+  - { name: TIMER7,       number: 14 }
+  - { name: TIMER8,       number: 15 }
+  - { name: I2C,          number: 16 }
+  - { name: PECI,         number: 17 }
+  - { name: SMC,          number: 18 }
+  - { name: GPIO,         number: 19 }
+  - { name: SCU,          number: 20 }
+  - { name: RTC,          number: 21 }
+  - { name: WDT,          number: 22 }
+  - { name: PWM_TACH,     number: 23 }
+  - { name: ADC,          number: 24 }
+  - { name: SGPIO_MASTER, number: 25 }
+  - { name: SGPIO_SLAVE,  number: 26 }
+  - { name: MAC1,         number: 27 }
+  - { name: MCTP,         number: 28 }
+  - { name: JTAG_MASTER,  number: 29 }

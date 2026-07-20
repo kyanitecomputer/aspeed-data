@@ -1,0 +1,255 @@
+# ASPEED SMBus/I2C PFR Filter (SMBUS_FILTER) registers.
+#
+# One global block at 0x7E7B_2000 plus up to 4 per-instance blocks:
+#
+#   SMBUS_FILTER_GLOBAL  : 0x7E7B_2000  (global IRQ enable/status)
+#   SMBUS_FILTER0        : 0x7E7B_2200  (instance 0, stride 0x100)
+#   SMBUS_FILTER1        : 0x7E7B_2300
+#   SMBUS_FILTER2        : 0x7E7B_2400
+#   SMBUS_FILTER3        : 0x7E7B_2500
+#
+# Each filter instance monitors one I2C/SMBus channel and blocks or allows
+# transactions based on a 256-bit address whitelist stored in SRAM.
+# The whitelist physical address is loaded into the BUF register before
+# enabling filtering.  Each bit N in the 256-bit bitmap corresponds to the
+# 7-bit address (N >> 1) with direction R/W = N & 1.
+#
+# Timeout timing: AST_I2C_F_TIMING[15:0] = AST_I2C_F_TIMING[31:16] =
+#   PCLK_Hz / (i2c_kHz * 3 * 1000).  Both halves must hold the same value.
+#
+
+# ── Global block ──────────────────────────────────────────────────────────────
+
+block/SMBUS_FILTER_GLOBAL:
+  description: >
+    ASPEED SMBus/I2C PFR Filter — global interrupt registers.
+    Base: 0x7E7B_2000 (AST1060).
+    Contains one interrupt-enable bit and one interrupt-status bit per
+    filter instance (bit N = instance N).
+  items:
+    - name: GLOBAL_INT_EN
+      description: >
+        Global per-instance interrupt enable (offset 0x08).
+        Bit N enables the interrupt from filter instance N.
+      byte_offset: 0x08
+      fieldset: I2CF_GLOBAL_INT
+
+    - name: GLOBAL_INT_STS
+      description: >
+        Global per-instance interrupt status (offset 0x0C, write 1 to clear).
+        Bit N is set when filter instance N raises an interrupt.
+      byte_offset: 0x0C
+      fieldset: I2CF_GLOBAL_INT
+
+# ── Per-instance block ────────────────────────────────────────────────────────
+
+block/SMBUS_FILTER:
+  description: >
+    ASPEED SMBus/I2C PFR Filter — per-instance registers.
+    Instance N base address: 0x7E7B_2200 + N * 0x100.
+    Program BUF with the physical SRAM address of the whitelist bitmap
+    before setting EN or CFG.
+  items:
+    - name: EN
+      description: >
+        Filter enable (offset 0x04).
+        Write 1 to enable filtering on this I2C bus.
+        Write 0 to disable (pass all transactions).
+      byte_offset: 0x04
+      fieldset: I2CF_ONBIT
+
+    - name: BUF
+      description: >
+        Whitelist buffer physical address (offset 0x08).
+        Must point to a 16-byte-aligned, DMA-accessible SRAM region
+        holding the ast_i2c_f_tbl structure (17 × 32-byte bitmaps).
+        Write before setting CFG.
+      byte_offset: 0x08
+      fieldset: I2CF_BUF_ADDR
+
+    - name: CFG
+      description: >
+        Filter config / whitelist enable (offset 0x0C).
+        Write 1 to activate address whitelist (requires BUF set first).
+        Write 0 to disable address filtering (block/pass all determined
+        by default bitmap entry [0]).
+      byte_offset: 0x0C
+      fieldset: I2CF_ONBIT
+
+    - name: TIMING
+      description: >
+        Timeout timing (offset 0x10).
+        Both halves [31:16] and [15:0] must hold the same count value:
+          count = PCLK_Hz / (i2c_kHz * 3 * 1000).
+        At 100 MHz PCLK and 100 kHz I2C: count ≈ 333 (0x14D).
+        Register value = (count << 16) | count.
+      byte_offset: 0x10
+      fieldset: I2CF_TIMING
+
+    - name: INT_EN
+      description: >
+        Local interrupt enable (offset 0x14).
+        Write 1 to enable interrupt for this instance.
+      byte_offset: 0x14
+      fieldset: I2CF_ONBIT
+
+    - name: INT_STS
+      description: >
+        Local interrupt status (offset 0x18, write 1 to clear).
+      byte_offset: 0x18
+      fieldset: I2CF_ONBIT
+
+    - name: STS
+      description: >
+        Status register (offset 0x20, read-only).
+        Includes FIFO status and read/write pointers.
+      byte_offset: 0x20
+      fieldset: I2CF_STS
+
+    - name: SEQ
+      description: Received sequence value register.
+      byte_offset: 0x24
+      fieldset: I2CF_SEQ
+
+    - name: MAP0
+      description: >
+        Address re-map table, slots 0–3 (offset 0x40).
+        Each byte is a 7-bit target address for the corresponding
+        whitelist bitmap slot (slot 0 = byte[7:0], slot 3 = byte[31:24]).
+      byte_offset: 0x40
+      fieldset: I2CF_MAP
+
+    - name: MAP1
+      description: Address re-map table, slots 4–7 (offset 0x44).
+      byte_offset: 0x44
+      fieldset: I2CF_MAP
+
+    - name: MAP2
+      description: Address re-map table, slots 8–11 (offset 0x48).
+      byte_offset: 0x48
+      fieldset: I2CF_MAP
+
+    - name: MAP3
+      description: Address re-map table, slots 12–15 (offset 0x4C).
+      byte_offset: 0x4C
+      fieldset: I2CF_MAP
+
+    - name: INFO
+      description: >
+        Blocked-transaction info FIFO read port (offset 0x60, read-only).
+        Each read pops one 32-bit entry from the FIFO describing a blocked
+        transaction (address, direction, data bytes).
+      byte_offset: 0x60
+      fieldset: I2CF_INFO
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/I2CF_GLOBAL_INT:
+  description: Global per-instance interrupt enable or status (one bit per instance).
+  fields:
+    - name: INST_MASK
+      description: >
+        Bitmask: bit N = instance N.
+        In INT_EN: write 1 to enable interrupt.
+        In INT_STS: write 1 to clear interrupt.
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/I2CF_ONBIT:
+  description: Single-bit control/status register.
+  fields:
+    - name: EN
+      description: Write 1 to enable/set; write 1 to clear (for status).
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/I2CF_BUF_ADDR:
+  description: Whitelist buffer physical address (must be 16-byte aligned).
+  fields:
+    - name: ADDR
+      description: Physical SRAM address of the whitelist table.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/I2CF_TIMING:
+  description: >
+    Timeout timing register. Both halves hold the same tick count.
+    count = PCLK_Hz / (i2c_kHz * 3000).
+  fields:
+    - name: TIMEOUT_LO
+      description: Low half of timeout tick count.
+      bit_offset: 0
+      bit_size: 16
+    - name: TIMEOUT_HI
+      description: High half of timeout tick count (must equal TIMEOUT_LO).
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/I2CF_STS:
+  description: Filter instance status register (read-only).
+  fields:
+    - name: FAIL_FIFO_NOT_EMPTY
+      description: Failure FIFO contains at least one entry.
+      bit_offset: 0
+      bit_size: 1
+    - name: FAIL_FIFO_FULL
+      description: Failure FIFO is full.
+      bit_offset: 1
+      bit_size: 1
+    - name: WLIST_EN
+      description: Whitelist enable status.
+      bit_offset: 4
+      bit_size: 1
+    - name: WTABLE_FAIL
+      description: Whitelist table failure status.
+      bit_offset: 5
+      bit_size: 1
+    - name: FIFO_RD_PTR
+      description: Info FIFO read pointer.
+      bit_offset: 8
+      bit_size: 4
+    - name: FIFO_WR_PTR
+      description: Info FIFO write pointer.
+      bit_offset: 12
+      bit_size: 4
+
+fieldset/I2CF_SEQ:
+  description: Received sequence value register.
+  fields:
+    - name: RX_SEQ_VAL
+      description: Received sequence value.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/I2CF_MAP:
+  description: >
+    Address re-map table (4 slots per register).
+    Byte N [7:0] = 7-bit I2C address for whitelist bitmap slot N.
+    Slot 0 is the default bitmap (slot index 0 in BUF table).
+  fields:
+    - name: SLOT0_ADDR
+      description: 7-bit address for re-map slot (N*4 + 0).
+      bit_offset: 0
+      bit_size: 8
+    - name: SLOT1_ADDR
+      description: 7-bit address for re-map slot (N*4 + 1).
+      bit_offset: 8
+      bit_size: 8
+    - name: SLOT2_ADDR
+      description: 7-bit address for re-map slot (N*4 + 2).
+      bit_offset: 16
+      bit_size: 8
+    - name: SLOT3_ADDR
+      description: 7-bit address for re-map slot (N*4 + 3).
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/I2CF_INFO:
+  description: >
+    Blocked-transaction info FIFO entry (read-only).
+    Each read pops one entry describing a blocked I2C transaction.
+  fields:
+    - name: DATA
+      description: Raw 32-bit FIFO entry (format is hardware-defined).
+      bit_offset: 0
+      bit_size: 32

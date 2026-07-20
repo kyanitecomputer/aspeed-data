@@ -15,11 +15,7 @@
 # Each half supports 4 message IDs (0–3).  A message ID carries a 32-byte
 # payload in its DATA registers and is triggered/acknowledged via TRIG/STATUS.
 #
-# Zephyr usage: polling (ipm_bootmcu.c uses a thread + k_msleep, no IRQ).
 #
-# Sources:
-#   Zephyr drivers/ipm/ipm_bootmcu.c
-#   Zephyr dts/riscv/aspeed/ast27xx.dtsi  (ipc1 bus @ 0x14C39000)
 
 block/CHAN:
   description: >

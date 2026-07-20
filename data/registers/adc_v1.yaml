@@ -16,7 +16,6 @@
 #
 # Sources:
 #   drivers/iio/adc/aspeed_adc.c  (Linux 6.12.3)
-#   ast1060v19.pdf  Chapter 20 – ADC Controller (ADC0C–ADC2C, ADC10–ADC1E)
 #   ast2600.pdf / aspeed-g6.dtsi  (two independent ADC banks)
 
 block/ADC:

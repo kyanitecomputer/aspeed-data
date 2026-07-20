@@ -1,0 +1,332 @@
+# AST2700 Watchdog Timer (WDT) registers.
+#
+# WDT0-WDT7 are at 0x14C3_7000 + n * 0x80. WDTA is at 0x14C3_7400.
+# Each WDT instance has 0x80 bytes of registers.
+
+block/WDT:
+  description: AST2700 watchdog timer register block.
+  items:
+    - name: STATUS
+      description: Counter status register (WDT00), current down-counter value.
+      byte_offset: 0x00
+      access: Read
+      fieldset: COUNTER
+
+    - name: RELOAD
+      description: Counter reload value register (WDT04), units of 1 us.
+      byte_offset: 0x04
+      fieldset: COUNTER
+
+    - name: RESTART
+      description: Counter restart register (WDT08); write 0x4755 to restart.
+      byte_offset: 0x08
+      fieldset: RESTART
+
+    - name: CTRL
+      description: Watchdog control register (WDT0C).
+      byte_offset: 0x0C
+      fieldset: CTRL
+
+    - name: TIMEOUT_STATUS
+      description: Timeout and interrupt status register (WDT10).
+      byte_offset: 0x10
+      access: Read
+      fieldset: TIMEOUT_STATUS
+
+    - name: CLEAR_TIMEOUT_STATUS
+      description: Clear timeout and interrupt status register (WDT14).
+      byte_offset: 0x14
+      fieldset: CLEAR_TIMEOUT_STATUS
+
+    - name: RESET_WIDTH
+      description: External reset pulse width/control register (WDT18).
+      byte_offset: 0x18
+      fieldset: RESET_WIDTH
+
+    - name: RESET_MASK
+      description: Watchdog reset mask registers #1-#5 (WDT1C-WDT2C).
+      byte_offset: 0x1C
+      array:
+        len: 5
+        stride: 4
+      fieldset: MASK
+
+    - name: SW_RESET_CTRL
+      description: Software mode reset control register (WDT30).
+      byte_offset: 0x30
+      fieldset: SW_RESET_CTRL
+
+    - name: SW_RESET_MASK
+      description: Software mode reset mask registers #1-#5 (WDT34-WDT44).
+      byte_offset: 0x34
+      array:
+        len: 5
+        stride: 4
+      fieldset: MASK
+
+    - name: FUNCTION_DISABLE
+      description: Function disable control register (WDT48), write-1-set until SRST#.
+      byte_offset: 0x48
+      fieldset: FUNCTION_DISABLE
+
+    - name: SCRATCH
+      description: Scratch register (WDT4C).
+      byte_offset: 0x4C
+      fieldset: SCRATCH
+
+    - name: RESET_MASK_WRITE_PROTECT
+      description: Reset mask write protection registers #1-#5 (WDT50-WDT60).
+      byte_offset: 0x50
+      array:
+        len: 5
+        stride: 4
+      fieldset: MASK
+
+    - name: SW_RESET_MASK_WRITE_PROTECT
+      description: Software reset mask write protection registers #1-#5 (WDT64-WDT74).
+      byte_offset: 0x64
+      array:
+        len: 5
+        stride: 4
+      fieldset: MASK
+
+    - name: WRITE_PROTECT
+      description: WDT register write protection register (WDT7C).
+      byte_offset: 0x7C
+      fieldset: WRITE_PROTECT
+
+fieldset/COUNTER:
+  description: 32-bit watchdog counter value.
+  fields:
+    - name: VALUE
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/RESTART:
+  description: Counter restart key register.
+  fields:
+    - name: KEY
+      description: Write 0x4755 to reload and restart the counter.
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/CTRL:
+  description: Watchdog control register.
+  fields:
+    - name: WDT_EN
+      bit_offset: 0
+      bit_size: 1
+    - name: RST_SYS
+      bit_offset: 1
+      bit_size: 1
+    - name: WDT_INTR
+      bit_offset: 2
+      bit_size: 1
+    - name: WDT_EXT
+      bit_offset: 3
+      bit_size: 1
+    - name: WDT_RESET_BY_SOC
+      bit_offset: 4
+      bit_size: 1
+    - name: RST_MODE
+      description: 00 = SOC reset; 01 = full-chip reset; 1x = CPU/FMC-only reset.
+      bit_offset: 5
+      bit_size: 2
+    - name: PRE_TIMEOUT
+      bit_offset: 10
+      bit_size: 22
+
+fieldset/TIMEOUT_STATUS:
+  description: Watchdog timeout and pre-timeout interrupt status.
+  fields:
+    - name: TIMEOUT
+      bit_offset: 0
+      bit_size: 1
+    - name: INTERRUPT
+      bit_offset: 2
+      bit_size: 1
+    - name: SOC_RESET_COUNT
+      bit_offset: 8
+      bit_size: 8
+    - name: FULL_RESET_COUNT
+      bit_offset: 16
+      bit_size: 4
+    - name: ARM_RESET_COUNT
+      bit_offset: 20
+      bit_size: 4
+
+fieldset/CLEAR_TIMEOUT_STATUS:
+  description: Clear timeout and interrupt status register.
+  fields:
+    - name: CLEAR_TIMEOUT_INTERRUPT
+      bit_offset: 0
+      bit_size: 1
+    - name: CLEAR_COUNTER_STATUS_KEY
+      description: Write 0x3B to clear timeout counter status.
+      bit_offset: 1
+      bit_size: 7
+
+fieldset/RESET_WIDTH:
+  description: Watchdog external reset pulse width/control register.
+  fields:
+    - name: WIDTH
+      bit_offset: 0
+      bit_size: 20
+    - name: PRE_TIMEOUT_TRIGGER
+      bit_offset: 29
+      bit_size: 1
+    - name: PUSH_PULL
+      bit_offset: 30
+      bit_size: 1
+    - name: ACTIVE_HIGH
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/MASK:
+  description: 32-bit reset selection or write-protection mask.
+  fields:
+    - name: BITS
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SW_RESET_CTRL:
+  description: Software mode reset control register.
+  fields:
+    - name: TRIGGER
+      description: Write 0xAEEDF123 to trigger software mode SOC reset.
+      bit_offset: 0
+      bit_size: 1
+    - name: EVENT_COUNT
+      description: Write 0xDEADDEAD to clear the software reset event counter.
+      bit_offset: 4
+      bit_size: 4
+
+fieldset/FUNCTION_DISABLE:
+  description: Watchdog function disable control register.
+  fields:
+    - name: DISABLE_WDT
+      bit_offset: 0
+      bit_size: 1
+    - name: DISABLE_SOC_RESET
+      bit_offset: 1
+      bit_size: 1
+    - name: DISABLE_FULL_RESET
+      bit_offset: 2
+      bit_size: 1
+    - name: DISABLE_CPU_FMC_RESET
+      bit_offset: 3
+      bit_size: 1
+    - name: DISABLE_INTERRUPT
+      bit_offset: 4
+      bit_size: 1
+    - name: DISABLE_SW_RESET
+      bit_offset: 5
+      bit_size: 1
+
+fieldset/SCRATCH:
+  description: Watchdog scratch register.
+  fields:
+    - name: VALUE
+      bit_offset: 0
+      bit_size: 8
+    - name: CLEAR_KEY
+      description: Write 0xEA to clear VALUE.
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/WRITE_PROTECT:
+  description: WDT register write protection bits.
+  fields:
+    - name: WDT00_WP
+      bit_offset: 0
+      bit_size: 1
+    - name: WDT04_WP
+      bit_offset: 1
+      bit_size: 1
+    - name: WDT08_WP
+      bit_offset: 2
+      bit_size: 1
+    - name: WDT0C_WP
+      bit_offset: 3
+      bit_size: 1
+    - name: WDT10_WP
+      bit_offset: 4
+      bit_size: 1
+    - name: WDT14_WP
+      bit_offset: 5
+      bit_size: 1
+    - name: WDT18_WP
+      bit_offset: 6
+      bit_size: 1
+    - name: WDT1C_WP
+      bit_offset: 7
+      bit_size: 1
+    - name: WDT20_WP
+      bit_offset: 8
+      bit_size: 1
+    - name: WDT24_WP
+      bit_offset: 9
+      bit_size: 1
+    - name: WDT28_WP
+      bit_offset: 10
+      bit_size: 1
+    - name: WDT2C_WP
+      bit_offset: 11
+      bit_size: 1
+    - name: WDT30_WP
+      bit_offset: 12
+      bit_size: 1
+    - name: WDT34_WP
+      bit_offset: 13
+      bit_size: 1
+    - name: WDT38_WP
+      bit_offset: 14
+      bit_size: 1
+    - name: WDT3C_WP
+      bit_offset: 15
+      bit_size: 1
+    - name: WDT40_WP
+      bit_offset: 16
+      bit_size: 1
+    - name: WDT44_WP
+      bit_offset: 17
+      bit_size: 1
+    - name: WDT48_WP
+      bit_offset: 18
+      bit_size: 1
+    - name: WDT4C_WP
+      bit_offset: 19
+      bit_size: 1
+    - name: WDT50_WP
+      bit_offset: 20
+      bit_size: 1
+    - name: WDT54_WP
+      bit_offset: 21
+      bit_size: 1
+    - name: WDT58_WP
+      bit_offset: 22
+      bit_size: 1
+    - name: WDT5C_WP
+      bit_offset: 23
+      bit_size: 1
+    - name: WDT60_WP
+      bit_offset: 24
+      bit_size: 1
+    - name: WDT64_WP
+      bit_offset: 25
+      bit_size: 1
+    - name: WDT68_WP
+      bit_offset: 26
+      bit_size: 1
+    - name: WDT6C_WP
+      bit_offset: 27
+      bit_size: 1
+    - name: WDT70_WP
+      bit_offset: 28
+      bit_size: 1
+    - name: WDT74_WP
+      bit_offset: 29
+      bit_size: 1
+    - name: WDT3C_ALIAS_WP
+      bit_offset: 31
+      bit_size: 1

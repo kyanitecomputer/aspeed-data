@@ -3,6 +3,13 @@
 
 #![no_std]
 
+// AST1030
+#[cfg(feature = "ast1030")]
+#[path = "chips/ast1030.rs"]
+mod ast1030;
+#[cfg(feature = "ast1030")]
+pub use ast1030::*;
+
 // AST1060
 #[cfg(feature = "ast1060")]
 #[path = "chips/ast1060.rs"]
@@ -37,3 +44,4 @@ pub use ast2700_ssp::*;
 mod ast2700_tsp;
 #[cfg(feature = "ast2700-tsp")]
 pub use ast2700_tsp::*;
+

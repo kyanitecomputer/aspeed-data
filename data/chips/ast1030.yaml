@@ -1,0 +1,281 @@
+name:               AST1030
+family:             ast10xx
+core:               cortex-m4f
+target:             thumbv7em-none-eabihf
+nvic_priority_bits: 4
+num_irqs:           240
+
+peripherals:
+  - name:    PWM_TACH
+    description: PWM and fan tachometer controller
+    block:   pwm_v1::PWM_TACH
+    address: 0x7e610000
+
+  - name:    FMC
+    description: Firmware Memory Controller
+    block:   fmc_v1::FMC
+    address: 0x7e620000
+
+  - name:    SPI1
+    description: SPI Flash Controller 1
+    block:   fmc_v1::SPI
+    address: 0x7e630000
+
+  - name:    SPI2
+    description: SPI Flash Controller 2
+    block:   fmc_v1::SPI
+    address: 0x7e640000
+
+  - name:    HACE
+    description: Hash and Crypto Engine
+    block:   hace_v1::HACE
+    address: 0x7e6d0000
+
+  - name:    ADC
+    description: ADC controller
+    block:   adc_v1::ADC
+    address: 0x7e6e9000
+
+  - name:    SECURE
+    description: Secure Boot Controller and OTP engine
+    block:   secure_v1::SECURE
+    address: 0x7e6f2000
+
+  - name:    SGPIO
+    description: Serial GPIO Master
+    block:   sgpio_v1::SGPIO
+    address: 0x7e780500
+
+  - name:    TIMER
+    description: 8-channel 32-bit countdown timer
+    block:   timer_v1::TIMER
+    address: 0x7e782000
+
+  - name:    UART1
+    description: UART1 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e783000
+
+  - name:    UART5
+    description: UART5 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e784000
+
+  - name:    UART2
+    description: UART2 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e78d000
+
+  - name:    UART3
+    description: UART3 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e78e000
+
+  - name:    UART4
+    description: UART4 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e78f000
+
+  - name:    PECI
+    description: PECI controller
+    block:   peci_v1::PECI
+    address: 0x7e78b000
+
+  - name:    UART6
+    description: UART6 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e790000
+
+  - name:    UART7
+    description: UART7 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e790100
+
+  - name:    UART8
+    description: UART8 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e790200
+
+  - name:    UART9
+    description: UART9 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e790300
+
+  - name:    UART10
+    description: UART10 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e790400
+
+  - name:    UART11
+    description: UART11 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e790500
+
+  - name:    UART12
+    description: UART12 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e790600
+
+  - name:    UART13
+    description: UART13 16550-compatible controller
+    block:   uart_v1::UART
+    address: 0x7e790700
+
+  - name:    UART_DMA
+    description: UART DMA controller
+    block:   uartdma_v1::UARTDMA
+    address: 0x7e79e000
+
+  - name:    I3C_GLOBAL
+    description: I3C global controller
+    block:   i3cglobal_v1::I3CGLOBAL
+    address: 0x7e7a0000
+
+  - name:    I3C0
+    block:   i3c_v1::I3C
+    address: 0x7e7a2000
+
+  - name:    I3C1
+    block:   i3c_v1::I3C
+    address: 0x7e7a3000
+
+  - name:    I3C2
+    block:   i3c_v1::I3C
+    address: 0x7e7a4000
+
+  - name:    I3C3
+    block:   i3c_v1::I3C
+    address: 0x7e7a5000
+
+  - name:    I2C_GLOBAL
+    description: I2C/SMBus global interrupt and clock controller
+    block:   i2cglobal_v1::I2CGLOBAL
+    address: 0x7e7b0000
+
+  - name:    I2C0
+    block:   i2c_v1::I2C
+    address: 0x7e7b0080
+
+  - name:    I2C1
+    block:   i2c_v1::I2C
+    address: 0x7e7b0100
+
+  - name:    I2C2
+    block:   i2c_v1::I2C
+    address: 0x7e7b0180
+
+  - name:    I2C3
+    block:   i2c_v1::I2C
+    address: 0x7e7b0200
+
+  - name:    I2C4
+    block:   i2c_v1::I2C
+    address: 0x7e7b0280
+
+  - name:    I2C5
+    block:   i2c_v1::I2C
+    address: 0x7e7b0300
+
+  - name:    I2C6
+    block:   i2c_v1::I2C
+    address: 0x7e7b0380
+
+  - name:    I2C7
+    block:   i2c_v1::I2C
+    address: 0x7e7b0400
+
+  - name:    I2C8
+    block:   i2c_v1::I2C
+    address: 0x7e7b0480
+
+  - name:    I2C9
+    block:   i2c_v1::I2C
+    address: 0x7e7b0500
+
+  - name:    I2C10
+    block:   i2c_v1::I2C
+    address: 0x7e7b0580
+
+  - name:    I2C11
+    block:   i2c_v1::I2C
+    address: 0x7e7b0600
+
+  - name:    I2C12
+    block:   i2c_v1::I2C
+    address: 0x7e7b0680
+
+  - name:    I2C13
+    block:   i2c_v1::I2C
+    address: 0x7e7b0700
+
+  - name:    I2C0_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0c00
+
+  - name:    I2C1_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0c20
+
+  - name:    I2C2_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0c40
+
+  - name:    I2C3_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0c60
+
+  - name:    I2C4_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0c80
+
+  - name:    I2C5_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0ca0
+
+  - name:    I2C6_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0cc0
+
+  - name:    I2C7_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0ce0
+
+  - name:    I2C8_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0d00
+
+  - name:    I2C9_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0d20
+
+  - name:    I2C10_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0d40
+
+  - name:    I2C11_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0d60
+
+  - name:    I2C12_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0d80
+
+  - name:    I2C13_BUF
+    block:   i2cbuff_v1::I2CBUFF
+    address: 0x7e7b0da0
+
+  - name:    WDT1
+    block:   wdt_v1::WDT
+    address: 0x7e785000
+
+  - name:    WDT2
+    block:   wdt_v1::WDT
+    address: 0x7e785080
+
+  - name:    WDT3
+    block:   wdt_v1::WDT
+    address: 0x7e785100
+
+  - name:    WDT4
+    block:   wdt_v1::WDT
+    address: 0x7e785180

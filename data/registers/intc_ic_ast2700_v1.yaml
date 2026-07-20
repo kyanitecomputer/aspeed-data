@@ -1,0 +1,67 @@
+# AST2700 Interrupt Controller — per-IC aggregator instance.
+#
+# Each interrupt aggregator instance is a 16-byte register block with exactly
+# two functional registers: IER (enable) and RAW (status/clear).
+#
+# Architecture:
+#   INTCG (CPU-die global): routes IRQs to PSP/SSP/TSP/BootMCU via CSEL registers.
+#   INTC1G (IO-die global): same, for IO-die IRQ sources.
+#   INTC_IC instances: leaf aggregators; each aggregates up to 32 sub-IRQs into
+#     a single IRQ line presented to its parent (NVIC or another INTC_IC).
+#
+# Two-level cascade for SSP (CPU-die → IO-die):
+#   Level 1 (INTC0_11): CPU-die IC at 0x72102B00 (SSP view), NVIC IRQ 160-165.
+#     Each of bits 0-5 aggregates a second-level INTC1_x controller.
+#   Level 2 (INTC1_0 through INTC1_5): IO-die ICs at 0x74C181{80,90,A0,B0,C0,D0}.
+#     Each aggregates up to 32 IO-die IRQ sources.
+#
+# Address note: SSP (ARM) view = RISC-V BootMCU view + 0x60000000.
+#   Examples (SSP/BootMCU):
+#     INTC0_11:   0x72102B00 / 0x12102B00
+#     INTC1_0:    0x74C18180 / 0x14C18180
+#     INTC1_1:    0x74C18190 / 0x14C18190
+#     INTC1_2:    0x74C181A0 / 0x14C181A0
+#     INTC1_3:    0x74C181B0 / 0x14C181B0
+#     INTC1_4:    0x74C181C0 / 0x14C181C0
+#     INTC1_5:    0x74C181D0 / 0x14C181D0
+
+block/INTC_IC:
+  description: >
+    AST2700 interrupt controller aggregator instance (16 bytes).
+    Each instance aggregates up to 32 interrupt sources into one IRQ line
+    presented to the parent interrupt controller (NVIC or another INTC_IC).
+    IER controls which sources are forwarded; RAW shows and clears pending status.
+  items:
+    - name: IER
+      description: >
+        Interrupt Enable Register.
+        Bit n = 1 enables forwarding of source n to the parent controller.
+        Bit n = 0 masks source n (it will not trigger the parent IRQ).
+        Read to check current enable state.
+      byte_offset: 0x00
+      fieldset: IR_BITS
+
+    - name: RAW
+      description: >
+        Raw interrupt status register (write-1-to-clear).
+        Bit n = 1 indicates source n has an active pending interrupt.
+        Write 1 to bit n to acknowledge and clear that interrupt.
+        Only bits that are also enabled in IER will propagate to the parent.
+      byte_offset: 0x04
+      fieldset: IR_BITS
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/IR_BITS:
+  description: >
+    32-bit interrupt source bitmask.
+    Bit n corresponds to interrupt source n within this aggregator instance.
+    Used by both IER (enable) and RAW (status/clear) with identical bit layout.
+  fields:
+    - name: SRC
+      description: >
+        Interrupt source bitmask (32 sources).
+        In IER: set bit n to enable source n.
+        In RAW: bit n is set when source n is pending; write 1 to clear.
+      bit_offset: 0
+      bit_size: 32

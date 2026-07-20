@@ -1,0 +1,623 @@
+# ASPEED AST2700 OTP controller registers.
+#
+# Base addresses:
+#   BootMCU / IO-die: 0x14C0_7000
+#   CPU-die:          0x30C0_7000
+#
+# OTP memory addresses are 16-bit word indices, matching ASPEED Zephyr and
+# U-Boot drivers. The controller exposes one command lane per master at stride
+# 0x20; BootMCU uses master 0.
+
+block/OTP:
+  description: >
+    ASPEED AST2700 one-time-programmable memory controller. OTP read/write
+    commands operate on 16-bit OTP word offsets.
+  items:
+    - name: KEY
+      description: Unlock key register. Write 0x349FE38A before commands.
+      byte_offset: 0x000
+      fieldset: KEY
+
+    - name: CMD
+      description: Master command register.
+      byte_offset: 0x004
+      fieldset: CMD
+
+    - name: WDATA0
+      description: Write-data word 0.
+      byte_offset: 0x008
+
+    - name: WDATA1
+      description: Write-data word 1.
+      byte_offset: 0x00c
+
+    - name: WDATA2
+      description: Write-data word 2.
+      byte_offset: 0x010
+
+    - name: WDATA3
+      description: Write-data word 3.
+      byte_offset: 0x014
+
+    - name: STATUS
+      description: Command status; bit 0 set while busy, bits 7:4 hold result.
+      byte_offset: 0x018
+      fieldset: STATUS
+
+    - name: ADDR
+      description: OTP word address for command.
+      byte_offset: 0x01c
+      fieldset: ADDR
+
+    - name: RDATA
+      description: Read-data register; low 16 bits contain one OTP word.
+      byte_offset: 0x020
+      access: Read
+      fieldset: RDATA
+
+    - name: CMD_M1
+      description: Master 1 command register.
+      byte_offset: 0x024
+      fieldset: CMD
+    - name: WDATA_M1
+      description: Master 1 write-data words.
+      byte_offset: 0x028
+      array:
+        len: 4
+        stride: 4
+    - name: STATUS_M1
+      description: Master 1 command status register.
+      byte_offset: 0x038
+      access: Read
+      fieldset: STATUS
+    - name: ADDR_M1
+      description: Master 1 OTP word address register.
+      byte_offset: 0x03c
+      fieldset: ADDR
+    - name: RDATA_M1
+      description: Master 1 read-data register.
+      byte_offset: 0x040
+      access: Read
+      fieldset: RDATA
+
+    - name: CMD_M2
+      description: Master 2 command register.
+      byte_offset: 0x044
+      fieldset: CMD
+    - name: WDATA_M2
+      description: Master 2 write-data words.
+      byte_offset: 0x048
+      array:
+        len: 4
+        stride: 4
+    - name: STATUS_M2
+      description: Master 2 command status register.
+      byte_offset: 0x058
+      access: Read
+      fieldset: STATUS
+    - name: ADDR_M2
+      description: Master 2 OTP word address register.
+      byte_offset: 0x05c
+      fieldset: ADDR
+    - name: RDATA_M2
+      description: Master 2 read-data register.
+      byte_offset: 0x060
+      access: Read
+      fieldset: RDATA
+
+    - name: CMD_M3
+      description: Master 3 command register.
+      byte_offset: 0x064
+      fieldset: CMD
+    - name: WDATA_M3
+      description: Master 3 write-data words.
+      byte_offset: 0x068
+      array:
+        len: 4
+        stride: 4
+    - name: STATUS_M3
+      description: Master 3 command status register.
+      byte_offset: 0x078
+      access: Read
+      fieldset: STATUS
+    - name: ADDR_M3
+      description: Master 3 OTP word address register.
+      byte_offset: 0x07c
+      fieldset: ADDR
+    - name: RDATA_M3
+      description: Master 3 read-data register.
+      byte_offset: 0x080
+      access: Read
+      fieldset: RDATA
+
+    - name: CMD_M4
+      description: Master 4 command register.
+      byte_offset: 0x084
+      fieldset: CMD
+    - name: WDATA_M4
+      description: Master 4 write-data words.
+      byte_offset: 0x088
+      array:
+        len: 4
+        stride: 4
+    - name: STATUS_M4
+      description: Master 4 command status register.
+      byte_offset: 0x098
+      access: Read
+      fieldset: STATUS
+    - name: ADDR_M4
+      description: Master 4 OTP word address register.
+      byte_offset: 0x09c
+      fieldset: ADDR
+    - name: RDATA_M4
+      description: Master 4 read-data register.
+      byte_offset: 0x0a0
+      access: Read
+      fieldset: RDATA
+
+    - name: CMD_M5
+      description: Master 5 command register.
+      byte_offset: 0x0a4
+      fieldset: CMD
+    - name: WDATA_M5
+      description: Master 5 write-data words.
+      byte_offset: 0x0a8
+      array:
+        len: 4
+        stride: 4
+    - name: STATUS_M5
+      description: Master 5 command status register.
+      byte_offset: 0x0b8
+      access: Read
+      fieldset: STATUS
+    - name: ADDR_M5
+      description: Master 5 OTP word address register.
+      byte_offset: 0x0bc
+      fieldset: ADDR
+    - name: RDATA_M5
+      description: Master 5 read-data register.
+      byte_offset: 0x0c0
+      access: Read
+      fieldset: RDATA
+
+    - name: DBG00
+      byte_offset: 0x0c4
+      access: Read
+
+    - name: DBG01
+      byte_offset: 0x0c8
+      access: Read
+
+    - name: MASTER_PID
+      byte_offset: 0x0d0
+      access: Read
+      fieldset: MASTER_PID
+    - name: ECC_EN
+      description: ECC enable control. Bit 0 enables ECC-aware accesses.
+      byte_offset: 0x0d4
+      fieldset: ECC_EN
+    - name: CMD_LOCK
+      byte_offset: 0x0d8
+      fieldset: CMD_LOCK
+    - name: SW_RST
+      byte_offset: 0x0dc
+      fieldset: SW_RST
+    - name: SLV_ID
+      byte_offset: 0x0e0
+      fieldset: SLV_ID
+    - name: PMC_CQ
+      byte_offset: 0x0e4
+      fieldset: PMC_CQ
+    - name: FPGA
+      byte_offset: 0x0ec
+    - name: CLR_FPGA
+      byte_offset: 0x0f0
+      fieldset: ROM_CLR
+
+    - name: REGION_ROM_PATCH
+      byte_offset: 0x100
+      fieldset: REGION_PERM
+    - name: REGION_OTPCFG
+      byte_offset: 0x104
+      fieldset: REGION_PERM
+    - name: REGION_OTPSTRAP
+      byte_offset: 0x108
+      fieldset: REGION_PERM
+    - name: REGION_OTPSTRAP_EXT
+      byte_offset: 0x10c
+      fieldset: REGION_PERM
+    - name: REGION_SECURE0
+      byte_offset: 0x120
+      fieldset: REGION_PERM
+    - name: REGION_SECURE0_RANGE
+      byte_offset: 0x124
+      fieldset: REGION_RANGE
+    - name: REGION_SECURE1
+      byte_offset: 0x128
+      fieldset: REGION_PERM
+    - name: REGION_SECURE1_RANGE
+      byte_offset: 0x12c
+      fieldset: REGION_RANGE
+    - name: REGION_SECURE2
+      byte_offset: 0x130
+      fieldset: REGION_PERM
+    - name: REGION_SECURE2_RANGE
+      byte_offset: 0x134
+      fieldset: REGION_RANGE
+    - name: REGION_SECURE3
+      byte_offset: 0x138
+      fieldset: REGION_PERM
+    - name: REGION_SECURE3_RANGE
+      byte_offset: 0x13c
+      fieldset: REGION_RANGE
+    - name: REGION_USR0
+      byte_offset: 0x140
+      fieldset: REGION_PERM
+    - name: REGION_USR0_RANGE
+      byte_offset: 0x144
+      fieldset: REGION_RANGE
+    - name: REGION_USR1
+      byte_offset: 0x148
+      fieldset: REGION_PERM
+    - name: REGION_USR1_RANGE
+      byte_offset: 0x14c
+      fieldset: REGION_RANGE
+    - name: REGION_USR2
+      byte_offset: 0x150
+      fieldset: REGION_PERM
+    - name: REGION_USR2_RANGE
+      byte_offset: 0x154
+      fieldset: REGION_RANGE
+    - name: REGION_USR3
+      byte_offset: 0x158
+      fieldset: REGION_PERM
+    - name: REGION_USR3_RANGE
+      byte_offset: 0x15c
+      fieldset: REGION_RANGE
+    - name: REGION_CALIPTRA0
+      byte_offset: 0x160
+      fieldset: REGION_PERM
+    - name: REGION_CALIPTRA0_RANGE
+      byte_offset: 0x164
+      fieldset: REGION_RANGE
+    - name: REGION_CALIPTRA1
+      byte_offset: 0x168
+      fieldset: REGION_PERM
+    - name: REGION_CALIPTRA1_RANGE
+      byte_offset: 0x16c
+      fieldset: REGION_RANGE
+    - name: REGION_CALIPTRA2
+      byte_offset: 0x170
+      fieldset: REGION_PERM
+    - name: REGION_CALIPTRA2_RANGE
+      byte_offset: 0x174
+      fieldset: REGION_RANGE
+    - name: REGION_CALIPTRA3
+      byte_offset: 0x178
+      fieldset: REGION_PERM
+    - name: REGION_CALIPTRA3_RANGE
+      byte_offset: 0x17c
+      fieldset: REGION_RANGE
+
+    - name: RBP_SOC_SVN
+      byte_offset: 0x180
+      fieldset: REGION_PERM
+    - name: RBP_SOC_KEYRETIRE
+      byte_offset: 0x184
+      fieldset: REGION_PERM
+    - name: RBP_CALIP_SVN
+      byte_offset: 0x188
+      fieldset: REGION_PERM
+    - name: RBP_CALIP_KEYRETIRE
+      byte_offset: 0x18c
+      fieldset: REGION_PERM
+    - name: PUF
+      byte_offset: 0x1a0
+      fieldset: PUF
+    - name: MASTER_ID
+      byte_offset: 0x1b0
+      fieldset: MASTER_ID
+    - name: MASTER_ID_EXT
+      byte_offset: 0x1b4
+      fieldset: MASTER_ID_EXT
+    - name: R_MASTER_ID
+      byte_offset: 0x1b8
+      fieldset: MASTER_ID
+    - name: R_MASTER_ID_EXT
+      byte_offset: 0x1bc
+      fieldset: MASTER_ID_EXT
+    - name: SOC_ECCKEY
+      byte_offset: 0x1c0
+      fieldset: WORD16_WLOCK
+    - name: SEC_BOOT_EN
+      byte_offset: 0x1c4
+      fieldset: SEC_BOOT_EN
+    - name: SOC_KEY
+      byte_offset: 0x1c8
+      fieldset: WORD16_WLOCK
+    - name: CALIPTRA_MANU_KEY
+      byte_offset: 0x1cc
+      fieldset: WORD16_WLOCK
+    - name: CALIPTRA_OWNER_KEY
+      byte_offset: 0x1d0
+      fieldset: WORD16_WLOCK
+    - name: FW_ID_LSB
+      byte_offset: 0x1d4
+    - name: FW_ID_MSB
+      byte_offset: 0x1d8
+    - name: CALIP_FMC_SVN
+      byte_offset: 0x1dc
+    - name: CALIP_RUNTIME_SVN0
+      byte_offset: 0x1e0
+    - name: CALIP_RUNTIME_SVN1
+      byte_offset: 0x1e4
+    - name: CALIP_RUNTIME_SVN2
+      byte_offset: 0x1e8
+    - name: CALIP_RUNTIME_SVN3
+      byte_offset: 0x1ec
+    - name: SVN_WLOCK
+      byte_offset: 0x1f0
+      fieldset: SVN_WLOCK
+
+    - name: INTR_EN
+      byte_offset: 0x200
+      fieldset: INTR
+    - name: INTR_STS
+      byte_offset: 0x204
+      access: Read
+      fieldset: INTR
+    - name: INTR_MID
+      byte_offset: 0x208
+      fieldset: INTR_MID
+    - name: INTR_FUNC_INFO
+      byte_offset: 0x20c
+      access: Read
+      fieldset: INTR_INFO
+    - name: INTR_M_INFO
+      byte_offset: 0x210
+      access: Read
+      fieldset: INTR_INFO
+    - name: INTR_R_INFO
+      byte_offset: 0x214
+      access: Read
+      fieldset: INTR_INFO
+
+fieldset/KEY:
+  fields:
+    - name: VALUE
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/CMD:
+  fields:
+    - name: VALUE
+      description: Command trigger value; read=0x23b1e361, compare=0x23b1e363, program=0x23b1e364, program-over-16b=0x23b1e365.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/ADDR:
+  fields:
+    - name: WORD
+      description: OTP word address; valid range is 13 bits.
+      bit_offset: 0
+      bit_size: 13
+
+fieldset/RDATA:
+  fields:
+    - name: WORD
+      description: OTP read data word; reads 0xbeef on master mismatch.
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/STATUS:
+  fields:
+    - name: BUSY
+      bit_offset: 0
+      bit_size: 1
+    - name: CMD_STS
+      bit_offset: 4
+      bit_size: 4
+
+fieldset/ECC_EN:
+  fields:
+    - name: ECCBRP_EN
+      bit_offset: 0
+      bit_size: 1
+    - name: SOAKPROG_EN
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/MASTER_PID:
+  fields:
+    - name: PID
+      bit_offset: 0
+      bit_size: 6
+    - name: PSECURE
+      bit_offset: 9
+      bit_size: 2
+
+fieldset/CMD_LOCK:
+  fields:
+    - name: CMP_LOCK
+      bit_offset: 0
+      bit_size: 1
+    - name: PROG_LOCK
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/SW_RST:
+  fields:
+    - name: CLR_BOOT_FSM
+      bit_offset: 0
+      bit_size: 1
+    - name: CLR_SBPI_MASTER
+      bit_offset: 1
+      bit_size: 1
+    - name: CLR_CMD_FSM
+      bit_offset: 2
+      bit_size: 1
+
+fieldset/SLV_ID:
+  fields:
+    - name: PMC_ID
+      bit_offset: 0
+      bit_size: 6
+    - name: DAP_ID
+      bit_offset: 16
+      bit_size: 6
+
+fieldset/PMC_CQ:
+  fields:
+    - name: BYP_PROG_PMCDAP_RQCQ
+      bit_offset: 0
+      bit_size: 1
+    - name: BYP_PROG_PMC_EXITENTRY
+      bit_offset: 1
+      bit_size: 1
+    - name: BYP_READ_DAP_RQ
+      bit_offset: 2
+      bit_size: 1
+
+fieldset/ROM_CLR:
+  fields:
+    - name: ADDR
+      bit_offset: 0
+      bit_size: 13
+    - name: CLR
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/REGION_PERM:
+  fields:
+    - name: REN
+      description: Per-master read enable bitmap.
+      bit_offset: 0
+      bit_size: 8
+    - name: WEN
+      description: Per-master write enable bitmap.
+      bit_offset: 8
+      bit_size: 8
+    - name: LOCK
+      description: Lock permission fields until reset.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/REGION_RANGE:
+  fields:
+    - name: START_OFFSET
+      bit_offset: 0
+      bit_size: 16
+    - name: SIZE
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/PUF:
+  fields:
+    - name: SW_PUF_WLOCK
+      bit_offset: 0
+      bit_size: 1
+    - name: HW_PUF_WLOCK
+      bit_offset: 1
+      bit_size: 1
+    - name: SW_PUF_RLOCK
+      bit_offset: 8
+      bit_size: 1
+
+fieldset/MASTER_ID:
+  fields:
+    - name: ID0
+      bit_offset: 0
+      bit_size: 8
+    - name: ID1
+      bit_offset: 8
+      bit_size: 8
+    - name: ID2
+      bit_offset: 16
+      bit_size: 8
+    - name: ID3
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/MASTER_ID_EXT:
+  fields:
+    - name: ID4
+      bit_offset: 0
+      bit_size: 8
+    - name: ID5
+      bit_offset: 8
+      bit_size: 8
+    - name: LOCK
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/WORD16_WLOCK:
+  fields:
+    - name: VALUE
+      bit_offset: 0
+      bit_size: 16
+    - name: WLOCK
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SEC_BOOT_EN:
+  fields:
+    - name: EN
+      bit_offset: 0
+      bit_size: 1
+    - name: WLOCK
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SVN_WLOCK:
+  fields:
+    - name: FW_HRID_WLOCK
+      bit_offset: 0
+      bit_size: 1
+    - name: CALIPTRA_FMC_SVN_WLOCK
+      bit_offset: 1
+      bit_size: 1
+    - name: CALIPTRA_RUNTIME_SVN_WLOCK
+      bit_offset: 2
+      bit_size: 1
+
+fieldset/INTR:
+  fields:
+    - name: FUNC
+      bit_offset: 0
+      bit_size: 1
+    - name: MASTER
+      bit_offset: 1
+      bit_size: 1
+    - name: REGION
+      bit_offset: 2
+      bit_size: 1
+
+fieldset/INTR_MID:
+  fields:
+    - name: MASTER_ID
+      bit_offset: 0
+      bit_size: 8
+    - name: LOCK
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/INTR_INFO:
+  fields:
+    - name: ADDR
+      bit_offset: 0
+      bit_size: 13
+    - name: MASTER_ID
+      bit_offset: 16
+      bit_size: 8
+    - name: CMD_W
+      bit_offset: 24
+      bit_size: 1
+    - name: CMD_R
+      bit_offset: 25
+      bit_size: 1
+    - name: CMD_CMP
+      bit_offset: 26
+      bit_size: 1
+    - name: CMD_MULTI_WRITE
+      bit_offset: 27
+      bit_size: 1

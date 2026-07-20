@@ -36,7 +36,6 @@
 #   Pool and DMA are mutually exclusive per channel.
 #
 # Sources:
-#   ast1060v19.pdf  Chapter 27 – I2C/SMBus (I2CCxx/I2CMxx/I2CSxx registers)
 
 block/I2C:
   description: >

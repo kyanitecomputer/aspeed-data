@@ -24,8 +24,6 @@
 #   +0x18: RX DMA buffer base address (physical, 4-byte aligned)
 #   +0x1C: RX control (full mode, timeout enable, buffer size)
 #
-# Sources:
-#   ast1060v19.pdf  Chapter 28 – UART DMA (UDMA)
 
 block/UARTDMA:
   description: >

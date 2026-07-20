@@ -4,11 +4,9 @@
 # SoC.  It runs alongside the primary CA7 processor.  All addresses below are
 # in the CM3 view: BMC address 0x1eXX_XXXX → CM3 address 0x7eXX_XXXX.
 #
-# Sources:
 #   ast2600_ssp.md  v0.1f  Section 3 – Registers
 #   ast2600_ssp.md  v0.1f  Section 5 – SSP Interrupt Mapping
 #   ast2600.md      v1.6   Register maps for each peripheral
-#   Zephyr:  soc/aspeed/ast26xx/Kconfig.defconfig.ast2600
 
 name:               AST2600
 family:             ast26xx
@@ -38,10 +36,75 @@ peripherals:
     block:   clock_v1::CLOCK
     address: 0x7e6e2000
 
-  # Task 9: UART11 — 16550 UART (SSP console, 115200 baud, IRQ 62)
+  # Flash controllers in CM3 view.
+  - name:    FMC
+    description: Firmware Memory Controller
+    block:   fmc_v1::FMC
+    address: 0x7e620000
+
+  - name:    SPI1
+    description: SPI Flash Controller 1
+    block:   fmc_v1::SPI
+    address: 0x7e630000
+
+  - name:    SPI2
+    description: SPI Flash Controller 2
+    block:   fmc_v1::SPI
+    address: 0x7e631000
+
+  # UART controllers — 16550-compatible UARTs in CM3 view.
+  - name:    UART1
+    block:   uart_v1::UART
+    address: 0x7e783000
+
+  - name:    UART5
+    block:   uart_v1::UART
+    address: 0x7e784000
+
+  - name:    UART2
+    block:   uart_v1::UART
+    address: 0x7e78d000
+
+  - name:    UART3
+    block:   uart_v1::UART
+    address: 0x7e78e000
+
+  - name:    UART4
+    block:   uart_v1::UART
+    address: 0x7e78f000
+
+  - name:    UART6
+    block:   uart_v1::UART
+    address: 0x7e790000
+
+  - name:    UART7
+    block:   uart_v1::UART
+    address: 0x7e790100
+
+  - name:    UART8
+    block:   uart_v1::UART
+    address: 0x7e790200
+
+  - name:    UART9
+    block:   uart_v1::UART
+    address: 0x7e790300
+
+  - name:    UART10
+    block:   uart_v1::UART
+    address: 0x7e790400
+
+  # UART11 is the usual SSP console, 115200 baud, IRQ 62.
   - name:    UART11
     block:   uart_v1::UART
     address: 0x7e790500
+
+  - name:    UART12
+    block:   uart_v1::UART
+    address: 0x7e790600
+
+  - name:    UART13
+    block:   uart_v1::UART
+    address: 0x7e790700
 
   # Task 12: IPC — 15-channel doorbell mailbox (IRQs 182–196)
   - name:    IPC
@@ -53,10 +116,18 @@ peripherals:
     block:   gpio_v1::GPIO
     address: 0x7e780000
 
-  # Task 16: WDT0 — Watchdog timer 0 + software reboot (IRQ 24)
-  - name:    WDT0
+  # Watchdog timers in CM3 view.
+  - name:    WDT1
     block:   wdt_v1::WDT
     address: 0x7e785000
+
+  - name:    WDT2
+    block:   wdt_v1::WDT
+    address: 0x7e785040
+
+  - name:    WDT3
+    block:   wdt_v1::WDT
+    address: 0x7e785080
 
   # Task 17: TIMER — 8 × 32-bit countdown timers (IRQs 16–23)
   - name:    TIMER
@@ -65,7 +136,6 @@ peripherals:
 
   # HACE — Hash and Crypto Engine (AES/DES/RC4 + SHA/MD5/HMAC, IRQ 4)
   # Base: 0x1E6D_0000 (BMC) → 0x7E6D_0000 (CM3 view)
-  # Source: aspeed-g6.dtsi  crypto@1e6d0000
   - name:    HACE
     description: Hash and Crypto Engine (AES/DES/RC4 + SHA/MD5/HMAC)
     block:   hace_v1::HACE
@@ -73,7 +143,6 @@ peripherals:
 
   # ADC0 — Analog-to-Digital Converter, bank 0, channels CH0–7 (IRQ 46)
   # Base: 0x1E6E_9000 (BMC) → 0x7E6E_9000 (CM3 view)
-  # Source: aspeed-g6.dtsi  adc@1e6e9000
   - name:    ADC0
     description: ADC bank 0, channels 0–7 (10-bit, 8 channels)
     block:   adc_v1::ADC
@@ -81,7 +150,6 @@ peripherals:
 
   # ADC1 — Analog-to-Digital Converter, bank 1, channels CH8–15 (IRQ 46)
   # Base: 0x1E6E_9100 (BMC) → 0x7E6E_9100 (CM3 view)
-  # Source: aspeed-g6.dtsi  adc@1e6e9100
   - name:    ADC1
     description: ADC bank 1, channels 8–15 (10-bit, 8 channels)
     block:   adc_v1::ADC
@@ -90,7 +158,6 @@ peripherals:
   # PWM_TACH — G6 PWM and Fan Tachometer controller (IRQ 44)
   # 16 PWM output channels, 16 tachometer input channels.
   # Base: 0x1E61_0000 (BMC) → 0x7E61_0000 (CM3 view)
-  # Source: Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
   - name:    PWM_TACH
     description: G6 PWM and fan tachometer controller (16 PWM + 16 TACH channels)
     block:   pwm_v1::PWM_TACH
@@ -99,16 +166,44 @@ peripherals:
   # PECI — Platform Environment Control Interface controller (IRQ 38)
   # Single-wire bus for reading Intel CPU die temperature and power data.
   # Base: 0x1E78_B000 (BMC) → 0x7E78_B000 (CM3 view)
-  # Source: aspeed-g6.dtsi  peci@1e78b000
   - name:    PECI
     description: PECI controller for Intel CPU telemetry (temperature/power)
     block:   peci_v1::PECI
     address: 0x7e78b000
 
+  # I3C global and documented I3C device controllers in CM3 view.
+  - name:    I3C_GLOBAL
+    description: I3C global controller
+    block:   i3cglobal_v1::I3CGLOBAL
+    address: 0x7e7a0000
+
+  - name:    I3C0
+    block:   i3c_v1::I3C
+    address: 0x7e7a2000
+
+  - name:    I3C1
+    block:   i3c_v1::I3C
+    address: 0x7e7a3000
+
+  - name:    I3C2
+    block:   i3c_v1::I3C
+    address: 0x7e7a4000
+
+  - name:    I3C3
+    block:   i3c_v1::I3C
+    address: 0x7e7a5000
+
+  - name:    I3C4
+    block:   i3c_v1::I3C
+    address: 0x7e7a6000
+
+  - name:    I3C5
+    block:   i3c_v1::I3C
+    address: 0x7e7a7000
+
   # I2C_GLOBAL — I2C/SMBus global interrupt aggregator and clock divider
   # Base: 0x1E78_A000 (BMC) → 0x7E78_A000 (CM3 view)
   # Note: AST2600 I2C global is at 0x7E78_A000, unlike AST1060 (0x7E7B_0000).
-  # Source: aspeed-g6.dtsi  bus@1e78a000
   - name:    I2C_GLOBAL
     description: I2C/SMBus global interrupt status and clock divider
     block:   i2cglobal_v1::I2CGLOBAL
@@ -116,7 +211,6 @@ peripherals:
 
   # I2C instances — 16 channels (CH0–15), stride 0x80 from base+0x80
   # Absolute addresses: 0x1E78_A080 + N×0x80 (BMC) → 0x7E78_A080 + N×0x80 (CM3)
-  # Source: aspeed-g6.dtsi  i2c0: i2c@80 through i2c15: i2c@800
 
   - name:    I2C0
     block:   i2c_v1::I2C
@@ -184,7 +278,6 @@ peripherals:
 
 # ── Interrupt table ───────────────────────────────────────────────────────────
 #
-# Source: ast2600_ssp.md v0.1f Section 5 (Exception# 16–212 = IRQ# 0–196).
 #
 # Only named (non-reserved) interrupts are listed.  Gaps in the numbering are
 # handled by the PAC generator (the cortex-m-rt interrupt enum allows gaps).
@@ -383,4 +476,4 @@ interrupts:
   - { name: IPC12,          number: 194 }
   - { name: IPC13,          number: 195 }
   - { name: IPC14,          number: 196 }
-  # IRQ 197–239: Unconnected / reserved (num_irqs = 240 per Zephyr Kconfig)
+  # IRQ 197–239: Unconnected / reserved (num_irqs = 240 per Kconfig)

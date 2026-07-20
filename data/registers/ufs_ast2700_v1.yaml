@@ -1,0 +1,569 @@
+# AST2700 UFS 3.0 host controller and MPHY registers.
+
+block/UFS:
+  description: AST2700 UFS controller at 0x12C08000.
+  items:
+    - name: MPHY_SW_RST
+      description: MPHY software reset register.
+      byte_offset: 0x000
+      fieldset: MPHY_SW_RST
+    - name: MPHY_SPECIAL_DEBUG
+      byte_offset: 0x004
+      fieldset: MPHY_SPECIAL_DEBUG
+    - name: MPHY_SF_WATCHDOG
+      byte_offset: 0x008
+      fieldset: MPHY_SF_WATCHDOG
+    - name: MPHY_SF_ERROR_FLAG
+      byte_offset: 0x00c
+      fieldset: MPHY_SF_ERROR_FLAG
+    - name: MPHY_DEBUG_SEL
+      byte_offset: 0x010
+    - name: MPHY_DEBUG_OUT
+      byte_offset: 0x014
+    - name: MPHY_CTL
+      byte_offset: 0x018
+      fieldset: MPHY_CTL
+    - name: MPHY_RELEASE
+      byte_offset: 0x01c
+    - name: MPHY_XCFGD
+      byte_offset: 0x020
+      array:
+        len: 5
+        stride: 4
+    - name: MPHY_XCFGA
+      byte_offset: 0x034
+      array:
+        len: 13
+        stride: 4
+    - name: MPHY_XCFGO
+      byte_offset: 0x068
+      access: Read
+      array:
+        len: 9
+        stride: 4
+    - name: MPHY_CALI_IN0
+      byte_offset: 0x08c
+      fieldset: MPHY_CALI_IN0
+    - name: MPHY_CALI_IN1
+      byte_offset: 0x090
+      fieldset: MPHY_CALI_IN1
+    - name: MPHY_CALI_OUT
+      byte_offset: 0x094
+      access: Read
+      fieldset: MPHY_CALI_OUT
+    - name: MPHY_VCONTROL
+      byte_offset: 0x098
+      fieldset: MPHY_VCONTROL
+    - name: MPHY_BIST_OK
+      byte_offset: 0x09c
+      access: Read
+      fieldset: MPHY_BIST_OK
+    - name: HC_CTL
+      byte_offset: 0x0a0
+      fieldset: HC_CTL
+    - name: HC_ST
+      byte_offset: 0x0a4
+      access: Read
+      fieldset: HC_ST
+    - name: CAP
+      byte_offset: 0x200
+      access: Read
+      fieldset: CAP
+    - name: UMACAP
+      byte_offset: 0x204
+      access: Read
+    - name: VER
+      byte_offset: 0x208
+      access: Read
+      fieldset: VER
+    - name: HCPID
+      byte_offset: 0x210
+      access: Read
+    - name: HCMID
+      byte_offset: 0x214
+      access: Read
+    - name: AHIT
+      description: Auto-hibernate idle timer configuration.
+      byte_offset: 0x218
+      fieldset: AHIT
+    - name: IS
+      byte_offset: 0x220
+      fieldset: INT_STATUS
+    - name: IE
+      byte_offset: 0x224
+      fieldset: INT_STATUS
+    - name: HCS
+      byte_offset: 0x230
+      access: Read
+      fieldset: HCS
+    - name: HCE
+      description: Host controller enable register.
+      byte_offset: 0x234
+      fieldset: HCE
+    - name: UIC_ERROR
+      description: UIC error code registers UECPA, UECDL, UECN, UECT, UECDME.
+      byte_offset: 0x238
+      access: Read
+      array:
+        len: 5
+        stride: 4
+    - name: UTRIACR
+      byte_offset: 0x24c
+      fieldset: UTRIACR
+    - name: UTRLBA
+      byte_offset: 0x250
+    - name: UTRLBAU
+      byte_offset: 0x254
+    - name: UTRLDBR
+      byte_offset: 0x258
+    - name: UTRLCLR
+      byte_offset: 0x25c
+    - name: UTRLRSR
+      byte_offset: 0x260
+      fieldset: RUN_STOP
+    - name: UTRLCNR
+      byte_offset: 0x264
+    - name: UTMRLBA
+      byte_offset: 0x270
+    - name: UTMRLBAU
+      byte_offset: 0x274
+    - name: UTMRLDBR
+      byte_offset: 0x278
+    - name: UTMRLCLR
+      byte_offset: 0x27c
+    - name: UTMRLRSR
+      byte_offset: 0x280
+      fieldset: RUN_STOP
+    - name: UICCMD
+      byte_offset: 0x290
+      fieldset: UICCMD
+    - name: UICCMDARG
+      byte_offset: 0x294
+      array:
+        len: 3
+        stride: 4
+    - name: UMABA
+      byte_offset: 0x2b0
+    - name: UMABAU
+      byte_offset: 0x2b4
+    - name: UMAOMAX
+      byte_offset: 0x2b8
+    - name: UMACONF
+      byte_offset: 0x2bc
+      fieldset: UMACONF
+    - name: BUSTHRTL
+      byte_offset: 0x2c0
+      fieldset: BUSTHRTL
+    - name: CDACFG
+      byte_offset: 0x2d0
+      fieldset: CDACFG
+    - name: CDATX
+      byte_offset: 0x2d4
+      array:
+        len: 2
+        stride: 4
+    - name: CDARX
+      byte_offset: 0x2dc
+      access: Read
+      array:
+        len: 2
+        stride: 4
+    - name: CDASTA
+      byte_offset: 0x2e4
+      access: Read
+      fieldset: CDASTA
+    - name: LBMCFG
+      byte_offset: 0x2f0
+      fieldset: LBMCFG
+    - name: LBMSTA
+      byte_offset: 0x2f4
+      fieldset: LBMSTA
+    - name: HCLKDIV
+      description: UFS host clock divider; HCLK frequency in MHz.
+      byte_offset: 0x2fc
+      fieldset: HCLKDIV
+
+fieldset/MPHY_SW_RST:
+  fields:
+    - name: SW_RST
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/MPHY_SPECIAL_DEBUG:
+  fields:
+    - name: CMN_MPX_EN
+      bit_offset: 0
+      bit_size: 1
+    - name: CMN_MPX_SEL
+      bit_offset: 1
+      bit_size: 3
+    - name: TX0_TEST15
+      bit_offset: 4
+      bit_size: 1
+    - name: TX1_TEST15
+      bit_offset: 5
+      bit_size: 1
+
+fieldset/MPHY_SF_WATCHDOG:
+  fields:
+    - name: PLL
+      bit_offset: 0
+      bit_size: 1
+    - name: CDR0
+      bit_offset: 1
+      bit_size: 1
+    - name: CDR1
+      bit_offset: 2
+      bit_size: 1
+
+fieldset/MPHY_SF_ERROR_FLAG:
+  fields:
+    - name: VALUE
+      bit_offset: 0
+      bit_size: 11
+
+fieldset/MPHY_CTL:
+  fields:
+    - name: TX_FSM_RD_CFN
+      bit_offset: 0
+      bit_size: 1
+    - name: RX_FSM_RD_CFN
+      bit_offset: 1
+      bit_size: 1
+    - name: REF_CLOCK_SHARED
+      bit_offset: 2
+      bit_size: 1
+    - name: TX_DEEP_STALL_EN
+      bit_offset: 3
+      bit_size: 1
+    - name: RX_DEEP_STALL_EN
+      bit_offset: 4
+      bit_size: 1
+    - name: REFCLK_FREQ_SEL
+      bit_offset: 5
+      bit_size: 2
+    - name: REFCLK_NOGATED
+      bit_offset: 7
+      bit_size: 1
+    - name: LLI_SUPPORT
+      bit_offset: 8
+      bit_size: 1
+
+fieldset/MPHY_CALI_IN0:
+  fields:
+    - name: LSVCO_DAC
+      bit_offset: 0
+      bit_size: 8
+    - name: TX0_LDO_LA
+      bit_offset: 8
+      bit_size: 4
+    - name: TX1_LDO_LA
+      bit_offset: 12
+      bit_size: 4
+    - name: TX0_LDO_SA
+      bit_offset: 16
+      bit_size: 4
+    - name: TX1_LDO_SA
+      bit_offset: 20
+      bit_size: 4
+    - name: TX0_DEEMPH
+      bit_offset: 24
+      bit_size: 4
+    - name: TX1_DEEMPH
+      bit_offset: 28
+      bit_size: 4
+
+fieldset/MPHY_CALI_IN1:
+  fields:
+    - name: RX0_ODT
+      bit_offset: 0
+      bit_size: 6
+    - name: RX1_ODT
+      bit_offset: 8
+      bit_size: 6
+    - name: REXT
+      bit_offset: 16
+      bit_size: 5
+
+fieldset/MPHY_CALI_OUT:
+  fields:
+    - name: LSVCO_DAC
+      bit_offset: 0
+      bit_size: 8
+    - name: RX0_ODT
+      bit_offset: 8
+      bit_size: 6
+    - name: RX1_ODT
+      bit_offset: 16
+      bit_size: 6
+    - name: LSVCO_DONE
+      bit_offset: 24
+      bit_size: 1
+    - name: TXPLL_ERR
+      bit_offset: 25
+      bit_size: 1
+    - name: RXCDR0_ERR
+      bit_offset: 26
+      bit_size: 1
+    - name: RXCDR1_ERR
+      bit_offset: 27
+      bit_size: 1
+
+fieldset/MPHY_VCONTROL:
+  fields:
+    - name: VALUE
+      bit_offset: 0
+      bit_size: 10
+    - name: DEEMP_SEL
+      bit_offset: 12
+      bit_size: 1
+    - name: LA_SA_SEL
+      bit_offset: 13
+      bit_size: 2
+
+fieldset/MPHY_BIST_OK:
+  fields:
+    - name: LANE0
+      bit_offset: 0
+      bit_size: 1
+    - name: LANE1
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/HC_CTL:
+  fields:
+    - name: LP_ISOL_EN
+      bit_offset: 0
+      bit_size: 1
+    - name: MK2_EXTENSION_EN
+      bit_offset: 1
+      bit_size: 1
+
+fieldset/HC_ST:
+  fields:
+    - name: IDLE_IND
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/CAP:
+  fields:
+    - name: NUTRS
+      bit_offset: 0
+      bit_size: 5
+    - name: NORTTS
+      bit_offset: 8
+      bit_size: 8
+    - name: NUTMRS
+      bit_offset: 16
+      bit_size: 3
+    - name: AUTOH8
+      bit_offset: 23
+      bit_size: 1
+    - name: AS64
+      bit_offset: 24
+      bit_size: 1
+
+fieldset/VER:
+  fields:
+    - name: VS
+      bit_offset: 0
+      bit_size: 4
+    - name: MNR
+      bit_offset: 4
+      bit_size: 4
+    - name: MJR
+      bit_offset: 8
+      bit_size: 8
+
+fieldset/AHIT:
+  fields:
+    - name: AH8ITV
+      bit_offset: 0
+      bit_size: 10
+    - name: TS
+      bit_offset: 10
+      bit_size: 3
+
+fieldset/INT_STATUS:
+  fields:
+    - name: VALUE
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/HCS:
+  fields:
+    - name: DP
+      bit_offset: 0
+      bit_size: 1
+    - name: UTRLRDY
+      bit_offset: 1
+      bit_size: 1
+    - name: UTMRLRDY
+      bit_offset: 2
+      bit_size: 1
+    - name: UCRDY
+      bit_offset: 3
+      bit_size: 1
+    - name: UPMCRS
+      bit_offset: 8
+      bit_size: 3
+    - name: CCS
+      bit_offset: 11
+      bit_size: 1
+    - name: UTPEC
+      bit_offset: 12
+      bit_size: 4
+    - name: TTAGUTPE
+      bit_offset: 16
+      bit_size: 8
+    - name: TLUNUTPE
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/HCE:
+  fields:
+    - name: ENABLE
+      description: Host controller enable bit.
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/UTRIACR:
+  fields:
+    - name: IATOVAL
+      bit_offset: 0
+      bit_size: 8
+    - name: IACTH
+      bit_offset: 8
+      bit_size: 5
+    - name: CTR
+      bit_offset: 16
+      bit_size: 1
+    - name: IASB
+      bit_offset: 20
+      bit_size: 1
+    - name: IAPWEN
+      bit_offset: 24
+      bit_size: 1
+    - name: IAEN
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/RUN_STOP:
+  fields:
+    - name: RUN_STOP
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/UICCMD:
+  fields:
+    - name: CMDOP
+      bit_offset: 0
+      bit_size: 8
+
+fieldset/UMACONF:
+  fields:
+    - name: UMEN
+      bit_offset: 0
+      bit_size: 1
+    - name: CPORTCONFEN
+      bit_offset: 8
+      bit_size: 1
+
+fieldset/BUSTHRTL:
+  fields:
+    - name: BUSDLY
+      bit_offset: 0
+      bit_size: 8
+    - name: CGE
+      bit_offset: 12
+      bit_size: 1
+    - name: MBL
+      bit_offset: 13
+      bit_size: 3
+    - name: LP_PGE
+      bit_offset: 16
+      bit_size: 1
+    - name: LP_AH8_PGE
+      bit_offset: 17
+      bit_size: 1
+    - name: MAXOBUSR
+      bit_offset: 18
+      bit_size: 6
+    - name: DME_CTRL_LOGIC_EN
+      bit_offset: 28
+      bit_size: 1
+    - name: LP_NOCARD_PGE
+      bit_offset: 29
+      bit_size: 1
+
+fieldset/CDACFG:
+  fields:
+    - name: CDABE
+      bit_offset: 8
+      bit_size: 8
+    - name: CDAEOM
+      bit_offset: 16
+      bit_size: 1
+    - name: CDAEN
+      bit_offset: 28
+      bit_size: 1
+
+fieldset/CDASTA:
+  fields:
+    - name: CDABE
+      bit_offset: 8
+      bit_size: 8
+    - name: CDASOM
+      bit_offset: 16
+      bit_size: 1
+    - name: CDAEOM
+      bit_offset: 17
+      bit_size: 1
+    - name: CDASTA
+      bit_offset: 18
+      bit_size: 1
+    - name: CDABUSY
+      bit_offset: 19
+      bit_size: 1
+    - name: CDARES
+      bit_offset: 20
+      bit_size: 3
+
+fieldset/LBMCFG:
+  fields:
+    - name: UDLY
+      bit_offset: 0
+      bit_size: 4
+    - name: USDLY
+      bit_offset: 4
+      bit_size: 1
+    - name: PDSIZE
+      bit_offset: 5
+      bit_size: 4
+    - name: LBME
+      bit_offset: 9
+      bit_size: 1
+    - name: MRTTE
+      bit_offset: 10
+      bit_size: 1
+    - name: TRTLDV
+      bit_offset: 11
+      bit_size: 4
+    - name: BEPS
+      bit_offset: 15
+      bit_size: 1
+    - name: BEP
+      bit_offset: 16
+      bit_size: 4
+
+fieldset/LBMSTA:
+  fields:
+    - name: ERR
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/HCLKDIV:
+  fields:
+    - name: VALUE
+      bit_offset: 0
+      bit_size: 16

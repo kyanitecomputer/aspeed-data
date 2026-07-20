@@ -1,0 +1,706 @@
+# AST2700 System Control Unit 0 (SCU0) — CPU-die.
+#
+# Base address: 0x12C02000 (BootMCU view, same as system view).
+# This block covers the SCU0 registers documented for early CPU-die bring-up:
+# straps/security, reset and clock control, processor remap/interrupt control,
+# PLLs, pinmux, scratch, PCIe/USB/VGA/DP/DDR-related controls.
+#
+
+block/SCU0:
+  description: >
+    AST2700 System Control Unit 0 (SCU0), CPU-die.
+    Base address: 0x12C02000.
+    Controls silicon revision, hardware straps, system resets,
+    clock stop, and PLL configuration for the CPU-die peripherals.
+  items:
+    - name: SIL_REV
+      description: >
+        Silicon Revision ID Register (read-only).
+        [31:24] = BMC generation (0x06 = AST2700 series).
+        [23:16] = Hardware revision (0x00=A0, 0x01=A1).
+        [15:8]  = EFUSE device ID (0x00=AST2750, 0x01=AST2700, 0x02=AST2720).
+        [7:0]   = Compatibility ID (0x03).
+      byte_offset: 0x000
+      access: Read
+      fieldset: SIL_REV
+
+    - name: HWSTRAP1
+      description: >
+        Hardware Strap Register 1.
+        Reflects external strap pin state sampled at power-on.
+        [4:2] = CPU/HPLL frequency selection.
+        [8]   = disable backdoor.
+      byte_offset: 0x010
+      access: Read
+      fieldset: HWSTRAP1
+
+    - name: HWSTRAP1_CLR
+      description: >
+        Hardware Strap 1 Clear Register (write-1-to-clear).
+        Software can override strap bits by writing 1 to this register
+        (clears corresponding HWSTRAP1 bit).
+      byte_offset: 0x014
+
+    - name: HWSTRAP1_LOCK
+      description: Hardware Strap 1 write-protection register.
+      byte_offset: 0x020
+
+    - name: HWSTRAP1_SECURE
+      description: Hardware Strap 1 secure-control registers.
+      byte_offset: 0x024
+      array:
+        len: 3
+        stride: 4
+
+    - name: OTP_STRAP_EXT
+      description: Extended OTP strap registers.
+      byte_offset: 0x030
+      array:
+        len: 2
+        stride: 4
+
+    - name: RESET_LOG1
+      description: Reset log register 1.
+      byte_offset: 0x050
+
+    - name: RESET_LOG
+      description: System reset event log and secure-control registers.
+      byte_offset: 0x050
+      array:
+        len: 12
+        stride: 4
+
+    - name: DEBUG_MISC
+      description: Probe, UART debug, miscellaneous, and free-run counter registers.
+      byte_offset: 0x0A0
+      array:
+        len: 18
+        stride: 4
+
+    # ── Reset Control ──────────────────────────────────────────────────────
+
+    - name: RST_CTRL1
+      description: >
+        System Reset Control Register 1.
+        Write 1 to assert reset to the corresponding peripheral.
+        Write corresponding bit to RST_CLR1 to de-assert.
+        Key bit: [1]=DDRPHY async reset — assert before PHY power sequence.
+      byte_offset: 0x200
+      fieldset: RST_CTRL1
+
+    - name: RST_CLR1
+      description: >
+        System Reset Clear Register 1 (write-to-clear).
+        Write 1 to de-assert the corresponding reset in RST_CTRL1.
+      byte_offset: 0x204
+      fieldset: RST_CTRL1
+
+    - name: RST_CTRL2
+      description: >
+        System Reset Control Register 2.
+        Write 1 to assert reset to the corresponding peripheral.
+      byte_offset: 0x220
+      fieldset: RST_CTRL2
+
+    - name: RST_CLR2
+      description: >
+        System Reset Clear Register 2 (write-to-clear).
+        Write 1 to de-assert the corresponding reset in RST_CTRL2.
+      byte_offset: 0x224
+      fieldset: RST_CTRL2
+
+    - name: EXTRST_MASK
+      description: External reset mask registers.
+      byte_offset: 0x2F0
+      array:
+        len: 2
+        stride: 4
+
+    - name: RESET_POLICY
+      description: Reset policy programming window.
+      byte_offset: 0x214
+      array:
+        len: 11
+        stride: 4
+
+    - name: CLOCK_POLICY
+      description: Clock policy programming window.
+      byte_offset: 0x254
+      array:
+        len: 14
+        stride: 4
+
+    - name: RESET_POLICY_LOCK
+      description: Reset and clock policy lock register.
+      byte_offset: 0xE10
+
+    - name: CLOCK_SELECT_POLICY_LOCK
+      description: Clock-select policy lock registers.
+      byte_offset: 0x290
+      array:
+        len: 3
+        stride: 4
+
+    - name: CLOCK_SELECT
+      description: Clock selection registers 1-3.
+      byte_offset: 0x280
+      array:
+        len: 3
+        stride: 4
+
+    # ── PLL Registers ─────────────────────────────────────────────────────
+    #
+    # PLL formula: F_out = F_in × (M+1) / (N+1) / (P+1)
+    # F_in = 25 MHz crystal.
+    # All PLLs use the same parameter layout.
+
+    - name: HPLL_PARAM
+      description: >
+        HPLL (Host PLL) Parameter Register.
+        Primary PLL for CPU-die high-speed clocks.
+        Typical: 1600 MHz (M=127, N=3, P=0 → 25×128/4/1 = 800 MHz → ×2 = 1600 MHz).
+        [12:0]=M (multiplier−1), [18:13]=N (pre-divider−1),
+        [22:19]=P (post-divider−1), [23]=off, [24]=bypass, [25]=reset.
+      byte_offset: 0x300
+      fieldset: PLL_PARAM
+
+    - name: HPLL_EXT
+      description: >
+        HPLL Extended Register.
+        [11:0]=BWADJ (bandwidth adjustment, set to M/2 for recommended operation).
+        [31]=LOCK (read-only, 1 when PLL is locked to target frequency).
+      byte_offset: 0x304
+      fieldset: PLL_EXT
+
+    - name: DPLL_PARAM
+      description: >
+        DPLL (Display PLL) Parameter Register.
+        Used for DP and display pixel clocks.
+        Same field layout as HPLL_PARAM.
+      byte_offset: 0x308
+      fieldset: PLL_PARAM
+
+    - name: DPLL_EXT
+      description: DPLL Extended Register. Same layout as HPLL_EXT.
+      byte_offset: 0x30C
+      fieldset: PLL_EXT
+
+    - name: MPLL_PARAM
+      description: >
+        MPLL (Memory PLL) Parameter Register.
+        Controls DRAM clock frequency.
+        Example DDR4-3200 (1600 MHz): M=127, N=3, P=0.
+        Same field layout as HPLL_PARAM.
+      byte_offset: 0x310
+      fieldset: PLL_PARAM
+
+    - name: MPLL_EXT
+      description: MPLL Extended Register. Same layout as HPLL_EXT.
+      byte_offset: 0x314
+      fieldset: PLL_EXT
+
+    - name: DERIVED_CLK_PARAM
+      description: D1CLK, D2CLK, CRT1CLK and CRT2CLK parameter registers.
+      byte_offset: 0x320
+      array:
+        len: 4
+        stride: 0x10
+
+    - name: FREQ_COUNTER
+      description: Frequency counter, comparison, delay-ring, and readback registers.
+      byte_offset: 0x3A0
+      array:
+        len: 5
+        stride: 4
+
+    - name: PINMUX_CTRL
+      description: Multi-function pin control registers.
+      byte_offset: 0x400
+      array:
+        len: 6
+        stride: 4
+
+    - name: PINMUX_LOCK
+      description: Pinmux register lock registers.
+      byte_offset: 0x420
+      array:
+        len: 5
+        stride: 4
+
+    - name: IO_CTRL
+      description: GPIO/JTAG/UART/MISC IO control registers.
+      byte_offset: 0x480
+      array:
+        len: 15
+        stride: 4
+
+    # ── CA35 / SSP / TSP control and scratch registers ───────────────────────
+
+    - name: CA35_REL
+      description: CA35 core reset release register.
+      byte_offset: 0x10C
+
+    - name: PSP_CTRL
+      description: PSP processor control registers.
+      byte_offset: 0x100
+      array:
+        len: 3
+        stride: 4
+
+    - name: CA35_RVBAR
+      description: CA35 reset vector base address registers, one per core.
+      byte_offset: 0x110
+      array:
+        len: 4
+        stride: 4
+
+    - name: SSP_CTRL
+      description: SSP coprocessor control register.
+      byte_offset: 0x120
+
+    - name: SSP_DRAM_REMAP0
+      description: SSP DRAM remap register 0.
+      byte_offset: 0x124
+
+    - name: SSP_DRAM_REMAP1
+      description: SSP DRAM remap register 1.
+      byte_offset: 0x128
+
+    - name: SSP_CACHE_CTRL
+      description: SSP cache control registers.
+      byte_offset: 0x12C
+      array:
+        len: 4
+        stride: 4
+
+    - name: SSP_WINDOW
+      description: SSP memory window registers.
+      byte_offset: 0x140
+      array:
+        len: 6
+        stride: 4
+
+    - name: TSP_CTRL
+      description: TSP coprocessor control register.
+      byte_offset: 0x160
+
+    - name: TSP_DRAM_REMAP
+      description: TSP DRAM remap register.
+      byte_offset: 0x168
+
+    - name: TSP_CACHE_CTRL
+      description: TSP cache control registers.
+      byte_offset: 0x16C
+      array:
+        len: 4
+        stride: 4
+
+    - name: TSP_WINDOW
+      description: TSP memory window registers.
+      byte_offset: 0x190
+      array:
+        len: 2
+        stride: 4
+
+    - name: SCU_INTR
+      description: SCU and host interrupt enable/status/log registers.
+      byte_offset: 0x1C0
+      array:
+        len: 11
+        stride: 4
+
+    - name: CPU_SMP_EP
+      description: CA35 SMP entry point registers, one 64-bit value per core.
+      byte_offset: 0x780
+      array:
+        len: 4
+        stride: 8
+
+    - name: CPU_SCRATCH
+      description: CPU-die scratch registers used for SLI and boot handoff.
+      byte_offset: 0x7F0
+      array:
+        len: 4
+        stride: 4
+
+    - name: VGA0_HANDSHAKE
+      description: VGA0 function handshake registers.
+      byte_offset: 0x900
+      array:
+        len: 4
+        stride: 4
+
+    - name: VGA1_HANDSHAKE
+      description: VGA1 function handshake registers.
+      byte_offset: 0x910
+      array:
+        len: 4
+        stride: 4
+
+    - name: VGA0_SCRATCH
+      description: VGA0 scratch registers.
+      byte_offset: 0x920
+      array:
+        len: 8
+        stride: 4
+
+    - name: VGA1_SCRATCH
+      description: VGA1 scratch registers.
+      byte_offset: 0x940
+      array:
+        len: 8
+        stride: 4
+
+    # ── PCIe / E2M configuration registers ───────────────────────────────────
+
+    - name: PCI0_MISC70
+      description: PCIe node 0 miscellaneous register 0x70.
+      byte_offset: 0xA70
+
+    - name: PCI1_MISC70
+      description: PCIe node 1 miscellaneous register 0x70.
+      byte_offset: 0xAF0
+
+    - name: PCI_MISC
+      description: SCU PCI miscellaneous registers.
+      byte_offset: 0xA00
+      array:
+        len: 64
+        stride: 4
+
+    - name: WRITE_SECURE0
+      description: Write secure-control set 0 registers.
+      byte_offset: 0xB00
+      array:
+        len: 22
+        stride: 4
+
+    - name: WRITE_SECURE1
+      description: Write secure-control set 1 registers.
+      byte_offset: 0xC00
+      array:
+        len: 22
+        stride: 4
+
+    - name: WRITE_SECURE2
+      description: Write secure-control set 2 registers.
+      byte_offset: 0xD00
+      array:
+        len: 22
+        stride: 4
+
+    - name: WRITE_PROTECT
+      description: Write-protection registers.
+      byte_offset: 0xE00
+      array:
+        len: 32
+        stride: 4
+
+    - name: RESET_SOURCE_CTRL
+      description: Reset source control registers.
+      byte_offset: 0xF00
+      array:
+        len: 32
+        stride: 4
+
+    # ── Clock Gate Registers ──────────────────────────────────────────────────
+    # Write 1 to CLKGATE1 to stop (gate off) a peripheral clock.
+    # Write 1 to CLKGATE1_CLR to enable (clear the gate) a peripheral clock.
+    # A peripheral must have its clock enabled before being accessed.
+
+    - name: CLKGATE1
+      description: >
+        Clock Gate Control Register 1.
+        Write 1 to stop the corresponding peripheral clock.
+        Read back to check current gate state (1 = clock stopped).
+      byte_offset: 0x240
+      fieldset: CLKGATE1
+
+    - name: CLKGATE1_CLR
+      description: >
+        Clock Gate Clear Register 1 (write-1-to-enable).
+        Write 1 to enable (un-gate) the corresponding peripheral clock.
+        Used by BootMCU to enable UART12, DDR PHY, DP, UFS, and related clocks.
+      byte_offset: 0x244
+      fieldset: CLKGATE1
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/SIL_REV:
+  description: Silicon revision ID fields.
+  fields:
+    - name: COMPAT_ID
+      description: Compatibility ID (always 0x03 for AST2700 family).
+      bit_offset: 0
+      bit_size: 8
+
+    - name: DEVICE_ID
+      description: >
+        EFUSE device identifier.
+        0x00=AST2750, 0x01=AST2700, 0x02=AST2720.
+      bit_offset: 8
+      bit_size: 8
+
+    - name: HW_REV
+      description: >
+        Hardware revision.
+        0x00=A0 silicon, 0x01=A1 silicon.
+      bit_offset: 16
+      bit_size: 8
+
+    - name: BMC_GEN
+      description: >
+        BMC generation identifier.
+        0x06=AST2700 series (G7).
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/HWSTRAP1:
+  description: >
+    SCU0 Hardware Strap Register 1. Sampled at power-on from external pins.
+  fields:
+    - name: DIS_PSP_BOOT
+      description: Disable PSP (CA35) auto-boot from reset.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: PSP_AUTOBOOT
+      description: Enable CA35 PSP auto-boot.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: HPLL_FREQ
+      description: >
+        CPU/HPLL frequency selection.
+
+      bit_offset: 2
+      bit_size: 3
+
+    - name: AHB_CLK_SEL
+      description: AHB clock divider select (relative to HPLL).
+      bit_offset: 5
+      bit_size: 2
+
+    - name: DIS_BACKDOOR
+      description: Disable debug back-door access.
+      bit_offset: 8
+      bit_size: 1
+
+fieldset/RST_CTRL1:
+  description: >
+    System Reset Control 1 / Clear 1.
+    Used by both RST_CTRL1 (assert reset) and RST_CLR1 (de-assert reset).
+  fields:
+    - name: MMC
+      description: eMMC controller reset.
+      bit_offset: 0
+      bit_size: 1
+
+    - name: DDRPHY
+      description: >
+        DDR PHY async reset.
+        Assert (RST_CTRL1.DDRPHY=1) before PHY power-on sequence.
+        De-assert (RST_CLR1.DDRPHY=1) after PHY power is stable.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: SOC_CTRL
+      description: SoC control logic reset.
+      bit_offset: 5
+      bit_size: 1
+
+    - name: VE
+      description: Video Engine reset.
+      bit_offset: 6
+      bit_size: 1
+
+    - name: RVAS0
+      description: Remote Virtual Access Server 0 reset.
+      bit_offset: 9
+      bit_size: 1
+
+    - name: CRT
+      description: CRT display controller reset.
+      bit_offset: 13
+      bit_size: 1
+
+    - name: UFS
+      description: UFS controller reset.
+      bit_offset: 16
+      bit_size: 1
+
+    - name: EMMC
+      description: eMMC host controller reset.
+      bit_offset: 17
+      bit_size: 1
+
+    - name: XDMA0
+      description: XDMA channel 0 reset.
+      bit_offset: 25
+      bit_size: 1
+
+    - name: DP
+      description: DisplayPort controller reset.
+      bit_offset: 28
+      bit_size: 1
+
+    - name: DPMCU
+      description: DP MCU (display coprocessor) reset.
+      bit_offset: 29
+      bit_size: 1
+
+    - name: SSP
+      description: SSP (Cortex-M4F security coprocessor) reset.
+      bit_offset: 30
+      bit_size: 1
+
+    - name: H2X0
+      description: Host-to-BMC bridge 0 reset.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/RST_CTRL2:
+  description: >
+    System Reset Control 2 / Clear 2.
+    Used by both RST_CTRL2 (assert reset) and RST_CLR2 (de-assert reset).
+  fields:
+    - name: E2M0
+      description: PCIe E2M bridge 0 reset.
+      bit_offset: 10
+      bit_size: 1
+
+    - name: E2M1
+      description: PCIe E2M bridge 1 reset.
+      bit_offset: 11
+      bit_size: 1
+
+    - name: VLINK
+      description: Video link reset.
+      bit_offset: 12
+      bit_size: 1
+
+fieldset/PLL_PARAM:
+  description: >
+    PLL parameter register (shared layout for HPLL, DPLL, MPLL).
+    F_out = 25 MHz × (M+1) / (N+1) / (P+1).
+    Set OFF=0, BYPASS=0, RESET=0 for normal operation.
+    Sequence: set RESET=1, program M/N/P, clear RESET=0, poll PLL_EXT.LOCK.
+  fields:
+    - name: M
+      description: >
+        PLL multiplier minus 1.
+        F_vco = 25 MHz × (M+1) / (N+1).
+        Valid range: 0–8191.
+      bit_offset: 0
+      bit_size: 13
+
+    - name: N
+      description: >
+        PLL pre-divider minus 1.
+        Valid range: 0–63.
+      bit_offset: 13
+      bit_size: 6
+
+    - name: P
+      description: >
+        PLL post-divider minus 1.
+        F_out = F_vco / (P+1).
+        Valid range: 0–15.
+      bit_offset: 19
+      bit_size: 4
+
+    - name: OFF
+      description: >
+        PLL power off.
+        1 = PLL powered down (no output clock).
+        0 = PLL operating normally.
+      bit_offset: 23
+      bit_size: 1
+
+    - name: BYPASS
+      description: >
+        PLL bypass.
+        1 = PLL output is bypassed; reference clock (25 MHz) drives output.
+      bit_offset: 24
+      bit_size: 1
+
+    - name: RESET
+      description: >
+        PLL reset.
+        1 = PLL held in reset (use while reprogramming M/N/P).
+        0 = PLL operating; wait for LOCK before use.
+      bit_offset: 25
+      bit_size: 1
+
+fieldset/PLL_EXT:
+  description: >
+    PLL extended register (bandwidth adjustment and lock status).
+  fields:
+    - name: BWADJ
+      description: >
+        PLL bandwidth adjustment.
+        Set to M/2 (PLL_PARAM.M / 2) for recommended loop bandwidth.
+        Controls VCO loop filter characteristics.
+      bit_offset: 0
+      bit_size: 12
+
+    - name: LOCK
+      description: >
+        PLL lock indicator (read-only).
+        1 = PLL has acquired lock at the programmed frequency.
+        Wait for LOCK=1 after de-asserting PLL RESET before using the clock.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/CLKGATE1:
+  description: >
+    Clock gate control register 1.
+    Shared layout for CLKGATE1 (stop) and CLKGATE1_CLR (enable).
+    Bit n = 1 stops (CLKGATE1) or enables (CLKGATE1_CLR) the clock for
+    the corresponding peripheral.
+  fields:
+    - name: E2M0
+      description: E2M PCIe-to-AXI bridge 0 clock gate.
+      bit_offset: 12
+      bit_size: 1
+
+    - name: DAC
+      description: DAC (video) clock gate.
+      bit_offset: 17
+      bit_size: 1
+
+    - name: DP
+      description: DisplayPort controller clock gate.
+      bit_offset: 18
+      bit_size: 1
+
+    - name: E2M1
+      description: E2M PCIe-to-AXI bridge 1 clock gate.
+      bit_offset: 19
+      bit_size: 1
+
+    - name: UFS
+      description: UFS host controller clock gate.
+      bit_offset: 26
+      bit_size: 1
+
+    - name: EMMC
+      description: eMMC host controller clock gate.
+      bit_offset: 27
+      bit_size: 1
+
+    - name: DDRPHY
+      description: >
+        DDR PHY clock gate.
+        Write 1 to CLKGATE1_CLR (bit 11) to enable the PHY clock
+        before starting DDR training.
+      bit_offset: 11
+      bit_size: 1
+
+    - name: UART12
+      description: >
+        UART12 clock gate.
+        Write 1 to CLKGATE1_CLR (bit 15) to enable the UART12 clock
+        before using the console UART.
+      bit_offset: 15
+      bit_size: 1

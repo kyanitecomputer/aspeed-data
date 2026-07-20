@@ -1,0 +1,175 @@
+# AST2700 AHB bus controller registers.
+
+block/AHBC:
+  description: >
+    AST2700 CPU-die and IO-die AHB matrix debug/control registers. Most fields
+    are reserved in the public datasheet; timeout controls are named because
+    BootMCU disables them while calibrating SLI links.
+  items:
+    - name: PORT_STATUS0
+      description: Per-port reserved debug/status register 0.
+      byte_offset: 0x000
+      access: Read
+      array: { len: 8, stride: 0x40 }
+
+    - name: PORT_STATUS1
+      description: Per-port reserved debug/status register 1.
+      byte_offset: 0x004
+      access: Read
+      array: { len: 8, stride: 0x40 }
+
+    - name: PORT_STATUS2
+      description: Per-port reserved debug/status register 2.
+      byte_offset: 0x008
+      access: Read
+      array: { len: 8, stride: 0x40 }
+
+    - name: PORT_STATUS3
+      description: Per-port reserved debug/status register 3.
+      byte_offset: 0x00c
+      access: Read
+      array: { len: 8, stride: 0x40 }
+
+    - name: PORT_STATUS4
+      description: Per-port reserved debug/status register 4.
+      byte_offset: 0x010
+      access: Read
+      array: { len: 8, stride: 0x40 }
+
+    - name: PORT_STATUS5
+      description: Per-port reserved debug/status register 5.
+      byte_offset: 0x014
+      access: Read
+      array: { len: 8, stride: 0x40 }
+
+    - name: TIMEOUT_CLEAR
+      description: Per-port timeout clear registers.
+      byte_offset: 0x030
+      array: { len: 8, stride: 0x40 }
+
+    - name: TIMEOUT
+      description: Per-port timeout control registers.
+      byte_offset: 0x034
+      array: { len: 8, stride: 0x40 }
+      fieldset: TIMEOUT
+
+    - name: TIMEOUT_STATUS
+      description: Per-port timeout status registers.
+      byte_offset: 0x038
+      access: Read
+      array: { len: 8, stride: 0x40 }
+
+    - name: TIMEOUT_SOURCE
+      description: Per-port timeout source/status registers.
+      byte_offset: 0x03c
+      access: Read
+      array: { len: 8, stride: 0x40 }
+
+    - name: MASTER_CTRL0
+      description: Reserved AHB matrix control register.
+      byte_offset: 0x200
+      fieldset: MASTER_CTRL0
+
+    - name: MASTER_CTRL1
+      description: Reserved AHB matrix control register.
+      byte_offset: 0x204
+      fieldset: MASTER_CTRL1
+
+    - name: MASTER_STATUS0
+      description: Reserved AHB matrix status register.
+      byte_offset: 0x208
+      access: Read
+
+    - name: MASTER_STATUS1
+      description: Reserved AHB matrix status register.
+      byte_offset: 0x20c
+      access: Read
+
+    - name: MASTER_CONFIG0
+      description: Reserved AHB matrix configuration register.
+      byte_offset: 0x210
+
+    - name: MASTER_CONFIG1
+      description: Reserved AHB matrix configuration register.
+      byte_offset: 0x214
+      fieldset: MASTER_CONFIG1
+
+    - name: MASTER_ENABLE
+      description: Reserved AHB matrix per-master enable registers.
+      byte_offset: 0x218
+      array: { len: 2, stride: 4 }
+
+    - name: WINDOW_CFG
+      description: Reserved AHB matrix window configuration registers.
+      byte_offset: 0x220
+      array: { len: 8, stride: 4 }
+
+    - name: WINDOW_CFG_EXT
+      description: Reserved AHB matrix window configuration registers.
+      byte_offset: 0x260
+      array: { len: 8, stride: 4 }
+
+    - name: INTERRUPT_CTRL
+      description: Reserved AHB matrix interrupt control register.
+      byte_offset: 0x2a0
+      fieldset: INTERRUPT_CTRL
+
+    - name: INTERRUPT_STATUS
+      description: Reserved AHB matrix interrupt status register.
+      byte_offset: 0x2a4
+      access: Read
+      fieldset: INTERRUPT_STATUS
+
+    - name: DEBUG_CTRL
+      description: Reserved AHB matrix debug control register.
+      byte_offset: 0x2a8
+      fieldset: DEBUG_CTRL
+
+    - name: DEBUG_STATUS
+      description: Reserved AHB matrix debug status register.
+      byte_offset: 0x2ac
+      access: Read
+
+    - name: ID
+      description: Reserved AHB matrix ID/status register.
+      byte_offset: 0x2fc
+      access: Read
+
+fieldset/TIMEOUT:
+  description: AHB timeout control register.
+  fields:
+    - name: VALUE
+      description: Timeout value field.
+      bit_offset: 0
+      bit_size: 6
+
+fieldset/MASTER_CTRL0:
+  fields:
+    - { name: ENABLE, bit_offset: 0, bit_size: 1 }
+    - { name: OPTION0, bit_offset: 24, bit_size: 1 }
+    - { name: OPTION1, bit_offset: 28, bit_size: 1 }
+
+fieldset/MASTER_CTRL1:
+  fields:
+    - { name: VALUE, bit_offset: 0, bit_size: 16 }
+
+fieldset/MASTER_CONFIG1:
+  fields:
+    - { name: VALUE, bit_offset: 0, bit_size: 3 }
+
+fieldset/INTERRUPT_CTRL:
+  fields:
+    - { name: CLEAR, bit_offset: 0, bit_size: 4 }
+    - { name: ENABLE0, bit_offset: 8, bit_size: 4 }
+    - { name: ENABLE1, bit_offset: 16, bit_size: 4 }
+
+fieldset/INTERRUPT_STATUS:
+  fields:
+    - { name: STATUS0, bit_offset: 0, bit_size: 4 }
+    - { name: STATUS1, bit_offset: 8, bit_size: 4 }
+
+fieldset/DEBUG_CTRL:
+  fields:
+    - { name: CLEAR, bit_offset: 0, bit_size: 1 }
+    - { name: ENABLE0, bit_offset: 8, bit_size: 1 }
+    - { name: ENABLE1, bit_offset: 16, bit_size: 1 }

@@ -40,10 +40,8 @@
 #    SCU150: DRAM virtual start
 #    SCU154: DRAM virtual size
 #
-# Sources:
 #   ast2700_ssp.pdf v0.1h  (SSP registers)
 #   ast2700_tsp.pdf v0.1f  (TSP registers — same layout, different base)
-#   Zephyr: soc/aspeed/ast2700/ DTS files
 
 # ── Register block ────────────────────────────────────────────────────────────
 

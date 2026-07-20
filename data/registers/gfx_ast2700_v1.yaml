@@ -1,0 +1,111 @@
+# AST2700 SOC display controller / GFX CRT registers.
+#
+# Sources:
+#   - linux/drivers/gpu/drm/aspeed/aspeed_gfx.h
+#   - linux/drivers/gpu/drm/aspeed/aspeed_gfx_crtc.c
+
+block/GFX:
+  description: AST2700 SOC display controller register block.
+  items:
+    - { name: CTRL1, byte_offset: 0x60, fieldset: CTRL1, description: GFX Control Register I. }
+    - { name: CTRL2, byte_offset: 0x64, fieldset: CTRL2, description: GFX Control Register II. }
+    - { name: STATUS, byte_offset: 0x68, access: Read, fieldset: STATUS, description: GFX status. }
+    - { name: MISC, byte_offset: 0x6c, description: CRT miscellaneous settings. }
+    - { name: HORIZ0, byte_offset: 0x70, fieldset: HORIZ0, description: Horizontal total and display-enable end. }
+    - { name: HORIZ1, byte_offset: 0x74, fieldset: HORIZ1, description: Horizontal retrace start and end. }
+    - { name: VERT0, byte_offset: 0x78, fieldset: VERT0, description: Vertical total and display-enable end. }
+    - { name: VERT1, byte_offset: 0x7c, fieldset: VERT1, description: Vertical retrace start and end. }
+    - { name: ADDR, byte_offset: 0x80, fieldset: ADDR, description: Display starting address. On AST2700 write framebuffer_address >> 2. }
+    - { name: OFFSET, byte_offset: 0x84, fieldset: OFFSET, description: Display offset and terminal count. }
+    - { name: THROD, byte_offset: 0x88, fieldset: THROD, description: FIFO threshold. }
+    - { name: XSCALE, byte_offset: 0x8c, description: Scaling-up factor. }
+    - { name: CURSOR0, byte_offset: 0x90, fieldset: CURSOR_OFFSET, description: Hardware cursor X/Y offset. }
+    - { name: CURSOR1, byte_offset: 0x94, fieldset: CURSOR_POSITION, description: Hardware cursor X/Y position. }
+    - { name: CURSOR2, byte_offset: 0x98, fieldset: ADDR, description: Hardware cursor pattern address. }
+    - { name: STATUS5, byte_offset: 0xb8, access: Read, fieldset: STATUS5, description: GFX Status Register V. }
+    - { name: SCRATCH, byte_offset: 0xbc, description: Scratchpad. }
+    - { name: BB0_ADDR, byte_offset: 0xd0, description: Display BB0 starting address. }
+    - { name: BB1_ADDR, byte_offset: 0xd4, description: Display BB1 starting address. }
+    - { name: BB_COUNT, byte_offset: 0xd8, description: Display BB terminal count. }
+
+fieldset/CTRL1:
+  fields:
+    - { name: EN, bit_offset: 0, bit_size: 1 }
+    - { name: HW_CURSOR_EN, bit_offset: 1, bit_size: 1 }
+    - { name: INTERLACED, bit_offset: 3, bit_size: 1 }
+    - { name: COLOR, bit_offset: 7, bit_size: 3 }
+    - { name: HW_CURSOR_FORMAT, bit_offset: 10, bit_size: 1 }
+    - { name: HSYNC_NEGATIVE, bit_offset: 16, bit_size: 1 }
+    - { name: VSYNC_NEGATIVE, bit_offset: 17, bit_size: 1 }
+    - { name: HSYNC_OFF, bit_offset: 18, bit_size: 1 }
+    - { name: VSYNC_OFF, bit_offset: 19, bit_size: 1 }
+    - { name: SCREEN_OFF, bit_offset: 20, bit_size: 1 }
+    - { name: DESK_OFF, bit_offset: 23, bit_size: 1 }
+    - { name: VERTICAL_INTR_EN, bit_offset: 30, bit_size: 1 }
+    - { name: VERTICAL_INTR_STS, bit_offset: 31, bit_size: 1 }
+
+fieldset/CTRL2:
+  fields:
+    - { name: DAC_EN, bit_offset: 0, bit_size: 1 }
+    - { name: VBLANK_LINE, bit_offset: 20, bit_size: 12 }
+
+fieldset/STATUS:
+  fields:
+    - { name: VERTICAL_RETRACE, bit_offset: 0, bit_size: 1 }
+    - { name: VERTICAL_DISPLAY_EN, bit_offset: 1, bit_size: 1 }
+    - { name: HORIZONTAL_RETRACE, bit_offset: 2, bit_size: 1 }
+    - { name: HORIZONTAL_DISPLAY_EN, bit_offset: 3, bit_size: 1 }
+    - { name: ODD_FIELD, bit_offset: 4, bit_size: 1 }
+    - { name: ODD_FIELD_SYNC, bit_offset: 5, bit_size: 1 }
+    - { name: BLUE_SIGNATURE, bit_offset: 8, bit_size: 8 }
+    - { name: GREEN_SIGNATURE, bit_offset: 16, bit_size: 8 }
+    - { name: RED_SIGNATURE, bit_offset: 24, bit_size: 8 }
+
+fieldset/HORIZ0:
+  fields:
+    - { name: TOTAL, bit_offset: 0, bit_size: 13 }
+    - { name: DISPLAY_END, bit_offset: 16, bit_size: 13 }
+
+fieldset/HORIZ1:
+  fields:
+    - { name: RETRACE_START, bit_offset: 0, bit_size: 13 }
+    - { name: RETRACE_END, bit_offset: 16, bit_size: 13 }
+
+fieldset/VERT0:
+  fields:
+    - { name: TOTAL, bit_offset: 0, bit_size: 12 }
+    - { name: DISPLAY_END, bit_offset: 16, bit_size: 12 }
+
+fieldset/VERT1:
+  fields:
+    - { name: RETRACE_START, bit_offset: 0, bit_size: 12 }
+    - { name: RETRACE_END, bit_offset: 16, bit_size: 12 }
+
+fieldset/ADDR:
+  fields:
+    - { name: INTERLACE_ADDR_EN, bit_offset: 1, bit_size: 1 }
+    - { name: ADDR, bit_offset: 2, bit_size: 30 }
+
+fieldset/OFFSET:
+  fields:
+    - { name: DISPLAY_OFFSET, bit_offset: 4, bit_size: 12 }
+    - { name: TERMINAL_COUNT, bit_offset: 16, bit_size: 13 }
+
+fieldset/THROD:
+  fields:
+    - { name: LOW, bit_offset: 0, bit_size: 8 }
+    - { name: HIGH, bit_offset: 8, bit_size: 8 }
+
+fieldset/CURSOR_OFFSET:
+  fields:
+    - { name: X, bit_offset: 0, bit_size: 6 }
+    - { name: Y, bit_offset: 8, bit_size: 6 }
+
+fieldset/CURSOR_POSITION:
+  fields:
+    - { name: X, bit_offset: 0, bit_size: 13 }
+    - { name: Y, bit_offset: 16, bit_size: 12 }
+
+fieldset/STATUS5:
+  fields:
+    - { name: VERTICAL_COUNT, bit_offset: 0, bit_size: 12 }

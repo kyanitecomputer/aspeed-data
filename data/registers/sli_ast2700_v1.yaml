@@ -1,0 +1,703 @@
+# AST2700 SLI (Serial Link Interface) — CPU-die ↔ IO-die interconnect.
+#
+# Each SLI instance (SLI0 / SLI1) contains three independent sub-channels:
+#
+#   Channel  Offset  Protocol          Lanes
+#   ───────  ──────  ────────────────  ─────
+#   SLIM     +0x000  MBUS (memory)     4
+#   SLIH     +0x200  AHB               2
+#   SLIV     +0x400  Video             2
+#
+# Hardware instances (BootMCU view):
+#   SLI0_SLIM  0x12C17000  CPU-die MBUS downstream
+#   SLI0_SLIH  0x12C17200  CPU-die AHB downstream
+#   SLI0_SLIV  0x12C17400  CPU-die Video downstream
+#   SLI1_SLIM  0x14C1E000  IO-die MBUS upstream
+#   SLI1_SLIH  0x14C1E200  IO-die AHB upstream
+#   SLI1_SLIV  0x14C1E400  IO-die Video upstream
+#
+# All three sub-channels share the same register layout (this block).
+# SLIM additionally uses MARB_FUNC_I at 0x060 and CTRL_IV for its TX
+# pad delays; SLIH/SLIV pack TX1/TX0 into CTRL_III alongside RX1/RX0.
+#
+# Init sequence:
+#   1. init_f(): Calibrate SLIH and SLIM downstream (SLI0) — run on BootMCU.
+#   2. init_r(): Wait for IO-die ready, restore AHB timeouts, calibrate SLIV.
+#
+#         aspeed-rs embassy-aspeed/src/sli.rs (hardware-verified on AST2750-A1)
+
+block/SLI_CHANNEL:
+  description: >
+    AST2700 SLI sub-channel register block.
+    Shared layout used by SLIM (MBUS), SLIH (AHB), and SLIV (Video).
+    Each SLI instance has three sub-channels at offsets 0x000, 0x200, 0x400.
+  items:
+    - name: CTRL_I
+      description: >
+        Control register I.
+        Contains main operational control bits: reset trigger, bus clear,
+        TX/RX clear, TX mode, PHY LAH selection, clock-change behaviour,
+        and suspend control.
+      byte_offset: 0x00
+      fieldset: CTRL_I
+
+    - name: CTRL_II
+      description: >
+        Control register II.
+        Contains SLIV TX enter-suspend wait count (bits [15:14]).
+        Other bits are reserved.
+      byte_offset: 0x04
+      fieldset: CTRL_II
+
+    - name: CTRL_III
+      description: >
+        Control register III — clock selects and pad delays (first set).
+        [31:28] = engine clock select (SLI_CLK_SEL).
+        [27:24] = PHY TX clock select (SLI_PHYCLK_SEL).
+        For SLIH/SLIV: [23:18]=PAD_DLY_TX1, [17:12]=PAD_DLY_TX0,
+                       [11:6]=PAD_DLY_RX1, [5:0]=PAD_DLY_RX0.
+        For SLIM:      [23:18]=PAD_DLY_RX3, [17:12]=PAD_DLY_RX2,
+                       [11:6]=PAD_DLY_RX1, [5:0]=PAD_DLY_RX0
+                       (TX delays are in CTRL_IV).
+      byte_offset: 0x08
+      fieldset: CTRL_III
+
+    - name: CTRL_IV
+      description: >
+        Control register IV — SLIM TX pad delays.
+        [23:18]=PAD_DLY_TX3, [17:12]=PAD_DLY_TX2,
+        [11:6]=PAD_DLY_TX1, [5:0]=PAD_DLY_TX0.
+        Only meaningful for SLIM; not used on SLIH or SLIV.
+      byte_offset: 0x0C
+      fieldset: CTRL_IV
+
+    - name: INTR_EN
+      description: >
+        Interrupt enable register.
+        Each bit enables the corresponding interrupt in INTR_STATUS.
+        Write 1 to enable, 0 to mask.
+      byte_offset: 0x10
+      fieldset: INTR
+
+    - name: INTR_STATUS
+      description: >
+        Interrupt status register.
+        Bits are set by hardware events and cleared by writing 1.
+        Write 0xFFFFF to clear all pending interrupts.
+      byte_offset: 0x14
+      fieldset: INTR
+
+    - name: REGW_DATA
+      description: Register-write control packet data register.
+      byte_offset: 0x18
+
+    - name: PAD_CTRL
+      description: SLIH pad configuration register; reserved on SLIM/SLIV.
+      byte_offset: 0x1C
+      fieldset: PAD_CTRL
+
+    - name: REGR_DATA
+      description: Register-read control packet data register.
+      byte_offset: 0x20
+      access: Read
+
+    - name: STATUS
+      description: PHY status and packet-ID tracking register.
+      byte_offset: 0x30
+      access: Read
+      fieldset: STATUS
+
+    - name: STATUS_I
+      description: Controller debug status register I.
+      byte_offset: 0x34
+      access: Read
+
+    - name: STATUS_II
+      description: Controller debug status register II.
+      byte_offset: 0x38
+      access: Read
+
+    - name: STATUS_III
+      description: Controller debug status register III.
+      byte_offset: 0x3C
+      access: Read
+
+    - name: SYNC_REC_I
+      description: RX PHY sync record register I.
+      byte_offset: 0x50
+      access: Read
+
+    - name: SYNC_REC_II
+      description: RX PHY sync record register II.
+      byte_offset: 0x54
+      access: Read
+
+    - name: MARB_FUNC_I
+      description: >
+        SLIM master arbitration function register I.
+        Controls the SLI master arbitration logic for the MBUS channel.
+        Only meaningful on SLIM (offset 0x000); reserved on SLIH/SLIV.
+      byte_offset: 0x60
+      fieldset: MARB_FUNC_I
+
+    - name: MARB_FUNC_II
+      description: SLIM master arbitration grant register 0; SLIM-only.
+      byte_offset: 0x64
+      fieldset: MARB_GRANT
+
+    - name: MARB_FUNC_III
+      description: SLIM master arbitration grant register 1; SLIM-only.
+      byte_offset: 0x68
+      fieldset: MARB_GRANT
+
+    - name: MARB_IRQ
+      description: SLIM master arbitration interrupt enable/status register.
+      byte_offset: 0x70
+      fieldset: MARB_IRQ
+
+    - name: MARB_STATUS
+      description: SLIM master arbitration debug status register.
+      byte_offset: 0x74
+      access: Read
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/CTRL_I:
+  description: SLI channel control register I.
+  fields:
+    - name: ALL_IN_SUSPEND
+      description: >
+        All-channels-in-suspend indicator (read-only).
+        1 = all TX and RX paths are in the suspend (idle) state.
+      bit_offset: 28
+      bit_size: 1
+
+    - name: AUTO_CLR_OFF_DAT
+      description: >
+        Disable auto-clear on data pad delay change.
+        0 = hardware auto-clears the link when PAD_DLY_RX/TX is changed
+            (default — ensures clean transition).
+        1 = no auto-clear; software must manually clear and restart.
+      bit_offset: 23
+      bit_size: 1
+
+    - name: AUTO_CLR_OFF_CLK
+      description: >
+        Disable auto-clear on clock pad delay change.
+        0 = hardware auto-clears the link when CLK delay changes.
+        1 = no auto-clear.
+      bit_offset: 22
+      bit_size: 1
+
+    - name: SP_DOWN_PERIOD
+      description: >
+        Speed-down period control.
+        Sets the time the link stays at reduced speed during transitions.
+      bit_offset: 20
+      bit_size: 2
+
+    - name: NO_RST_TXCLK_CHG
+      description: >
+        Suppress link reset when TX clock is changed.
+        0 = link is reset on clock change (default).
+        1 = no reset; use when changing clock while link is running.
+      bit_offset: 17
+      bit_size: 1
+
+    - name: RAW_CTRL
+      description: SLIV raw control source selection; only meaningful on CPU-die SLIV.
+      bit_offset: 16
+      bit_size: 1
+
+    - name: RAW_MODE
+      description: >
+        SLIV raw data mode (SLIV only).
+        1 = SLIV video channel operates in raw data pass-through mode.
+        Ignored on SLIM and SLIH.
+      bit_offset: 15
+      bit_size: 1
+
+    - name: TX_MODE
+      description: >
+        TX mode enable.
+        1 = enable the TX transmitter block.
+      bit_offset: 14
+      bit_size: 1
+
+    - name: RX_PHY_LAH_SEL_REV
+      description: >
+        RX PHY latch-ahead select — reverse polarity.
+        Selects reversed LAH sampling edge on the RX PHY.
+      bit_offset: 13
+      bit_size: 1
+
+    - name: RX_PHY_LAH_SEL_NEG
+      description: >
+        RX PHY latch-ahead select — negative edge.
+        Selects negative-edge LAH sampling on the RX PHY.
+        Set to 1 on IO-die SLIM at 1 GHz PHY clock (A1 silicon).
+      bit_offset: 12
+      bit_size: 1
+
+    - name: AUTO_SEND_TRN_OFF
+      description: >
+        Disable automatic training packet send.
+        1 = suppress automatic TX training packet generation.
+        Set during calibration to allow manual control.
+      bit_offset: 8
+      bit_size: 1
+
+    - name: AUTO_SEND_ACK_OFF
+      description: Disable automatic ACK response packets.
+      bit_offset: 9
+      bit_size: 1
+
+    - name: ERR_HANDLER_OFF
+      description: Disable SLI protocol error handler.
+      bit_offset: 10
+      bit_size: 1
+
+    - name: AUTO_SPEEDDOWN_OFF
+      description: Disable SLIH automatic TX speed-down behaviour.
+      bit_offset: 11
+      bit_size: 1
+
+    - name: CLEAR_BUS
+      description: >
+        Clear bus state (write 1 to trigger, self-clearing).
+        Flushes pending transactions and resets the link state machine.
+        Wait for TX/RX suspend before issuing.
+      bit_offset: 6
+      bit_size: 1
+
+    - name: TRANS_EN
+      description: >
+        Transmission enable.
+        1 = enable the SLI link data transmission.
+      bit_offset: 5
+      bit_size: 1
+
+    - name: SW_RESET
+      description: Software reset control bit.
+      bit_offset: 4
+      bit_size: 1
+
+    - name: PRST_TRIGGER
+      description: Software reset configurable register trigger.
+      bit_offset: 3
+      bit_size: 1
+
+    - name: CLEAR_RX
+      description: >
+        Clear RX FIFO (write 1, self-clearing).
+        Discards any data in the receive path.
+      bit_offset: 2
+      bit_size: 1
+
+    - name: CLEAR_TX
+      description: >
+        Clear TX FIFO (write 1, self-clearing).
+        Discards any data in the transmit path.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: RESET_TRIGGER
+      description: >
+        SLI link reset trigger (write 1, self-clearing).
+        Resets the entire SLI sub-channel state machine.
+        Issue before beginning calibration.
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/CTRL_II:
+  description: SLI channel control register II.
+  fields:
+    - name: REG_READ_ADDR
+      description: Built-in protocol register-read address; SLIM only.
+      bit_offset: 24
+      bit_size: 8
+
+    - name: REG_WRITE_ADDR
+      description: Built-in protocol register-write address; SLIM/SLIV.
+      bit_offset: 16
+      bit_size: 8
+
+    - name: SLIV_TX_ENT_SUSPEND
+      description: >
+        SLIV TX enter-suspend wait count.
+        Number of cycles the TX waits before entering suspend state.
+        Set to 0b11 (maximum) for reliable suspend handshake on SLIV.
+        Only meaningful for the SLIV sub-channel.
+      bit_offset: 14
+      bit_size: 2
+
+    - name: TX_TRAIN_MASK_PERIOD
+      description: Mask period for sending train packets after TX/RX suspend.
+      bit_offset: 12
+      bit_size: 2
+
+    - name: TX_SYNC_MASK_PERIOD
+      description: TX sync mask period for speed-difference tolerance.
+      bit_offset: 10
+      bit_size: 2
+
+    - name: NO_TRAFFIC_PERIOD
+      description: No-traffic connection-check period selection.
+      bit_offset: 8
+      bit_size: 2
+
+    - name: REG_TX_CTRLPKT_FORM
+      description: Built-in protocol control-packet format.
+      bit_offset: 4
+      bit_size: 3
+
+    - name: TX_CTRLQ_EMPTY
+      description: TX control-packet queue empty status.
+      bit_offset: 2
+      bit_size: 1
+
+    - name: TX_CTRLQ_AVBL
+      description: TX control-packet queue availability status.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: TX_CTRLQ_KICK
+      description: Push one built-in protocol packet into the TX control queue.
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/CTRL_III:
+  description: >
+    SLI channel control register III.
+    Contains engine clock select, PHY clock select, and pad delays.
+    Pad delay field meaning differs between SLIM and SLIH/SLIV — see
+    register description.
+  fields:
+    - name: CLK_SEL
+      description: >
+        Engine clock frequency select.
+        Controls the SLI engine (logic) clock.
+      bit_offset: 28
+      bit_size: 4
+      enumm: ClkSel
+
+    - name: PHYCLK_SEL
+      description: >
+        PHY TX clock frequency select.
+        Controls the SLI PHY serializer/deserializer clock.
+      bit_offset: 24
+      bit_size: 4
+      enumm: PhyClkSel
+
+    - name: PAD_DLY_3
+      description: >
+        Pad delay for lane 3 / TX lane 1 (6-bit value, 0–63).
+        SLIH/SLIV: TX lane 1 (PAD_DLY_TX1).
+        SLIM:      RX lane 3 (PAD_DLY_RX3).
+      bit_offset: 18
+      bit_size: 6
+
+    - name: PAD_DLY_2
+      description: >
+        Pad delay for lane 2 / TX lane 0 (6-bit value, 0–63).
+        SLIH/SLIV: TX lane 0 (PAD_DLY_TX0).
+        SLIM:      RX lane 2 (PAD_DLY_RX2).
+      bit_offset: 12
+      bit_size: 6
+
+    - name: PAD_DLY_1
+      description: >
+        Pad delay for RX lane 1 (6-bit value, 0–63).
+        Used on all sub-channels (SLIM/SLIH/SLIV).
+      bit_offset: 6
+      bit_size: 6
+
+    - name: PAD_DLY_0
+      description: >
+        Pad delay for RX lane 0 (6-bit value, 0–63).
+        Used on all sub-channels (SLIM/SLIH/SLIV).
+      bit_offset: 0
+      bit_size: 6
+
+fieldset/CTRL_IV:
+  description: >
+    SLI channel control register IV.
+    SLIM TX pad delays — 4 lanes of 6 bits each.
+    Not used on SLIH or SLIV.
+  fields:
+    - name: PAD_DLY_TX3
+      description: SLIM TX pad delay for lane 3 (6-bit, 0–63).
+      bit_offset: 18
+      bit_size: 6
+
+    - name: PAD_DLY_TX2
+      description: SLIM TX pad delay for lane 2 (6-bit, 0–63).
+      bit_offset: 12
+      bit_size: 6
+
+    - name: PAD_DLY_TX1
+      description: SLIM TX pad delay for lane 1 (6-bit, 0–63).
+      bit_offset: 6
+      bit_size: 6
+
+    - name: PAD_DLY_TX0
+      description: SLIM TX pad delay for lane 0 (6-bit, 0–63).
+      bit_offset: 0
+      bit_size: 6
+
+fieldset/INTR:
+  description: >
+    SLI interrupt status / enable bits.
+    Used by both INTR_EN and INTR_STATUS with the same bit positions.
+    In INTR_STATUS: bits are set by hardware and cleared by writing 1.
+    In INTR_EN: write 1 to enable the corresponding INTR_STATUS bit.
+  fields:
+    - name: TX_PHY_FIFO_UNDERFLOW
+      bit_offset: 25
+      bit_size: 1
+
+    - name: RX_PHY_FIFO_OVERFLOW
+      bit_offset: 24
+      bit_size: 1
+
+    - name: MBID_LOSS
+      description: SLIM CPU-die MBID loss interrupt.
+      bit_offset: 18
+      bit_size: 1
+
+    - name: ACK_SYS_ERR
+      description: ACK response reported system error.
+      bit_offset: 17
+      bit_size: 1
+
+    - name: BUS_READ_FIFO_OVERFLOW
+      bit_offset: 16
+      bit_size: 1
+
+    - name: RX_SYNC
+      description: RX synchronisation achieved (link training complete).
+      bit_offset: 15
+      bit_size: 1
+
+    - name: REG_READ_FAILED
+      bit_offset: 14
+      bit_size: 1
+
+    - name: RX_ERR
+      description: >
+        RX data error detected.
+        Indicates a receive-side protocol error. Link must be reset.
+      bit_offset: 13
+      bit_size: 1
+
+    - name: RX_NACK
+      description: >
+        RX NACK received from remote peer.
+        Indicates the remote end rejected a transaction.
+      bit_offset: 12
+      bit_size: 1
+
+    - name: RX_ACK_PKT
+      bit_offset: 11
+      bit_size: 1
+
+    - name: RX_TRAIN_PKT
+      description: RX training packet received during calibration.
+      bit_offset: 10
+      bit_size: 1
+
+    - name: REG_WRITE_DONE
+      bit_offset: 9
+      bit_size: 1
+
+    - name: REG_READ_DONE
+      bit_offset: 8
+      bit_size: 1
+
+    - name: TX_TRAINS_DONE
+      bit_offset: 7
+      bit_size: 1
+
+    - name: RX_DISCONN
+      description: >
+        RX disconnection detected.
+        Remote peer stopped transmitting.
+      bit_offset: 6
+      bit_size: 1
+
+    - name: RX_FIFO_OVERFLOW
+      bit_offset: 5
+      bit_size: 1
+
+    - name: TX_SUSPEND
+      description: >
+        TX has entered suspend state.
+        Set after CLEAR_BUS or link idle; cleared automatically on restart.
+        Used together with RX_SUSPEND to confirm a clean idle state.
+      bit_offset: 4
+      bit_size: 1
+
+    - name: TX_TRAIN
+      description: TX is actively sending training packets.
+      bit_offset: 3
+      bit_size: 1
+
+    - name: TX_IDLE
+      description: TX is idle (no pending transactions).
+      bit_offset: 2
+      bit_size: 1
+
+    - name: RX_SUSPEND
+      description: >
+        RX has entered suspend state.
+        Poll together with TX_SUSPEND to confirm both sides are suspended
+        before issuing CLEAR_BUS or changing pad delays.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: RX_IDLE
+      description: RX is idle (no incoming data).
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/MARB_FUNC_I:
+  description: >
+    SLIM master arbitration function register I.
+    Controls arbitration policy for the MBUS (SLIM) channel.
+    Only meaningful on the SLIM sub-channel (offset 0x000).
+  fields:
+    - name: ULTRA
+      description: Fixed-priority ultra request bitmap for IO-die MBUS masters.
+      bit_offset: 8
+      bit_size: 15
+
+    - name: RR_DBG
+      description: Round-robin debug arbitration mode.
+      bit_offset: 1
+      bit_size: 1
+
+    - name: RR
+      description: >
+        Round-robin arbitration enable.
+        1 = use round-robin among MBUS masters.
+        0 = priority arbitration (default).
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/PAD_CTRL:
+  description: SLIH pad control register.
+  fields:
+    - name: DRVP
+      bit_offset: 0
+      bit_size: 3
+    - name: DRVN
+      bit_offset: 3
+      bit_size: 3
+    - name: ODTP
+      bit_offset: 6
+      bit_size: 3
+    - name: ODTN
+      bit_offset: 9
+      bit_size: 3
+    - name: VDDON
+      bit_offset: 12
+      bit_size: 1
+    - name: PWROFFN
+      bit_offset: 13
+      bit_size: 1
+    - name: INTPWD
+      bit_offset: 14
+      bit_size: 1
+    - name: PGEN
+      bit_offset: 15
+      bit_size: 1
+    - name: PDIO
+      bit_offset: 16
+      bit_size: 4
+    - name: PUIO
+      bit_offset: 20
+      bit_size: 4
+    - name: VREFADJ
+      bit_offset: 24
+      bit_size: 7
+
+fieldset/STATUS:
+  description: SLI PHY status and packet-ID tracking register.
+  fields:
+    - name: PHY_STATUS
+      bit_offset: 0
+      bit_size: 8
+    - name: RX_ERR_ID
+      bit_offset: 8
+      bit_size: 8
+    - name: RX_CTRL_ID
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/MARB_GRANT:
+  description: MBUS arbiter grant configuration register.
+  fields:
+    - name: GRANT
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/MARB_IRQ:
+  description: MBUS arbiter interrupt enable/status register.
+  fields:
+    - name: STATUS
+      bit_offset: 0
+      bit_size: 2
+    - name: ENABLE
+      bit_offset: 16
+      bit_size: 2
+
+# ── Enumerations ───────────────────────────────────────────────────────────────
+
+enum/ClkSel:
+  description: SLI engine clock frequency (CTRL_III.CLK_SEL).
+  bit_size: 4
+  variants:
+    - name: CLK_25M
+      description: 25 MHz (oscillator, no PLL).
+      value: 0
+    - name: CLK_800M
+      description: 800 MHz.
+      value: 1
+    - name: CLK_400M
+      description: 400 MHz.
+      value: 2
+    - name: CLK_200M
+      description: 200 MHz.
+      value: 3
+    - name: CLK_500M
+      description: 500 MHz (target engine clock for AST2750-A1).
+      value: 6
+    - name: CLK_250M
+      description: 250 MHz.
+      value: 7
+
+enum/PhyClkSel:
+  description: SLI PHY TX clock frequency (CTRL_III.PHYCLK_SEL).
+  bit_size: 4
+  variants:
+    - name: PHYCLK_25M
+      description: 25 MHz.
+      value: 0
+    - name: PHYCLK_800M
+      description: 800 MHz.
+      value: 1
+    - name: PHYCLK_400M
+      description: 400 MHz.
+      value: 2
+    - name: PHYCLK_200M
+      description: 200 MHz.
+      value: 3
+    - name: PHYCLK_1G
+      description: 1 GHz (target PHY clock for AST2750-A1 DCSCM).
+      value: 5
+    - name: PHYCLK_500M
+      description: 500 MHz.
+      value: 6
+    - name: PHYCLK_250M
+      description: 250 MHz.
+      value: 7

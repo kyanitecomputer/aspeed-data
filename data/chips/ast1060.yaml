@@ -11,9 +11,6 @@
 #   0xB000_0000 – 0xBFFF_FFFF : SPI2 flash memory-mapped window
 #   0x7E6x_xxxx / 0x7E7x_xxxx : Peripheral registers
 #
-# Sources:
-#   ast1060v19.pdf  v1.9  November 2024
-#   ../ast1060-pac/ast1060.svd  (svd2rust-generated PAC, source of truth for IRQ numbers)
 
 name:               AST1060
 family:             ast10xx
@@ -54,11 +51,18 @@ peripherals:
 
   # ── ADC ───────────────────────────────────────────────────────────────────
   # 8-channel 10-bit ADC. Channels CH0–7.
-  # Base: 0x7E6E_9000. Source: ast1060v19.pdf section 20; memory map 0x7E6E:9000.
+  # Base: 0x7E6E_9000.
   - name:    ADC
     description: 10-bit ADC controller, 8 channels (CH0–7)
     block:   adc_v1::ADC
     address: 0x7e6e9000
+
+  # ── Hardware TRNG (True Random Number Generator) ─────────────────────────
+  # Embedded in SCU address space at offset 0x530 from SCU base.
+  - name:    TRNG
+    description: Hardware True Random Number Generator
+    block:   trng_v1::TRNG
+    address: 0x7e6e2530
 
   # ── Secure Boot Controller / OTP ─────────────────────────────────────────
   - name:    SECURE
@@ -154,6 +158,33 @@ peripherals:
   - name:    I3C3
     block:   i3c_v1::I3C
     address: 0x7e7a5000
+
+  # ── SMBus/I2C PFR Filter ──────────────────────────────────────────────────────
+  # Global interrupt control at 0x7E7B_2000. Per-instance stride 0x100 from +0x200.
+  - name:    SMBUS_FILTER_GLOBAL
+    description: SMBus/I2C PFR Filter global interrupt enable/status
+    block:   i2cfilter_v1::SMBUS_FILTER_GLOBAL
+    address: 0x7e7b2000
+
+  - name:    SMBUS_FILTER0
+    description: SMBus/I2C PFR Filter instance 0
+    block:   i2cfilter_v1::SMBUS_FILTER
+    address: 0x7e7b2200
+
+  - name:    SMBUS_FILTER1
+    description: SMBus/I2C PFR Filter instance 1
+    block:   i2cfilter_v1::SMBUS_FILTER
+    address: 0x7e7b2300
+
+  - name:    SMBUS_FILTER2
+    description: SMBus/I2C PFR Filter instance 2
+    block:   i2cfilter_v1::SMBUS_FILTER
+    address: 0x7e7b2400
+
+  - name:    SMBUS_FILTER3
+    description: SMBus/I2C PFR Filter instance 3
+    block:   i2cfilter_v1::SMBUS_FILTER
+    address: 0x7e7b2500
 
   # ── I2C Global ────────────────────────────────────────────────────────────
   - name:    I2C_GLOBAL
@@ -278,19 +309,13 @@ peripherals:
 
 # ── Interrupt table ───────────────────────────────────────────────────────────
 #
-# Source: ast1060v19.pdf Section 8 / Table 7 (IRQ# 0–137 documented).
-# SVD cross-reference: ../ast1060-pac/ast1060.svd (authoritative IRQ numbers).
-#
-# ~45 of the 240 NVIC slots are assigned. Only named (non-reserved)
-# interrupts are listed.
+# Interrupt names and numbers mirror the local AST1060 PAC reference.
 
 interrupts:
-  - { name: SRAM,            number: 0   }  # Embedded SRAM controller
-  - { name: HACE,            number: 4   }  # Hash and Crypto Engine
-  - { name: UART5,           number: 8   }  # UART5 (debug console)
-  - { name: GPIO,            number: 11  }  # GPIO controller
-  - { name: SCU,             number: 12  }  # System Control Unit
-  - { name: RTC,             number: 13  }  # RTC alarm
+  - { name: HACE,            number: 4   }
+  - { name: UART5,           number: 8   }
+  - { name: GPIO,            number: 11  }
+  - { name: SCU,             number: 12  }
 
   # IRQ 16–23: Timer 1–8
   - { name: TIMER1,          number: 16  }
@@ -302,25 +327,17 @@ interrupts:
   - { name: TIMER7,          number: 22  }
   - { name: TIMER8,          number: 23  }
 
-  - { name: WDT,             number: 24  }  # Watchdog timer alarm
-  - { name: JTAG1_MASTER,    number: 27  }  # JTAG Master 1
-  - { name: AHBC,            number: 28  }  # AHB controller
-  - { name: FMC,             number: 39  }  # Flash Memory Controller (boot SPI)
-  - { name: GPIO2,           number: 40  }  # GPIO controller (second IRQ)
-  - { name: SCU2,            number: 41  }  # SCU (second IRQ)
-  - { name: ADC,             number: 46  }  # ADC controller
-  - { name: SGPIO_MASTER,    number: 51  }  # Serial GPIO Master
-  - { name: JTAG2_MASTER,    number: 53  }  # JTAG Master 2
-  - { name: AHBC2,           number: 55  }  # AHB controller 2
-  - { name: UART_DMA,        number: 56  }  # UART DMA engine
-  - { name: SPI1_DMA,        number: 65  }  # SPI1 DMA
-  - { name: SPI2_DMA,        number: 66  }  # SPI2 DMA
+  - { name: WDT,             number: 24  }
+  - { name: FMC,             number: 39  }
+  - { name: SGPIO_MASTER,    number: 51  }
+  - { name: UART_DMA,        number: 56  }
+  - { name: SPI1_DMA,        number: 65  }
+  - { name: SPI2_DMA,        number: 66  }
 
-  # IRQ 87–90: QSPI Monitor / SPI Passthrough Filter 1–4
-  - { name: SPIPF1,          number: 87  }
-  - { name: SPIPF2,          number: 88  }
-  - { name: SPIPF3,          number: 89  }
-  - { name: SPIPF4,          number: 90  }
+  # IRQ 88–90: SPI passthrough filters 1–3
+  - { name: SPIPF1,          number: 88  }
+  - { name: SPIPF2,          number: 89  }
+  - { name: SPIPF3,          number: 90  }
 
   # IRQ 102–105: I3C 0–3
   - { name: I3C0,            number: 102 }
@@ -344,15 +361,4 @@ interrupts:
   - { name: I2C12,           number: 122 }
   - { name: I2C13,           number: 123 }
 
-  - { name: SMBUS_FILTER,    number: 127 }  # SMBus filter controller
-  - { name: SMBUS_MAILBOX,   number: 128 }  # SMBus mailbox
-
-  # IRQ 130–137: GPIO direct interrupts (8 pins with dedicated NVIC lines)
-  - { name: GPIO_DIRECT0,    number: 130 }
-  - { name: GPIO_DIRECT1,    number: 131 }
-  - { name: GPIO_DIRECT2,    number: 132 }
-  - { name: GPIO_DIRECT3,    number: 133 }
-  - { name: GPIO_DIRECT4,    number: 134 }
-  - { name: GPIO_DIRECT5,    number: 135 }
-  - { name: GPIO_DIRECT6,    number: 136 }
-  - { name: GPIO_DIRECT7,    number: 137 }
+  - { name: SMBUS_FILTER,    number: 127 }

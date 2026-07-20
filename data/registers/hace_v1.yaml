@@ -9,7 +9,6 @@
 # Command Queue: DMA-driven command queue (DRAM-based, up to 32 entries).
 #
 # Sources:
-#   ast1060v19.pdf  Chapter 18 – Hash and Crypto Engine (HACE)
 
 block/HACE:
   description: >

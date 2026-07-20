@@ -1,0 +1,179 @@
+# AST2700 PCI Express Root Complex configuration register window.
+
+block/PLDA:
+  description: >
+    AST2700 PCIe controller configuration space window.  Instances are at
+    0x12C15000, 0x12C15800, and 0x14C1C000.
+  items:
+    - name: DEVICE_VENDOR_ID
+      byte_offset: 0x000
+      access: Read
+      fieldset: DEVICE_VENDOR_ID
+    - name: COMMAND_STATUS
+      byte_offset: 0x004
+      fieldset: COMMAND_STATUS
+    - name: CLASS_REVISION
+      byte_offset: 0x008
+      access: Read
+      fieldset: CLASS_REVISION
+    - name: HEADER
+      byte_offset: 0x00c
+    - name: BAR
+      byte_offset: 0x010
+      array:
+        len: 2
+        stride: 4
+    - name: BUS_NUMBER
+      byte_offset: 0x018
+      fieldset: BUS_NUMBER
+    - name: IO_MEM_LIMIT_BASE
+      byte_offset: 0x01c
+    - name: PREFETCH_LIMIT_BASE
+      byte_offset: 0x020
+    - name: PREFETCH_BASE_UPPER
+      byte_offset: 0x024
+    - name: PREFETCH_LIMIT_UPPER
+      byte_offset: 0x028
+    - name: IO_LIMIT_BASE_UPPER
+      byte_offset: 0x02c
+    - name: EXPANSION_ROM_BAR
+      byte_offset: 0x030
+    - name: CAP_PTR
+      byte_offset: 0x034
+      access: Read
+    - name: BRIDGE_CONTROL
+      byte_offset: 0x03c
+      fieldset: BRIDGE_CONTROL
+    - name: PCIE_CAP
+      description: PCI Express capability structure at 0x080..0x0bb.
+      byte_offset: 0x080
+      array:
+        len: 15
+        stride: 4
+    - name: PM_CAP
+      description: Power Management capability structure.
+      byte_offset: 0x0f8
+      array:
+        len: 2
+        stride: 4
+    - name: VENDOR_SPECIFIC_EXT_CAP
+      byte_offset: 0x100
+      array:
+        len: 2
+        stride: 4
+    - name: LTR_CAP
+      description: Latency Tolerance Reporting capability.
+      byte_offset: 0x108
+      array:
+        len: 2
+        stride: 4
+    - name: L1_PM_SUBSTATES_CAP
+      byte_offset: 0x110
+      array:
+        len: 4
+        stride: 4
+    - name: ARI_CAP
+      description: Alternate Routing ID Interpretation capability.
+      byte_offset: 0x128
+      array:
+        len: 2
+        stride: 4
+    - name: DATA_LINK_FEATURE_CAP
+      byte_offset: 0x1e0
+      array:
+        len: 3
+        stride: 4
+    - name: AER_CAP
+      description: Advanced Error Reporting capability.
+      byte_offset: 0x200
+      array:
+        len: 18
+        stride: 4
+    - name: SECONDARY_PCIE_CAP
+      byte_offset: 0x300
+      array:
+        len: 11
+        stride: 4
+    - name: PHY_16GT_CAP
+      description: Physical Layer 16GT/s extended capability.
+      byte_offset: 0x340
+      array:
+        len: 12
+        stride: 4
+    - name: LANE_MARGINING_CAP
+      description: Lane Margining at the Receiver extended capability.
+      byte_offset: 0x378
+      array:
+        len: 18
+        stride: 4
+    - name: DEVICE_SERIAL_NUMBER_CAP
+      byte_offset: 0x440
+      array:
+        len: 3
+        stride: 4
+
+fieldset/DEVICE_VENDOR_ID:
+  fields:
+    - name: VENDOR_ID
+      bit_offset: 0
+      bit_size: 16
+    - name: DEVICE_ID
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/COMMAND_STATUS:
+  fields:
+    - name: IO_SPACE_EN
+      bit_offset: 0
+      bit_size: 1
+    - name: MEM_SPACE_EN
+      bit_offset: 1
+      bit_size: 1
+    - name: BUS_MASTER_EN
+      bit_offset: 2
+      bit_size: 1
+    - name: PARITY_ERR_RESP_EN
+      bit_offset: 6
+      bit_size: 1
+    - name: SERR_EN
+      bit_offset: 8
+      bit_size: 1
+    - name: INT_DISABLE
+      bit_offset: 10
+      bit_size: 1
+    - name: STATUS
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/CLASS_REVISION:
+  fields:
+    - name: REVISION_ID
+      bit_offset: 0
+      bit_size: 8
+    - name: CLASS_CODE
+      bit_offset: 8
+      bit_size: 24
+
+fieldset/BUS_NUMBER:
+  fields:
+    - name: PRIMARY
+      bit_offset: 0
+      bit_size: 8
+    - name: SECONDARY
+      bit_offset: 8
+      bit_size: 8
+    - name: SUBORDINATE
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/BRIDGE_CONTROL:
+  fields:
+    - name: INT_LINE
+      bit_offset: 0
+      bit_size: 8
+    - name: INT_PIN
+      bit_offset: 8
+      bit_size: 8
+    - name: BRIDGE_CONTROL
+      bit_offset: 16
+      bit_size: 16

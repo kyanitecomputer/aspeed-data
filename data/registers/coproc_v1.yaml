@@ -19,8 +19,6 @@
 #   CACHE_CTRL.GLOBAL_EN enables the ColdFire instruction cache globally.
 #   SEGn_CACHE_EN enables caching for the window mapped by SEGn_BASE.
 #
-# Sources:
-#   AST2500 datasheet (ast2500v18): Chapter 5 – SCU (registers SCU100–SCU128)
 
 block/COPROC:
   description: >
