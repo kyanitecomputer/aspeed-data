@@ -341,7 +341,7 @@ fn process_chip_c(chip_path: &Path, data_dir: &Path, out_dir: &Path) -> Result<(
 /// Process one ARM/RISC-V chip YAML, write Go register structs to `out_dir/`.
 ///
 /// Output uses `reg.Read(uint32)` / `reg.Write(uint32, val)` from the
-/// `github.com/kyanitecomputer/aspeed-go/reg` package — compatible with
+/// `src.kyanite.computer/aspeed-go/reg` package — compatible with
 /// both our custom reg package and TamaGo's `tamago/reg` API.
 fn process_chip_go(chip_path: &Path, data_dir: &Path, out_dir: &Path) -> Result<()> {
     let yaml = std::fs::read_to_string(chip_path)
@@ -410,7 +410,7 @@ fn process_chip_go(chip_path: &Path, data_dir: &Path, out_dir: &Path) -> Result<
 
     let opts = GoOptions {
         package_name: "pac".to_string(),
-        reg_import: "github.com/kyanitecomputer/aspeed-go/reg".to_string(),
+        reg_import: "src.kyanite.computer/aspeed-go/reg".to_string(),
     };
     let generator = GoGenerator;
     let files = generator.generate(&ir, &opts).context("GoGenerator::generate")?;
