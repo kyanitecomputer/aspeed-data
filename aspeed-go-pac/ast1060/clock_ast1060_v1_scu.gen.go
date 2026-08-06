@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // ClockAst1060V1SCU AST1060 System Control Unit (SCU). Base: 0x7E6E_2000. Protection key: write 0x1688A8A8 to SCU000. Controls clock gating, resets, H-PLL, PCLK divider, and CM4F memory map.
 type ClockAst1060V1SCU struct {
@@ -89,6 +89,46 @@ func (p *ClockAst1060V1SCU) WriteRESETCTRL2CLR(val uint32) {
     reg.Write(uint32(p.Base)+0x0054, uint32(val))
 }
 
+// ReadRAW060 reads SCU register at offset 0x060.
+func (p *ClockAst1060V1SCU) ReadRAW060() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0060))
+}
+
+// WriteRAW060 writes SCU register at offset 0x060.
+func (p *ClockAst1060V1SCU) WriteRAW060(val uint32) {
+    reg.Write(uint32(p.Base)+0x0060, uint32(val))
+}
+
+// ReadRAW070 reads SCU register at offset 0x070.
+func (p *ClockAst1060V1SCU) ReadRAW070() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0070))
+}
+
+// WriteRAW070 writes SCU register at offset 0x070.
+func (p *ClockAst1060V1SCU) WriteRAW070(val uint32) {
+    reg.Write(uint32(p.Base)+0x0070, uint32(val))
+}
+
+// ReadRAW074 reads SCU register at offset 0x074.
+func (p *ClockAst1060V1SCU) ReadRAW074() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0074))
+}
+
+// WriteRAW074 writes SCU register at offset 0x074.
+func (p *ClockAst1060V1SCU) WriteRAW074(val uint32) {
+    reg.Write(uint32(p.Base)+0x0074, uint32(val))
+}
+
+// ReadRAW078 reads SCU register at offset 0x078.
+func (p *ClockAst1060V1SCU) ReadRAW078() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0078))
+}
+
+// WriteRAW078 writes SCU register at offset 0x078.
+func (p *ClockAst1060V1SCU) WriteRAW078(val uint32) {
+    reg.Write(uint32(p.Base)+0x0078, uint32(val))
+}
+
 // ReadCLKSTOP1SET reads Clock stop control set 1 (SCU080). RW1S: write 1 to STOP a clock. Write 1 to SCU084 to un-stop (enable) a clock. Init: 0xFFFF7F8A — most bits reserved=1 (pre-stopped). Functional bits: [13]=HACE YCLK (stopped by default), [0]=SRAM MCLK (running).
 func (p *ClockAst1060V1SCU) ReadCLKSTOP1SET() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x0080))
@@ -129,6 +169,26 @@ func (p *ClockAst1060V1SCU) WriteCLKSTOP2CLR(val uint32) {
     reg.Write(uint32(p.Base)+0x0094, uint32(val))
 }
 
+// ReadRAW0D0 reads SCU register range 0x0D0-0x0D8.[n] (n < 3)
+func (p *ClockAst1060V1SCU) ReadRAW0D0(n uintptr) uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x00d0 + uint32(n)*4))
+}
+
+// WriteRAW0D0 writes SCU register range 0x0D0-0x0D8.[n] (n < 3)
+func (p *ClockAst1060V1SCU) WriteRAW0D0(n uintptr, val uint32) {
+    reg.Write(uint32(p.Base)+0x00d0+uint32(n)*4, uint32(val))
+}
+
+// ReadRAW0F0 reads SCU register at offset 0x0F0.
+func (p *ClockAst1060V1SCU) ReadRAW0F0() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x00f0))
+}
+
+// WriteRAW0F0 writes SCU register at offset 0x0F0.
+func (p *ClockAst1060V1SCU) WriteRAW0F0(val uint32) {
+    reg.Write(uint32(p.Base)+0x00f0, uint32(val))
+}
+
 // ReadHPLLPARAM reads H-PLL parameter register (SCU200). Output frequency = CLKIN(25 MHz) × (M+1) / (N+1) / (P+1). Default: M=0x77(119), N=2, P=0 → 25 × 120/3/1 = 1000 MHz.
 func (p *ClockAst1060V1SCU) ReadHPLLPARAM() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x0200))
@@ -157,6 +217,36 @@ func (p *ClockAst1060V1SCU) ReadCLKSEL4() uint32 {
 // WriteCLKSEL4 writes Clock selection register 4 (SCU310). PCLK divider: bits[11:8] — 0=HPLL/2 (default), 1=HPLL/4, ..., 15=HPLL/32. UART5 clock: bit[4] — 0=24 MHz/13 ≈ 1.846 MHz, 1=192 MHz/13 ≈ 14.769 MHz. I3C clock source: bit[31] — 0=HPLL, 1=480 MHz. I3C clock divider: bits[30:28] — ÷2 to ÷8 (100=÷5 default).
 func (p *ClockAst1060V1SCU) WriteCLKSEL4(val uint32) {
     reg.Write(uint32(p.Base)+0x0310, uint32(val))
+}
+
+// ReadRAW314 reads SCU register at offset 0x314.
+func (p *ClockAst1060V1SCU) ReadRAW314() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0314))
+}
+
+// WriteRAW314 writes SCU register at offset 0x314.
+func (p *ClockAst1060V1SCU) WriteRAW314(val uint32) {
+    reg.Write(uint32(p.Base)+0x0314, uint32(val))
+}
+
+// ReadRAW330 reads SCU register range 0x330-0x37C.[n] (n < 20)
+func (p *ClockAst1060V1SCU) ReadRAW330(n uintptr) uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0330 + uint32(n)*4))
+}
+
+// WriteRAW330 writes SCU register range 0x330-0x37C.[n] (n < 20)
+func (p *ClockAst1060V1SCU) WriteRAW330(n uintptr, val uint32) {
+    reg.Write(uint32(p.Base)+0x0330+uint32(n)*4, uint32(val))
+}
+
+// ReadRAW410 reads SCU register range 0x410-0x6D4.[n] (n < 178)
+func (p *ClockAst1060V1SCU) ReadRAW410(n uintptr) uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0410 + uint32(n)*4))
+}
+
+// WriteRAW410 writes SCU register range 0x410-0x6D4.[n] (n < 178)
+func (p *ClockAst1060V1SCU) WriteRAW410(n uintptr, val uint32) {
+    reg.Write(uint32(p.Base)+0x0410+uint32(n)*4, uint32(val))
 }
 
 // ReadCM4FMEMBASE reads CM4F memory base address register (SCUA14). Configures the physical base address of the CM4F's SRAM window. Can only be changed while CM4F is in reset (SCU050[RST_bit]=1). Default 0x00000000 (SRAM at physical 0x0).
@@ -217,5 +307,15 @@ func (p *ClockAst1060V1SCU) ReadCM4FCACHEFUNC() uint32 {
 // WriteCM4FCACHEFUNC writes CM4F cache function control register (SCUA58). Bit[0]=cache enable (I+D combined). Default 0x1 (cache enabled).
 func (p *ClockAst1060V1SCU) WriteCM4FCACHEFUNC(val uint32) {
     reg.Write(uint32(p.Base)+0x0a58, uint32(val))
+}
+
+// ReadRAWF00 reads SCU register range 0xF00-0xFFC.[n] (n < 64)
+func (p *ClockAst1060V1SCU) ReadRAWF00(n uintptr) uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0f00 + uint32(n)*4))
+}
+
+// WriteRAWF00 writes SCU register range 0xF00-0xFFC.[n] (n < 64)
+func (p *ClockAst1060V1SCU) WriteRAWF00(n uintptr, val uint32) {
+    reg.Write(uint32(p.Base)+0x0f00+uint32(n)*4, uint32(val))
 }
 

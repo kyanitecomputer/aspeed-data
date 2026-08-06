@@ -8,9 +8,119 @@ const (
     TIMER_BASE = 0x14c36000
     // WDT0_BASE AST2700 G7 watchdog timer 0
     WDT0_BASE = 0x14c37000
+    // WDT1_BASE AST2700 G7 watchdog timer 1
+    WDT1_BASE = 0x14c37080
+    // WDT2_BASE AST2700 G7 watchdog timer 2
+    WDT2_BASE = 0x14c37100
+    // WDT3_BASE AST2700 G7 watchdog timer 3
+    WDT3_BASE = 0x14c37180
+    // WDT4_BASE AST2700 G7 watchdog timer 4
+    WDT4_BASE = 0x14c37200
+    // WDT5_BASE AST2700 G7 watchdog timer 5
+    WDT5_BASE = 0x14c37280
+    // WDT6_BASE AST2700 G7 watchdog timer 6
+    WDT6_BASE = 0x14c37300
+    // WDT7_BASE AST2700 G7 watchdog timer 7
+    WDT7_BASE = 0x14c37380
+    // WDTA_BASE AST2700 G7 watchdog timer A
+    WDTA_BASE = 0x14c37400
     // UART12_BASE UART12 (16550, 4-byte stride, 1846153 Hz clock)
     UART12_BASE = 0x14c33b00
     // IPC1_BASE IPC1 data-channel bus (4 sub-channels, polling)
     IPC1_BASE = 0x14c39000
+    // SCU1_BASE AST2700 IO-die System Control Unit 1 (SCU1)
+    SCU1_BASE = 0x14c02000
+    // OTP_BASE AST2700 IO-die OTP controller (BootMCU master)
+    OTP_BASE = 0x14c07000
+    // CPTRA_MBOX_BASE Caliptra mailbox command/data transport
+    CPTRA_MBOX_BASE = 0x14c60000
+    // CPTRA_IFC_BASE Caliptra integration interface
+    CPTRA_IFC_BASE = 0x14c70000
+    // INTC1G_BASE IO-die interrupt routing controller (INTC1G, BootMCU view)
+    INTC1G_BASE = 0x14c18000
+    // SLI0_SLIM_BASE SLI0 MBUS sub-channel (CPU-die, 4-lane memory bus)
+    SLI0_SLIM_BASE = 0x12c17000
+    // SLI0_SLIH_BASE SLI0 AHB sub-channel (CPU-die, 2-lane AHB)
+    SLI0_SLIH_BASE = 0x12c17200
+    // SLI0_SLIV_BASE SLI0 Video sub-channel (CPU-die, 2-lane video)
+    SLI0_SLIV_BASE = 0x12c17400
+    // SLI1_SLIM_BASE SLI1 MBUS sub-channel (IO-die, 4-lane memory bus)
+    SLI1_SLIM_BASE = 0x14c1e000
+    // SLI1_SLIH_BASE SLI1 AHB sub-channel (IO-die, 2-lane AHB)
+    SLI1_SLIH_BASE = 0x14c1e200
+    // SLI1_SLIV_BASE SLI1 Video sub-channel (IO-die, 2-lane video)
+    SLI1_SLIV_BASE = 0x14c1e400
+    // SCU0_BASE AST2700 CPU-die System Control Unit 0 (SCU0)
+    SCU0_BASE = 0x12c02000
+    // SDRAMMC_BASE AST2700 SDRAM Memory Controller (DRAMC)
+    SDRAMMC_BASE = 0x12c00000
+    // DDRPHY_APB_BASE DWC DDR PHY APB register window
+    DDRPHY_APB_BASE = 0x13000000
+    // DDRPHY_IMEM_BASE DWC DDR PHY instruction memory window
+    DDRPHY_IMEM_BASE = 0x130a0000
+    // DDRPHY_DMEM_BASE DWC DDR PHY data memory window
+    DDRPHY_DMEM_BASE = 0x130b0000
+    // AHBC0_BASE CPU-die AHB controller registers
+    AHBC0_BASE = 0x12000000
+    // AHBC1_BASE IO-die AHB controller registers
+    AHBC1_BASE = 0x140b0000
+    // FMC_BASE AST2700 firmware SPI memory controller
+    FMC_BASE = 0x14000000
+    // SPI0_BASE AST2700 SPI flash controller 0
+    SPI0_BASE = 0x14010000
+    // SPI1_BASE AST2700 SPI flash controller 1
+    SPI1_BASE = 0x14020000
+    // SPI2_BASE AST2700 SPI flash controller 2
+    SPI2_BASE = 0x14030000
+    // MAC0_BASE AST2700 FTGMAC100 Ethernet MAC 0
+    MAC0_BASE = 0x14050000
+    // MAC1_BASE AST2700 FTGMAC100 Ethernet MAC 1
+    MAC1_BASE = 0x14060000
+    // MAC2_BASE AST2700 FTGMAC100 Ethernet MAC 2
+    MAC2_BASE = 0x14070000
+    // PLDA1_BASE CPU-die PCIe PLDA/E2M controller 1
+    PLDA1_BASE = 0x12c15000
+    // PLDA2_BASE CPU-die PCIe PLDA/E2M controller 2
+    PLDA2_BASE = 0x12c15800
+    // PLDA3_BASE IO-die PCIe PLDA/E2M controller 3
+    PLDA3_BASE = 0x14c1c000
+    // UFS_BASE AST2700 UFS host controller
+    UFS_BASE = 0x12c08000
+    // SPI_XIP_BASE SPI flash memory-mapped read window
+    SPI_XIP_BASE = 0x20000000
+    // DP_BASE AST2700 DisplayPort controller
+    DP_BASE = 0x12c0a000
+    // GFX_BASE AST2700 SOC display controller / GFX CRT
+    GFX_BASE = 0x12c09000
+    // VIDEO0_BASE AST2700 video capture/compression engine 0
+    VIDEO0_BASE = 0x120a0000
+    // VIDEO1_BASE AST2700 video capture/compression engine 1
+    VIDEO1_BASE = 0x120a1000
+    // DPMCU_DMEM_BASE DisplayPort MCU data memory control window
+    DPMCU_DMEM_BASE = 0x11000000
+    // DPMCU_REG_BASE DisplayPort MCU register window
+    DPMCU_REG_BASE = 0x11010000
+    // VGA_PACKER_CPU_BASE CPU-die VGA link packer
+    VGA_PACKER_CPU_BASE = 0x12c1d000
+    // VGA_RETIMER_CPU_BASE CPU-die VGA link retimer
+    VGA_RETIMER_CPU_BASE = 0x12c1d100
+    // VGA_PACKER_IO_BASE IO-die VGA link packer
+    VGA_PACKER_IO_BASE = 0x14c3a000
+    // VGA_RETIMER_IO_BASE IO-die VGA link retimer
+    VGA_RETIMER_IO_BASE = 0x14c3a100
+    // VHUBA0_BASE CPU-die vHub port A0 (DC-SCM gadget; clk PORTAUSB2CLK, rst PORTA_VHUB_EHCI)
+    VHUBA0_BASE = 0x12060000
+    // VHUBA1_BASE CPU-die vHub port A1 (bootusb recovery; clk PORTAUSB2CLK, rst PORTA_VHUB)
+    VHUBA1_BASE = 0x12011000
+    // VHUBB0_BASE CPU-die vHub port B0 (DC-SCM gadget; clk PORTBUSB2CLK, rst PORTB_VHUB_EHCI)
+    VHUBB0_BASE = 0x12062000
+    // VHUBB1_BASE CPU-die vHub port B1 (bootusb recovery; clk PORTBUSB2CLK, rst PORTB_VHUB)
+    VHUBB1_BASE = 0x12021000
+    // VHUBC_BASE IO-die vHub port C (DC-SCM gadget; clk PORTCUSB2CLK, rst PORTC_VHUB_EHCI)
+    VHUBC_BASE = 0x14120000
+    // VHUBA0_DEV0_BASE vHubA0 downstream device 0 registers (stride 0x10, devices 0..6)
+    VHUBA0_DEV0_BASE = 0x12060100
+    // VHUBA0_EP0_BASE vHubA0 generic endpoint 0 registers (stride 0x10, endpoints 0..20)
+    VHUBA0_EP0_BASE = 0x12060200
 )
 

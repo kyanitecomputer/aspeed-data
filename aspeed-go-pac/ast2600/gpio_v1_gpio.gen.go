@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // GpioV1GPIO AST2600 3.3 V GPIO controller (208 pins, ports A–Z). Base: 0x7E78_0000 (CM3 view).
 type GpioV1GPIO struct {

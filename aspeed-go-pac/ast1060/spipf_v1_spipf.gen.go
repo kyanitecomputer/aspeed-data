@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // SpipfV1SPIPF ASPEED SPI Passthrough Filter / QSPI Monitor (SPIPF). 4 instances, base = 0x7E791000, stride = 0x1000. Monitors SPI bus traffic and filters commands/addresses.
 type SpipfV1SPIPF struct {

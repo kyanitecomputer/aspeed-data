@@ -95,7 +95,7 @@ const (
     ClockV1CLKSEL5I3CCLKSRCMsk = 0x1 << 31
 )
 
-// clock_v1::CLK_STOP0 Clock Stop Control, Group 0 (SCU080 / SCU084). Each bit controls one clock gate.  Writing the SET register stops the clock; writing the CLR register starts it.  Bit positions match ASPEED_CLK_GRP_0_OFFSET values from Zephyr ast26xx_clock.h.
+// clock_v1::CLK_STOP0 Clock Stop Control, Group 0 (SCU080 / SCU084). Each bit controls one clock gate.  Writing the SET register stops the clock; writing the CLR register starts it.  Bit positions match ASPEED_CLK_GRP_0_OFFSET values from ast26xx_clock.h.
 const (
     // MCLK Memory controller clock (MCLK).
     ClockV1CLKSTOP0MCLKPos = 0
@@ -249,6 +249,491 @@ const (
     // BYPASS PLL bypass mode. 0 = normal PLL operation (f_out = 25 MHz × (M+1) / ((N+1) × (P+1))); 1 = bypass (f_out = 25 MHz clock-in).
     ClockV1PLLPARAMBYPASSPos = 24
     ClockV1PLLPARAMBYPASSMsk = 0x1 << 24
+)
+
+// fmc_v1::FMC_AQCD FMC Address Qualified Command table entry. Three command bytes with per-command read/write enable and 4-byte address mode flag. Each 2-bit CMD_SETTING: 0=disabled, 1=read, 2=write, 3=read+write.
+const (
+    // CMD1 Command
+    FmcV1FMCAQCDCMD1Pos = 0
+    FmcV1FMCAQCDCMD1Msk = 0xff << 0
+    // CMD2 Command
+    FmcV1FMCAQCDCMD2Pos = 8
+    FmcV1FMCAQCDCMD2Msk = 0xff << 8
+    // CMD3 Command
+    FmcV1FMCAQCDCMD3Pos = 16
+    FmcV1FMCAQCDCMD3Msk = 0xff << 16
+    // ADDRMODE4B Address mode: 0=3-byte, 1=4-byte.
+    FmcV1FMCAQCDADDRMODE4BPos = 24
+    FmcV1FMCAQCDADDRMODE4BMsk = 0x1 << 24
+    // CMD1SETTING CMD1 operation mode (0=disabled, 1=read, 2=write, 3=R+W).
+    FmcV1FMCAQCDCMD1SETTINGPos = 26
+    FmcV1FMCAQCDCMD1SETTINGMsk = 0x3 << 26
+    // CMD2SETTING CMD2 operation mode.
+    FmcV1FMCAQCDCMD2SETTINGPos = 28
+    FmcV1FMCAQCDCMD2SETTINGMsk = 0x3 << 28
+    // CMD3SETTING CMD3 operation mode.
+    FmcV1FMCAQCDCMD3SETTINGPos = 30
+    FmcV1FMCAQCDCMD3SETTINGMsk = 0x3 << 30
+)
+
+// fmc_v1::FMC_CE_TYPE FMC CE type — flash type selection and default write enable.
+const (
+    // CE0FLASHTYPE CE0 flash type: 10=SPI flash (read-only, always 0b10).
+    FmcV1FMCCETYPECE0FLASHTYPEPos = 0
+    FmcV1FMCCETYPECE0FLASHTYPEMsk = 0x3 << 0
+    // CE1FLASHTYPE CE1 flash type: 10=SPI flash (read-only).
+    FmcV1FMCCETYPECE1FLASHTYPEPos = 2
+    FmcV1FMCCETYPECE1FLASHTYPEMsk = 0x3 << 2
+    // CE0DEFAULTWRITE CE0 default write enable: 0=write disabled, 1=write enabled.
+    FmcV1FMCCETYPECE0DEFAULTWRITEPos = 16
+    FmcV1FMCCETYPECE0DEFAULTWRITEMsk = 0x1 << 16
+    // CE1DEFAULTWRITE CE1 default write enable: 0=write disabled, 1=write enabled.
+    FmcV1FMCCETYPECE1DEFAULTWRITEPos = 17
+    FmcV1FMCCETYPECE1DEFAULTWRITEMsk = 0x1 << 17
+)
+
+// fmc_v1::FMC_DMA_CTRL FMC DMA control (no arbitration required for FMC).
+const (
+    // DMAENABLE Enable DMA. Clear to 0 after each DMA cycle to allow next cycle.
+    FmcV1FMCDMACTRLDMAENABLEPos = 0
+    FmcV1FMCDMACTRLDMAENABLEMsk = 0x1 << 0
+    // DMADIR DMA direction: 0=read (flash→memory), 1=write (memory→flash).
+    FmcV1FMCDMACTRLDMADIRPos = 1
+    FmcV1FMCDMACTRLDMADIRMsk = 0x1 << 1
+    // CHECKSUMONLY Checksum mode — accumulate checksum without moving data (read only).
+    FmcV1FMCDMACTRLCHECKSUMONLYPos = 2
+    FmcV1FMCDMACTRLCHECKSUMONLYMsk = 0x1 << 2
+    // CALMODE Calibration mode — use CAL_CLK_FREQ and CAL_READ_DELAY instead of CE settings.
+    FmcV1FMCDMACTRLCALMODEPos = 3
+    FmcV1FMCDMACTRLCALMODEMsk = 0x1 << 3
+    // BUFMODE DMA buffer mode: 0=memory mode (DRAM↔flash), 1=FIFO mode (FIFO↔flash).
+    FmcV1FMCDMACTRLBUFMODEPos = 4
+    FmcV1FMCDMACTRLBUFMODEMsk = 0x1 << 4
+    // CALREADDELAY Calibration read data input delay (valid when CAL_MODE=1).
+    FmcV1FMCDMACTRLCALREADDELAYPos = 8
+    FmcV1FMCDMACTRLCALREADDELAYMsk = 0xff << 8
+    // CALCLKFREQ Calibration SPI clock frequency (valid when CAL_MODE=1).
+    FmcV1FMCDMACTRLCALCLKFREQPos = 16
+    FmcV1FMCDMACTRLCALCLKFREQMsk = 0xf << 16
+)
+
+// fmc_v1::FMC_SOFT_RST FMC auto soft-reset after WDT.
+const (
+    // SOFTRSTEN Enable auto soft-reset: issue 0x66→0x99 after watchdog reset to restore SPI volatile bits. 0=disabled, 1=enabled.
+    FmcV1FMCSOFTRSTSOFTRSTENPos = 0
+    FmcV1FMCSOFTRSTSOFTRSTENMsk = 0x1 << 0
+    // WAITWIPIDLE Wait for WIP=0 (read status 0x05) before allowing code access after WDT reset.
+    FmcV1FMCSOFTRSTWAITWIPIDLEPos = 1
+    FmcV1FMCSOFTRSTWAITWIPIDLEMsk = 0x1 << 1
+    // SOFTRSTQPIMODE QPI mode active when soft-reset command was generated (read-only).
+    FmcV1FMCSOFTRSTSOFTRSTQPIMODEPos = 2
+    FmcV1FMCSOFTRSTSOFTRSTQPIMODEMsk = 0x1 << 2
+    // SPISTATUSREG Latest SPI status register readback value (WIP check, read-only).
+    FmcV1FMCSOFTRSTSPISTATUSREGPos = 8
+    FmcV1FMCSOFTRSTSPISTATUSREGMsk = 0xff << 8
+)
+
+// fmc_v1::FMC_WDT1 FMC WDT1 — address mode detection watchdog (2s, toggles CE0 3B↔4B).
+const (
+    // WDTENABLE Enable WDT1. Timeout is hardware-fixed at 2 seconds.
+    FmcV1FMCWDT1WDTENABLEPos = 0
+    FmcV1FMCWDT1WDTENABLEMsk = 0x1 << 0
+    // WDTEVENTCNT Watchdog timeout event counter (read-only; clear by writing bits[31:24]=0xEA).
+    FmcV1FMCWDT1WDTEVENTCNTPos = 8
+    FmcV1FMCWDT1WDTEVENTCNTMsk = 0xf << 8
+)
+
+// fmc_v1::FMC_WDT2 FMC WDT2 — alternate boot watchdog.
+const (
+    // WDTENABLE Enable WDT2.
+    FmcV1FMCWDT2WDTENABLEPos = 0
+    FmcV1FMCWDT2WDTENABLEMsk = 0x1 << 0
+    // BOOTSRCSEL Boot flash source: 0=primary, 1=alternate. Set by WDT2 timeout or FWSPIABR# pin.
+    FmcV1FMCWDT2BOOTSRCSELPos = 4
+    FmcV1FMCWDT2BOOTSRCSELMsk = 0x1 << 4
+    // SINGLECHIPBOOTSRC Single-chip boot mode source select indicator (read-only).
+    FmcV1FMCWDT2SINGLECHIPBOOTSRCPos = 5
+    FmcV1FMCWDT2SINGLECHIPBOOTSRCMsk = 0x1 << 5
+    // ABRMODE Alternate Boot Mode from OTP: 0=2-chip mode, 1=1-chip mode (read-only).
+    FmcV1FMCWDT2ABRMODEPos = 6
+    FmcV1FMCWDT2ABRMODEMsk = 0x1 << 6
+    // WDTEVENTCNT WDT2 timeout event counter (clear by writing bits[31:24]=0xEA).
+    FmcV1FMCWDT2WDTEVENTCNTPos = 8
+    FmcV1FMCWDT2WDTEVENTCNTMsk = 0xff << 8
+)
+
+// fmc_v1::FMC_WDT2_RELOAD FMC WDT2 reload value (unit 0.1 s; default 0xE0=22 s).
+const (
+    // RELOADVALUE Reload value (unit: 0.1 s). Firmware must restart WDT within this time.
+    FmcV1FMCWDT2RELOADRELOADVALUEPos = 0
+    FmcV1FMCWDT2RELOADRELOADVALUEMsk = 0x1fff << 0
+    // WDTCOUNTER Current counter value (read-only, counts down).
+    FmcV1FMCWDT2RELOADWDTCOUNTERPos = 16
+    FmcV1FMCWDT2RELOADWDTCOUNTERMsk = 0xffff << 16
+)
+
+// fmc_v1::FMC_WDT2_RESTART Write 0x4755 to reload counter from WDT2_RELOAD and restart countdown.
+const (
+    // RESTARTKEY Write 0x4755 to restart WDT2.
+    FmcV1FMCWDT2RESTARTRESTARTKEYPos = 0
+    FmcV1FMCWDT2RESTARTRESTARTKEYMsk = 0xffff << 0
+)
+
+// fmc_v1::FMC_WRITE_FILTER_CTRL Write address filter mode control for FMC (8 filters × 2 bits each). Each 2-bit field: 0=NOP, 1=Read-only, 2=Write-only, 3=Access disabled.
+const (
+    // FILTER1MODE Write address filter
+    FmcV1FMCWRITEFILTERCTRLFILTER1MODEPos = 0
+    FmcV1FMCWRITEFILTERCTRLFILTER1MODEMsk = 0x3 << 0
+    // FILTER2MODE Write address filter
+    FmcV1FMCWRITEFILTERCTRLFILTER2MODEPos = 2
+    FmcV1FMCWRITEFILTERCTRLFILTER2MODEMsk = 0x3 << 2
+    // FILTER3MODE Write address filter
+    FmcV1FMCWRITEFILTERCTRLFILTER3MODEPos = 4
+    FmcV1FMCWRITEFILTERCTRLFILTER3MODEMsk = 0x3 << 4
+    // FILTER4MODE Write address filter
+    FmcV1FMCWRITEFILTERCTRLFILTER4MODEPos = 6
+    FmcV1FMCWRITEFILTERCTRLFILTER4MODEMsk = 0x3 << 6
+    // FILTER5MODE Write address filter
+    FmcV1FMCWRITEFILTERCTRLFILTER5MODEPos = 8
+    FmcV1FMCWRITEFILTERCTRLFILTER5MODEMsk = 0x3 << 8
+    // FILTER6MODE Write address filter
+    FmcV1FMCWRITEFILTERCTRLFILTER6MODEPos = 10
+    FmcV1FMCWRITEFILTERCTRLFILTER6MODEMsk = 0x3 << 10
+    // FILTER7MODE Write address filter
+    FmcV1FMCWRITEFILTERCTRLFILTER7MODEPos = 12
+    FmcV1FMCWRITEFILTERCTRLFILTER7MODEMsk = 0x3 << 12
+    // FILTER8MODE Write address filter
+    FmcV1FMCWRITEFILTERCTRLFILTER8MODEPos = 14
+    FmcV1FMCWRITEFILTERCTRLFILTER8MODEMsk = 0x3 << 14
+)
+
+// fmc_v1::SPI_ADDR_RANGE CE address decoding range. Each half stores address bits A[31:16] of the window-relative bound. On AST2600/AST1030/AST1060 only A[27:20] participate in decoding (1 MB granularity) and the end bound is inclusive; the low bits are writable but ignored. Segment is disabled when start == end. Unit and inclusive/exclusive semantics are SoC-specific and handled by the driver.
+const (
+    // STARTADDR Start bound, address bits A[31:16] (lower bound).
+    FmcV1SPIADDRRANGESTARTADDRPos = 0
+    FmcV1SPIADDRRANGESTARTADDRMsk = 0xffff << 0
+    // ENDADDR End bound, address bits A[31:16] (upper bound). CE disabled when start == end.
+    FmcV1SPIADDRRANGEENDADDRPos = 16
+    FmcV1SPIADDRRANGEENDADDRMsk = 0xffff << 16
+)
+
+// fmc_v1::SPI_AQCD SPI Address Qualified Command table entry. Three command bytes with individual read/write enable bits and 4-byte address mode flag.
+const (
+    // CMD0 Command
+    FmcV1SPIAQCDCMD0Pos = 0
+    FmcV1SPIAQCDCMD0Msk = 0xff << 0
+    // CMD1 Command
+    FmcV1SPIAQCDCMD1Pos = 8
+    FmcV1SPIAQCDCMD1Msk = 0xff << 8
+    // CMD2 Command
+    FmcV1SPIAQCDCMD2Pos = 16
+    FmcV1SPIAQCDCMD2Msk = 0xff << 16
+    // ADDRMODE4B Address mode: 0=3-byte, 1=4-byte.
+    FmcV1SPIAQCDADDRMODE4BPos = 24
+    FmcV1SPIAQCDADDRMODE4BMsk = 0x1 << 24
+    // CMD0READEN Enable CMD0 for read operations.
+    FmcV1SPIAQCDCMD0READENPos = 26
+    FmcV1SPIAQCDCMD0READENMsk = 0x1 << 26
+    // CMD0WRITEEN Enable CMD0 for write operations.
+    FmcV1SPIAQCDCMD0WRITEENPos = 27
+    FmcV1SPIAQCDCMD0WRITEENMsk = 0x1 << 27
+    // CMD1READEN Enable CMD1 for read operations.
+    FmcV1SPIAQCDCMD1READENPos = 28
+    FmcV1SPIAQCDCMD1READENMsk = 0x1 << 28
+    // CMD1WRITEEN Enable CMD1 for write operations.
+    FmcV1SPIAQCDCMD1WRITEENPos = 29
+    FmcV1SPIAQCDCMD1WRITEENMsk = 0x1 << 29
+    // CMD2READEN Enable CMD2 for read operations.
+    FmcV1SPIAQCDCMD2READENPos = 30
+    FmcV1SPIAQCDCMD2READENMsk = 0x1 << 30
+    // CMD2WRITEEN Enable CMD2 for write operations.
+    FmcV1SPIAQCDCMD2WRITEENPos = 31
+    FmcV1SPIAQCDCMD2WRITEENMsk = 0x1 << 31
+)
+
+// fmc_v1::SPI_CE_CTRL CE control — minimum inactive timing and address mode.
+const (
+    // CE0ADDRMODE CE0 address mode: 0=3-byte (≤16 MB), 1=4-byte (>16 MB).
+    FmcV1SPICECTRLCE0ADDRMODEPos = 0
+    FmcV1SPICECTRLCE0ADDRMODEMsk = 0x1 << 0
+    // CE1ADDRMODE CE1 address mode: 0=3-byte, 1=4-byte.
+    FmcV1SPICECTRLCE1ADDRMODEPos = 1
+    FmcV1SPICECTRLCE1ADDRMODEMsk = 0x1 << 1
+    // CE04BCMDSEL CE0 4-byte address auto-read command: 0=0x03, 1=0x13.
+    FmcV1SPICECTRLCE04BCMDSELPos = 4
+    FmcV1SPICECTRLCE04BCMDSELMsk = 0x1 << 4
+    // CE14BCMDSEL CE1 4-byte address auto-read command: 0=0x03, 1=0x13.
+    FmcV1SPICECTRLCE14BCMDSELPos = 5
+    FmcV1SPICECTRLCE14BCMDSELMsk = 0x1 << 5
+    // CE0TCSH CE0 minimum inactive time (tCSH): 0=16×HCLK, 1=24×HCLK, 2=32×HCLK, 3=40×HCLK.
+    FmcV1SPICECTRLCE0TCSHPos = 8
+    FmcV1SPICECTRLCE0TCSHMsk = 0x3 << 8
+    // CE1TCSH CE1 minimum inactive time (tCSH), same encoding as CE0.
+    FmcV1SPICECTRLCE1TCSHPos = 10
+    FmcV1SPICECTRLCE1TCSHMsk = 0x3 << 10
+)
+
+// fmc_v1::SPI_CE_N_CTRL Per-CE SPI control — I/O mode, clock frequency, command byte, dummy cycles, access mode.
+const (
+    // CMDMODE SPI command mode: 0=Auto-Read, 1=Normal-Read, 2=Normal-Write, 3=User-Mode.
+    FmcV1SPICENCTRLCMDMODEPos = 0
+    FmcV1SPICENCTRLCMDMODEMsk = 0x3 << 0
+    // CESTOP Write 1 to immediately deactivate CE#. In User-Mode, CE# stays low until set.
+    FmcV1SPICENCTRLCESTOPPos = 2
+    FmcV1SPICENCTRLCESTOPMsk = 0x1 << 2
+    // BITORDER Bit order: 0=MSB first (standard), 1=LSB first.
+    FmcV1SPICENCTRLBITORDERPos = 5
+    FmcV1SPICENCTRLBITORDERMsk = 0x1 << 5
+    // DUMMYCYCLESLO Dummy cycles before data phase, low 2 bits. Combined with DUMMY_CYCLES_HI.
+    FmcV1SPICENCTRLDUMMYCYCLESLOPos = 6
+    FmcV1SPICENCTRLDUMMYCYCLESLOMsk = 0x3 << 6
+    // CLKFREQSEL SPI clock frequency within base clock period (see datasheet Table 13.5).
+    FmcV1SPICENCTRLCLKFREQSELPos = 8
+    FmcV1SPICENCTRLCLKFREQSELMsk = 0xf << 8
+    // DISABLECMDMERGE Disable read command merging (performance penalty, but guarantees fresh data).
+    FmcV1SPICENCTRLDISABLECMDMERGEPos = 12
+    FmcV1SPICENCTRLDISABLECMDMERGEMsk = 0x1 << 12
+    // DUMMYCYCLESHI Dummy cycles high bit. Combined with DUMMY_CYCLES_LO[1:0]: total = {HI, LO}.
+    FmcV1SPICENCTRLDUMMYCYCLESHIPos = 14
+    FmcV1SPICENCTRLDUMMYCYCLESHIMsk = 0x1 << 14
+    // SPICMD SPI command byte for Normal-Read or Normal-Write CMD phase.
+    FmcV1SPICENCTRLSPICMDPos = 16
+    FmcV1SPICENCTRLSPICMDMsk = 0xff << 16
+    // BASECLKSEL SPI base clock (tBaseClk): 0=0×HCLK, 1=16×HCLK, 2=32×HCLK, ..., 15=240×HCLK.
+    FmcV1SPICENCTRLBASECLKSELPos = 24
+    FmcV1SPICENCTRLBASECLKSELMsk = 0xf << 24
+    // IOMODE SPI I/O mode: 0=single-bit; 2=dual-data-only; 3=dual incl. addr+dummy; 4=quad-data-only; 5=quad incl. addr+dummy; 8+=QPI (quad all phases).
+    FmcV1SPICENCTRLIOMODEPos = 28
+    FmcV1SPICENCTRLIOMODEMsk = 0xf << 28
+)
+
+// fmc_v1::SPI_CE_TYPE SPI CE configuration — default write enable per chip-enable.
+const (
+    // CE0DEFAULTWRITE CE0 default write enable: 0=write disabled, 1=write enabled.
+    FmcV1SPICETYPECE0DEFAULTWRITEPos = 16
+    FmcV1SPICETYPECE0DEFAULTWRITEMsk = 0x1 << 16
+    // CE1DEFAULTWRITE CE1 default write enable: 0=write disabled, 1=write enabled.
+    FmcV1SPICETYPECE1DEFAULTWRITEPos = 17
+    FmcV1SPICETYPECE1DEFAULTWRITEMsk = 0x1 << 17
+)
+
+// fmc_v1::SPI_CMD_CTRL Command control — byte lane enable/disable for address and data phases.
+const (
+    // DATABYTEDISABLE Data byte lane disable bitmask (bit N=1 → disable byte N of 4-byte access).
+    FmcV1SPICMDCTRLDATABYTEDISABLEPos = 0
+    FmcV1SPICMDCTRLDATABYTEDISABLEMsk = 0xf << 0
+    // ADDRBYTEDISABLE Address byte lane disable (4-byte mode only; bit N=1 → disable byte N).
+    FmcV1SPICMDCTRLADDRBYTEDISABLEPos = 4
+    FmcV1SPICMDCTRLADDRBYTEDISABLEMsk = 0xf << 4
+)
+
+// fmc_v1::SPI_CMD_FILTER_CTRL Command filter control.
+const (
+    // CE0CMDFILTEREN Enable command filter for CE0 (only FQCD/AQCD list commands allowed).
+    FmcV1SPICMDFILTERCTRLCE0CMDFILTERENPos = 0
+    FmcV1SPICMDFILTERCTRLCE0CMDFILTERENMsk = 0x1 << 0
+    // CE1CMDFILTEREN Enable command filter for CE1.
+    FmcV1SPICMDFILTERCTRLCE1CMDFILTERENPos = 1
+    FmcV1SPICMDFILTERCTRLCE1CMDFILTERENMsk = 0x1 << 1
+    // ALLOWREADCMDS Always allow 0x03 and 0x13 auto-read commands in FQCD list.
+    FmcV1SPICMDFILTERCTRLALLOWREADCMDSPos = 31
+    FmcV1SPICMDFILTERCTRLALLOWREADCMDSMsk = 0x1 << 31
+)
+
+// fmc_v1::SPI_DMA_BUF_LEN DMA FIFO buffer mode length in 4-byte units (0x40=full 256 bytes).
+const (
+    // FIFOLEN FIFO length in 4-byte units. RW when DMA disabled; RO (live) when enabled.
+    FmcV1SPIDMABUFLENFIFOLENPos = 0
+    FmcV1SPIDMABUFLENFIFOLENMsk = 0x7f << 0
+)
+
+// fmc_v1::SPI_DMA_CHECKSUM Running 32-bit checksum (reset when DMA disabled).
+const (
+    // CHECKSUM Accumulated checksum over flash read data.
+    FmcV1SPIDMACHECKSUMCHECKSUMPos = 0
+    FmcV1SPIDMACHECKSUMCHECKSUMMsk = 0xffffffff << 0
+)
+
+// fmc_v1::SPI_DMA_CTRL SPI DMA control with arbitration. Write 0xAEED_0000 to bit[31] to request; wait for bit[30] grant. Release with 0xDEEA_0000 after completion.
+const (
+    // DMAENABLE Enable DMA. Clear to 0 after each cycle.
+    FmcV1SPIDMACTRLDMAENABLEPos = 0
+    FmcV1SPIDMACTRLDMAENABLEMsk = 0x1 << 0
+    // DMADIR DMA direction: 0=read, 1=write.
+    FmcV1SPIDMACTRLDMADIRPos = 1
+    FmcV1SPIDMACTRLDMADIRMsk = 0x1 << 1
+    // CHECKSUMONLY Checksum accumulation only (no data movement).
+    FmcV1SPIDMACTRLCHECKSUMONLYPos = 2
+    FmcV1SPIDMACTRLCHECKSUMONLYMsk = 0x1 << 2
+    // CALMODE Calibration mode.
+    FmcV1SPIDMACTRLCALMODEPos = 3
+    FmcV1SPIDMACTRLCALMODEMsk = 0x1 << 3
+    // BUFMODE DMA buffer mode: 0=memory, 1=FIFO.
+    FmcV1SPIDMACTRLBUFMODEPos = 4
+    FmcV1SPIDMACTRLBUFMODEMsk = 0x1 << 4
+    // CALREADDELAY Calibration read delay.
+    FmcV1SPIDMACTRLCALREADDELAYPos = 8
+    FmcV1SPIDMACTRLCALREADDELAYMsk = 0xff << 8
+    // CALCLKFREQ Calibration clock frequency.
+    FmcV1SPIDMACTRLCALCLKFREQPos = 16
+    FmcV1SPIDMACTRLCALCLKFREQMsk = 0xf << 16
+    // DMAGRANT DMA arbitration granted (read-only). Poll until 1 before starting DMA.
+    FmcV1SPIDMACTRLDMAGRANTPos = 30
+    FmcV1SPIDMACTRLDMAGRANTMsk = 0x1 << 30
+    // DMAREQUEST DMA arbitration request. Write 0xAEED to upper 16 bits to request; 0xDEEA to release.
+    FmcV1SPIDMACTRLDMAREQUESTPos = 31
+    FmcV1SPIDMACTRLDMAREQUESTMsk = 0x1 << 31
+)
+
+// fmc_v1::SPI_DMA_FLASH_ADDR DMA flash-side address (4-byte aligned).
+const (
+    // FLASHADDR Flash-side start address bits[27:2] (4-byte aligned). Updates during transfer.
+    FmcV1SPIDMAFLASHADDRFLASHADDRPos = 2
+    FmcV1SPIDMAFLASHADDRFLASHADDRMsk = 0x3ffffff << 2
+)
+
+// fmc_v1::SPI_DMA_LEN DMA transfer length in bytes (counts down during transfer).
+const (
+    // DMALEN Transfer length (0=1 byte, max=32 MB).
+    FmcV1SPIDMALENDMALENPos = 0
+    FmcV1SPIDMALENDMALENMsk = 0x1ffffff << 0
+)
+
+// fmc_v1::SPI_DMA_RAM_ADDR DMA DRAM/SRAM-side address (4-byte aligned, memory mode only).
+const (
+    // DRAMADDR Memory-side start address bits[31:2]. Updates during transfer.
+    FmcV1SPIDMARAMADDRDRAMADDRPos = 2
+    FmcV1SPIDMARAMADDRDRAMADDRMsk = 0x3fffffff << 2
+)
+
+// fmc_v1::SPI_DUMMY_DATA Data output during dummy cycles (shared by all CEs).
+const (
+    // DUMMYCYCLEDATA Byte output during head of dummy cycle.
+    FmcV1SPIDUMMYDATADUMMYCYCLEDATAPos = 0
+    FmcV1SPIDUMMYDATADUMMYCYCLEDATAMsk = 0xff << 0
+)
+
+// fmc_v1::SPI_FQCD Fully Qualified Command table entry. bit[31]=enable, bits[15:8]=cmd_hi (2nd byte), bits[7:0]=cmd_lo (1st byte).
+const (
+    // CMDLO Command byte (low / 1st byte).
+    FmcV1SPIFQCDCMDLOPos = 0
+    FmcV1SPIFQCDCMDLOMsk = 0xff << 0
+    // CMDHI Command byte (high / 2nd byte, for dual-byte commands).
+    FmcV1SPIFQCDCMDHIPos = 8
+    FmcV1SPIFQCDCMDHIMsk = 0xff << 8
+    // ENTRYEN Enable this FQCD entry.
+    FmcV1SPIFQCDENTRYENPos = 31
+    FmcV1SPIFQCDENTRYENMsk = 0x1 << 31
+)
+
+// fmc_v1::SPI_IRQ_CTRL SPI/FMC interrupt control and status register.
+const (
+    // WRPROTIE Write-protect interrupt enable.
+    FmcV1SPIIRQCTRLWRPROTIEPos = 1
+    FmcV1SPIIRQCTRLWRPROTIEMsk = 0x1 << 1
+    // CMDABORTIE Command abort interrupt enable.
+    FmcV1SPIIRQCTRLCMDABORTIEPos = 2
+    FmcV1SPIIRQCTRLCMDABORTIEMsk = 0x1 << 2
+    // DMAIE DMA completion interrupt enable.
+    FmcV1SPIIRQCTRLDMAIEPos = 3
+    FmcV1SPIIRQCTRLDMAIEMsk = 0x1 << 3
+    // DMABUFFIFOIE DMA FIFO full/empty interrupt enable.
+    FmcV1SPIIRQCTRLDMABUFFIFOIEPos = 4
+    FmcV1SPIIRQCTRLDMABUFFIFOIEMsk = 0x1 << 4
+    // WRPROTSTATUS Write to protected address detected. Write 1 to clear.
+    FmcV1SPIIRQCTRLWRPROTSTATUSPos = 9
+    FmcV1SPIIRQCTRLWRPROTSTATUSMsk = 0x1 << 9
+    // CMDABORTSTATUS Command filtered/aborted. Write 1 to clear.
+    FmcV1SPIIRQCTRLCMDABORTSTATUSPos = 10
+    FmcV1SPIIRQCTRLCMDABORTSTATUSMsk = 0x1 << 10
+    // DMASTATUS DMA finished (1=done). Cleared when DMA disabled.
+    FmcV1SPIIRQCTRLDMASTATUSPos = 11
+    FmcV1SPIIRQCTRLDMASTATUSMsk = 0x1 << 11
+    // DMABUFFIFOEMPTY DMA buffer FIFO empty.
+    FmcV1SPIIRQCTRLDMABUFFIFOEMPTYPos = 12
+    FmcV1SPIIRQCTRLDMABUFFIFOEMPTYMsk = 0x1 << 12
+    // DMABUFFIFOFULL DMA buffer FIFO full.
+    FmcV1SPIIRQCTRLDMABUFFIFOFULLPos = 13
+    FmcV1SPIIRQCTRLDMABUFFIFOFULLMsk = 0x1 << 13
+)
+
+// fmc_v1::SPI_LOCK_CTRL Register lock control (write-1-only; cleared only by SRST# or WDT reset). Set bits permanently lock corresponding register groups.
+const (
+    // LOCKCETYPE Lock CE type register.
+    FmcV1SPILOCKCTRLLOCKCETYPEPos = 0
+    FmcV1SPILOCKCTRLLOCKCETYPEMsk = 0x1 << 0
+    // LOCKCECTRL Lock CE control register (tCSH, address mode).
+    FmcV1SPILOCKCTRLLOCKCECTRLPos = 1
+    FmcV1SPILOCKCTRLLOCKCECTRLMsk = 0x1 << 1
+    // LOCKCE0CTRL Lock CE0 control register.
+    FmcV1SPILOCKCTRLLOCKCE0CTRLPos = 2
+    FmcV1SPILOCKCTRLLOCKCE0CTRLMsk = 0x1 << 2
+    // LOCKCE1CTRL Lock CE1 control register.
+    FmcV1SPILOCKCTRLLOCKCE1CTRLPos = 3
+    FmcV1SPILOCKCTRLLOCKCE1CTRLMsk = 0x1 << 3
+    // LOCKCE0RANGE Lock CE0 address range register.
+    FmcV1SPILOCKCTRLLOCKCE0RANGEPos = 5
+    FmcV1SPILOCKCTRLLOCKCE0RANGEMsk = 0x1 << 5
+    // LOCKCE1RANGE Lock CE1 address range register.
+    FmcV1SPILOCKCTRLLOCKCE1RANGEPos = 6
+    FmcV1SPILOCKCTRLLOCKCE1RANGEMsk = 0x1 << 6
+    // LOCKTIMING Lock read timing compensation registers.
+    FmcV1SPILOCKCTRLLOCKTIMINGPos = 8
+    FmcV1SPILOCKCTRLLOCKTIMINGMsk = 0x1 << 8
+    // LOCKCMDFILTER Lock command filter registers and FQCD/AQCD tables.
+    FmcV1SPILOCKCTRLLOCKCMDFILTERPos = 9
+    FmcV1SPILOCKCTRLLOCKCMDFILTERMsk = 0x1 << 9
+    // LOCKFILTER Lock write address filter registers.
+    FmcV1SPILOCKCTRLLOCKFILTERPos = 10
+    FmcV1SPILOCKCTRLLOCKFILTERMsk = 0x1 << 10
+)
+
+// fmc_v1::SPI_READ_TIMING Per-CE SPI read timing compensation. Four 8-bit groups, one per HCLK divisor (HCLK/2, /3, /4, /5). Each group: DI_DELAY_FINE[7:4], DI_DELAY_EN[3], HCLK_DELAY[2:0].
+const (
+    // HCLK2TIMING Timing compensation for SPICLK=HCLK/2 (DI_DELAY_FINE+EN+HCLK_DELAY).
+    FmcV1SPIREADTIMINGHCLK2TIMINGPos = 0
+    FmcV1SPIREADTIMINGHCLK2TIMINGMsk = 0xff << 0
+    // HCLK3TIMING Timing compensation for SPICLK=HCLK/3.
+    FmcV1SPIREADTIMINGHCLK3TIMINGPos = 8
+    FmcV1SPIREADTIMINGHCLK3TIMINGMsk = 0xff << 8
+    // HCLK4TIMING Timing compensation for SPICLK=HCLK/4.
+    FmcV1SPIREADTIMINGHCLK4TIMINGPos = 16
+    FmcV1SPIREADTIMINGHCLK4TIMINGMsk = 0xff << 16
+    // HCLK5TIMING Timing compensation for SPICLK=HCLK/5.
+    FmcV1SPIREADTIMINGHCLK5TIMINGPos = 24
+    FmcV1SPIREADTIMINGHCLK5TIMINGMsk = 0xff << 24
+)
+
+// fmc_v1::SPI_WRITE_FILTER Write address filter range (lower/upper bounds in bits[27:12] of flash address).
+const (
+    // LOWERBOUND Segment lower bound address bits[27:12].
+    FmcV1SPIWRITEFILTERLOWERBOUNDPos = 0
+    FmcV1SPIWRITEFILTERLOWERBOUNDMsk = 0xffff << 0
+    // UPPERBOUND Segment upper bound address bits[27:12].
+    FmcV1SPIWRITEFILTERUPPERBOUNDPos = 16
+    FmcV1SPIWRITEFILTERUPPERBOUNDMsk = 0xffff << 16
+)
+
+// fmc_v1::SPI_WRITE_FILTER_CTRL Write address filter mode control for SPI (6 filters × 2 bits each).
+const (
+    // FILTER1MODE Write address filter
+    FmcV1SPIWRITEFILTERCTRLFILTER1MODEPos = 0
+    FmcV1SPIWRITEFILTERCTRLFILTER1MODEMsk = 0x3 << 0
+    // FILTER2MODE Write address filter
+    FmcV1SPIWRITEFILTERCTRLFILTER2MODEPos = 2
+    FmcV1SPIWRITEFILTERCTRLFILTER2MODEMsk = 0x3 << 2
+    // FILTER3MODE Write address filter
+    FmcV1SPIWRITEFILTERCTRLFILTER3MODEPos = 4
+    FmcV1SPIWRITEFILTERCTRLFILTER3MODEMsk = 0x3 << 4
+    // FILTER4MODE Write address filter
+    FmcV1SPIWRITEFILTERCTRLFILTER4MODEPos = 6
+    FmcV1SPIWRITEFILTERCTRLFILTER4MODEMsk = 0x3 << 6
+    // FILTER5MODE Write address filter
+    FmcV1SPIWRITEFILTERCTRLFILTER5MODEPos = 8
+    FmcV1SPIWRITEFILTERCTRLFILTER5MODEMsk = 0x3 << 8
+    // FILTER6MODE Write address filter
+    FmcV1SPIWRITEFILTERCTRLFILTER6MODEPos = 10
+    FmcV1SPIWRITEFILTERCTRLFILTER6MODEMsk = 0x3 << 10
 )
 
 // gpio_v1::GPIO32 Generic 32-bit GPIO register (data, direction, interrupt enable/status, reset tolerant, command source, input mask, data read). Each bit corresponds to one GPIO pin within the group.
@@ -1030,6 +1515,789 @@ const (
     I2cglobalV1I2CGIRQSTATUSDEV16INTMsk = 0x1 << 15
 )
 
+// i3c_v1::I3C_BUS_FREE Bus free timing for IBI initiation and inter-transfer gap.
+const (
+    // I3CMSTFREE Master free count after STOP before next transfer.
+    I3cV1I3CBUSFREEI3CMSTFREEPos = 0
+    I3cV1I3CBUSFREEI3CMSTFREEMsk = 0xffff << 0
+    // I3CIBIFREE Slave/non-current-master bus available count for IBI initiation.
+    I3cV1I3CBUSFREEI3CIBIFREEPos = 16
+    I3cV1I3CBUSFREEI3CIBIFREEMsk = 0xffff << 16
+)
+
+// i3c_v1::I3C_BUS_IDLE Bus idle count before Hot-Join initiation.
+const (
+    // BUSIDLETIME Idle count (slave/non-current-master before initiating Hot-Join).
+    I3cV1I3CBUSIDLEBUSIDLETIMEPos = 0
+    I3cV1I3CBUSIDLEBUSIDLETIMEMsk = 0xfffff << 0
+)
+
+// i3c_v1::I3C_CMD_PORT Command queue port (write-only). Push command descriptors. bits[2:0] = CMD_ATTR selects format: 0=Transfer Command (TC), 1=Transfer Argument (TARG), 2=Short Data Argument (SDA), 3=Address Assignment Command (AAC).
+const (
+    // CMDATTR Command attribute (format selector). 0=TC, 1=TARG, 2=SDA, 3=AAC.
+    I3cV1I3CCMDPORTCMDATTRPos = 0
+    I3cV1I3CCMDPORTCMDATTRMsk = 0x7 << 0
+    // DATA Remaining 29 bits — layout varies by CMD_ATTR. See datasheet Table 29.2.
+    I3cV1I3CCMDPORTDATAPos = 3
+    I3cV1I3CCMDPORTDATAMsk = 0x1fffffff << 3
+)
+
+// i3c_v1::I3C_DATA_BUF_STATUS_LEVEL FIFO occupancy status (read-only).
+const (
+    // TXBUFEMPTYLOC Number of empty locations in TX FIFO.
+    I3cV1I3CDATABUFSTATUSLEVELTXBUFEMPTYLOCPos = 0
+    I3cV1I3CDATABUFSTATUSLEVELTXBUFEMPTYLOCMsk = 0xff << 0
+    // RXBUFBLR Number of valid entries in RX FIFO.
+    I3cV1I3CDATABUFSTATUSLEVELRXBUFBLRPos = 16
+    I3cV1I3CDATABUFSTATUSLEVELRXBUFBLRMsk = 0xff << 16
+)
+
+// i3c_v1::I3C_DATA_BUF_THLD Data buffer threshold control register. Encoding for each 3-bit field: 0=1, 1=4, 2=8, 3=16, 4=32, 5=64 entries.
+const (
+    // TXEMPTYBUFTHLD Trigger TX_THLD_STAT when TX FIFO has this many empty locations.
+    I3cV1I3CDATABUFTHLDTXEMPTYBUFTHLDPos = 0
+    I3cV1I3CDATABUFTHLDTXEMPTYBUFTHLDMsk = 0x7 << 0
+    // RXBUFTHLD Trigger RX_THLD_STAT when RX FIFO has this many entries.
+    I3cV1I3CDATABUFTHLDRXBUFTHLDPos = 8
+    I3cV1I3CDATABUFTHLDRXBUFTHLDMsk = 0x7 << 8
+    // TXSTARTTHLD Wait until TX FIFO has this many entries before starting master write.
+    I3cV1I3CDATABUFTHLDTXSTARTTHLDPos = 16
+    I3cV1I3CDATABUFTHLDTXSTARTTHLDMsk = 0x7 << 16
+    // RXSTARTTHLD Wait until RX FIFO has this many empty locations before starting master read.
+    I3cV1I3CDATABUFTHLDRXSTARTTHLDPos = 24
+    I3cV1I3CDATABUFTHLDRXSTARTTHLDMsk = 0x7 << 24
+)
+
+// i3c_v1::I3C_DATA_PORT TX/RX FIFO data port (4-byte aligned).
+const (
+    // DATA 4 bytes of TX (write) or RX (read) data.
+    I3cV1I3CDATAPORTDATAPos = 0
+    I3cV1I3CDATAPORTDATAMsk = 0xffffffff << 0
+)
+
+// i3c_v1::I3C_DAT_ENTRY Device Address Table entry. One per target device. Holds dynamic address with odd-parity, static address, and per-device IBI/MR/SIR policy.
+const (
+    // DEVSTATICADDR Device static I2C/I3C address (7-bit).
+    I3cV1I3CDATENTRYDEVSTATICADDRPos = 0
+    I3cV1I3CDATENTRYDEVSTATICADDRMsk = 0x7f << 0
+    // IBIWITHDATA 1=IBI from this device includes mandatory data byte(s) (T-Bit continuation).
+    I3cV1I3CDATENTRYIBIWITHDATAPos = 12
+    I3cV1I3CDATENTRYIBIWITHDATAMsk = 0x1 << 12
+    // SIRREJECT 0=ACK SIR; 1=NACK and send directed auto-disable DISEC.
+    I3cV1I3CDATENTRYSIRREJECTPos = 13
+    I3cV1I3CDATENTRYSIRREJECTMsk = 0x1 << 13
+    // MRREJECT 0=ACK master request; 1=NACK and send directed DISEC.
+    I3cV1I3CDATENTRYMRREJECTPos = 14
+    I3cV1I3CDATENTRYMRREJECTMsk = 0x1 << 14
+    // DEVDYNAMICADDR Dynamic address with odd parity. bit[23]=parity, bits[22:16]=addr[6:0].
+    I3cV1I3CDATENTRYDEVDYNAMICADDRPos = 16
+    I3cV1I3CDATENTRYDEVDYNAMICADDRMsk = 0xff << 16
+    // DEVNACKRETRYCNT Auto-retry count when device NACKs address (0=none, 1-3 retries).
+    I3cV1I3CDATENTRYDEVNACKRETRYCNTPos = 29
+    I3cV1I3CDATENTRYDEVNACKRETRYCNTMsk = 0x3 << 29
+    // LEGACYI2CDEVICE 1=this is a legacy I2C device.
+    I3cV1I3CDATENTRYLEGACYI2CDEVICEPos = 31
+    I3cV1I3CDATENTRYLEGACYI2CDEVICEMsk = 0x1 << 31
+)
+
+// i3c_v1::I3C_DCT_BCR_DCR DCT entry location 3 — BCR and DCR values.
+const (
+    // DCR Device Characteristic Register value.
+    I3cV1I3CDCTBCRDCRDCRPos = 0
+    I3cV1I3CDCTBCRDCRDCRMsk = 0xff << 0
+    // BCR Bus Characteristic Register value.
+    I3cV1I3CDCTBCRDCRBCRPos = 8
+    I3cV1I3CDCTBCRDCRBCRMsk = 0xff << 8
+)
+
+// i3c_v1::I3C_DCT_DYN_ADDR DCT entry location 4 — assigned dynamic address.
+const (
+    // DEVDYNAMICADDR Assigned dynamic address (7-bit).
+    I3cV1I3CDCTDYNADDRDEVDYNAMICADDRPos = 0
+    I3cV1I3CDCTDYNADDRDEVDYNAMICADDRMsk = 0xff << 0
+)
+
+// i3c_v1::I3C_DCT_PID_HI DCT entry location 2 — Provisional ID bits [47:32].
+const (
+    // PIDHI Provisional ID upper 16 bits.
+    I3cV1I3CDCTPIDHIPIDHIPos = 0
+    I3cV1I3CDCTPIDHIPIDHIMsk = 0xffff << 0
+)
+
+// i3c_v1::I3C_DCT_PID_LO DCT entry location 1 — Provisional ID bits [31:0].
+const (
+    // PIDLO Provisional ID lower 32 bits.
+    I3cV1I3CDCTPIDLOPIDLOPos = 0
+    I3cV1I3CDCTPIDLOPIDLOMsk = 0xffffffff << 0
+)
+
+// i3c_v1::I3C_DCT_PTR Device Characteristic Table pointer and current write index.
+const (
+    // TABLESTARTADDR Start address offset of DCT.
+    I3cV1I3CDCTPTRTABLESTARTADDRPos = 0
+    I3cV1I3CDCTPTRTABLESTARTADDRMsk = 0xfff << 0
+    // TABLEDEPTH Number of DCT entries (read-only).
+    I3cV1I3CDCTPTRTABLEDEPTHPos = 12
+    I3cV1I3CDCTPTRTABLEDEPTHMsk = 0x7f << 12
+    // PRESENTDEVCHARTABLEINDX Current write index into DCT (auto-increments during ENTDAA).
+    I3cV1I3CDCTPTRPRESENTDEVCHARTABLEINDXPos = 19
+    I3cV1I3CDCTPTRPRESENTDEVCHARTABLEINDXMsk = 0x7 << 19
+)
+
+// i3c_v1::I3C_DEVICE_ADDR I3C device address register.
+const (
+    // STATICADDR Slave static address (7-bit). Used for SETDASA response.
+    I3cV1I3CDEVICEADDRSTATICADDRPos = 0
+    I3cV1I3CDEVICEADDRSTATICADDRMsk = 0x7f << 0
+    // STATICADDRVALID Slave static address valid (reflects static_addr_en input).
+    I3cV1I3CDEVICEADDRSTATICADDRVALIDPos = 15
+    I3cV1I3CDEVICEADDRSTATICADDRVALIDMsk = 0x1 << 15
+    // DYNAMICADDR Device dynamic address (7-bit). Set by ENTDAA/SETDASA or self-assigned.
+    I3cV1I3CDEVICEADDRDYNAMICADDRPos = 16
+    I3cV1I3CDEVICEADDRDYNAMICADDRMsk = 0x7f << 16
+    // DYNAMICADDRVALID Dynamic address valid. Main master sets=1 (self-assign). Others: set by HW after ENTDAA/SETDASA.
+    I3cV1I3CDEVICEADDRDYNAMICADDRVALIDPos = 31
+    I3cV1I3CDEVICEADDRDYNAMICADDRVALIDMsk = 0x1 << 31
+)
+
+// i3c_v1::I3C_DEVICE_BITMAP Per-device bitmap (bit N = device N). Used for MR/SIR rejection.
+const (
+    // DEVICEBITS Per-device rejection bitmap (bit N=1 → reject/NACK device N).
+    I3cV1I3CDEVICEBITMAPDEVICEBITSPos = 0
+    I3cV1I3CDEVICEBITMAPDEVICEBITSMsk = 0xffffffff << 0
+)
+
+// i3c_v1::I3C_DEVICE_CTRL I3C device control register.
+const (
+    // I3CBROADCASTADDRINCLUDE Master: include 0x7E in private transfers (required for IBI arbitration).
+    I3cV1I3CDEVICECTRLI3CBROADCASTADDRINCLUDEPos = 0
+    I3cV1I3CDEVICECTRLI3CBROADCASTADDRINCLUDEMsk = 0x1 << 0
+    // I2CSLAVEPRESENT Master: 1=legacy I2C devices present on bus (affects timing after STOP).
+    I3cV1I3CDEVICECTRLI2CSLAVEPRESENTPos = 7
+    I3cV1I3CDEVICECTRLI2CSLAVEPRESENTMsk = 0x1 << 7
+    // HOTJOINCTRL Master: 0=ACK Hot-Join; 1=NACK and send broadcast DISEC.
+    I3cV1I3CDEVICECTRLHOTJOINCTRLPos = 8
+    I3cV1I3CDEVICECTRLHOTJOINCTRLMsk = 0x1 << 8
+    // IBIPAYLOADEN Slave: enable IBI with data payload.
+    I3cV1I3CDEVICECTRLIBIPAYLOADENPos = 9
+    I3cV1I3CDEVICECTRLIBIPAYLOADENMsk = 0x1 << 9
+    // MDB Slave: Mandatory Data Byte sent with IBI.
+    I3cV1I3CDEVICECTRLMDBPos = 16
+    I3cV1I3CDEVICECTRLMDBMsk = 0xff << 16
+    // IDLECNTMULTIPLIER Slave: idle time multiplier for IBI timing. 0=×1, 1=×2, 2=×4, 3=×8.
+    I3cV1I3CDEVICECTRLIDLECNTMULTIPLIERPos = 24
+    I3cV1I3CDEVICECTRLIDLECNTMULTIPLIERMsk = 0x3 << 24
+    // ADAPTIVEI2CI3C Slave: auto-detect bus mode from first transfer.
+    I3cV1I3CDEVICECTRLADAPTIVEI2CI3CPos = 27
+    I3cV1I3CDEVICECTRLADAPTIVEI2CI3CMsk = 0x1 << 27
+    // DMAHANDSHAKEEN Enable DMA handshake interface.
+    I3cV1I3CDEVICECTRLDMAHANDSHAKEENPos = 28
+    I3cV1I3CDEVICECTRLDMAHANDSHAKEENMsk = 0x1 << 28
+    // ABORT Master: write 1 to abort current transfer (issues STOP after byte boundary). Auto-clears.
+    I3cV1I3CDEVICECTRLABORTPos = 29
+    I3cV1I3CDEVICECTRLABORTMsk = 0x1 << 29
+    // RESUME Write 1 to resume after Halt state. Auto-clears.
+    I3cV1I3CDEVICECTRLRESUMEPos = 30
+    I3cV1I3CDEVICECTRLRESUMEMsk = 0x1 << 30
+    // I3CEN Enable controller. Master: disable waits for queues to drain + FSM idle. Slave: enable waits for BUS_AVAILABLE. Read 0 when disable complete.
+    I3cV1I3CDEVICECTRLI3CENPos = 31
+    I3cV1I3CDEVICECTRLI3CENMsk = 0x1 << 31
+)
+
+// i3c_v1::I3C_DEVICE_CTRL_EXT Extended device control register.
+const (
+    // DEVOPERATIONMODE Operation mode: 0=Master, 1=Slave. Only master role is supported.
+    I3cV1I3CDEVICECTRLEXTDEVOPERATIONMODEPos = 0
+    I3cV1I3CDEVICECTRLEXTDEVOPERATIONMODEMsk = 0x3 << 0
+    // REQMSTACKCTRL GETACCMST CCC response: 0=ACK, 1=NACK.
+    I3cV1I3CDEVICECTRLEXTREQMSTACKCTRLPos = 3
+    I3cV1I3CDEVICECTRLEXTREQMSTACKCTRLMsk = 0x1 << 3
+)
+
+// i3c_v1::I3C_DEV_OPERATING_STATUS Device operating status (slave mode, read-only).
+const (
+    // PENDINGINTR Reflects pending_int input port.
+    I3cV1I3CDEVOPERATINGSTATUSPENDINGINTRPos = 0
+    I3cV1I3CDEVOPERATINGSTATUSPENDINGINTRMsk = 0xf << 0
+    // ACTIVITYMODE Current slave activity mode.
+    I3cV1I3CDEVOPERATINGSTATUSACTIVITYMODEPos = 6
+    I3cV1I3CDEVOPERATINGSTATUSACTIVITYMODEMsk = 0x3 << 6
+    // SLAVEBUSY Set on MRL update or error; cleared by writing RESUME=1 to DEVICE_CTRL.
+    I3cV1I3CDEVOPERATINGSTATUSSLAVEBUSYPos = 9
+    I3cV1I3CDEVOPERATINGSTATUSSLAVEBUSYMsk = 0x1 << 9
+    // OVERFLOWERR RX overflow on master write or TX underflow on master read.
+    I3cV1I3CDEVOPERATINGSTATUSOVERFLOWERRPos = 10
+    I3cV1I3CDEVOPERATINGSTATUSOVERFLOWERRMsk = 0x1 << 10
+    // DATANOTREADY Slave NACKed master read (CmdQ empty or threshold not met).
+    I3cV1I3CDEVOPERATINGSTATUSDATANOTREADYPos = 11
+    I3cV1I3CDEVOPERATINGSTATUSDATANOTREADYMsk = 0x1 << 11
+    // BUFFERNOTAVAIL Slave NACKed master write (RX FIFO below threshold or RespQ full).
+    I3cV1I3CDEVOPERATINGSTATUSBUFFERNOTAVAILPos = 12
+    I3cV1I3CDEVOPERATINGSTATUSBUFFERNOTAVAILMsk = 0x1 << 12
+    // FRAMEERROR HDR-DDR/TSP/TSL frame error on private write.
+    I3cV1I3CDEVOPERATINGSTATUSFRAMEERRORPos = 13
+    I3cV1I3CDEVOPERATINGSTATUSFRAMEERRORMsk = 0x1 << 13
+)
+
+// i3c_v1::I3C_HW_CAPABILITY Hardware capability register (read-only).
+const (
+    // DEVICEROLE Configured role: 1=Master Only, 2=Prog Master-Slave, 3=Secondary Master, 4=Slave Only.
+    I3cV1I3CHWCAPABILITYDEVICEROLEPos = 0
+    I3cV1I3CHWCAPABILITYDEVICEROLEMsk = 0x7 << 0
+    // HDRDDRCAP HDR-DDR mode supported.
+    I3cV1I3CHWCAPABILITYHDRDDRCAPPos = 3
+    I3cV1I3CHWCAPABILITYHDRDDRCAPMsk = 0x1 << 3
+    // HDRTSCAP HDR-TS mode supported.
+    I3cV1I3CHWCAPABILITYHDRTSCAPPos = 4
+    I3cV1I3CHWCAPABILITYHDRTSCAPMsk = 0x1 << 4
+    // CLOCKPERIOD Reflects IC_CLK_PERIOD parameter (core clock period in ns).
+    I3cV1I3CHWCAPABILITYCLOCKPERIODPos = 5
+    I3cV1I3CHWCAPABILITYCLOCKPERIODMsk = 0x3f << 5
+    // HDRTXCLOCKPERIOD Reflects IC_HDR_TX_CLK_PERIOD parameter.
+    I3cV1I3CHWCAPABILITYHDRTXCLOCKPERIODPos = 11
+    I3cV1I3CHWCAPABILITYHDRTXCLOCKPERIODMsk = 0x3f << 11
+    // DMAEN DMA handshake interface present.
+    I3cV1I3CHWCAPABILITYDMAENPos = 17
+    I3cV1I3CHWCAPABILITYDMAENMsk = 0x1 << 17
+    // SLVHJCAP Slave can initiate Hot-Join.
+    I3cV1I3CHWCAPABILITYSLVHJCAPPos = 18
+    I3cV1I3CHWCAPABILITYSLVHJCAPMsk = 0x1 << 18
+    // SLVIBICAP Slave can initiate SIR.
+    I3cV1I3CHWCAPABILITYSLVIBICAPPos = 19
+    I3cV1I3CHWCAPABILITYSLVIBICAPMsk = 0x1 << 19
+)
+
+// i3c_v1::I3C_IBI_PAYLOAD_LEN IBI payload length configuration and capability.
+const (
+    // IBIMAXPAYLOADSIZE Maximum IBI payload size (set by master SETMRL, read-only to firmware).
+    I3cV1I3CIBIPAYLOADLENIBIMAXPAYLOADSIZEPos = 0
+    I3cV1I3CIBIPAYLOADLENIBIMAXPAYLOADSIZEMsk = 0xff << 0
+    // IBIPAYLOADSIZE IBI payload size in slave mode (must be ≤ IBI_MAX_PAYLOAD_SIZE).
+    I3cV1I3CIBIPAYLOADLENIBIPAYLOADSIZEPos = 16
+    I3cV1I3CIBIPAYLOADLENIBIPAYLOADSIZEMsk = 0xff << 16
+)
+
+// i3c_v1::I3C_IBI_QUEUE_CTRL IBI queue notification policy for rejected events.
+const (
+    // NOTIFYHJREJECTED Forward NACKed Hot-Join events to IBI FIFO with error flag.
+    I3cV1I3CIBIQUEUECTRLNOTIFYHJREJECTEDPos = 0
+    I3cV1I3CIBIQUEUECTRLNOTIFYHJREJECTEDMsk = 0x1 << 0
+    // NOTIFYMRREJECTED Forward NACKed Master Request events to IBI FIFO with error flag.
+    I3cV1I3CIBIQUEUECTRLNOTIFYMRREJECTEDPos = 1
+    I3cV1I3CIBIQUEUECTRLNOTIFYMRREJECTEDMsk = 0x1 << 1
+    // NOTIFYSIRREJECTED Forward NACKed SIR events to IBI FIFO with error flag.
+    I3cV1I3CIBIQUEUECTRLNOTIFYSIRREJECTEDPos = 3
+    I3cV1I3CIBIQUEUECTRLNOTIFYSIRREJECTEDMsk = 0x1 << 3
+)
+
+// i3c_v1::I3C_IBI_STATUS IBI queue status/data (read-only). Returns status word or payload data.
+const (
+    // IBIDATALEN Length of IBI payload data in bytes (0 if no data).
+    I3cV1I3CIBISTATUSIBIDATALENPos = 0
+    I3cV1I3CIBISTATUSIBIDATALENMsk = 0xff << 0
+    // IBIID First byte after START = {addr[6:0], R/W}. Hot-Join has special ID.
+    I3cV1I3CIBISTATUSIBIIDPos = 8
+    I3cV1I3CIBISTATUSIBIIDMsk = 0xff << 8
+    // LASTSTATUS 1=this is the last status entry for this IBI (follows data entries if any).
+    I3cV1I3CIBISTATUSLASTSTATUSPos = 24
+    I3cV1I3CIBISTATUSLASTSTATUSMsk = 0x1 << 24
+    // ERROR 1=error during IBI auto-command (CRC/parity, NACK, IBI buffer overflow).
+    I3cV1I3CIBISTATUSERRORPos = 30
+    I3cV1I3CIBISTATUSERRORMsk = 0x1 << 30
+    // IBISTATUS IBI disposition: 0=ACK'd, 1=NACK'd.
+    I3cV1I3CIBISTATUSIBISTATUSPos = 31
+    I3cV1I3CIBISTATUSIBISTATUSMsk = 0x1 << 31
+)
+
+// i3c_v1::I3C_INTR Interrupt status/enable/signal/force register (same bit layout for all four). Level bits (4,3,2,1,0) auto-clear; all others are sticky (RW1C for status).
+const (
+    // TXTHLD TX FIFO empty locations ≥ threshold.
+    I3cV1I3CINTRTXTHLDPos = 0
+    I3cV1I3CINTRTXTHLDMsk = 0x1 << 0
+    // RXTHLD RX FIFO entries ≥ threshold.
+    I3cV1I3CINTRRXTHLDPos = 1
+    I3cV1I3CINTRRXTHLDMsk = 0x1 << 1
+    // IBITHLD IBI queue entries ≥ threshold (master only).
+    I3cV1I3CINTRIBITHLDPos = 2
+    I3cV1I3CINTRIBITHLDMsk = 0x1 << 2
+    // CMDQUEUEREADY Command queue empty locations ≥ threshold.
+    I3cV1I3CINTRCMDQUEUEREADYPos = 3
+    I3cV1I3CINTRCMDQUEUEREADYMsk = 0x1 << 3
+    // RESPREADY Response queue entries ≥ threshold.
+    I3cV1I3CINTRRESPREADYPos = 4
+    I3cV1I3CINTRRESPREADYMsk = 0x1 << 4
+    // TRANSFERABORT Transfer aborted (master only).
+    I3cV1I3CINTRTRANSFERABORTPos = 5
+    I3cV1I3CINTRTRANSFERABORTMsk = 0x1 << 5
+    // CCCUPDATED Any CCC register updated by master (slave only).
+    I3cV1I3CINTRCCCUPDATEDPos = 6
+    I3cV1I3CINTRCCCUPDATEDMsk = 0x1 << 6
+    // DYNADDRASSGN Dynamic address assigned via SETDASA or ENTDAA (slave only).
+    I3cV1I3CINTRDYNADDRASSGNPos = 8
+    I3cV1I3CINTRDYNADDRASSGNMsk = 0x1 << 8
+    // TRANSFERERR Transfer error — see ERR_STATUS in RESP_QUEUE_PORT.
+    I3cV1I3CINTRTRANSFERERRPos = 9
+    I3cV1I3CINTRTRANSFERERRMsk = 0x1 << 9
+    // DEFSLV DEFSLV CCC received.
+    I3cV1I3CINTRDEFSLVPos = 10
+    I3cV1I3CINTRDEFSLVMsk = 0x1 << 10
+    // READREQRECV Master read request received while CmdQ empty (slave only).
+    I3cV1I3CINTRREADREQRECVPos = 11
+    I3cV1I3CINTRREADREQRECVMsk = 0x1 << 11
+    // IBIUPDATED IBI request completed and status updated (slave only).
+    I3cV1I3CINTRIBIUPDATEDPos = 12
+    I3cV1I3CINTRIBIUPDATEDMsk = 0x1 << 12
+    // BUSOWNERUPDATED Controller role changed (master↔slave handover).
+    I3cV1I3CINTRBUSOWNERUPDATEDPos = 13
+    I3cV1I3CINTRBUSOWNERUPDATEDMsk = 0x1 << 13
+    // BUSRESETDONE SCL Low Timeout bus reset pattern complete (master only).
+    I3cV1I3CINTRBUSRESETDONEPos = 15
+    I3cV1I3CINTRBUSRESETDONEMsk = 0x1 << 15
+)
+
+// i3c_v1::I3C_MAX_DATA_SPEED MXDS maximum data speed configuration.
+const (
+    // MXDSMAXWRSPEED Max sustained write speed: 0=12.5 MHz, 1=8 MHz, 2=6 MHz, 3=4 MHz, 4=2 MHz.
+    I3cV1I3CMAXDATASPEEDMXDSMAXWRSPEEDPos = 0
+    I3cV1I3CMAXDATASPEEDMXDSMAXWRSPEEDMsk = 0x7 << 0
+    // MXDSMAXRDSPEED Max sustained read speed (same encoding as write).
+    I3cV1I3CMAXDATASPEEDMXDSMAXRDSPEEDPos = 8
+    I3cV1I3CMAXDATASPEEDMXDSMAXRDSPEEDMsk = 0x7 << 8
+    // TSCO Clock-to-data turnaround: 0=8ns, 1=9ns, 2=10ns, 3=11ns, 4=12ns.
+    I3cV1I3CMAXDATASPEEDTSCOPos = 16
+    I3cV1I3CMAXDATASPEEDTSCOMsk = 0x7 << 16
+)
+
+// i3c_v1::I3C_MAX_RD_TURN MXDS max read turnaround time in microseconds (read-only).
+const (
+    // MXDSMAXRDTURN Max read turnaround time (µs).
+    I3cV1I3CMAXRDTURNMXDSMAXRDTURNPos = 0
+    I3cV1I3CMAXRDTURNMXDSMAXRDTURNMsk = 0xffffff << 0
+)
+
+// i3c_v1::I3C_PRESENT_STATE Current controller state (read-only).
+const (
+    // SCLLINESIGNALLEVEL Synchronized SCL input level.
+    I3cV1I3CPRESENTSTATESCLLINESIGNALLEVELPos = 0
+    I3cV1I3CPRESENTSTATESCLLINESIGNALLEVELMsk = 0x1 << 0
+    // SDALINESIGNALLEVEL Synchronized SDA input level.
+    I3cV1I3CPRESENTSTATESDALINESIGNALLEVELPos = 1
+    I3cV1I3CPRESENTSTATESDALINESIGNALLEVELMsk = 0x1 << 1
+    // CURRENTMASTER 1=this controller is current bus master (owns SCL).
+    I3cV1I3CPRESENTSTATECURRENTMASTERPos = 2
+    I3cV1I3CPRESENTSTATECURRENTMASTERMsk = 0x1 << 2
+    // CMTFRSTATUS Transfer type currently executing. Master: 0=IDLE, 1=BCast_CCC_Write, 2=Dir_CCC_Write, 3=Dir_CCC_Read, 4=ENTDAA, 5=SETDASA, 6=Priv_I3C_SDR_Write, 7=Priv_I3C_SDR_Read, 8=Priv_I2C_Write, 9=Priv_I2C_Read, 10=HDR-TS_Write, 11=HDR-TS_Read, 12=HDR-DDR_Write, 13=HDR-DDR_Read, 14=IBI, 15=Halt. Slave: 0=IDLE, 1=HJ, 2=IBI, 3=MasterWrite, 4=ReadPrefetch, 5=MasterRead, 6=Halt.
+    I3cV1I3CPRESENTSTATECMTFRSTATUSPos = 8
+    I3cV1I3CPRESENTSTATECMTFRSTATUSMsk = 0x3f << 8
+    // CMTFRSTSTATUS Current master transfer FSM state (see datasheet for full encoding).
+    I3cV1I3CPRESENTSTATECMTFRSTSTATUSPos = 16
+    I3cV1I3CPRESENTSTATECMTFRSTSTATUSMsk = 0x3f << 16
+    // CMDTID TID of currently executing command.
+    I3cV1I3CPRESENTSTATECMDTIDPos = 24
+    I3cV1I3CPRESENTSTATECMDTIDMsk = 0xf << 24
+    // MASTERIDLE 1=all queues/FIFOs empty and master FSM in IDLE.
+    I3cV1I3CPRESENTSTATEMASTERIDLEPos = 28
+    I3cV1I3CPRESENTSTATEMASTERIDLEMsk = 0x1 << 28
+)
+
+// i3c_v1::I3C_QUEUE_SIZE_CAP Queue and FIFO depth capability (read-only). Encoding: 0=2, 1=4, 2=8, 3=16, 5=64 DWORDs.
+const (
+    // TXBUFSIZE TX FIFO depth (encoded).
+    I3cV1I3CQUEUESIZECAPTXBUFSIZEPos = 0
+    I3cV1I3CQUEUESIZECAPTXBUFSIZEMsk = 0xf << 0
+    // RXBUFSIZE RX FIFO depth (encoded).
+    I3cV1I3CQUEUESIZECAPRXBUFSIZEPos = 4
+    I3cV1I3CQUEUESIZECAPRXBUFSIZEMsk = 0xf << 4
+    // CMDBUFSIZE Command queue depth (encoded).
+    I3cV1I3CQUEUESIZECAPCMDBUFSIZEPos = 8
+    I3cV1I3CQUEUESIZECAPCMDBUFSIZEMsk = 0xf << 8
+    // RESPBUFSIZE Response queue depth (encoded).
+    I3cV1I3CQUEUESIZECAPRESPBUFSIZEPos = 12
+    I3cV1I3CQUEUESIZECAPRESPBUFSIZEMsk = 0xf << 12
+    // IBIBUFSIZE IBI queue depth (encoded).
+    I3cV1I3CQUEUESIZECAPIBIBUFSIZEPos = 16
+    I3cV1I3CQUEUESIZECAPIBIBUFSIZEMsk = 0xf << 16
+)
+
+// i3c_v1::I3C_QUEUE_STATUS_LEVEL Queue occupancy status (read-only).
+const (
+    // CMDQUEUEEMPTYLOC Number of empty locations in command queue.
+    I3cV1I3CQUEUESTATUSLEVELCMDQUEUEEMPTYLOCPos = 0
+    I3cV1I3CQUEUESTATUSLEVELCMDQUEUEEMPTYLOCMsk = 0xff << 0
+    // RESPBUFBLR Number of valid entries in response queue.
+    I3cV1I3CQUEUESTATUSLEVELRESPBUFBLRPos = 8
+    I3cV1I3CQUEUESTATUSLEVELRESPBUFBLRMsk = 0xff << 8
+    // IBIBUFBLR Number of valid data entries in IBI queue (master only).
+    I3cV1I3CQUEUESTATUSLEVELIBIBUFBLRPos = 16
+    I3cV1I3CQUEUESTATUSLEVELIBIBUFBLRMsk = 0xff << 16
+    // IBISTATUSCNT Number of IBI status entries in IBI queue (master only).
+    I3cV1I3CQUEUESTATUSLEVELIBISTATUSCNTPos = 24
+    I3cV1I3CQUEUESTATUSLEVELIBISTATUSCNTMsk = 0x1f << 24
+)
+
+// i3c_v1::I3C_QUEUE_THLD Queue threshold control register.
+const (
+    // CMDEMPTYBUFTHLD Trigger CMD_QUEUE_READY_STAT when this many CmdQ locations are empty.
+    I3cV1I3CQUEUETHLDCMDEMPTYBUFTHLDPos = 0
+    I3cV1I3CQUEUETHLDCMDEMPTYBUFTHLDMsk = 0xff << 0
+    // RESPBUFTHLD Trigger RESP_READY_STAT when this many RespQ entries are present.
+    I3cV1I3CQUEUETHLDRESPBUFTHLDPos = 8
+    I3cV1I3CQUEUETHLDRESPBUFTHLDMsk = 0xff << 8
+    // IBIDATATHLD IBI data segment size in DWORDs (1-31) for cut-through operation.
+    I3cV1I3CQUEUETHLDIBIDATATHLDPos = 16
+    I3cV1I3CQUEUETHLDIBIDATATHLDMsk = 0x1f << 16
+    // IBISTATUSTHLD Trigger IBI_THLD_STAT when this many IBI status entries are present.
+    I3cV1I3CQUEUETHLDIBISTATUSTHLDPos = 24
+    I3cV1I3CQUEUETHLDIBISTATUSTHLDMsk = 0xff << 24
+)
+
+// i3c_v1::I3C_RESET_CTRL Software reset control. Write 1 to reset named resource; auto-clears.
+const (
+    // CORERST Reset all queues and buffers.
+    I3cV1I3CRESETCTRLCORERSTPos = 0
+    I3cV1I3CRESETCTRLCORERSTMsk = 0x1 << 0
+    // CMDQUEUERST Reset command queue.
+    I3cV1I3CRESETCTRLCMDQUEUERSTPos = 1
+    I3cV1I3CRESETCTRLCMDQUEUERSTMsk = 0x1 << 1
+    // RESPQUEUERST Reset response queue.
+    I3cV1I3CRESETCTRLRESPQUEUERSTPos = 2
+    I3cV1I3CRESETCTRLRESPQUEUERSTMsk = 0x1 << 2
+    // TXFIFORST Reset TX FIFO.
+    I3cV1I3CRESETCTRLTXFIFORSTPos = 3
+    I3cV1I3CRESETCTRLTXFIFORSTMsk = 0x1 << 3
+    // RXFIFORST Reset RX FIFO.
+    I3cV1I3CRESETCTRLRXFIFORSTPos = 4
+    I3cV1I3CRESETCTRLRXFIFORSTMsk = 0x1 << 4
+    // IBIQUEUERST Reset IBI queue (master only).
+    I3cV1I3CRESETCTRLIBIQUEUERSTPos = 5
+    I3cV1I3CRESETCTRLIBIQUEUERSTMsk = 0x1 << 5
+    // BUSRESETTYPE Bus reset pattern type: 0=EXIT pattern, 3=SCL Low Reset pattern.
+    I3cV1I3CRESETCTRLBUSRESETTYPEPos = 29
+    I3cV1I3CRESETCTRLBUSRESETTYPEMsk = 0x3 << 29
+    // BUSRESET Initiate bus reset pattern (master only). Auto-clears when done.
+    I3cV1I3CRESETCTRLBUSRESETPos = 31
+    I3cV1I3CRESETCTRLBUSRESETMsk = 0x1 << 31
+)
+
+// i3c_v1::I3C_RESP_PORT Response queue port (read-only). Pop one response entry per read.
+const (
+    // DL Data length — remaining bytes (write) or actual received bytes (read); device count (AAC).
+    I3cV1I3CRESPPORTDLPos = 0
+    I3cV1I3CRESPPORTDLMsk = 0xffff << 0
+    // CCCT CCC/HDR Header Type. Valid when TID=4'b1111.
+    I3cV1I3CRESPPORTCCCTPos = 16
+    I3cV1I3CRESPPORTCCCTMsk = 0xff << 16
+    // TID Transaction ID echoed from command.
+    I3cV1I3CRESPPORTTIDPos = 24
+    I3cV1I3CRESPPORTTIDMsk = 0xf << 24
+    // ERRSTATUS Error status: 0=OK, 1=CRC, 2=Parity, 3=Frame, 4=Broadcast NACK, 5=Addr NACK (ENTDAA), 6=RX overflow/TX underflow, 8=Aborted, 9=I2C write NACK.
+    I3cV1I3CRESPPORTERRSTATUSPos = 28
+    I3cV1I3CRESPPORTERRSTATUSMsk = 0xf << 28
+)
+
+// i3c_v1::I3C_SCL_EXT_LCNT Extended SCL low count for SDR1-SDR4 speeds (one byte per speed tier).
+const (
+    // I3CEXTLCNT1 Extra SCL low count for SDR1.
+    I3cV1I3CSCLEXTLCNTI3CEXTLCNT1Pos = 0
+    I3cV1I3CSCLEXTLCNTI3CEXTLCNT1Msk = 0xff << 0
+    // I3CEXTLCNT2 Extra SCL low count for SDR2.
+    I3cV1I3CSCLEXTLCNTI3CEXTLCNT2Pos = 8
+    I3cV1I3CSCLEXTLCNTI3CEXTLCNT2Msk = 0xff << 8
+    // I3CEXTLCNT3 Extra SCL low count for SDR3.
+    I3cV1I3CSCLEXTLCNTI3CEXTLCNT3Pos = 16
+    I3cV1I3CSCLEXTLCNTI3CEXTLCNT3Msk = 0xff << 16
+    // I3CEXTLCNT4 Extra SCL low count for SDR4.
+    I3cV1I3CSCLEXTLCNTI3CEXTLCNT4Pos = 24
+    I3cV1I3CSCLEXTLCNTI3CEXTLCNT4Msk = 0xff << 24
+)
+
+// i3c_v1::I3C_SCL_EXT_TERMN HDR-TS skew count and read termination bit low count.
+const (
+    // I3CEXTTERMNLCNT Read termination bit low count extension.
+    I3cV1I3CSCLEXTTERMNI3CEXTTERMNLCNTPos = 0
+    I3cV1I3CSCLEXTTERMNI3CEXTTERMNLCNTMsk = 0xf << 0
+    // I3CTSSKEWCNT HDR ternary skew count (core clocks) for bus turn-around detection.
+    I3cV1I3CSCLEXTTERMNI3CTSSKEWCNTPos = 16
+    I3cV1I3CSCLEXTTERMNI3CTSSKEWCNTMsk = 0xf << 16
+)
+
+// i3c_v1::I3C_SCL_FM SCL timing for I2C Fast Mode (16-bit H/L counts).
+const (
+    // I2CFMLCNT SCL FM low period count.
+    I3cV1I3CSCLFMI2CFMLCNTPos = 0
+    I3cV1I3CSCLFMI2CFMLCNTMsk = 0xffff << 0
+    // I2CFMHCNT SCL FM high period count.
+    I3cV1I3CSCLFMI2CFMHCNTPos = 16
+    I3cV1I3CSCLFMI2CFMHCNTMsk = 0xffff << 16
+)
+
+// i3c_v1::I3C_SCL_FMP SCL timing for I2C Fast Mode Plus (8-bit H/L counts with upper reserved).
+const (
+    // I2CFMPLCNT SCL FM+ low period count.
+    I3cV1I3CSCLFMPI2CFMPLCNTPos = 0
+    I3cV1I3CSCLFMPI2CFMPLCNTMsk = 0xffff << 0
+    // I2CFMPHCNT SCL FM+ high period count.
+    I3cV1I3CSCLFMPI2CFMPHCNTPos = 16
+    I3cV1I3CSCLFMPI2CFMPHCNTMsk = 0xff << 16
+)
+
+// i3c_v1::I3C_SCL_HILO SCL timing — high/low period counts (one 8-bit field each).
+const (
+    // LCNT SCL low period count (core clock periods).
+    I3cV1I3CSCLHILOLCNTPos = 0
+    I3cV1I3CSCLHILOLCNTMsk = 0xff << 0
+    // HCNT SCL high period count (core clock periods).
+    I3cV1I3CSCLHILOHCNTPos = 16
+    I3cV1I3CSCLHILOHCNTMsk = 0xff << 16
+)
+
+// i3c_v1::I3C_SCL_LOW_TIMEOUT Core clock count for SCL Low Bus Reset pattern generation.
+const (
+    // SCLLOWMSTTIMEOUTCOUNT Clock count for SCL low bus reset pattern (master).
+    I3cV1I3CSCLLOWTIMEOUTSCLLOWMSTTIMEOUTCOUNTPos = 0
+    I3cV1I3CSCLLOWTIMEOUTSCLLOWMSTTIMEOUTCOUNTMsk = 0x3ffffff << 0
+)
+
+// i3c_v1::I3C_SDA_HOLD SDA hold time and PP↔OD mode switching delays.
+const (
+    // SDAODPPSWITCHDLY Delay sda_out vs sda_oe when switching OD→PP (valid 0-4).
+    I3cV1I3CSDAHOLDSDAODPPSWITCHDLYPos = 0
+    I3cV1I3CSDAHOLDSDAODPPSWITCHDLYMsk = 0x7 << 0
+    // SDAPPODSWITCHDLY Delay sda_oe vs sda_out when switching PP→OD (valid 0-4).
+    I3cV1I3CSDAHOLDSDAPPODSWITCHDLYPos = 8
+    I3cV1I3CSDAHOLDSDAPPODSWITCHDLYMsk = 0x7 << 8
+    // SDATXHOLD SDA transmit hold time vs SCL edge in FM/FM+/SDR/DDR (1-7 core clocks).
+    I3cV1I3CSDAHOLDSDATXHOLDPos = 16
+    I3cV1I3CSDAHOLDSDATXHOLDMsk = 0x7 << 16
+)
+
+// i3c_v1::I3C_SLV_CHAR Slave characteristic control (read-only). BCR, DCR, HDR capability.
+const (
+    // BCR Bus Characteristic Register value.
+    I3cV1I3CSLVCHARBCRPos = 0
+    I3cV1I3CSLVCHARBCRMsk = 0xff << 0
+    // DCR Device Characteristic Register value.
+    I3cV1I3CSLVCHARDCRPos = 8
+    I3cV1I3CSLVCHARDCRMsk = 0xff << 8
+    // HDRCAP HDR capability bitmap: bit0=mode0, bit1=mode1, bit2=mode2.
+    I3cV1I3CSLVCHARHDRCAPPos = 16
+    I3cV1I3CSLVCHARHDRCAPMsk = 0xff << 16
+)
+
+// i3c_v1::I3C_SLV_EVENT_CTRL Slave event control and status register.
+const (
+    // SIRALLOWED SIR IBI allowed (set/cleared by master ENEC/DISEC CCC).
+    I3cV1I3CSLVEVENTCTRLSIRALLOWEDPos = 0
+    I3cV1I3CSLVEVENTCTRLSIRALLOWEDMsk = 0x1 << 0
+    // MRALLOWED Master Request allowed (set/cleared by master ENEC/DISEC CCC).
+    I3cV1I3CSLVEVENTCTRLMRALLOWEDPos = 1
+    I3cV1I3CSLVEVENTCTRLMRALLOWEDMsk = 0x1 << 1
+    // HJINTRREQ Hot-Join interrupts allowed (set/cleared by master ENEC/DISEC CCC).
+    I3cV1I3CSLVEVENTCTRLHJINTRREQPos = 3
+    I3cV1I3CSLVEVENTCTRLHJINTRREQMsk = 0x1 << 3
+    // ACTIVITYSTATE Activity state from master ENTAS CCC: 0=ENTAS0, 1=ENTAS1, 2=ENTAS2, 3=ENTAS3.
+    I3cV1I3CSLVEVENTCTRLACTIVITYSTATEPos = 4
+    I3cV1I3CSLVEVENTCTRLACTIVITYSTATEMsk = 0x3 << 4
+    // MRLUPDATED SETMRL CCC received. Write 1 to clear.
+    I3cV1I3CSLVEVENTCTRLMRLUPDATEDPos = 6
+    I3cV1I3CSLVEVENTCTRLMRLUPDATEDMsk = 0x1 << 6
+    // MWLUPDATED SETMWL CCC received. Write 1 to clear.
+    I3cV1I3CSLVEVENTCTRLMWLUPDATEDPos = 7
+    I3cV1I3CSLVEVENTCTRLMWLUPDATEDMsk = 0x1 << 7
+)
+
+// i3c_v1::I3C_SLV_INTR_REQ Slave interrupt request initiation register.
+const (
+    // SIR Write 1 to initiate SIR IBI. Auto-clears on success.
+    I3cV1I3CSLVINTRREQSIRPos = 0
+    I3cV1I3CSLVINTRREQSIRMsk = 0x1 << 0
+    // SIRCTRL SIR initiation mode: 0=Initiate SIR-IBI.
+    I3cV1I3CSLVINTRREQSIRCTRLPos = 1
+    I3cV1I3CSLVINTRREQSIRCTRLMsk = 0x3 << 1
+    // MIR Write 1 to initiate Master Request (secondary master only).
+    I3cV1I3CSLVINTRREQMIRPos = 3
+    I3cV1I3CSLVINTRREQMIRMsk = 0x1 << 3
+    // IBISTS IBI completion status: 1=Successful, 3=Not attempted.
+    I3cV1I3CSLVINTRREQIBISTSPos = 8
+    I3cV1I3CSLVINTRREQIBISTSMsk = 0x3 << 8
+)
+
+// i3c_v1::I3C_SLV_MAX_LEN Slave max write/read length (set by master via SETMWL/SETMRL CCC).
+const (
+    // MWL Max Write Length in bytes.
+    I3cV1I3CSLVMAXLENMWLPos = 0
+    I3cV1I3CSLVMAXLENMWLMsk = 0xffff << 0
+    // MRL Max Read Length in bytes.
+    I3cV1I3CSLVMAXLENMRLPos = 16
+    I3cV1I3CSLVMAXLENMRLMsk = 0xffff << 16
+)
+
+// i3c_v1::I3C_SLV_PID_HI Slave Provisional ID high word.
+const (
+    // SLVPIDDCR PID type selector (PID[32]): 0=vendor-fixed, 1=random.
+    I3cV1I3CSLVPIDHISLVPIDDCRPos = 0
+    I3cV1I3CSLVPIDHISLVPIDDCRMsk = 0x1 << 0
+    // SLVMIPIMFGID MIPI manufacturer ID (PID[47:33]).
+    I3cV1I3CSLVPIDHISLVMIPIMFGIDPos = 1
+    I3cV1I3CSLVPIDHISLVMIPIMFGIDMsk = 0x7fff << 1
+)
+
+// i3c_v1::I3C_SLV_PID_LO Slave Provisional ID low word.
+const (
+    // SLVPIDDCR Additional 12-bit ID (PID[11:0]).
+    I3cV1I3CSLVPIDLOSLVPIDDCRPos = 0
+    I3cV1I3CSLVPIDLOSLVPIDDCRMsk = 0xfff << 0
+    // SLVINSTID Instance ID (PID[15:12]); reflects inst_id input.
+    I3cV1I3CSLVPIDLOSLVINSTIDPos = 12
+    I3cV1I3CSLVPIDLOSLVINSTIDMsk = 0xf << 12
+    // SLVPARTID Part ID (PID[31:16]).
+    I3cV1I3CSLVPIDLOSLVPARTIDPos = 16
+    I3cV1I3CSLVPIDLOSLVPARTIDMsk = 0xffff << 16
+)
+
+// i3c_v1::I3C_SLV_TSX_TIMING TSP/TSL symbol timing.
+const (
+    // SLVTSXSYMBLCNT Symbol count. Duration = count × hdr_tx_clk_period.
+    I3cV1I3CSLVTSXTIMINGSLVTSXSYMBLCNTPos = 0
+    I3cV1I3CSLVTSXTIMINGSLVTSXSYMBLCNTMsk = 0x3f << 0
+)
+
+// i3c_v1::I3C_TABLE_PTR Device Address/Characteristic Table pointer (read-only).
+const (
+    // TABLESTARTADDR Start address offset of the table in the register map.
+    I3cV1I3CTABLEPTRTABLESTARTADDRPos = 0
+    I3cV1I3CTABLEPTRTABLESTARTADDRMsk = 0xffff << 0
+    // TABLEDEPTH Number of entries in the table.
+    I3cV1I3CTABLEPTRTABLEDEPTHPos = 16
+    I3cV1I3CTABLEPTRTABLEDEPTHMsk = 0xffff << 16
+)
+
+// i3c_v1::I3C_VERSION DWC version ID or type in ASCII (read-only, 4 bytes).
+const (
+    // VER Version identifier as 4 ASCII characters.
+    I3cV1I3CVERSIONVERPos = 0
+    I3cV1I3CVERSIONVERMsk = 0xffffffff << 0
+)
+
+// i3cglobal_v1::I3CG_DBG1 I3C global debug signals register 1 (read-only).
+const (
+    // DEBUG Debug signal bits [31:0] (content varies by master/slave mode).
+    I3cglobalV1I3CGDBG1DEBUGPos = 0
+    I3cglobalV1I3CGDBG1DEBUGMsk = 0xffffffff << 0
+)
+
+// i3cglobal_v1::I3CG_DBG2 I3C global debug register 2 — IO levels and FSM state (read-only).
+const (
+    // CTRLEN Controller enable status.
+    I3cglobalV1I3CGDBG2CTRLENPos = 0
+    I3cglobalV1I3CGDBG2CTRLENMsk = 0x1 << 0
+    // SCLOE SCL output enable.
+    I3cglobalV1I3CGDBG2SCLOEPos = 16
+    I3cglobalV1I3CGDBG2SCLOEMsk = 0x1 << 16
+    // SCLOUT SCL output value.
+    I3cglobalV1I3CGDBG2SCLOUTPos = 17
+    I3cglobalV1I3CGDBG2SCLOUTMsk = 0x1 << 17
+    // SCLPULLUPEN SCL pull-up enable.
+    I3cglobalV1I3CGDBG2SCLPULLUPENPos = 18
+    I3cglobalV1I3CGDBG2SCLPULLUPENMsk = 0x1 << 18
+    // SCLIN SCL input level.
+    I3cglobalV1I3CGDBG2SCLINPos = 19
+    I3cglobalV1I3CGDBG2SCLINMsk = 0x1 << 19
+    // SDAOE SDA output enable.
+    I3cglobalV1I3CGDBG2SDAOEPos = 20
+    I3cglobalV1I3CGDBG2SDAOEMsk = 0x1 << 20
+    // SDAOUT SDA output value.
+    I3cglobalV1I3CGDBG2SDAOUTPos = 21
+    I3cglobalV1I3CGDBG2SDAOUTMsk = 0x1 << 21
+    // SDAPULLUPEN SDA pull-up enable.
+    I3cglobalV1I3CGDBG2SDAPULLUPENPos = 22
+    I3cglobalV1I3CGDBG2SDAPULLUPENMsk = 0x1 << 22
+    // SDAIN SDA input level.
+    I3cglobalV1I3CGDBG2SDAINPos = 23
+    I3cglobalV1I3CGDBG2SDAINMsk = 0x1 << 23
+)
+
+// i3cglobal_v1::I3CG_PHY_NO_PULLUP I3C global PHY register — channels 5-6 (no SDA pull-up control). Same as I3CG_PHY_PULLUP but bits [29:28] are reserved.
+const (
+    // DGSDAFMAX De-glitch SDA falling edge max count.
+    I3cglobalV1I3CGPHYNOPULLUPDGSDAFMAXPos = 0
+    I3cglobalV1I3CGPHYNOPULLUPDGSDAFMAXMsk = 0xf << 0
+    // DGSDARMAX De-glitch SDA rising edge max count.
+    I3cglobalV1I3CGPHYNOPULLUPDGSDARMAXPos = 4
+    I3cglobalV1I3CGPHYNOPULLUPDGSDARMAXMsk = 0xf << 4
+    // DGSCLFMAX De-glitch SCL falling edge max count.
+    I3cglobalV1I3CGPHYNOPULLUPDGSCLFMAXPos = 8
+    I3cglobalV1I3CGPHYNOPULLUPDGSCLFMAXMsk = 0xf << 8
+    // DGSCLRMAX De-glitch SCL rising edge max count.
+    I3cglobalV1I3CGPHYNOPULLUPDGSCLRMAXPos = 12
+    I3cglobalV1I3CGPHYNOPULLUPDGSCLRMAXMsk = 0xf << 12
+    // CDRDLYMAX CDR maximum delay count.
+    I3cglobalV1I3CGPHYNOPULLUPCDRDLYMAXPos = 16
+    I3cglobalV1I3CGPHYNOPULLUPCDRDLYMAXMsk = 0xff << 16
+    // CDRENDG CDR enable for DG path.
+    I3cglobalV1I3CGPHYNOPULLUPCDRENDGPos = 24
+    I3cglobalV1I3CGPHYNOPULLUPCDRENDGMsk = 0x1 << 24
+    // CDRENMASK CDR enable mask.
+    I3cglobalV1I3CGPHYNOPULLUPCDRENMASKPos = 25
+    I3cglobalV1I3CGPHYNOPULLUPCDRENMASKMsk = 0x1 << 25
+)
+
+// i3cglobal_v1::I3CG_PHY_PULLUP I3C global PHY register — channels 1-4 (with SDA pull-up control). Controls CDR enable, de-glitch counts, and on-chip SDA pull-up resistors.
+const (
+    // DGSDAFMAX De-glitch SDA falling edge max count (4 bits).
+    I3cglobalV1I3CGPHYPULLUPDGSDAFMAXPos = 0
+    I3cglobalV1I3CGPHYPULLUPDGSDAFMAXMsk = 0xf << 0
+    // DGSDARMAX De-glitch SDA rising edge max count (4 bits).
+    I3cglobalV1I3CGPHYPULLUPDGSDARMAXPos = 4
+    I3cglobalV1I3CGPHYPULLUPDGSDARMAXMsk = 0xf << 4
+    // DGSCLFMAX De-glitch SCL falling edge max count (4 bits).
+    I3cglobalV1I3CGPHYPULLUPDGSCLFMAXPos = 8
+    I3cglobalV1I3CGPHYPULLUPDGSCLFMAXMsk = 0xf << 8
+    // DGSCLRMAX De-glitch SCL rising edge max count (4 bits).
+    I3cglobalV1I3CGPHYPULLUPDGSCLRMAXPos = 12
+    I3cglobalV1I3CGPHYPULLUPDGSCLRMAXMsk = 0xf << 12
+    // CDRDLYMAX CDR maximum delay count (8 bits).
+    I3cglobalV1I3CGPHYPULLUPCDRDLYMAXPos = 16
+    I3cglobalV1I3CGPHYPULLUPCDRDLYMAXMsk = 0xff << 16
+    // CDRENDG CDR enable for DG path.
+    I3cglobalV1I3CGPHYPULLUPCDRENDGPos = 24
+    I3cglobalV1I3CGPHYPULLUPCDRENDGMsk = 0x1 << 24
+    // CDRENMASK CDR enable mask.
+    I3cglobalV1I3CGPHYPULLUPCDRENMASKPos = 25
+    I3cglobalV1I3CGPHYPULLUPCDRENMASKMsk = 0x1 << 25
+    // SDAPULLUPEN2K Enable 2 KΩ on-chip SDA pull-up resistor.
+    I3cglobalV1I3CGPHYPULLUPSDAPULLUPEN2KPos = 28
+    I3cglobalV1I3CGPHYPULLUPSDAPULLUPEN2KMsk = 0x1 << 28
+    // SDAPULLUPEN750 Enable 750 Ω on-chip SDA pull-up resistor. If both 2K and 750 enabled → effective 2K ∥ 750 Ω ≈ 577 Ω. If neither → no on-chip pull-up (external only).
+    I3cglobalV1I3CGPHYPULLUPSDAPULLUPEN750Pos = 29
+    I3cglobalV1I3CGPHYPULLUPSDAPULLUPEN750Msk = 0x1 << 29
+)
+
+// i3cglobal_v1::I3CG_SLAVE_ID I3C global slave identity register. Configures slave static address, instance ID, and operating mode. Only valid when channel is in slave mode.
+const (
+    // MODEI2C Slave bus mode: 0=I3C mode, 1=I2C mode.
+    I3cglobalV1I3CGSLAVEIDMODEI2CPos = 0
+    I3cglobalV1I3CGSLAVEIDMODEI2CMsk = 0x1 << 0
+    // SLVTESTMODE Slave test mode enable.
+    I3cglobalV1I3CGSLAVEIDSLVTESTMODEPos = 1
+    I3cglobalV1I3CGSLAVEIDSLVTESTMODEMsk = 0x1 << 1
+    // ACTMODE Slave activity mode for GETSTATUS CCC response.
+    I3cglobalV1I3CGSLAVEIDACTMODEPos = 2
+    I3cglobalV1I3CGSLAVEIDACTMODEMsk = 0x3 << 2
+    // PENDINGINT Pending interrupt info for GETSTATUS CCC response.
+    I3cglobalV1I3CGSLAVEIDPENDINGINTPos = 4
+    I3cglobalV1I3CGSLAVEIDPENDINGINTMsk = 0xf << 4
+    // STATICADDR Slave static address (7-bit). Used for SETDASA.
+    I3cglobalV1I3CGSLAVEIDSTATICADDRPos = 8
+    I3cglobalV1I3CGSLAVEIDSTATICADDRMsk = 0x7f << 8
+    // STATICADDREN Slave static address valid enable.
+    I3cglobalV1I3CGSLAVEIDSTATICADDRENPos = 15
+    I3cglobalV1I3CGSLAVEIDSTATICADDRENMsk = 0x1 << 15
+    // INSTID Slave instance ID (for GETPID response).
+    I3cglobalV1I3CGSLAVEIDINSTIDPos = 16
+    I3cglobalV1I3CGSLAVEIDINSTIDMsk = 0xf << 16
+)
+
 // ipc_v1::IPC_CHANNELS IPC 15-channel bitmask. Bit n corresponds to IPC channel n (n = 0..14).
 const (
     // CH IPC channel bitmask (bits [14:0]). Bit 0 = channel 0 (IRQ 182); bit 14 = channel 14 (IRQ 196).
@@ -1675,18 +2943,21 @@ const (
     // RSTSYS Reset system after timeout. 0 = disabled; 1 = assert SoC / CPU reset when counter reaches 0. Must clear WDT10[0] before enabling this bit.
     WdtV1WDTCTRLRSTSYSPos = 1
     WdtV1WDTCTRLRSTSYSMsk = 0x1 << 1
+    // WDTINTR Interrupt before timeout. 1 = generate interrupt when counter reaches pre-timeout value (set in CTRL bits [31:10]).
+    WdtV1WDTCTRLWDTINTRPos = 2
+    WdtV1WDTCTRLWDTINTRMsk = 0x1 << 2
+    // WDTEXT External signal enable after timeout. 1 = pulse generated on an external output pin.
+    WdtV1WDTCTRLWDTEXTPos = 3
+    WdtV1WDTCTRLWDTEXTMsk = 0x1 << 3
     // WDTRESETBYSOC Allow SOC-level reset to reset this WDT instance. 0 = only SRST# or full-chip reset can reset this WDT; 1 = SOC system reset also resets this WDT.
     WdtV1WDTCTRLWDTRESETBYSOCPos = 4
     WdtV1WDTCTRLWDTRESETBYSOCMsk = 0x1 << 4
     // RSTMODE Reset system mode (bits [6:5]). 00 = SOC system reset (gated by reset mask registers); 01 = Full chip reset; 1x = CPU/FMC only (firmware reboot, no peripheral reset).
     WdtV1WDTCTRLRSTMODEPos = 5
     WdtV1WDTCTRLRSTMODEMsk = 0x3 << 5
-    // WDTEXT External signal enable after timeout. 1 = pulse generated on an external output pin.
-    WdtV1WDTCTRLWDTEXTPos = 27
-    WdtV1WDTCTRLWDTEXTMsk = 0x1 << 27
-    // WDTINTR Interrupt before timeout. 1 = generate interrupt when counter reaches pre-timeout value (set in CTRL bits [31:10]).
-    WdtV1WDTCTRLWDTINTRPos = 28
-    WdtV1WDTCTRLWDTINTRMsk = 0x1 << 28
+    // PRETIMEOUT Pre-timeout counter field.
+    WdtV1WDTCTRLPRETIMEOUTPos = 10
+    WdtV1WDTCTRLPRETIMEOUTMsk = 0x3fffff << 10
 )
 
 // wdt_v1::WDT_RESTART Counter Restart Register (WDT08).
@@ -1705,7 +2976,7 @@ const (
 
 // wdt_v1::WDT_SW_RESET_MASK1 Software Mode Reset Mask Register #1 (WDT28). Each bit enables (1) or disables (0) the reset of the corresponding subsystem when SW_RESET_CTRL is triggered.
 const (
-    // MASK Subsystem reset enable bitmask. Zephyr sets 0x03FF_FFF1 to reset the standard set of subsystems (ARM, SDRAM, AHB bridges, coprocessor, SOC controllers, USB, etc.).
+    // MASK Subsystem reset enable bitmask. Write 0x03FF_FFF1 to reset the standard set of subsystems (ARM, SDRAM, AHB bridges, coprocessor, SOC controllers, USB, etc.).
     WdtV1WDTSWRESETMASK1MASKPos = 0
     WdtV1WDTSWRESETMASK1MASKMsk = 0xffffffff << 0
 )

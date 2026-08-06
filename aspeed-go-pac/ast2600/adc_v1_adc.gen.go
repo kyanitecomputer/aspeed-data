@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // AdcV1ADC ASPEED ADC controller block.  8 input channels per instance. AST1060: one instance at 0x7E6E_9000. AST2600: ADC0 at 0x7E6E_9000 (CH0–7), ADC1 at 0x7E6E_9100 (CH8–15).
 type AdcV1ADC struct {

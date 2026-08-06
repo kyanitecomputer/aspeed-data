@@ -2,9 +2,9 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
-// BootmcuTimerV1TIMER AST2700 BootMCU 64-bit free-running timer with alarm interrupt. Clocked at 1 MHz; INTR_STS is cleared by writing ALARM_L and ALARM_H. Base address: 0x14C36000 (IO-die, BootMCU view).
+// BootmcuTimerV1TIMER AST2700 BootMCU 64-bit free-running timer with match interrupt. Clock source is selected by CTRL.CLK_SEL; INTR_STS is cleared by writing MATCH_L or MATCH_H. Base address: 0x14C36000 (IO-die, BootMCU view).
 type BootmcuTimerV1TIMER struct {
     Base uintptr
 }
@@ -19,23 +19,23 @@ func (p *BootmcuTimerV1TIMER) ReadCOUNTH() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x0004))
 }
 
-// ReadALARML reads Alarm compare value — low 32 bits. Writing this register also clears TMR_CTRL.INTR_STS.
-func (p *BootmcuTimerV1TIMER) ReadALARML() uint32 {
+// ReadMATCHL reads Match compare value — low 32 bits. Writing this register also clears TMR_CTRL.INTR_STS.
+func (p *BootmcuTimerV1TIMER) ReadMATCHL() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x0008))
 }
 
-// WriteALARML writes Alarm compare value — low 32 bits. Writing this register also clears TMR_CTRL.INTR_STS.
-func (p *BootmcuTimerV1TIMER) WriteALARML(val uint32) {
+// WriteMATCHL writes Match compare value — low 32 bits. Writing this register also clears TMR_CTRL.INTR_STS.
+func (p *BootmcuTimerV1TIMER) WriteMATCHL(val uint32) {
     reg.Write(uint32(p.Base)+0x0008, uint32(val))
 }
 
-// ReadALARMH reads Alarm compare value — high 32 bits. Writing this register also clears TMR_CTRL.INTR_STS.
-func (p *BootmcuTimerV1TIMER) ReadALARMH() uint32 {
+// ReadMATCHH reads Match compare value — high 32 bits. Writing this register also clears TMR_CTRL.INTR_STS.
+func (p *BootmcuTimerV1TIMER) ReadMATCHH() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x000c))
 }
 
-// WriteALARMH writes Alarm compare value — high 32 bits. Writing this register also clears TMR_CTRL.INTR_STS.
-func (p *BootmcuTimerV1TIMER) WriteALARMH(val uint32) {
+// WriteMATCHH writes Match compare value — high 32 bits. Writing this register also clears TMR_CTRL.INTR_STS.
+func (p *BootmcuTimerV1TIMER) WriteMATCHH(val uint32) {
     reg.Write(uint32(p.Base)+0x000c, uint32(val))
 }
 
@@ -49,13 +49,23 @@ func (p *BootmcuTimerV1TIMER) WriteCTRL(val uint32) {
     reg.Write(uint32(p.Base)+0x0010, uint32(val))
 }
 
-// ReadCTRLCLR reads Write-1-clear mirror of CTRL. Write 1 to a bit to clear the corresponding CTRL bit. Example: write TMR_CTRL_EN to stop the timer.
+// ReadCTRLCLR reads Write-1-clear mirror of CTRL. Write 1 to a bit to clear the corresponding CTRL bit.
 func (p *BootmcuTimerV1TIMER) ReadCTRLCLR() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x0014))
 }
 
-// WriteCTRLCLR writes Write-1-clear mirror of CTRL. Write 1 to a bit to clear the corresponding CTRL bit. Example: write TMR_CTRL_EN to stop the timer.
+// WriteCTRLCLR writes Write-1-clear mirror of CTRL. Write 1 to a bit to clear the corresponding CTRL bit.
 func (p *BootmcuTimerV1TIMER) WriteCTRLCLR(val uint32) {
     reg.Write(uint32(p.Base)+0x0014, uint32(val))
+}
+
+// ReadWRITEPROTECT reads Counter write protection register (RVTMC1C).
+func (p *BootmcuTimerV1TIMER) ReadWRITEPROTECT() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x001c))
+}
+
+// WriteWRITEPROTECT writes Counter write protection register (RVTMC1C).
+func (p *BootmcuTimerV1TIMER) WriteWRITEPROTECT(val uint32) {
+    reg.Write(uint32(p.Base)+0x001c, uint32(val))
 }
 

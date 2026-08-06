@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // ClockV1CLOCK AST2600 SCU clock-gating and PLL registers. Base: 0x7E6E_2000 (CM3 view = SCU base).
 type ClockV1CLOCK struct {

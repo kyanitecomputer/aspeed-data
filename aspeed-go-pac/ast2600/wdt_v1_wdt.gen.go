@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // WdtV1WDT ASPEED Watchdog Timer register block (shared IP: AST2600, AST1060). AST2600 instance 0 base: 0x7E78_5000, stride: 0x40. AST1060 instance 0 base: 0x7E78_5000, stride: 0x80 (4 instances). Registers 0x00-0x28 are identical across both SoCs.
 type WdtV1WDT struct {
@@ -49,6 +49,56 @@ func (p *WdtV1WDT) WriteCTRL(val uint32) {
     reg.Write(uint32(p.Base)+0x000c, uint32(val))
 }
 
+// ReadTIMEOUTSTATUS reads Timeout status register.
+func (p *WdtV1WDT) ReadTIMEOUTSTATUS() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0010))
+}
+
+// WriteTIMEOUTSTATUS writes Timeout status register.
+func (p *WdtV1WDT) WriteTIMEOUTSTATUS(val uint32) {
+    reg.Write(uint32(p.Base)+0x0010, uint32(val))
+}
+
+// ReadCLEARTIMEOUTSTATUS reads Clear timeout status register.
+func (p *WdtV1WDT) ReadCLEARTIMEOUTSTATUS() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0014))
+}
+
+// WriteCLEARTIMEOUTSTATUS writes Clear timeout status register.
+func (p *WdtV1WDT) WriteCLEARTIMEOUTSTATUS(val uint32) {
+    reg.Write(uint32(p.Base)+0x0014, uint32(val))
+}
+
+// ReadRESETWIDTH reads Reset pulse width register.
+func (p *WdtV1WDT) ReadRESETWIDTH() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0018))
+}
+
+// WriteRESETWIDTH writes Reset pulse width register.
+func (p *WdtV1WDT) WriteRESETWIDTH(val uint32) {
+    reg.Write(uint32(p.Base)+0x0018, uint32(val))
+}
+
+// ReadRESETMASK1 reads Reset mask register 1.
+func (p *WdtV1WDT) ReadRESETMASK1() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x001c))
+}
+
+// WriteRESETMASK1 writes Reset mask register 1.
+func (p *WdtV1WDT) WriteRESETMASK1(val uint32) {
+    reg.Write(uint32(p.Base)+0x001c, uint32(val))
+}
+
+// ReadRESETMASK2 reads Reset mask register 2.
+func (p *WdtV1WDT) ReadRESETMASK2() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0020))
+}
+
+// WriteRESETMASK2 writes Reset mask register 2.
+func (p *WdtV1WDT) WriteRESETMASK2(val uint32) {
+    reg.Write(uint32(p.Base)+0x0020, uint32(val))
+}
+
 // ReadSWRESETCTRL reads Software Mode Reset Control Register (WDT24). Write 0xAEED_F123 to trigger an immediate software-mode SOC reset (after setting SW_RESET_MASK1 to select which blocks to reset). This bit clears automatically after reset.
 func (p *WdtV1WDT) ReadSWRESETCTRL() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x0024))
@@ -59,13 +109,53 @@ func (p *WdtV1WDT) WriteSWRESETCTRL(val uint32) {
     reg.Write(uint32(p.Base)+0x0024, uint32(val))
 }
 
-// ReadSWRESETMASK1 reads Software Mode Reset Mask Register #1 (WDT28). Each bit enables the corresponding subsystem to be reset when SW_RESET_CTRL is triggered. Zephyr uses 0x3FFF_FF1 to reset most subsystems.
+// ReadSWRESETMASK1 reads Software Mode Reset Mask Register #1 (WDT28). Each bit enables the corresponding subsystem to be reset when SW_RESET_CTRL is triggered. Write 0x03FF_FFF1 to reset the standard set of subsystems.
 func (p *WdtV1WDT) ReadSWRESETMASK1() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x0028))
 }
 
-// WriteSWRESETMASK1 writes Software Mode Reset Mask Register #1 (WDT28). Each bit enables the corresponding subsystem to be reset when SW_RESET_CTRL is triggered. Zephyr uses 0x3FFF_FF1 to reset most subsystems.
+// WriteSWRESETMASK1 writes Software Mode Reset Mask Register #1 (WDT28). Each bit enables the corresponding subsystem to be reset when SW_RESET_CTRL is triggered. Write 0x03FF_FFF1 to reset the standard set of subsystems.
 func (p *WdtV1WDT) WriteSWRESETMASK1(val uint32) {
     reg.Write(uint32(p.Base)+0x0028, uint32(val))
+}
+
+// ReadSWRESETMASK2 reads Software Mode Reset Mask Register
+func (p *WdtV1WDT) ReadSWRESETMASK2() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x002c))
+}
+
+// WriteSWRESETMASK2 writes Software Mode Reset Mask Register
+func (p *WdtV1WDT) WriteSWRESETMASK2(val uint32) {
+    reg.Write(uint32(p.Base)+0x002c, uint32(val))
+}
+
+// ReadSWRESETKEY reads AST2700 software reset key/trigger register.
+func (p *WdtV1WDT) ReadSWRESETKEY() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0030))
+}
+
+// WriteSWRESETKEY writes AST2700 software reset key/trigger register.
+func (p *WdtV1WDT) WriteSWRESETKEY(val uint32) {
+    reg.Write(uint32(p.Base)+0x0030, uint32(val))
+}
+
+// ReadSWRESETSEL0 reads AST2700 software reset selection register 0.
+func (p *WdtV1WDT) ReadSWRESETSEL0() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0034))
+}
+
+// WriteSWRESETSEL0 writes AST2700 software reset selection register 0.
+func (p *WdtV1WDT) WriteSWRESETSEL0(val uint32) {
+    reg.Write(uint32(p.Base)+0x0034, uint32(val))
+}
+
+// ReadWRITEPROTECT reads Watchdog write protection registers.[n] (n < 4)
+func (p *WdtV1WDT) ReadWRITEPROTECT(n uintptr) uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0040 + uint32(n)*4))
+}
+
+// WriteWRITEPROTECT writes Watchdog write protection registers.[n] (n < 4)
+func (p *WdtV1WDT) WriteWRITEPROTECT(n uintptr, val uint32) {
+    reg.Write(uint32(p.Base)+0x0040+uint32(n)*4, uint32(val))
 }
 

@@ -8,6 +8,42 @@ const (
     SSP_BASE = 0x72c02120
     // GPR_BASE GPR
     GPR_BASE = 0x50000000
+    // TIMER0_BASE CPU-die timer block
+    TIMER0_BASE = 0x72c10000
+    // UART4_BASE CPU-die UART4
+    UART4_BASE = 0x72c1a000
+    // UART6_BASE IO-die UART6
+    UART6_BASE = 0x74c33500
+    // GPIO0_BASE CPU-die GPIO bank
+    GPIO0_BASE = 0x72c11000
+    // GPIO1_BASE IO-die GPIO bank
+    GPIO1_BASE = 0x74c0b000
+    // WDT0_BASE IO-die watchdog timer 0
+    WDT0_BASE = 0x74c37000
+    // ADC0_BASE IO-die ADC bank 0
+    ADC0_BASE = 0x74c00000
+    // ADC1_BASE IO-die ADC bank 1
+    ADC1_BASE = 0x74c00100
+    // IPC0_BASE IPC0 data-channel bus
+    IPC0_BASE = 0x72c1c000
+    // INTCG_BASE CPU-die interrupt routing controller (INTCG)
+    INTCG_BASE = 0x72100000
+    // INTC1G_BASE IO-die interrupt routing controller (INTC1G)
+    INTC1G_BASE = 0x74c18000
+    // INTC0_11_BASE CPU-die L1 aggregator (NVIC 160-165, parent of INTC1_x)
+    INTC0_11_BASE = 0x72102b00
+    // INTC1_0_BASE IO-die L2 aggregator 0 (parent bit 0 of INTC0_11)
+    INTC1_0_BASE = 0x74c18180
+    // INTC1_1_BASE IO-die L2 aggregator 1 (parent bit 1 of INTC0_11)
+    INTC1_1_BASE = 0x74c18190
+    // INTC1_2_BASE IO-die L2 aggregator 2 (parent bit 2 of INTC0_11)
+    INTC1_2_BASE = 0x74c181a0
+    // INTC1_3_BASE IO-die L2 aggregator 3 (parent bit 3 of INTC0_11)
+    INTC1_3_BASE = 0x74c181b0
+    // INTC1_4_BASE IO-die L2 aggregator 4 (parent bit 4 of INTC0_11)
+    INTC1_4_BASE = 0x74c181c0
+    // INTC1_5_BASE IO-die L2 aggregator 5 (parent bit 5 of INTC0_11)
+    INTC1_5_BASE = 0x74c181d0
 )
 
 // IRQ numbers

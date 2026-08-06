@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // SspV1SSP CM3 coprocessor control registers. Base address: SCU + 0xA00  (CM3 view: 0x7E6E_2A00).
 type SspV1SSP struct {

@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // HaceV1HACE ASPEED Hash and Crypto Engine (HACE). Base: 0x7E6D_0000. Two cascadeable engines: Hash (SHA/MD5/HMAC) and Crypto (AES/DES/3DES/RC4/AES-GCM).
 type HaceV1HACE struct {

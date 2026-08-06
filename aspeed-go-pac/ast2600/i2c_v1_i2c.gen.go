@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // I2cV1I2C ASPEED I2C/SMBus per-channel registers (new register mode). Base: 0x7E7B_0000 + 0x80 + (N × 0x80) for channel N (0–13). Requires I2CG0C[2]=1 (new register mode) to be enabled globally.
 type I2cV1I2C struct {

@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // I2cglobalV1I2CGLOBAL ASPEED I2C/SMBus global control registers. Base: 0x7E7B_0000.
 type I2cglobalV1I2CGLOBAL struct {

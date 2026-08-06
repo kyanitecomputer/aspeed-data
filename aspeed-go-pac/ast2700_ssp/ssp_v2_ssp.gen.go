@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // SspV2SSP CM4F coprocessor control registers (AST2700 SSP/TSP). SSP base: SCU0+0x120 (0x72C0_2120), TSP base: SCU0+0x160 (0x72C0_2160).
 type SspV2SSP struct {

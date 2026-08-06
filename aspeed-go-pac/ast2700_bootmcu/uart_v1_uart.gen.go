@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // UartV1UART 16550-compatible UART register block. Base address: UART11 at 0x7E79_0500 (CM3 view). All registers at 4-byte stride; only bits [7:0] carry data.
 type UartV1UART struct {

@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // TimerV1TIMER AST2600 hardware timer block. Base: 0x7E78_2000 (CM3 view).  8 × 32-bit countdown timers.
 type TimerV1TIMER struct {

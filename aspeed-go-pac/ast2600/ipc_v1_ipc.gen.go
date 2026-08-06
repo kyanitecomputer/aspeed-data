@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // IpcV1IPC AST2600 IPC doorbell mailbox. Base: 0x7E6C_0000 (CM3 view). 15-channel doorbell between CM3 SSP (IRQs 182-196) and CA7.
 type IpcV1IPC struct {

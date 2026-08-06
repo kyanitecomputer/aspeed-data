@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // Ipc1V1CHAN One half (TX or RX) of an IPC1 sub-channel. TX half is at sub-channel_base + 0x100; RX half at sub-channel_base + 0x000. Each half supports 4 message IDs (0–3).
 type Ipc1V1CHAN struct {

@@ -402,12 +402,12 @@ const (
     FmcV1FMCWRITEFILTERCTRLFILTER8MODEMsk = 0x3 << 14
 )
 
-// fmc_v1::SPI_ADDR_RANGE CE address decoding range (start/end address in decoded space).
+// fmc_v1::SPI_ADDR_RANGE CE address decoding range. Each half stores address bits A[31:16] of the window-relative bound. On AST2600/AST1030/AST1060 only A[27:20] participate in decoding (1 MB granularity) and the end bound is inclusive; the low bits are writable but ignored. Segment is disabled when start == end. Unit and inclusive/exclusive semantics are SoC-specific and handled by the driver.
 const (
-    // STARTADDR CE start address bits[31:16] (lower bound).
+    // STARTADDR Start bound, address bits A[31:16] (lower bound).
     FmcV1SPIADDRRANGESTARTADDRPos = 0
     FmcV1SPIADDRRANGESTARTADDRMsk = 0xffff << 0
-    // ENDADDR CE end address bits[31:16] (upper bound). CE disabled when start=end.
+    // ENDADDR End bound, address bits A[31:16] (upper bound). CE disabled when start == end.
     FmcV1SPIADDRRANGEENDADDRPos = 16
     FmcV1SPIADDRRANGEENDADDRMsk = 0xffff << 16
 )
@@ -1428,6 +1428,89 @@ const (
     // DATA Buffer data (4 I2C bytes packed into one 32-bit word, little-endian).
     I2cbuffV1I2CBUFFWORDDATAPos = 0
     I2cbuffV1I2CBUFFWORDDATAMsk = 0xffffffff << 0
+)
+
+// i2cfilter_v1::I2CF_BUF_ADDR Whitelist buffer physical address (must be 16-byte aligned).
+const (
+    // ADDR Physical SRAM address of the whitelist table.
+    I2cfilterV1I2CFBUFADDRADDRPos = 0
+    I2cfilterV1I2CFBUFADDRADDRMsk = 0xffffffff << 0
+)
+
+// i2cfilter_v1::I2CF_GLOBAL_INT Global per-instance interrupt enable or status (one bit per instance).
+const (
+    // INSTMASK Bitmask: bit N = instance N. In INT_EN: write 1 to enable interrupt. In INT_STS: write 1 to clear interrupt.
+    I2cfilterV1I2CFGLOBALINTINSTMASKPos = 0
+    I2cfilterV1I2CFGLOBALINTINSTMASKMsk = 0xffff << 0
+)
+
+// i2cfilter_v1::I2CF_INFO Blocked-transaction info FIFO entry (read-only). Each read pops one entry describing a blocked I2C transaction.
+const (
+    // DATA Raw 32-bit FIFO entry (format is hardware-defined).
+    I2cfilterV1I2CFINFODATAPos = 0
+    I2cfilterV1I2CFINFODATAMsk = 0xffffffff << 0
+)
+
+// i2cfilter_v1::I2CF_MAP Address re-map table (4 slots per register). Byte N [7:0] = 7-bit I2C address for whitelist bitmap slot N. Slot 0 is the default bitmap (slot index 0 in BUF table).
+const (
+    // SLOT0ADDR 7-bit address for re-map slot (N*4 + 0).
+    I2cfilterV1I2CFMAPSLOT0ADDRPos = 0
+    I2cfilterV1I2CFMAPSLOT0ADDRMsk = 0xff << 0
+    // SLOT1ADDR 7-bit address for re-map slot (N*4 + 1).
+    I2cfilterV1I2CFMAPSLOT1ADDRPos = 8
+    I2cfilterV1I2CFMAPSLOT1ADDRMsk = 0xff << 8
+    // SLOT2ADDR 7-bit address for re-map slot (N*4 + 2).
+    I2cfilterV1I2CFMAPSLOT2ADDRPos = 16
+    I2cfilterV1I2CFMAPSLOT2ADDRMsk = 0xff << 16
+    // SLOT3ADDR 7-bit address for re-map slot (N*4 + 3).
+    I2cfilterV1I2CFMAPSLOT3ADDRPos = 24
+    I2cfilterV1I2CFMAPSLOT3ADDRMsk = 0xff << 24
+)
+
+// i2cfilter_v1::I2CF_ONBIT Single-bit control/status register.
+const (
+    // EN Write 1 to enable/set; write 1 to clear (for status).
+    I2cfilterV1I2CFONBITENPos = 0
+    I2cfilterV1I2CFONBITENMsk = 0x1 << 0
+)
+
+// i2cfilter_v1::I2CF_SEQ Received sequence value register.
+const (
+    // RXSEQVAL Received sequence value.
+    I2cfilterV1I2CFSEQRXSEQVALPos = 0
+    I2cfilterV1I2CFSEQRXSEQVALMsk = 0xffffffff << 0
+)
+
+// i2cfilter_v1::I2CF_STS Filter instance status register (read-only).
+const (
+    // FAILFIFONOTEMPTY Failure FIFO contains at least one entry.
+    I2cfilterV1I2CFSTSFAILFIFONOTEMPTYPos = 0
+    I2cfilterV1I2CFSTSFAILFIFONOTEMPTYMsk = 0x1 << 0
+    // FAILFIFOFULL Failure FIFO is full.
+    I2cfilterV1I2CFSTSFAILFIFOFULLPos = 1
+    I2cfilterV1I2CFSTSFAILFIFOFULLMsk = 0x1 << 1
+    // WLISTEN Whitelist enable status.
+    I2cfilterV1I2CFSTSWLISTENPos = 4
+    I2cfilterV1I2CFSTSWLISTENMsk = 0x1 << 4
+    // WTABLEFAIL Whitelist table failure status.
+    I2cfilterV1I2CFSTSWTABLEFAILPos = 5
+    I2cfilterV1I2CFSTSWTABLEFAILMsk = 0x1 << 5
+    // FIFORDPTR Info FIFO read pointer.
+    I2cfilterV1I2CFSTSFIFORDPTRPos = 8
+    I2cfilterV1I2CFSTSFIFORDPTRMsk = 0xf << 8
+    // FIFOWRPTR Info FIFO write pointer.
+    I2cfilterV1I2CFSTSFIFOWRPTRPos = 12
+    I2cfilterV1I2CFSTSFIFOWRPTRMsk = 0xf << 12
+)
+
+// i2cfilter_v1::I2CF_TIMING Timeout timing register. Both halves hold the same tick count. count = PCLK_Hz / (i2c_kHz * 3000).
+const (
+    // TIMEOUTLO Low half of timeout tick count.
+    I2cfilterV1I2CFTIMINGTIMEOUTLOPos = 0
+    I2cfilterV1I2CFTIMINGTIMEOUTLOMsk = 0xffff << 0
+    // TIMEOUTHI High half of timeout tick count (must equal TIMEOUT_LO).
+    I2cfilterV1I2CFTIMINGTIMEOUTHIPos = 16
+    I2cfilterV1I2CFTIMINGTIMEOUTHIMsk = 0xffff << 16
 )
 
 // i2cglobal_v1::I2CG_CLK_DIV I2C/SMBus new-mode clock divisor register (I2CG10). Valid when I2CG0C[1]=1 (new clock divider mode). Four 8-bit fields, each setting a base clock divisor. Effective divisor = value/2 + 0.5 (0x00=÷1, 0xFF=÷128.5).
@@ -2873,6 +2956,26 @@ const (
     TimerV1TMCINTSTATUST8INTMsk = 0x1 << 7
 )
 
+// trng_v1::TRNG_CTRL RNG control and status register.
+const (
+    // RNGDISABLE RNG disable: 0 = enabled, 1 = disabled.
+    TrngV1TRNGCTRLRNGDISABLEPos = 0
+    TrngV1TRNGCTRLRNGDISABLEMsk = 0x1 << 0
+    // RNGMODE Entropy source / LFSR mode selection. Write 0x18 (decimal 24) for normal operation. Other values reserved or vendor-specific.
+    TrngV1TRNGCTRLRNGMODEPos = 1
+    TrngV1TRNGCTRLRNGMODEMsk = 0x1f << 1
+    // RNGREADY Data ready (read-only): 1 = fresh 32-bit word available in DATA.
+    TrngV1TRNGCTRLRNGREADYPos = 31
+    TrngV1TRNGCTRLRNGREADYMsk = 0x1 << 31
+)
+
+// trng_v1::TRNG_DATA RNG 32-bit random output (read-only; reading clears RNG_READY).
+const (
+    // DATA 32-bit random word.
+    TrngV1TRNGDATADATAPos = 0
+    TrngV1TRNGDATADATAMsk = 0xffffffff << 0
+)
+
 // uart_v1::DATA8 8-bit data register (RBR/THR and SCR share this layout).
 const (
     // DATA Data byte (bits [7:0]).
@@ -3090,18 +3193,21 @@ const (
     // RSTSYS Reset system after timeout. 0 = disabled; 1 = assert SoC / CPU reset when counter reaches 0. Must clear WDT10[0] before enabling this bit.
     WdtV1WDTCTRLRSTSYSPos = 1
     WdtV1WDTCTRLRSTSYSMsk = 0x1 << 1
+    // WDTINTR Interrupt before timeout. 1 = generate interrupt when counter reaches pre-timeout value (set in CTRL bits [31:10]).
+    WdtV1WDTCTRLWDTINTRPos = 2
+    WdtV1WDTCTRLWDTINTRMsk = 0x1 << 2
+    // WDTEXT External signal enable after timeout. 1 = pulse generated on an external output pin.
+    WdtV1WDTCTRLWDTEXTPos = 3
+    WdtV1WDTCTRLWDTEXTMsk = 0x1 << 3
     // WDTRESETBYSOC Allow SOC-level reset to reset this WDT instance. 0 = only SRST# or full-chip reset can reset this WDT; 1 = SOC system reset also resets this WDT.
     WdtV1WDTCTRLWDTRESETBYSOCPos = 4
     WdtV1WDTCTRLWDTRESETBYSOCMsk = 0x1 << 4
     // RSTMODE Reset system mode (bits [6:5]). 00 = SOC system reset (gated by reset mask registers); 01 = Full chip reset; 1x = CPU/FMC only (firmware reboot, no peripheral reset).
     WdtV1WDTCTRLRSTMODEPos = 5
     WdtV1WDTCTRLRSTMODEMsk = 0x3 << 5
-    // WDTEXT External signal enable after timeout. 1 = pulse generated on an external output pin.
-    WdtV1WDTCTRLWDTEXTPos = 27
-    WdtV1WDTCTRLWDTEXTMsk = 0x1 << 27
-    // WDTINTR Interrupt before timeout. 1 = generate interrupt when counter reaches pre-timeout value (set in CTRL bits [31:10]).
-    WdtV1WDTCTRLWDTINTRPos = 28
-    WdtV1WDTCTRLWDTINTRMsk = 0x1 << 28
+    // PRETIMEOUT Pre-timeout counter field.
+    WdtV1WDTCTRLPRETIMEOUTPos = 10
+    WdtV1WDTCTRLPRETIMEOUTMsk = 0x3fffff << 10
 )
 
 // wdt_v1::WDT_RESTART Counter Restart Register (WDT08).
@@ -3120,7 +3226,7 @@ const (
 
 // wdt_v1::WDT_SW_RESET_MASK1 Software Mode Reset Mask Register #1 (WDT28). Each bit enables (1) or disables (0) the reset of the corresponding subsystem when SW_RESET_CTRL is triggered.
 const (
-    // MASK Subsystem reset enable bitmask. Zephyr sets 0x03FF_FFF1 to reset the standard set of subsystems (ARM, SDRAM, AHB bridges, coprocessor, SOC controllers, USB, etc.).
+    // MASK Subsystem reset enable bitmask. Write 0x03FF_FFF1 to reset the standard set of subsystems (ARM, SDRAM, AHB bridges, coprocessor, SOC controllers, USB, etc.).
     WdtV1WDTSWRESETMASK1MASKPos = 0
     WdtV1WDTSWRESETMASK1MASKMsk = 0xffffffff << 0
 )

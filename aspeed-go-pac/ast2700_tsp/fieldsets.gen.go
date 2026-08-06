@@ -2,6 +2,120 @@
 
 package pac
 
+// adc_v1::ADC_CH_DATA ADC channel result register (read-only). Holds the most recent 10-bit conversion result in bits [9:0]. The upper 6 bits are zero.  Result range: 0–1023. Voltage = (result / 1023) × VREF.
+const (
+    // VALUE 10-bit ADC result. Updated after each channel conversion in continuous mode.
+    AdcV1ADCCHDATAVALUEPos = 0
+    AdcV1ADCCHDATAVALUEMsk = 0x3ff << 0
+)
+
+// adc_v1::ADC_CLK_CTRL ADC Clock Control Register (ADC0C offset 0x0C). 16-bit clock divider.  sample_period = PCLK_period × 2 × (DIV + 1). For a 65 kHz sample rate from 25 MHz PCLK: DIV = (25_000_000 / (2 × 65_000)) - 1 ≈ 191.
+const (
+    // CLKDIV ADC clock divider [15:0]. sample_rate_Hz = PCLK_Hz / (2 × (CLK_DIV + 1)). Default after reset: ~65 kHz from PCLK.
+    AdcV1ADCCLKCTRLCLKDIVPos = 0
+    AdcV1ADCCLKCTRLCLKDIVMsk = 0xffff << 0
+)
+
+// adc_v1::ADC_COMP_TRIM ADC Compensation Trim Register (ADCC4 offset 0xC4). Factory calibration value.  Read from SCU OTP at init and written here. Used by the analogue frontend to correct for process variation.
+const (
+    // TRIMVALUE Calibration trim code from SCU OTP. Written once at engine init.
+    AdcV1ADCCOMPTRIMTRIMVALUEPos = 0
+    AdcV1ADCCOMPTRIMTRIMVALUEMsk = 0xffffffff << 0
+)
+
+// adc_v1::ADC_ENGINE_CTRL ADC Engine Control Register (ADC0C).
+const (
+    // ENGINEEN ADC engine enable. 0 = disabled (power-down mode if OP_MODE = 0). 1 = enabled.
+    AdcV1ADCENGINECTRLENGINEENPos = 0
+    AdcV1ADCENGINECTRLENGINEENMsk = 0x1 << 0
+    // OPMODE Operating mode. 0 = power-down. 1 = standby (no conversion, preserves calibration). 7 = normal continuous scan. Other values reserved.
+    AdcV1ADCENGINECTRLOPMODEPos = 1
+    AdcV1ADCENGINECTRLOPMODEMsk = 0x7 << 1
+    // CTRLCOMPENSATION Manual compensation enable. When set, the value in COMPENSATION_TRIM is used directly. When clear, AUTO_COMPENSATION controls trimming.
+    AdcV1ADCENGINECTRLCTRLCOMPENSATIONPos = 4
+    AdcV1ADCENGINECTRLCTRLCOMPENSATIONMsk = 0x1 << 4
+    // AUTOCOMPENSATION Automatic compensation enable. When set, the engine applies factory OTP trim automatically. Only meaningful when CTRL_COMPENSATION = 0.
+    AdcV1ADCENGINECTRLAUTOCOMPENSATIONPos = 5
+    AdcV1ADCENGINECTRLAUTOCOMPENSATIONMsk = 0x1 << 5
+    // REFVOLTAGE Reference voltage selection. 0 = internal 2.5 V reference (VREF = 2500 mV). 1 = internal 1.2 V reference (VREF = 1200 mV). 2 = external reference (high range, ADCVREFP pin). 3 = external reference (low range, ADCVREFEXT pin).
+    AdcV1ADCENGINECTRLREFVOLTAGEPos = 6
+    AdcV1ADCENGINECTRLREFVOLTAGEMsk = 0x3 << 6
+    // INITRDY Initialisation ready flag (read-only). Set by hardware when the ADC engine has completed power-up sequencing and is ready to produce valid results. Poll this bit after enabling the engine before reading channel data.
+    AdcV1ADCENGINECTRLINITRDYPos = 8
+    AdcV1ADCENGINECTRLINITRDYMsk = 0x1 << 8
+    // CH7BATMODE Channel 7 battery sensing mode. 0 = normal ADC input. 1 = battery voltage sensing: input is divided before the ADC.
+    AdcV1ADCENGINECTRLCH7BATMODEPos = 12
+    AdcV1ADCENGINECTRLCH7BATMODEMsk = 0x1 << 12
+    // BATSENSINGEN Battery sensing circuit enable. Required when CH7_BAT_MODE = 1.
+    AdcV1ADCENGINECTRLBATSENSINGENPos = 13
+    AdcV1ADCENGINECTRLBATSENSINGENMsk = 0x1 << 13
+    // CHEN Per-channel enable mask [31:16]. Bit 16 = CH0, bit 17 = CH1, …, bit 23 = CH7. Channels not enabled are skipped in the continuous scan.
+    AdcV1ADCENGINECTRLCHENPos = 16
+    AdcV1ADCENGINECTRLCHENMsk = 0xffff << 16
+)
+
+// adc_v1::ADC_INT_CTRL ADC Interrupt Control Register (ADC04).
+const (
+    // CHINTEN Per-channel interrupt enable [7:0]. Bit N enables the interrupt for channel N. Interrupt fires when the channel value crosses the VGA_DETECT threshold.
+    AdcV1ADCINTCTRLCHINTENPos = 0
+    AdcV1ADCINTCTRLCHINTENMsk = 0xff << 0
+)
+
+// adc_v1::ADC_VGA_DETECT ADC VGA Detect Control Register (ADC08). Sets a 10-bit comparison threshold for interrupt generation. The hardware compares each enabled channel's result against this threshold.
+const (
+    // THRESHOLD 10-bit comparison threshold value (applied to all channels).
+    AdcV1ADCVGADETECTTHRESHOLDPos = 0
+    AdcV1ADCVGADETECTTHRESHOLDMsk = 0x3ff << 0
+    // ABOVETHRESHOLD Interrupt direction. 0 = interrupt when value falls below threshold. 1 = interrupt when value rises above threshold.
+    AdcV1ADCVGADETECTABOVETHRESHOLDPos = 10
+    AdcV1ADCVGADETECTABOVETHRESHOLDMsk = 0x1 << 10
+)
+
+// gpio_v1::GPIO32 Generic 32-bit GPIO register (data, direction, interrupt enable/status, reset tolerant, command source, input mask, data read). Each bit corresponds to one GPIO pin within the group.
+const (
+    // PINS Per-pin bitmask. Bit 0 = port_A pin 0 (or first port in group).
+    GpioV1GPIO32PINSPos = 0
+    GpioV1GPIO32PINSMsk = 0xffffffff << 0
+)
+
+// gpio_v1::GPIO_CMD_SRC_SEL GPIO Command Source Selection (GPIO2D0). Five 5-bit fields selecting the bus master index for each slot. SSP = master index 6 (ASPEED_GPIO_SEL_SSP).
+const (
+    // MST1 Master 1 bus ID selection (bits [4:0]).
+    GpioV1GPIOCMDSRCSELMST1Pos = 0
+    GpioV1GPIOCMDSRCSELMST1Msk = 0x1f << 0
+    // MST2 Master 2 bus ID selection (bits [9:5]).
+    GpioV1GPIOCMDSRCSELMST2Pos = 5
+    GpioV1GPIOCMDSRCSELMST2Msk = 0x1f << 5
+    // MST3 Master 3 bus ID selection (bits [14:10]).
+    GpioV1GPIOCMDSRCSELMST3Pos = 10
+    GpioV1GPIOCMDSRCSELMST3Msk = 0x1f << 10
+    // MST4 Master 4 bus ID selection (bits [19:15]).
+    GpioV1GPIOCMDSRCSELMST4Pos = 15
+    GpioV1GPIOCMDSRCSELMST4Msk = 0x1f << 15
+    // MST5 Master 5 bus ID selection (bits [24:20]).
+    GpioV1GPIOCMDSRCSELMST5Pos = 20
+    GpioV1GPIOCMDSRCSELMST5Msk = 0x1f << 20
+    // LOCK Lock this register (1 = write-protect until next reset).
+    GpioV1GPIOCMDSRCSELLOCKPos = 31
+    GpioV1GPIOCMDSRCSELLOCKMsk = 0x1 << 31
+)
+
+// gpio_v1::GPIO_INDEX GPIO Index Register (GPIO2AC). Command-based per-pin control.
+const (
+    // INDEXNUMBER Pin number (0–207).
+    GpioV1GPIOINDEXINDEXNUMBERPos = 0
+    GpioV1GPIOINDEXINDEXNUMBERMsk = 0xff << 0
+    // INDEXCMD Command direction. 0=write, 1=read.
+    GpioV1GPIOINDEXINDEXCMDPos = 12
+    GpioV1GPIOINDEXINDEXCMDMsk = 0x1 << 12
+    // INDEXTYPE Operation type: 0=DATA, 1=DIR, 2=INTERRUPT, 3=DEBOUNCE, 4=TOLERANCE, 5=CMD_SRC, 6=INPUT_MASK.
+    GpioV1GPIOINDEXINDEXTYPEPos = 16
+    GpioV1GPIOINDEXINDEXTYPEMsk = 0xf << 16
+    // INDEXDATA Data for the operation. For INTERRUPT: bit0=enable, bits[4:1]=type (0=fall, 1=rise, 2=level_low, 3=level_high, 4=both).
+    GpioV1GPIOINDEXINDEXDATAPos = 20
+    GpioV1GPIOINDEXINDEXDATAMsk = 0x1f << 20
+)
+
 // gpr_v1::GPR_REG General-purpose 32-bit read/write register.
 const (
     // VALUE Register value (32-bit, software-defined meaning).
@@ -14,6 +128,25 @@ const (
     // PAGE AHB page index (bits [31:0]; effective bits hardware-defined).
     GprV1SPAGEREGPAGEPos = 0
     GprV1SPAGEREGPAGEMsk = 0xffffffff << 0
+)
+
+// intc_ic_ast2700_v1::IR_BITS 32-bit interrupt source bitmask. Bit n corresponds to interrupt source n within this aggregator instance. Used by both IER (enable) and RAW (status/clear) with identical bit layout.
+const (
+    // SRC Interrupt source bitmask (32 sources). In IER: set bit n to enable source n. In RAW: bit n is set when source n is pending; write 1 to clear.
+    IntcIcAst2700V1IRBITSSRCPos = 0
+    IntcIcAst2700V1IRBITSSRCMsk = 0xffffffff << 0
+)
+
+// ipc0_v1::ID_MASK Four-bit mask, one bit per message ID.
+const (
+    Ipc0V1IDMASKID0Pos = 0
+    Ipc0V1IDMASKID0Msk = 0x1 << 0
+    Ipc0V1IDMASKID1Pos = 1
+    Ipc0V1IDMASKID1Msk = 0x1 << 1
+    Ipc0V1IDMASKID2Pos = 2
+    Ipc0V1IDMASKID2Msk = 0x1 << 2
+    Ipc0V1IDMASKID3Pos = 3
+    Ipc0V1IDMASKID3Msk = 0x1 << 3
 )
 
 // ssp_v2::CACHE_AREA Cacheable area bitmask for one bus (I-bus or D-bus). Same layout as AST2600 CACHE_AREA: 32 bits × 16 MB per bit.
@@ -102,5 +235,459 @@ const (
     // SIZE Window size in bytes.
     SspV2VIRTSIZESIZEPos = 0
     SspV2VIRTSIZESIZEMsk = 0xffffffff << 0
+)
+
+// timer_v1::TMC_COUNTER 32-bit timer counter or reload value.
+const (
+    // VALUE Counter / reload value (32-bit).
+    TimerV1TMCCOUNTERVALUEPos = 0
+    TimerV1TMCCOUNTERVALUEMsk = 0xffffffff << 0
+)
+
+// timer_v1::TMC_CTRL Global Timer Control Register (TMC30 / TMC3C). 4 bits per timer. Bit layout for timer N (N=1..8), starting at bit (N-1)*4: bit+0: EN         — timer enable (0=disable, 1=enable) bit+1: CLK_SEL    — clock source (0=PCLK, 1=1 MHz) bit+2: OVF_INTR   — overflow interrupt enable bit+3: WDT_EN     — WDT tolerance (can be reset by WDT) Write '1' to TMC30 to set bits; write '1' to TMC3C to clear bits.
+const (
+    // T1EN Timer 1 enable.
+    TimerV1TMCCTRLT1ENPos = 0
+    TimerV1TMCCTRLT1ENMsk = 0x1 << 0
+    // T1CLKSEL Timer 1 clock source: 0=PCLK, 1=1 MHz.
+    TimerV1TMCCTRLT1CLKSELPos = 1
+    TimerV1TMCCTRLT1CLKSELMsk = 0x1 << 1
+    // T1OVFINTR Timer 1 overflow interrupt enable.
+    TimerV1TMCCTRLT1OVFINTRPos = 2
+    TimerV1TMCCTRLT1OVFINTRMsk = 0x1 << 2
+    // T1WDTEN Timer 1 WDT tolerance.
+    TimerV1TMCCTRLT1WDTENPos = 3
+    TimerV1TMCCTRLT1WDTENMsk = 0x1 << 3
+    // T2EN Timer 2 enable.
+    TimerV1TMCCTRLT2ENPos = 4
+    TimerV1TMCCTRLT2ENMsk = 0x1 << 4
+    // T2CLKSEL Timer 2 clock source: 0=PCLK, 1=1 MHz.
+    TimerV1TMCCTRLT2CLKSELPos = 5
+    TimerV1TMCCTRLT2CLKSELMsk = 0x1 << 5
+    // T2OVFINTR Timer 2 overflow interrupt enable.
+    TimerV1TMCCTRLT2OVFINTRPos = 6
+    TimerV1TMCCTRLT2OVFINTRMsk = 0x1 << 6
+    // T2WDTEN Timer 2 WDT tolerance.
+    TimerV1TMCCTRLT2WDTENPos = 7
+    TimerV1TMCCTRLT2WDTENMsk = 0x1 << 7
+    // T3EN Timer 3 enable.
+    TimerV1TMCCTRLT3ENPos = 8
+    TimerV1TMCCTRLT3ENMsk = 0x1 << 8
+    // T3CLKSEL Timer 3 clock source: 0=PCLK, 1=1 MHz.
+    TimerV1TMCCTRLT3CLKSELPos = 9
+    TimerV1TMCCTRLT3CLKSELMsk = 0x1 << 9
+    // T3OVFINTR Timer 3 overflow interrupt enable.
+    TimerV1TMCCTRLT3OVFINTRPos = 10
+    TimerV1TMCCTRLT3OVFINTRMsk = 0x1 << 10
+    // T3WDTEN Timer 3 WDT tolerance.
+    TimerV1TMCCTRLT3WDTENPos = 11
+    TimerV1TMCCTRLT3WDTENMsk = 0x1 << 11
+    // T4EN Timer 4 enable.
+    TimerV1TMCCTRLT4ENPos = 12
+    TimerV1TMCCTRLT4ENMsk = 0x1 << 12
+    // T4CLKSEL Timer 4 clock source: 0=PCLK, 1=1 MHz.
+    TimerV1TMCCTRLT4CLKSELPos = 13
+    TimerV1TMCCTRLT4CLKSELMsk = 0x1 << 13
+    // T4OVFINTR Timer 4 overflow interrupt enable.
+    TimerV1TMCCTRLT4OVFINTRPos = 14
+    TimerV1TMCCTRLT4OVFINTRMsk = 0x1 << 14
+    // T4WDTEN Timer 4 WDT tolerance.
+    TimerV1TMCCTRLT4WDTENPos = 15
+    TimerV1TMCCTRLT4WDTENMsk = 0x1 << 15
+    // T5EN Timer 5 enable.
+    TimerV1TMCCTRLT5ENPos = 16
+    TimerV1TMCCTRLT5ENMsk = 0x1 << 16
+    // T5CLKSEL Timer 5 clock source: 0=PCLK, 1=1 MHz.
+    TimerV1TMCCTRLT5CLKSELPos = 17
+    TimerV1TMCCTRLT5CLKSELMsk = 0x1 << 17
+    // T5OVFINTR Timer 5 overflow interrupt enable.
+    TimerV1TMCCTRLT5OVFINTRPos = 18
+    TimerV1TMCCTRLT5OVFINTRMsk = 0x1 << 18
+    // T5WDTEN Timer 5 WDT tolerance.
+    TimerV1TMCCTRLT5WDTENPos = 19
+    TimerV1TMCCTRLT5WDTENMsk = 0x1 << 19
+    // T6EN Timer 6 enable.
+    TimerV1TMCCTRLT6ENPos = 20
+    TimerV1TMCCTRLT6ENMsk = 0x1 << 20
+    // T6CLKSEL Timer 6 clock source: 0=PCLK, 1=1 MHz.
+    TimerV1TMCCTRLT6CLKSELPos = 21
+    TimerV1TMCCTRLT6CLKSELMsk = 0x1 << 21
+    // T6OVFINTR Timer 6 overflow interrupt enable.
+    TimerV1TMCCTRLT6OVFINTRPos = 22
+    TimerV1TMCCTRLT6OVFINTRMsk = 0x1 << 22
+    // T6WDTEN Timer 6 WDT tolerance.
+    TimerV1TMCCTRLT6WDTENPos = 23
+    TimerV1TMCCTRLT6WDTENMsk = 0x1 << 23
+    // T7EN Timer 7 enable.
+    TimerV1TMCCTRLT7ENPos = 24
+    TimerV1TMCCTRLT7ENMsk = 0x1 << 24
+    // T7CLKSEL Timer 7 clock source: 0=PCLK, 1=1 MHz.
+    TimerV1TMCCTRLT7CLKSELPos = 25
+    TimerV1TMCCTRLT7CLKSELMsk = 0x1 << 25
+    // T7OVFINTR Timer 7 overflow interrupt enable.
+    TimerV1TMCCTRLT7OVFINTRPos = 26
+    TimerV1TMCCTRLT7OVFINTRMsk = 0x1 << 26
+    // T7WDTEN Timer 7 WDT tolerance.
+    TimerV1TMCCTRLT7WDTENPos = 27
+    TimerV1TMCCTRLT7WDTENMsk = 0x1 << 27
+    // T8EN Timer 8 enable.
+    TimerV1TMCCTRLT8ENPos = 28
+    TimerV1TMCCTRLT8ENMsk = 0x1 << 28
+    // T8CLKSEL Timer 8 clock source: 0=PCLK, 1=1 MHz.
+    TimerV1TMCCTRLT8CLKSELPos = 29
+    TimerV1TMCCTRLT8CLKSELMsk = 0x1 << 29
+    // T8OVFINTR Timer 8 overflow interrupt enable.
+    TimerV1TMCCTRLT8OVFINTRPos = 30
+    TimerV1TMCCTRLT8OVFINTRMsk = 0x1 << 30
+    // T8WDTEN Timer 8 WDT tolerance.
+    TimerV1TMCCTRLT8WDTENPos = 31
+    TimerV1TMCCTRLT8WDTENMsk = 0x1 << 31
+)
+
+// timer_v1::TMC_INT_STATUS Timer Interrupt Status Register (TMC34). RW1C. Bit N-1 is set when timer N overflow interrupt fires.
+const (
+    // T1INT Timer 1 interrupt event.
+    TimerV1TMCINTSTATUST1INTPos = 0
+    TimerV1TMCINTSTATUST1INTMsk = 0x1 << 0
+    // T2INT Timer 2 interrupt event.
+    TimerV1TMCINTSTATUST2INTPos = 1
+    TimerV1TMCINTSTATUST2INTMsk = 0x1 << 1
+    // T3INT Timer 3 interrupt event.
+    TimerV1TMCINTSTATUST3INTPos = 2
+    TimerV1TMCINTSTATUST3INTMsk = 0x1 << 2
+    // T4INT Timer 4 interrupt event.
+    TimerV1TMCINTSTATUST4INTPos = 3
+    TimerV1TMCINTSTATUST4INTMsk = 0x1 << 3
+    // T5INT Timer 5 interrupt event.
+    TimerV1TMCINTSTATUST5INTPos = 4
+    TimerV1TMCINTSTATUST5INTMsk = 0x1 << 4
+    // T6INT Timer 6 interrupt event.
+    TimerV1TMCINTSTATUST6INTPos = 5
+    TimerV1TMCINTSTATUST6INTMsk = 0x1 << 5
+    // T7INT Timer 7 interrupt event.
+    TimerV1TMCINTSTATUST7INTPos = 6
+    TimerV1TMCINTSTATUST7INTMsk = 0x1 << 6
+    // T8INT Timer 8 interrupt event.
+    TimerV1TMCINTSTATUST8INTPos = 7
+    TimerV1TMCINTSTATUST8INTMsk = 0x1 << 7
+)
+
+// uart_v1::DATA8 8-bit data register (RBR/THR and SCR share this layout).
+const (
+    // DATA Data byte (bits [7:0]).
+    UartV1DATA8DATAPos = 0
+    UartV1DATA8DATAMsk = 0xff << 0
+)
+
+// uart_v1::FCR_IIR FIFO Control Register (write) / Interrupt Identification Register (read). Write access configures FIFO; read access returns interrupt status.
+const (
+    // FIFOEORIP Write (FCR): FIFO Enable.  1 = enable TX and RX FIFOs; clearing this bit resets both FIFOs. Read (IIR): Interrupt Pending (active-low).  0 = interrupt pending.
+    UartV1FCRIIRFIFOEORIPPos = 0
+    UartV1FCRIIRFIFOEORIPMsk = 0x1 << 0
+    // RFIFORORIID1 Write (FCR): Receiver FIFO Reset.  Write 1 to flush RX FIFO. Read (IIR): Interrupt ID bit 1.
+    UartV1FCRIIRRFIFORORIID1Pos = 1
+    UartV1FCRIIRRFIFORORIID1Msk = 0x1 << 1
+    // XFIFORORIID2 Write (FCR): Transmitter FIFO Reset.  Write 1 to flush TX FIFO. Read (IIR): Interrupt ID bit 2.
+    UartV1FCRIIRXFIFORORIID2Pos = 2
+    UartV1FCRIIRXFIFORORIID2Msk = 0x1 << 2
+    // DMAORIID3 Write (FCR): DMA mode select.  0 = mode 0; 1 = mode 1. Read (IIR): Interrupt ID bit 3 (FIFO timeout indicator on 16550D).
+    UartV1FCRIIRDMAORIID3Pos = 3
+    UartV1FCRIIRDMAORIID3Msk = 0x1 << 3
+    // TXTRIG Write (FCR): TX FIFO trigger threshold. 00=empty; 01=2 bytes; 10=quarter full; 11=half full.
+    UartV1FCRIIRTXTRIGPos = 4
+    UartV1FCRIIRTXTRIGMsk = 0x3 << 4
+    // RXTRIG Write (FCR): RX FIFO trigger threshold. 00=1 byte; 01=quarter full; 10=half full; 11=2 from full. Read (IIR): FIFO enabled status bits [7:6] (11=FIFOs enabled).
+    UartV1FCRIIRRXTRIGPos = 6
+    UartV1FCRIIRRXTRIGMsk = 0x3 << 6
+)
+
+// uart_v1::IER Interrupt Enable Register (DLAB=0).
+const (
+    // ERBFI Enable Received Data Available Interrupt. 1 = generate IRQ when RBR has received data (LSR.DR=1) or FIFO reaches trigger level.
+    UartV1IERERBFIPos = 0
+    UartV1IERERBFIMsk = 0x1 << 0
+    // ETBEI Enable Transmitter Holding Register Empty Interrupt. 1 = generate IRQ when THR is empty (LSR.THRE=1).
+    UartV1IERETBEIPos = 1
+    UartV1IERETBEIMsk = 0x1 << 1
+    // ELSI Enable Receiver Line Status Interrupt. 1 = generate IRQ on OE/PE/FE/BI errors (LSR bits 1-4).
+    UartV1IERELSIPos = 2
+    UartV1IERELSIMsk = 0x1 << 2
+    // EDSSI Enable Modem Status Interrupt. 1 = generate IRQ on CTS/DSR/RI/DCD changes (MSR bits 0-3).
+    UartV1IEREDSSIPos = 3
+    UartV1IEREDSSIMsk = 0x1 << 3
+)
+
+// uart_v1::LCR Line Control Register.
+const (
+    // WLS Word Length Select. 00=5 bits; 01=6 bits; 10=7 bits; 11=8 bits.
+    UartV1LCRWLSPos = 0
+    UartV1LCRWLSMsk = 0x3 << 0
+    // STB Stop Bits. 0 = 1 stop bit; 1 = 2 stop bits (or 1.5 for 5-bit words).
+    UartV1LCRSTBPos = 2
+    UartV1LCRSTBMsk = 0x1 << 2
+    // PEN Parity Enable. 1 = enable parity generation/checking.
+    UartV1LCRPENPos = 3
+    UartV1LCRPENMsk = 0x1 << 3
+    // EPS Even Parity Select (when PEN=1). 0 = odd parity; 1 = even parity.
+    UartV1LCREPSPos = 4
+    UartV1LCREPSMsk = 0x1 << 4
+    // SP Stick Parity. 1 = parity bit forced to 0 (EPS=1) or 1 (EPS=0).
+    UartV1LCRSPPos = 5
+    UartV1LCRSPMsk = 0x1 << 5
+    // BC Break Control. 1 = force TX line to spacing (break) state.
+    UartV1LCRBCPos = 6
+    UartV1LCRBCMsk = 0x1 << 6
+    // DLAB Divisor Latch Access Bit. 1 = offsets 0x00 and 0x04 address DLL/DLH (baud rate divisor); 0 = offsets 0x00 and 0x04 address RBR/THR and IER. Clear to 0 after configuring baud rate.
+    UartV1LCRDLABPos = 7
+    UartV1LCRDLABMsk = 0x1 << 7
+)
+
+// uart_v1::LSR Line Status Register. Read-only status bits.
+const (
+    // DR Data Ready. 1 = at least one character is in the RX buffer / RX FIFO.
+    UartV1LSRDRPos = 0
+    UartV1LSRDRMsk = 0x1 << 0
+    // OE Overrun Error. 1 = a new character arrived before the previous was read. Cleared by reading LSR.
+    UartV1LSROEPos = 1
+    UartV1LSROEMsk = 0x1 << 1
+    // PE Parity Error. 1 = received character has wrong parity. Cleared by reading LSR.
+    UartV1LSRPEPos = 2
+    UartV1LSRPEMsk = 0x1 << 2
+    // FE Framing Error. 1 = received character has no valid stop bit. Cleared by reading LSR.
+    UartV1LSRFEPos = 3
+    UartV1LSRFEMsk = 0x1 << 3
+    // BI Break Interrupt. 1 = RX line has been held at 0 (spacing) for more than one character time. Cleared by reading LSR.
+    UartV1LSRBIPos = 4
+    UartV1LSRBIMsk = 0x1 << 4
+    // THRE Transmitter Holding Register Empty. 1 = THR is empty; safe to write next byte (or FIFO below threshold).
+    UartV1LSRTHREPos = 5
+    UartV1LSRTHREMsk = 0x1 << 5
+    // TEMT Transmitter Empty. 1 = both THR and transmitter shift register are empty.
+    UartV1LSRTEMTPos = 6
+    UartV1LSRTEMTMsk = 0x1 << 6
+    // FIFOERR FIFO data error (FIFO mode only). 1 = at least one PE/FE/BI error is present in the RX FIFO. Cleared when the erroneous byte is read out.
+    UartV1LSRFIFOERRPos = 7
+    UartV1LSRFIFOERRMsk = 0x1 << 7
+)
+
+// uart_v1::MCR Modem Control Register.
+const (
+    // DTR Data Terminal Ready output (active-low nDTR pin).
+    UartV1MCRDTRPos = 0
+    UartV1MCRDTRMsk = 0x1 << 0
+    // RTS Request To Send output (active-low nRTS pin).
+    UartV1MCRRTSPos = 1
+    UartV1MCRRTSMsk = 0x1 << 1
+    // OUT1 Output 1 (general-purpose output, active-low).
+    UartV1MCROUT1Pos = 2
+    UartV1MCROUT1Msk = 0x1 << 2
+    // OUT2 Output 2 (active-low). On PC hardware this gates the interrupt; on ASPEED UARTs it must be set to 1 to enable interrupts.
+    UartV1MCROUT2Pos = 3
+    UartV1MCROUT2Msk = 0x1 << 3
+    // LOOP Internal loopback mode. 1 = TX connected to RX internally; modem lines looped.
+    UartV1MCRLOOPPos = 4
+    UartV1MCRLOOPMsk = 0x1 << 4
+)
+
+// uart_v1::MSR Modem Status Register. CTS/DSR/RI/DCD change and current state.
+const (
+    // DCTS Delta CTS – CTS changed since last MSR read.
+    UartV1MSRDCTSPos = 0
+    UartV1MSRDCTSMsk = 0x1 << 0
+    // DDSR Delta DSR – DSR changed since last MSR read.
+    UartV1MSRDDSRPos = 1
+    UartV1MSRDDSRMsk = 0x1 << 1
+    // TERI Trailing Edge Ring Indicator – RI went from active to inactive.
+    UartV1MSRTERIPos = 2
+    UartV1MSRTERIMsk = 0x1 << 2
+    // DDCD Delta DCD – DCD changed since last MSR read.
+    UartV1MSRDDCDPos = 3
+    UartV1MSRDDCDMsk = 0x1 << 3
+    // CTS Clear To Send (complement of nCTS input).
+    UartV1MSRCTSPos = 4
+    UartV1MSRCTSMsk = 0x1 << 4
+    // DSR Data Set Ready (complement of nDSR input).
+    UartV1MSRDSRPos = 5
+    UartV1MSRDSRMsk = 0x1 << 5
+    // RI Ring Indicator (complement of nRI input).
+    UartV1MSRRIPos = 6
+    UartV1MSRRIMsk = 0x1 << 6
+    // DCD Data Carrier Detect (complement of nDCD input).
+    UartV1MSRDCDPos = 7
+    UartV1MSRDCDMsk = 0x1 << 7
+)
+
+// wdt_ast2700_v1::CLEAR_TIMEOUT_STATUS Clear timeout and interrupt status register.
+const (
+    WdtAst2700V1CLEARTIMEOUTSTATUSCLEARTIMEOUTINTERRUPTPos = 0
+    WdtAst2700V1CLEARTIMEOUTSTATUSCLEARTIMEOUTINTERRUPTMsk = 0x1 << 0
+    // CLEARCOUNTERSTATUSKEY Write 0x3B to clear timeout counter status.
+    WdtAst2700V1CLEARTIMEOUTSTATUSCLEARCOUNTERSTATUSKEYPos = 1
+    WdtAst2700V1CLEARTIMEOUTSTATUSCLEARCOUNTERSTATUSKEYMsk = 0x7f << 1
+)
+
+// wdt_ast2700_v1::COUNTER 32-bit watchdog counter value.
+const (
+    WdtAst2700V1COUNTERVALUEPos = 0
+    WdtAst2700V1COUNTERVALUEMsk = 0xffffffff << 0
+)
+
+// wdt_ast2700_v1::CTRL Watchdog control register.
+const (
+    WdtAst2700V1CTRLWDTENPos = 0
+    WdtAst2700V1CTRLWDTENMsk = 0x1 << 0
+    WdtAst2700V1CTRLRSTSYSPos = 1
+    WdtAst2700V1CTRLRSTSYSMsk = 0x1 << 1
+    WdtAst2700V1CTRLWDTINTRPos = 2
+    WdtAst2700V1CTRLWDTINTRMsk = 0x1 << 2
+    WdtAst2700V1CTRLWDTEXTPos = 3
+    WdtAst2700V1CTRLWDTEXTMsk = 0x1 << 3
+    WdtAst2700V1CTRLWDTRESETBYSOCPos = 4
+    WdtAst2700V1CTRLWDTRESETBYSOCMsk = 0x1 << 4
+    // RSTMODE 00 = SOC reset; 01 = full-chip reset; 1x = CPU/FMC-only reset.
+    WdtAst2700V1CTRLRSTMODEPos = 5
+    WdtAst2700V1CTRLRSTMODEMsk = 0x3 << 5
+    WdtAst2700V1CTRLPRETIMEOUTPos = 10
+    WdtAst2700V1CTRLPRETIMEOUTMsk = 0x3fffff << 10
+)
+
+// wdt_ast2700_v1::FUNCTION_DISABLE Watchdog function disable control register.
+const (
+    WdtAst2700V1FUNCTIONDISABLEDISABLEWDTPos = 0
+    WdtAst2700V1FUNCTIONDISABLEDISABLEWDTMsk = 0x1 << 0
+    WdtAst2700V1FUNCTIONDISABLEDISABLESOCRESETPos = 1
+    WdtAst2700V1FUNCTIONDISABLEDISABLESOCRESETMsk = 0x1 << 1
+    WdtAst2700V1FUNCTIONDISABLEDISABLEFULLRESETPos = 2
+    WdtAst2700V1FUNCTIONDISABLEDISABLEFULLRESETMsk = 0x1 << 2
+    WdtAst2700V1FUNCTIONDISABLEDISABLECPUFMCRESETPos = 3
+    WdtAst2700V1FUNCTIONDISABLEDISABLECPUFMCRESETMsk = 0x1 << 3
+    WdtAst2700V1FUNCTIONDISABLEDISABLEINTERRUPTPos = 4
+    WdtAst2700V1FUNCTIONDISABLEDISABLEINTERRUPTMsk = 0x1 << 4
+    WdtAst2700V1FUNCTIONDISABLEDISABLESWRESETPos = 5
+    WdtAst2700V1FUNCTIONDISABLEDISABLESWRESETMsk = 0x1 << 5
+)
+
+// wdt_ast2700_v1::MASK 32-bit reset selection or write-protection mask.
+const (
+    WdtAst2700V1MASKBITSPos = 0
+    WdtAst2700V1MASKBITSMsk = 0xffffffff << 0
+)
+
+// wdt_ast2700_v1::RESET_WIDTH Watchdog external reset pulse width/control register.
+const (
+    WdtAst2700V1RESETWIDTHWIDTHPos = 0
+    WdtAst2700V1RESETWIDTHWIDTHMsk = 0xfffff << 0
+    WdtAst2700V1RESETWIDTHPRETIMEOUTTRIGGERPos = 29
+    WdtAst2700V1RESETWIDTHPRETIMEOUTTRIGGERMsk = 0x1 << 29
+    WdtAst2700V1RESETWIDTHPUSHPULLPos = 30
+    WdtAst2700V1RESETWIDTHPUSHPULLMsk = 0x1 << 30
+    WdtAst2700V1RESETWIDTHACTIVEHIGHPos = 31
+    WdtAst2700V1RESETWIDTHACTIVEHIGHMsk = 0x1 << 31
+)
+
+// wdt_ast2700_v1::RESTART Counter restart key register.
+const (
+    // KEY Write 0x4755 to reload and restart the counter.
+    WdtAst2700V1RESTARTKEYPos = 0
+    WdtAst2700V1RESTARTKEYMsk = 0xffff << 0
+)
+
+// wdt_ast2700_v1::SCRATCH Watchdog scratch register.
+const (
+    WdtAst2700V1SCRATCHVALUEPos = 0
+    WdtAst2700V1SCRATCHVALUEMsk = 0xff << 0
+    // CLEARKEY Write 0xEA to clear VALUE.
+    WdtAst2700V1SCRATCHCLEARKEYPos = 24
+    WdtAst2700V1SCRATCHCLEARKEYMsk = 0xff << 24
+)
+
+// wdt_ast2700_v1::SW_RESET_CTRL Software mode reset control register.
+const (
+    // TRIGGER Write 0xAEEDF123 to trigger software mode SOC reset.
+    WdtAst2700V1SWRESETCTRLTRIGGERPos = 0
+    WdtAst2700V1SWRESETCTRLTRIGGERMsk = 0x1 << 0
+    // EVENTCOUNT Write 0xDEADDEAD to clear the software reset event counter.
+    WdtAst2700V1SWRESETCTRLEVENTCOUNTPos = 4
+    WdtAst2700V1SWRESETCTRLEVENTCOUNTMsk = 0xf << 4
+)
+
+// wdt_ast2700_v1::TIMEOUT_STATUS Watchdog timeout and pre-timeout interrupt status.
+const (
+    WdtAst2700V1TIMEOUTSTATUSTIMEOUTPos = 0
+    WdtAst2700V1TIMEOUTSTATUSTIMEOUTMsk = 0x1 << 0
+    WdtAst2700V1TIMEOUTSTATUSINTERRUPTPos = 2
+    WdtAst2700V1TIMEOUTSTATUSINTERRUPTMsk = 0x1 << 2
+    WdtAst2700V1TIMEOUTSTATUSSOCRESETCOUNTPos = 8
+    WdtAst2700V1TIMEOUTSTATUSSOCRESETCOUNTMsk = 0xff << 8
+    WdtAst2700V1TIMEOUTSTATUSFULLRESETCOUNTPos = 16
+    WdtAst2700V1TIMEOUTSTATUSFULLRESETCOUNTMsk = 0xf << 16
+    WdtAst2700V1TIMEOUTSTATUSARMRESETCOUNTPos = 20
+    WdtAst2700V1TIMEOUTSTATUSARMRESETCOUNTMsk = 0xf << 20
+)
+
+// wdt_ast2700_v1::WRITE_PROTECT WDT register write protection bits.
+const (
+    WdtAst2700V1WRITEPROTECTWDT00WPPos = 0
+    WdtAst2700V1WRITEPROTECTWDT00WPMsk = 0x1 << 0
+    WdtAst2700V1WRITEPROTECTWDT04WPPos = 1
+    WdtAst2700V1WRITEPROTECTWDT04WPMsk = 0x1 << 1
+    WdtAst2700V1WRITEPROTECTWDT08WPPos = 2
+    WdtAst2700V1WRITEPROTECTWDT08WPMsk = 0x1 << 2
+    WdtAst2700V1WRITEPROTECTWDT0CWPPos = 3
+    WdtAst2700V1WRITEPROTECTWDT0CWPMsk = 0x1 << 3
+    WdtAst2700V1WRITEPROTECTWDT10WPPos = 4
+    WdtAst2700V1WRITEPROTECTWDT10WPMsk = 0x1 << 4
+    WdtAst2700V1WRITEPROTECTWDT14WPPos = 5
+    WdtAst2700V1WRITEPROTECTWDT14WPMsk = 0x1 << 5
+    WdtAst2700V1WRITEPROTECTWDT18WPPos = 6
+    WdtAst2700V1WRITEPROTECTWDT18WPMsk = 0x1 << 6
+    WdtAst2700V1WRITEPROTECTWDT1CWPPos = 7
+    WdtAst2700V1WRITEPROTECTWDT1CWPMsk = 0x1 << 7
+    WdtAst2700V1WRITEPROTECTWDT20WPPos = 8
+    WdtAst2700V1WRITEPROTECTWDT20WPMsk = 0x1 << 8
+    WdtAst2700V1WRITEPROTECTWDT24WPPos = 9
+    WdtAst2700V1WRITEPROTECTWDT24WPMsk = 0x1 << 9
+    WdtAst2700V1WRITEPROTECTWDT28WPPos = 10
+    WdtAst2700V1WRITEPROTECTWDT28WPMsk = 0x1 << 10
+    WdtAst2700V1WRITEPROTECTWDT2CWPPos = 11
+    WdtAst2700V1WRITEPROTECTWDT2CWPMsk = 0x1 << 11
+    WdtAst2700V1WRITEPROTECTWDT30WPPos = 12
+    WdtAst2700V1WRITEPROTECTWDT30WPMsk = 0x1 << 12
+    WdtAst2700V1WRITEPROTECTWDT34WPPos = 13
+    WdtAst2700V1WRITEPROTECTWDT34WPMsk = 0x1 << 13
+    WdtAst2700V1WRITEPROTECTWDT38WPPos = 14
+    WdtAst2700V1WRITEPROTECTWDT38WPMsk = 0x1 << 14
+    WdtAst2700V1WRITEPROTECTWDT3CWPPos = 15
+    WdtAst2700V1WRITEPROTECTWDT3CWPMsk = 0x1 << 15
+    WdtAst2700V1WRITEPROTECTWDT40WPPos = 16
+    WdtAst2700V1WRITEPROTECTWDT40WPMsk = 0x1 << 16
+    WdtAst2700V1WRITEPROTECTWDT44WPPos = 17
+    WdtAst2700V1WRITEPROTECTWDT44WPMsk = 0x1 << 17
+    WdtAst2700V1WRITEPROTECTWDT48WPPos = 18
+    WdtAst2700V1WRITEPROTECTWDT48WPMsk = 0x1 << 18
+    WdtAst2700V1WRITEPROTECTWDT4CWPPos = 19
+    WdtAst2700V1WRITEPROTECTWDT4CWPMsk = 0x1 << 19
+    WdtAst2700V1WRITEPROTECTWDT50WPPos = 20
+    WdtAst2700V1WRITEPROTECTWDT50WPMsk = 0x1 << 20
+    WdtAst2700V1WRITEPROTECTWDT54WPPos = 21
+    WdtAst2700V1WRITEPROTECTWDT54WPMsk = 0x1 << 21
+    WdtAst2700V1WRITEPROTECTWDT58WPPos = 22
+    WdtAst2700V1WRITEPROTECTWDT58WPMsk = 0x1 << 22
+    WdtAst2700V1WRITEPROTECTWDT5CWPPos = 23
+    WdtAst2700V1WRITEPROTECTWDT5CWPMsk = 0x1 << 23
+    WdtAst2700V1WRITEPROTECTWDT60WPPos = 24
+    WdtAst2700V1WRITEPROTECTWDT60WPMsk = 0x1 << 24
+    WdtAst2700V1WRITEPROTECTWDT64WPPos = 25
+    WdtAst2700V1WRITEPROTECTWDT64WPMsk = 0x1 << 25
+    WdtAst2700V1WRITEPROTECTWDT68WPPos = 26
+    WdtAst2700V1WRITEPROTECTWDT68WPMsk = 0x1 << 26
+    WdtAst2700V1WRITEPROTECTWDT6CWPPos = 27
+    WdtAst2700V1WRITEPROTECTWDT6CWPMsk = 0x1 << 27
+    WdtAst2700V1WRITEPROTECTWDT70WPPos = 28
+    WdtAst2700V1WRITEPROTECTWDT70WPMsk = 0x1 << 28
+    WdtAst2700V1WRITEPROTECTWDT74WPPos = 29
+    WdtAst2700V1WRITEPROTECTWDT74WPMsk = 0x1 << 29
+    WdtAst2700V1WRITEPROTECTWDT3CALIASWPPos = 31
+    WdtAst2700V1WRITEPROTECTWDT3CALIASWPMsk = 0x1 << 31
 )
 

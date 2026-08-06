@@ -2,7 +2,7 @@
 
 package pac
 
-import "github.com/kyanitecomputer/aspeed-go/reg"
+import "src.kyanite.computer/aspeed-go/reg"
 
 // GprV1GPR AST2700 CM4F General-Purpose Register bank. Base: 0x5000_0000 (CM4F private bus). 32 GPRs at 0x00–0x7C plus S_PAGE at 0x80.
 type GprV1GPR struct {
