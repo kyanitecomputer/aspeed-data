@@ -4,7 +4,10 @@ Register definition and code generation progress for ASPEED SoC families.
 
 ## Current state
 
-All five Rust chip targets compile clean. Both ColdFire C headers pass `gcc -fsyntax-only`. Significant YAML coverage gaps remain for AST2700 and AST2600.
+All five Rust chip targets compile clean. Both ColdFire C headers pass
+`gcc -fsyntax-only`. Go PAC generation is working — `aspeed-go-pac/` is
+populated for all five chips. Significant YAML coverage gaps remain for
+AST2700; these are tracked in the top-level `../ROADMAP.md` Phase D.
 
 ## Phase A: AST2700 peripheral YAML expansion
 
@@ -32,17 +35,16 @@ After Phase A: `ast2700_ssp.yaml` should have ≥ 8 peripheral instances.
 | C-3 | `espi_v1.yaml` | eSPI controller stub at `0x7E6EE000` | AST2600 | ❌ |
 | C-4 | `lpc_v1.yaml` | LPC controller stub at `0x7E789000` | AST2600 | ❌ |
 
-## Phase D: Go struct generation
+## Phase D: Go struct generation ✅ COMPLETE
 
-The `chiptool` Go backend (`generate::go`) is implemented. Enabling it requires:
+The `chiptool` Go backend is wired into `aspeed-data-gen`. Running
+`cargo run -p aspeed-data-gen` now produces `.gen.go` files for all five
+chip targets under `aspeed-go-pac/`. The generated module is
+`src.kyanite.computer/aspeed-data/aspeed-go-pac` and imports
+`src.kyanite.computer/aspeed-go/reg` for register access.
 
-1. Verify Go backend output compiles against `aspeed-go`'s `reg` package.
-2. Add a Go routing path in `aspeed-data-gen/src/main.rs` for `arch: go` (new arch value).
-3. Add chip YAML entries with `arch: go` or route existing chips to Go output.
-4. Populate `aspeed-go-pac/` with generated structs.
-5. Add `dagger call generate` Go output step and `go build` verification.
-
-Blocked on: verifying chiptool Go backend compiles for ASPEED register layouts (Task 14 in migration plan).
+Remaining: consuming the generated PAC in HAL drivers (tracked in
+`aspeed-go` ROADMAP Phase B).
 
 ## Phase E: Publishing
 
@@ -57,8 +59,13 @@ Once YAML coverage is stable and no breaking changes are expected:
 ### Register blocks with no HAL driver yet
 `hace_v1`, `sgpio_v1`, `uartdma_v1`, `spipf_v1`, `i3c_v1`, `i3cglobal_v1`
 
-### Missing entirely
-`clock_ast2700_v1`, `intc0_v1`, `intc1_v1`, `ipc0_v1`, `pwm_v1`, `adc_v1`, `espi_v1`, `lpc_v1`
+### Missing entirely (AST2700 priority, see top-level ROADMAP.md Phase D)
+`sli_ast2700_v1`, `clock_ast2700_v1`, `intc0_v1`, `intc1_v1`, `ipc0_v1`,
+`caliptra_mbox_v1`, `caliptra_ifc_v1`, `dp_ast2700_v1`, `vga_ast2700_v1`,
+`pcie_ast2700_v1`, `ufs_ast2700_v1`
+
+### Missing entirely (AST2600 / future)
+`pwm_v1` ✅ done, `adc_v1` ✅ done, `espi_v1`, `lpc_v1`
 
 ## Post-push dependency migration
 

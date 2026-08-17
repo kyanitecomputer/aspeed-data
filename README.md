@@ -2,6 +2,10 @@
 
 Single source of truth for ASPEED SoC register definitions.
 
+Part of the [Kyanite](https://github.com/kyanitecomputer) stack.
+
+> **Status:** experimental — expect breaking changes.
+
 All output in this repository is **generated** — never edit `aspeed-pac/`, `aspeed-c-pac/`, or `aspeed-go-pac/` by hand. Re-run the generator after any YAML change.
 
 ```
@@ -88,3 +92,17 @@ Downstream repos (`aspeed-rs`, `aspeed-mcu-runtime`) depend on the generated out
 5. Regenerate and verify.
 
 See `docs/architecture.md` for the full pipeline description.
+
+## Contributing
+
+See the org-wide [CONTRIBUTING guide](https://github.com/kyanitecomputer/.github/blob/main/CONTRIBUTING.md).
+Contributions are dual-licensed.
+
+## Security
+
+See the org-wide [SECURITY policy](https://github.com/kyanitecomputer/.github/blob/main/SECURITY.md).
+
+## License
+
+Dual-licensed under either of Apache-2.0 ([LICENSE-APACHE](LICENSE-APACHE)) or
+MIT ([LICENSE-MIT](LICENSE-MIT)) at your option.
