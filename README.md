@@ -8,10 +8,6 @@ Part of the [Kyanite](https://github.com/kyanitecomputer) stack.
 
 All output in this repository is **generated** — never edit `aspeed-pac/`, `aspeed-c-pac/`, or `aspeed-go-pac/` by hand. Re-run the generator after any YAML change.
 
-```
-https://github.com/kyanitecomputer/aspeed-data
-```
-
 ## What this repo contains
 
 ```
