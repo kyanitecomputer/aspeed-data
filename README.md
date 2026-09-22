@@ -70,7 +70,7 @@ After changing any YAML file:
 2. `dagger call ci --chiptool ../chiptool`
 3. Commit both the YAML change and the regenerated outputs together.
 
-Downstream repos (`aspeed-rs`, `aspeed-mcu-runtime`) depend on the generated outputs via relative path deps. Once pushed to GitHub, those deps will switch from `path = ` to `git = "https://github.com/kyanitecomputer/aspeed-data", rev = "<sha>"`.
+Downstream repos (`aspeed-rs`, `mcu-runtime`) depend on the generated outputs via relative path deps. Once pushed to GitHub, those deps will switch from `path = ` to `git = "https://github.com/kyanitecomputer/aspeed-data", rev = "<sha>"`.
 
 ## Adding a new peripheral
 
