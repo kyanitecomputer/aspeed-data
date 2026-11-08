@@ -1,0 +1,1070 @@
+# AST2500 System Control Unit (SCU) registers.
+#
+# Base address: 0x1E6E_2000 (ARM main-core view).
+# This file models the SCU registers needed for early ARM bring-up:
+# protection key, reset and clock control, M/H-PLL, misc control, VGA
+# handshake (DRAM init status), UART clock selection, hardware strap,
+# silicon revision and chip unique ID.
+#
+# The AST2500 SCU layout differs from the AST2600/AST2700 SCUs; do not
+# reuse this file for other generations.
+#
+# Key protection:
+#   SCU00-SCUEC are protected by SCU00 (write 0x1688_A8A8 to unlock).
+#   SCU100 and above are not key protected.
+#
+# Strap semantics:
+#   SCU70 writes can only set bits to 1.  To clear a SCU70 bit, write 1 to
+#   the same bit position at SCU7C (write-1-to-clear).  Reading SCU7C
+#   returns the silicon revision ID instead, so offset 0x7C is modelled as
+#   two registers: SILICON_REV (read) and HWSTRAP_CLR (write).
+
+block/SCU:
+  description: >
+    AST2500 System Control Unit (SCU).
+    Base address: 0x1E6E_2000.
+    Chip-level reset, clock, PLL, strap and identification registers.
+  items:
+    - name: PROTECT
+      description: >
+        Protection Key Register (SCU00).
+        Write 0x1688_A8A8 to unlock SCU00-SCUEC; write any other value to
+        lock.  Reads back 0x0000_0001 when unlocked and 0x0000_0000 when
+        locked.
+      byte_offset: 0x00
+      fieldset: SCU_PROTECT
+
+    - name: SYSRST_CTRL
+      description: >
+        System Reset Control Register (SCU04).
+        Init = 0xF7CF_FEDC.  Each bit holds the corresponding controller in
+        reset (1) or releases it (0).
+      byte_offset: 0x04
+      fieldset: SCU_SYSRST_CTRL
+
+    - name: CLK_SEL
+      description: >
+        Clock Selection Register (SCU08).
+        Init = 0xF3F4_0000.  Bus clock dividers and CPU slow-down control.
+      byte_offset: 0x08
+      fieldset: SCU_CLK_SEL
+
+    - name: CLK_STOP_CTRL
+      description: >
+        Clock Stop Control Register (SCU0C).
+        Init = 0xEFF4_3E8B.  Engine start sequence: assert reset at SCU04,
+        wait 100 us, enable the clock here, wait 10 ms, release reset.
+      byte_offset: 0x0C
+      fieldset: SCU_CLK_STOP_CTRL
+
+    - name: MPLL
+      description: >
+        M-PLL Parameter Register (SCU20).
+        Init = 0x9300_2400.  M-PLL clocks the memory controller.
+        Output = CLKIN(24MHz) * (M+1) / (N+1) / (P+1).
+      byte_offset: 0x20
+      fieldset: SCU_PLL
+
+    - name: HPLL
+      description: >
+        H-PLL Parameter Register (SCU24).
+        Init = 0x9300_0400.  H-PLL clocks the ARM CPU (792 MHz default with
+        a 24 MHz CLKIN).  Output = CLKIN(24MHz) * (M+1) / (N+1) / (P+1).
+      byte_offset: 0x24
+      fieldset: SCU_PLL
+
+    - name: MISC_CTRL
+      description: >
+        Misc. Control Register (SCU2C).
+        Init = 0x0000_0010.
+      byte_offset: 0x2C
+      fieldset: SCU_MISC_CTRL
+
+    - name: SYSRST_STATUS
+      description: >
+        System Reset Control/Status Register (SCU3C).
+        Init = 0x0000_0001.  Reset-cause flags; cleared by SRST# and by
+        software after checking them.
+      byte_offset: 0x3C
+      fieldset: SCU_SYSRST_STATUS
+
+    - name: VGA_HANDSHAKE0
+      description: >
+        ASPEED Defined for VGA Function Handshake (SCU40).
+        Init = 0.  Firmware/VBIOS handshake, including the DRAM
+        initialisation ownership and ready flags (bits 7:6).
+      byte_offset: 0x40
+      fieldset: SCU_VGA_HANDSHAKE0
+
+    - name: VGA_HANDSHAKE1
+      description: >
+        ASPEED Defined for VGA Function Handshake (SCU44).
+        Init = 0.  The last serviced IRQ number.
+      byte_offset: 0x44
+      fieldset: SCU_VALUE32
+
+    - name: MISC2_CTRL
+      description: >
+        Misc. 2 Control Register (SCU4C).
+        Init = 0x03.  UART clock source and Ethernet clock dividers.
+      byte_offset: 0x4C
+      fieldset: SCU_MISC2_CTRL
+
+    - name: VGA_SCRATCH
+      description: >
+        VGA Scratch Registers (SCU50-SCU6C).
+        Init = 0.  Written by the host CPU, read-only from the ARM side;
+        bit meanings are software defined.
+      byte_offset: 0x50
+      access: Read
+      fieldset: SCU_VALUE32
+      array:
+        len: 8
+        stride: 4
+
+    - name: HWSTRAP
+      description: >
+        Hardware Strap Register (SCU70).
+        Init = strap pins.  Writes can only set bits to 1; to clear a bit,
+        write 1 to the same position in HWSTRAP_CLR (SCU7C).
+      byte_offset: 0x70
+      fieldset: SCU_HWSTRAP
+
+    - name: SILICON_REV
+      description: >
+        Silicon Revision ID Register (SCU7C, read view).
+        AST2500-A0 = 0x0400_0303, AST2500-A1 = 0x0401_0303,
+        AST2500-A2 = 0x0403_0303.
+      byte_offset: 0x7C
+      access: Read
+      fieldset: SCU_SILICON_REV
+
+    - name: HWSTRAP_CLR
+      description: >
+        Hardware strap clear (SCU7C, write view).
+        Writing 1 to a bit clears the same bit in HWSTRAP (SCU70)
+        (write-1-to-clear); writing 0 has no effect.
+      byte_offset: 0x7C
+      access: Write
+      fieldset: SCU_HWSTRAP
+
+    - name: MHPLL_EXT
+      description: >
+        Extended Parameter of M/H-PLL Register (SCU148).
+        Init = 0x0019_0019.  Not key protected.  PLL parameter high bits and
+        lock status.
+      byte_offset: 0x148
+      fieldset: SCU_MHPLL_EXT
+
+    - name: UNIQUE_ID_L
+      description: >
+        Chip Unique ID L (SCU150). Read-only. Unique ID bits [31:0].
+      byte_offset: 0x150
+      access: Read
+      fieldset: SCU_VALUE32
+
+    - name: UNIQUE_ID_H
+      description: >
+        Chip Unique ID H (SCU154). Read-only. ADC compensation and unique ID
+        high bits.
+      byte_offset: 0x154
+      access: Read
+      fieldset: SCU_UNIQUE_ID_H
+
+    - name: UART_24M_REF
+      description: >
+        Generate UART 24 MHz Reference from H-PLL when CLKIN is 25 MHz
+        (SCU160).  Init = 0x0001_1320.
+        CLK24M frequency = H-PLL * R / (N * 4).
+      byte_offset: 0x160
+      fieldset: SCU_UART_24M_REF
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/SCU_VALUE32:
+  description: Plain 32-bit value.
+  fields:
+    - name: VALUE
+      description: 32-bit register value.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SCU_PROTECT:
+  description: Protection Key Register (SCU00).
+  fields:
+    - name: KEY
+      description: >
+        Protection key.  Write 0x1688_A8A8 to unlock, any other value to
+        lock.  Reads 1 when unlocked, 0 when locked.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SCU_SYSRST_CTRL:
+  description: >
+    System Reset Control Register (SCU04).
+    Reserved bits must be written as: [31:26] = 111111, [21:19] = 001,
+    [17] = 1.
+  fields:
+    - name: SDRAM_WDT_RST_EN
+      description: >
+        SCU04[0]: Enable reset SDRAM controller when full chip Watchdog
+        reset occurs.  0 = no operation (default); 1 = enable.
+      bit_offset: 0
+      bit_size: 1
+    - name: AHB
+      description: >
+        SCU04[1]: Reset AHB bridges (AHB-to-MBus, AHB-to-APB, PCI-to-AHB).
+        Hardware clears this bit after the reset completes.
+      bit_offset: 1
+      bit_size: 1
+    - name: I2C
+      description: "SCU04[2]: Reset all 14 I2C/SMBus controllers (default 1)."
+      bit_offset: 2
+      bit_size: 1
+    - name: USB_PORT2
+      description: >
+        SCU04[3]: Reset USB1.1 HID/USB2.0 Host2/USB2.0 Device controller
+        (default 1).  The port function is selected by SCU94[14:13].
+      bit_offset: 3
+      bit_size: 1
+    - name: HAC
+      description: "SCU04[4]: Reset HAC engine (default 1)."
+      bit_offset: 4
+      bit_size: 1
+    - name: LPC
+      description: >
+        SCU04[5]: Reset LPC controller (BMC part only, default 0).
+      bit_offset: 5
+      bit_size: 1
+    - name: VIDEO
+      description: "SCU04[6]: Reset Video engine (default 1)."
+      bit_offset: 6
+      bit_size: 1
+    - name: CRT_2D
+      description: >
+        SCU04[7]: Reset 2D engine (default 1). Valid only in CRT mode
+        (SCU2C[7]).
+      bit_offset: 7
+      bit_size: 1
+    - name: PCI_VGA_DIS
+      description: >
+        SCU04[8]: Disable PCI bus controller and VGA controller (default 0).
+      bit_offset: 8
+      bit_size: 1
+    - name: PWM
+      description: "SCU04[9]: Reset PWM controller (default 1)."
+      bit_offset: 9
+      bit_size: 1
+    - name: PECI
+      description: "SCU04[10]: Reset PECI controller (default 1)."
+      bit_offset: 10
+      bit_size: 1
+    - name: MAC1
+      description: "SCU04[11]: Reset MAC#1 controller (default 1)."
+      bit_offset: 11
+      bit_size: 1
+    - name: MAC2
+      description: "SCU04[12]: Reset MAC#2 controller (default 1)."
+      bit_offset: 12
+      bit_size: 1
+    - name: CRT
+      description: "SCU04[13]: Reset CRT controller (default 1)."
+      bit_offset: 13
+      bit_size: 1
+    - name: USB20_HUB
+      description: >
+        SCU04[14]: Reset USB2.0 Hub/Host controller (default 1).
+        Host/Hub selection is SCU90[29].
+      bit_offset: 14
+      bit_size: 1
+    - name: USB11_HOST
+      description: "SCU04[15]: Reset USB1.1 Host controller (default 1)."
+      bit_offset: 15
+      bit_size: 1
+    - name: SDIO
+      description: "SCU04[16]: Reset SD/SDIO card controller (default 1)."
+      bit_offset: 16
+      bit_size: 1
+    - name: MIC
+      description: "SCU04[18]: Reset MIC controller (default 1)."
+      bit_offset: 18
+      bit_size: 1
+    - name: JTAG_MASTER
+      description: >
+        SCU04[22]: Reset JTAG Master controller (default 1).
+        Also selects the JTAG interface mode: 0 = JTAG master mode (slave
+        held in reset); 1 = JTAG slave mode (ARM ICE).  Firmware must enable
+        JTAG master mode for mass production.
+      bit_offset: 22
+      bit_size: 1
+    - name: ADC
+      description: "SCU04[23]: Reset ADC controller (default 1)."
+      bit_offset: 23
+      bit_size: 1
+    - name: MCTP
+      description: "SCU04[24]: Reset MCTP controller (default 1)."
+      bit_offset: 24
+      bit_size: 1
+    - name: XDMA
+      description: "SCU04[25]: Reset X-DMA controller (default 1)."
+      bit_offset: 25
+      bit_size: 1
+
+fieldset/SCU_CLK_SEL:
+  description: >
+    Clock Selection Register (SCU08).
+    Bits [11:9] are reserved and must keep their default value.
+  fields:
+    - name: CPU_DYN_SLOWDOWN_EN
+      description: >
+        SCU08[0]: CPU/AHB clock dynamic slow down enable.
+        The slow down ratio is defined at bits [6:4].
+      bit_offset: 0
+      bit_size: 1
+    - name: CPU_DYN_SLOWDOWN_IDLE
+      description: >
+        SCU08[1]: CPU/AHB clock dynamic slow down idle timer.
+        0 = 128 HCLK idle (default); 1 = 256 HCLK idle.
+      bit_offset: 1
+      bit_size: 1
+    - name: ECLK_SRC
+      description: >
+        SCU08[3:2]: Video Engine ECLK clock source selection.
+        00 = M-PLL; 01 = H-PLL; 1x = D1-PLL.
+      bit_offset: 2
+      bit_size: 2
+    - name: CPU_SLOWDOWN_DIV
+      description: >
+        SCU08[6:4]: ARM CPU clock static/dynamic slow down setting.
+        H-PLL / (2 * (value + 1)), i.e. 000 = H-PLL/2 ... 111 = H-PLL/16.
+      bit_offset: 4
+      bit_size: 3
+    - name: CPU_STATIC_SLOWDOWN_EN
+      description: >
+        SCU08[7]: ARM CPU/AHB clock static slow down enable.
+        Enabling this disables dynamic mode.
+      bit_offset: 7
+      bit_size: 1
+    - name: GCRT_CLK_SEL_LO
+      description: >
+        SCU08[8]: Graphics CRT port output clock selection, low bit.
+        {SCU2C[21], SCU08[8]}: 00 = D-PLL; 01 = D2-PLL;
+        1x = 40 MHz from USB2.0 port1 PHY.
+      bit_offset: 8
+      bit_size: 1
+    - name: SDCLK_DIV
+      description: >
+        SCU08[14:12]: SD/SDIO divider selection.
+        SDCLK = H-PLL / (4 * (value + 1)).
+      bit_offset: 12
+      bit_size: 3
+    - name: SDCLK_EN
+      description: "SCU08[15]: SD/SDIO clock running enable."
+      bit_offset: 15
+      bit_size: 1
+    - name: MAC_AHB_DIV
+      description: >
+        SCU08[18:16]: MAC AHB bus clock divider selection.
+        000 = H-PLL/4; 001 = H-PLL/4; 010 = H-PLL/6 ... 111 = H-PLL/16.
+      bit_offset: 16
+      bit_size: 3
+    - name: LHCLK_EN
+      description: >
+        SCU08[19]: LPC Host LHCLK clock generation/output enable.
+        0 = LHCLK from external source; 1 = generated internally.
+      bit_offset: 19
+      bit_size: 1
+    - name: LHCLK_DIV
+      description: >
+        SCU08[22:20]: LPC Host LHCLK divider selection.
+        LHCLK = H-PLL / (4 * (value + 1)).
+      bit_offset: 20
+      bit_size: 3
+    - name: PCLK_DIV
+      description: >
+        SCU08[25:23]: APB Bus PCLK divider selection.
+        PCLK = H-PLL / (4 * (value + 1)).  PCLK must exceed 0.5 * LCLK.
+      bit_offset: 23
+      bit_size: 3
+    - name: GCLK_THROTTLE_EN
+      description: >
+        SCU08[26]: 2D Engine GCLK clock throttling enable.
+        Valid only in CRT mode (SCU2C[7]).
+      bit_offset: 26
+      bit_size: 1
+    - name: GCLK_INV_MCLK
+      description: >
+        SCU08[27]: 2D Engine GCLK clock source selection.
+        0 = MCLK; 1 = inverted MCLK.  Valid only in CRT mode (SCU2C[7]).
+      bit_offset: 27
+      bit_size: 1
+    - name: ECLK_DIV
+      description: >
+        SCU08[30:28]: Video Engine clock source divider.
+        000 = /2; 001 = /2; 010 = /3 ... 111 = /8.
+      bit_offset: 28
+      bit_size: 3
+    - name: ECLK_DYN_SLOWDOWN_EN
+      description: >
+        SCU08[31]: Enable Video Engine clock dynamic slow down
+        (ECLK source / 8).
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SCU_CLK_STOP_CTRL:
+  description: >
+    Clock Stop Control Register (SCU0C).
+    1 = stop clock, 0 = clock running, except USB20_HOST_EN (bit 14).
+    Reserved bits must keep: [31:29] = 111, [23:22] = 11, [18] = 1,
+    [12:11] = 11.
+  fields:
+    - name: ECLK
+      description: "SCU0C[0]: Stop ECLK (Video Engine). Default stopped."
+      bit_offset: 0
+      bit_size: 1
+    - name: GCLK
+      description: >
+        SCU0C[1]: Stop GCLK (2D Engine). Default stopped.
+        Valid only in CRT mode (SCU2C[7]).
+      bit_offset: 1
+      bit_size: 1
+    - name: MCLK
+      description: "SCU0C[2]: Stop MCLK (SDRAM controller). Default running."
+      bit_offset: 2
+      bit_size: 1
+    - name: VCLK
+      description: "SCU0C[3]: Stop VCLK (Video Capture). Default stopped."
+      bit_offset: 3
+      bit_size: 1
+    - name: BCLK
+      description: "SCU0C[4]: Stop BCLK (PCIe/PCI bus). Default running."
+      bit_offset: 4
+      bit_size: 1
+    - name: DCLK
+      description: "SCU0C[5]: Stop DCLK (DAC). Default running."
+      bit_offset: 5
+      bit_size: 1
+    - name: REFCLK
+      description: "SCU0C[6]: REFCLK stop enable. Default running."
+      bit_offset: 6
+      bit_size: 1
+    - name: USB_PORT2
+      description: >
+        SCU0C[7]: Stop clock of USB1.1/USB2.0 Host2/USB2.0 Device and
+        power down the port2 PHY.  Default stopped.
+      bit_offset: 7
+      bit_size: 1
+    - name: LCLK
+      description: "SCU0C[8]: Stop LCLK (LPC controller). Default running."
+      bit_offset: 8
+      bit_size: 1
+    - name: USB11_HOST
+      description: "SCU0C[9]: Stop USB1.1 Host controller clock. Default stopped."
+      bit_offset: 9
+      bit_size: 1
+    - name: D1CLK
+      description: "SCU0C[10]: Stop D1CLK (GFXCRT). Default stopped."
+      bit_offset: 10
+      bit_size: 1
+    - name: YCLK
+      description: "SCU0C[13]: Stop YCLK (HAC). Default stopped."
+      bit_offset: 13
+      bit_size: 1
+    - name: USB20_HOST_EN
+      description: >
+        SCU0C[14]: Enable USB2.0 Host/Hub clock (inverted polarity).
+        0 = stop clock and power down USB2.0 PHY (default); 1 = run.
+      bit_offset: 14
+      bit_size: 1
+    - name: UART1
+      description: "SCU0C[15]: Stop UART1CLK. Default running."
+      bit_offset: 15
+      bit_size: 1
+    - name: UART2
+      description: "SCU0C[16]: Stop UART2CLK. Default running."
+      bit_offset: 16
+      bit_size: 1
+    - name: UART5
+      description: "SCU0C[17]: Stop UART5CLK. Default running."
+      bit_offset: 17
+      bit_size: 1
+    - name: ESPI
+      description: "SCU0C[19]: Stop eSPI clock. Default stopped."
+      bit_offset: 19
+      bit_size: 1
+    - name: MAC1
+      description: "SCU0C[20]: Stop MAC#1 clock. Default stopped."
+      bit_offset: 20
+      bit_size: 1
+    - name: MAC2
+      description: "SCU0C[21]: Stop MAC#2 clock. Default stopped."
+      bit_offset: 21
+      bit_size: 1
+    - name: RSA
+      description: "SCU0C[24]: Stop RSACLK (RSA engine). Default stopped."
+      bit_offset: 24
+      bit_size: 1
+    - name: UART3
+      description: "SCU0C[25]: Stop UART3CLK. Default running."
+      bit_offset: 25
+      bit_size: 1
+    - name: UART4
+      description: "SCU0C[26]: Stop UART4CLK. Default running."
+      bit_offset: 26
+      bit_size: 1
+    - name: SDCLK
+      description: "SCU0C[27]: Stop SDCLK (SD/SDIO controller). Default stopped."
+      bit_offset: 27
+      bit_size: 1
+    - name: LHCLK
+      description: >
+        SCU0C[28]: Stop LHCLK (LPC Master and LPC Plus controller).
+        Default stopped.
+      bit_offset: 28
+      bit_size: 1
+
+fieldset/SCU_PLL:
+  description: >
+    M-PLL / H-PLL Parameter Register (SCU20 / SCU24).
+    Output = CLKIN(24MHz) * (M+1) / (N+1) / (P+1).
+    PLL parameter bits [15:10] live in SCU148.
+  fields:
+    - name: N
+      description: "Bits [4:0]: PLL Denumerator (N)."
+      bit_offset: 0
+      bit_size: 5
+    - name: M
+      description: "Bits [12:5]: PLL Numerator (M)."
+      bit_offset: 5
+      bit_size: 8
+    - name: P
+      description: "Bits [18:13]: PLL Post Divider (P)."
+      bit_offset: 13
+      bit_size: 6
+    - name: OFF
+      description: >
+        Bit [19]: Turn off PLL (power down; output may be 0 or 1).
+        M-PLL defaults to off and bypassed.
+      bit_offset: 19
+      bit_size: 1
+    - name: BYPASS
+      description: "Bit [20]: Enable PLL bypass mode (output = CLKIN)."
+      bit_offset: 20
+      bit_size: 1
+    - name: RESET
+      description: "Bit [21]: Enable PLL reset. 0 = normal; 1 = reset PLL."
+      bit_offset: 21
+      bit_size: 1
+    - name: PARAM
+      description: "Bits [31:22]: PLL parameter bits [9:0]."
+      bit_offset: 22
+      bit_size: 10
+
+fieldset/SCU_MISC_CTRL:
+  description: >
+    Misc. Control Register (SCU2C).
+    Bit 31, bits [27:26] and bit 9 are reserved.
+  fields:
+    - name: LPC_SPI_DIS
+      description: >
+        SCU2C[0]: Disable LPC to SPI flash interface.  Valid when strap
+        SCU70[13:12] = 10 or 01.
+      bit_offset: 0
+      bit_size: 1
+    - name: OSC_OUT_EN
+      description: >
+        SCU2C[1]: OSC clock output pin selection (test mode only).
+        1 = OSC clock output on GPIOQ6 (B10).
+      bit_offset: 1
+      bit_size: 1
+    - name: DPLL_DIS
+      description: "SCU2C[2]: Disable D-PLL (highest priority). Default 0."
+      bit_offset: 2
+      bit_size: 1
+    - name: DAC_DIS
+      description: "SCU2C[3]: Disable video DAC (highest priority). Default 0."
+      bit_offset: 3
+      bit_size: 1
+    - name: D2PLL_DIS
+      description: "SCU2C[4]: Disable D2-PLL (highest priority). Default 1."
+      bit_offset: 4
+      bit_size: 1
+    - name: VGA_REG_ACCESS_EN
+      description: >
+        SCU2C[5]: Force enable VGA register access when not strapped in VGA
+        mode.
+      bit_offset: 5
+      bit_size: 1
+    - name: VGA_CRT_DIS
+      description: >
+        SCU2C[6]: Disable VGA CRT display when using Video Direct Fetch mode.
+      bit_offset: 6
+      bit_size: 1
+    - name: CRT_MODE
+      description: "SCU2C[7]: Enable 2D CRT mode. 0 = VGA mode (default)."
+      bit_offset: 7
+      bit_size: 1
+    - name: P2A_DIS
+      description: >
+        SCU2C[8]: Disable PCI bus to AHB bus bridge (function replaced by
+        SCU180[1]).
+      bit_offset: 8
+      bit_size: 1
+    - name: DEBUG_UART_DIS
+      description: >
+        SCU2C[10]: Disable UART port debug function (the hardware debug
+        console selected by SCU70[29]).
+      bit_offset: 10
+      bit_size: 1
+    - name: YCLK_INV
+      description: >
+        SCU2C[11]: Enable inverting YCLK. 0 = YCLK from MCLK; 1 = from
+        inverted MCLK.
+      bit_offset: 11
+      bit_size: 1
+    - name: UART_DIV13
+      description: >
+        SCU2C[12]: Enable the reference clock divider (div13) for all UARTs
+        (1-5).  0 = baud = 24MHz / (16 * divisor) (default);
+        1 = baud = (24MHz / 13) / (16 * divisor).
+      bit_offset: 12
+      bit_size: 1
+    - name: VUART_TIMEOUT
+      description: "SCU2C[13]: Timeout control bit for VUART (see VUART20/24)."
+      bit_offset: 13
+      bit_size: 1
+    - name: JTAG_ROUTE
+      description: >
+        SCU2C[15:14]: JTAG routing selection.
+        00 = normal; 01 = direct JTAG IO to PCIe PHY;
+        10 = direct JTAG master to PCIe PHY; 11 = JTAG master to ARM.
+      bit_offset: 14
+      bit_size: 2
+    - name: DAC_SRC
+      description: >
+        SCU2C[17:16]: DAC source for display output.
+        00 = VGA (default); 01 = Graphics CRT; 10 = video port-A
+        pass-through; 11 = video port-B pass-through.
+      bit_offset: 16
+      bit_size: 2
+    - name: DVO_SRC
+      description: >
+        SCU2C[18]: DVO source for display output.
+        0 = VGA (default); 1 = Graphics CRT.
+      bit_offset: 18
+      bit_size: 1
+    - name: VGA_PREFETCH
+      description: >
+        SCU2C[19]: PCI VGA config space prefetch bit return value.
+      bit_offset: 19
+      bit_size: 1
+    - name: DPLL_PARAM_SRC
+      description: >
+        SCU2C[20]: Select D-PLL parameter source. 0 = VGA (default);
+        1 = SCU.
+      bit_offset: 20
+      bit_size: 1
+    - name: GCRT_CLK_SEL_HI
+      description: >
+        SCU2C[21]: Graphics CRT port output clock selection, high bit
+        (low bit is SCU08[8]).
+      bit_offset: 21
+      bit_size: 1
+    - name: P2A_FLASH_WRITE_DIS
+      description: >
+        SCU2C[22]: Disable flash address space write from P2A bridge
+        (0x0000_0000-0x0FFF_FFFF, 0x2000_0000-0x3FFF_FFFF).
+      bit_offset: 22
+      bit_size: 1
+    - name: P2A_SOC_WRITE_DIS
+      description: >
+        SCU2C[23]: Disable SOC address space write from P2A bridge
+        (0x1000_0000-0x1FFF_FFFF, 0x4000_0000-0x5FFF_FFFF).
+      bit_offset: 23
+      bit_size: 1
+    - name: P2A_LPC_WRITE_DIS
+      description: >
+        SCU2C[24]: Disable LPC Host/Plus address space write from P2A bridge
+        (0x6000_0000-0x7FFF_FFFF).
+      bit_offset: 24
+      bit_size: 1
+    - name: P2A_DRAM_WRITE_DIS
+      description: >
+        SCU2C[25]: Disable DRAM address space write from P2A bridge
+        (0x8000_0000-0xFFFF_FFFF).
+      bit_offset: 25
+      bit_size: 1
+    - name: BCLK_24M
+      description: >
+        SCU2C[28]: Select 24MHz BCLK. 0 = divided by SCUD8[2:0]; 1 = 24MHz.
+      bit_offset: 28
+      bit_size: 1
+    - name: PEWAKE_EN
+      description: "SCU2C[29]: Enable PCIe PEWAKE# function pin."
+      bit_offset: 29
+      bit_size: 1
+    - name: PEWAKE_OUT_LOW
+      description: >
+        SCU2C[30]: Enable PCIe PEWAKE# output low.
+        0 = tri-stated; 1 = drive low.
+      bit_offset: 30
+      bit_size: 1
+
+fieldset/SCU_SYSRST_STATUS:
+  description: >
+    System Reset Control/Status Register (SCU3C).
+    Flags are cleared by SRST# (except POWER_ON, which SRST# sets) and can
+    be cleared by software after checking them.
+  fields:
+    - name: POWER_ON
+      description: "SCU3C[0]: Power on reset flag (set by SRST#)."
+      bit_offset: 0
+      bit_size: 1
+    - name: EXTRST
+      description: "SCU3C[1]: External reset flag (set by EXTRST#)."
+      bit_offset: 1
+      bit_size: 1
+    - name: WDT1
+      description: "SCU3C[2]: Watchdog #1 event flag (WDT1 timeout)."
+      bit_offset: 2
+      bit_size: 1
+    - name: WDT2
+      description: "SCU3C[3]: Watchdog #2 event flag (WDT2 timeout)."
+      bit_offset: 3
+      bit_size: 1
+    - name: WDT3
+      description: "SCU3C[4]: Watchdog #3 event flag (WDT3 timeout)."
+      bit_offset: 4
+      bit_size: 1
+
+fieldset/SCU_VGA_HANDSHAKE0:
+  description: >
+    ASPEED Defined for VGA Function Handshake (SCU40).
+    DRAM init protocol: if bit 7 = 0 the VBIOS initialises DRAM; otherwise
+    SoC firmware does and sets bit 6 when DRAM is ready (VBIOS POST waits
+    for it).  Bits 5, 3 and 2 are reserved (AST2000 use only).
+  fields:
+    - name: IKVM_WIDE_SCREEN
+      description: "SCU40[0]: iKVM supports wide screen resolution."
+      bit_offset: 0
+      bit_size: 1
+    - name: FW_PROTECT
+      description: >
+        SCU40[1]: BMC firmware protection. 1 = forbid SOCFlash to update
+        flash.
+      bit_offset: 1
+      bit_size: 1
+    - name: VIRTUAL_EDID_EN
+      description: "SCU40[4]: KVM virtual EDID function selection."
+      bit_offset: 4
+      bit_size: 1
+    - name: DRAM_INIT_READY
+      description: >
+        SCU40[6]: SOC firmware initial DRAM status.
+        0 = DRAM init not ready; 1 = DRAM init ready.
+      bit_offset: 6
+      bit_size: 1
+    - name: DRAM_INIT_BY_SOC
+      description: >
+        SCU40[7]: DRAM initial selection.
+        0 = VBIOS initialises DRAM; 1 = SOC firmware initialises DRAM.
+      bit_offset: 7
+      bit_size: 1
+    - name: ASPEED_DEF
+      description: "SCU40[15:8]: Reserved for ASPEED definition."
+      bit_offset: 8
+      bit_size: 8
+    - name: CUSTOMER_DEF
+      description: "SCU40[23:16]: Reserved for customer definition."
+      bit_offset: 16
+      bit_size: 8
+    - name: FW_HANDSHAKE
+      description: >
+        SCU40[31:24]: Firmware / SLT handshake.
+        0x5A = embedded Linux booted properly.
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/SCU_MISC2_CTRL:
+  description: >
+    Misc. 2 Control Register (SCU4C).
+    Bits 31, 29 and [14:9] are reserved.
+  fields:
+    - name: DAC_FS
+      description: >
+        SCU4C[2:0]: DAC driver full swing (FS) setting.
+        Iout = (1 + FS/10) * 250 / DACRSET.
+      bit_offset: 0
+      bit_size: 3
+    - name: DAC_MODE
+      description: "SCU4C[5:3]: DAC mode selection. 000 = normal; others = test."
+      bit_offset: 3
+      bit_size: 3
+    - name: PCI_BM_EN
+      description: "SCU4C[6]: PCI BM enable."
+      bit_offset: 6
+      bit_size: 1
+    - name: MALI_RC
+      description: "SCU4C[7]: MALI RC mode."
+      bit_offset: 7
+      bit_size: 1
+    - name: MALI_DTY
+      description: "SCU4C[8]: MALI DTY mode."
+      bit_offset: 8
+      bit_size: 1
+    - name: PCIE_MEM_MAP_HI
+      description: >
+        SCU4C[15]: PCIe memory mapping address high (bit 2 of
+        SCU70[3:2]).
+      bit_offset: 15
+      bit_size: 1
+    - name: RMII_CLK_DIV
+      description: >
+        SCU4C[18:16]: RMII 50MHz clock divider ratio.
+        000 = div2; 001 = div2; 010 = div3 ... 111 = div8.
+      bit_offset: 16
+      bit_size: 3
+    - name: RMII_CLK_DIV_SRC
+      description: >
+        SCU4C[19]: RMII 50MHz clock divider source. 0 = D2-PLL; 1 = M-PLL.
+      bit_offset: 19
+      bit_size: 1
+    - name: RGMII_CLK_DIV
+      description: >
+        SCU4C[22:20]: RGMII 125MHz clock divider ratio.
+        000 = div2; 001 = div2; 010 = div3 ... 111 = div8.
+      bit_offset: 20
+      bit_size: 3
+    - name: RGMII_CLK_DIV_SRC
+      description: >
+        SCU4C[23]: RGMII 125MHz clock divider source. 0 = D2-PLL; 1 = H-PLL.
+      bit_offset: 23
+      bit_size: 1
+    - name: UART1_CLK_SRC
+      description: >
+        SCU4C[24]: Select UART1 clock source.
+        0 = 24MHz; 1 = 192MHz from USB2.0 port1 PHY.
+      bit_offset: 24
+      bit_size: 1
+    - name: UART2_CLK_SRC
+      description: "SCU4C[25]: Select UART2 clock source (encoding as UART1)."
+      bit_offset: 25
+      bit_size: 1
+    - name: UART3_CLK_SRC
+      description: "SCU4C[26]: Select UART3 clock source (encoding as UART1)."
+      bit_offset: 26
+      bit_size: 1
+    - name: UART4_CLK_SRC
+      description: "SCU4C[27]: Select UART4 clock source (encoding as UART1)."
+      bit_offset: 27
+      bit_size: 1
+    - name: UART5_CLK_SRC
+      description: "SCU4C[28]: Select UART5 clock source (encoding as UART1)."
+      bit_offset: 28
+      bit_size: 1
+    - name: DEBUG_UART_921600
+      description: >
+        SCU4C[30]: Select UART debug port baud rate.
+        0 = 115200 bps; 1 = 921600 bps.
+      bit_offset: 30
+      bit_size: 1
+
+fieldset/SCU_HWSTRAP:
+  description: >
+    Hardware Strap Register (SCU70) / strap clear (SCU7C write).
+    SCU70 writes can only set bits; write 1 to SCU7C to clear.
+    Reserved: bit 28 (reads 1), bit 8 (0), bit 4 (0), bit 1 (reads 1).
+  fields:
+    - name: CPU_BOOT_DIS
+      description: >
+        SCU70[0]: Disable CPU boot.
+        0 = enable boot; 1 = disable CPU operation (no firmware).
+      bit_offset: 0
+      bit_size: 1
+    - name: VGA_MEM_SIZE
+      description: >
+        SCU70[3:2]: VGA memory size selection (shared with SOC memory).
+        00 = 8 MB; 01 = 16 MB (default); 10 = 32 MB; 11 = 64 MB.
+      bit_offset: 2
+      bit_size: 2
+    - name: VGA_BIOS_ROM_EN
+      description: "SCU70[5]: Enable dedicated VGA BIOS ROM."
+      bit_offset: 5
+      bit_size: 1
+    - name: MAC1_RGMII
+      description: "SCU70[6]: Define MAC#1 interface. 0 = RMII/NCSI; 1 = RGMII."
+      bit_offset: 6
+      bit_size: 1
+    - name: MAC2_RGMII
+      description: "SCU70[7]: Define MAC#2 interface. 0 = RMII/NCSI; 1 = RGMII."
+      bit_offset: 7
+      bit_size: 1
+    - name: AXI_AHB_RATIO
+      description: >
+        SCU70[11:9]: AXI/AHB clock frequency ratio selection.
+        000 = undefined; 001 = 2:1 (default) ... 111 = 8:1 (ratio =
+        value + 1).  HCLK = H-PLL / 2 / ratio.
+      bit_offset: 9
+      bit_size: 3
+    - name: SPI_MODE
+      description: >
+        SCU70[13:12]: SPI mode selection.
+        00 = SPI disabled; 01 = SPI master; 10 = SPI master + SPI slave to
+        AHB bridge (debug); 11 = SPI pass-through.
+      bit_offset: 12
+      bit_size: 2
+    - name: LPC_DEDICATED_RESET
+      description: >
+        SCU70[14]: Select dedicated LPC reset input.
+        0 = shared with PCIe reset; 1 = pin G22 / GPIOAC7 (default).
+      bit_offset: 14
+      bit_size: 1
+    - name: VGA_CLASS_CODE
+      description: >
+        SCU70[15]: VGA class code selection.
+        0 = video device; 1 = VGA device (default).
+      bit_offset: 15
+      bit_size: 1
+    - name: SIO_ADDR_4E
+      description: >
+        SCU70[16]: SuperIO configuration address. 0 = 0x2E; 1 = 0x4E.
+      bit_offset: 16
+      bit_size: 1
+    - name: BOOT_2ND_WDT_EN
+      description: >
+        SCU70[17]: Enable BMC 2nd boot watchdog timer (WDT2 starts counting
+        at power up; on timeout the BMC resets and boots from CS1#).
+      bit_offset: 17
+      bit_size: 1
+    - name: USBCKI_48MHZ
+      description: "SCU70[18]: USBCKI input frequency. 0 = 24 MHz; 1 = 48 MHz."
+      bit_offset: 18
+      bit_size: 1
+    - name: ACPI_EN
+      description: "SCU70[19]: Enable ACPI function."
+      bit_offset: 19
+      bit_size: 1
+    - name: SIO_DECODE_DIS
+      description: >
+        SCU70[20]: Disable LPC decoding of SuperIO 0x2E/0x4E address.
+      bit_offset: 20
+      bit_size: 1
+    - name: GPIOD_PASSTHRU
+      description: "SCU70[21]: Enable GPIOD pass-through mode at power on."
+      bit_offset: 21
+      bit_size: 1
+    - name: GPIOE_PASSTHRU
+      description: "SCU70[22]: Enable GPIOE pass-through mode at power on."
+      bit_offset: 22
+      bit_size: 1
+    - name: CLKIN_25MHZ
+      description: >
+        SCU70[23]: Select 25 MHz reference clock input mode.
+        0 = CLKIN is 24 MHz (USBCKI unused);
+        1 = CLKIN is 25 MHz (USBCKI = 24/48 MHz per bit 18).
+      bit_offset: 23
+      bit_size: 1
+    - name: DDR4
+      description: "SCU70[24]: Select DDR4 SDRAM. 0 = DDR3; 1 = DDR4."
+      bit_offset: 24
+      bit_size: 1
+    - name: ESPI_MODE
+      description: "SCU70[25]: Enable eSPI mode. 0 = LPC; 1 = eSPI."
+      bit_offset: 25
+      bit_size: 1
+    - name: ESPI_FLASH_MODE
+      description: >
+        SCU70[26]: Enable eSPI flash mode (respond with flash attached).
+        Valid only when eSPI is enabled.
+      bit_offset: 26
+      bit_size: 1
+    - name: ICE_FAST_RESET
+      description: >
+        SCU70[27]: Enable fast reset mode for ARM ICE debugger.
+        0 = long reset (default); 1 = fast reset.
+      bit_offset: 27
+      bit_size: 1
+    - name: DEBUG_UART5
+      description: >
+        SCU70[29]: Select UART debug port (hardware debug interface, not
+        the BMC console).  0 = UART1; 1 = UART5.
+      bit_offset: 29
+      bit_size: 1
+    - name: GPIO_STRAP_MODE
+      description: "SCU70[30]: Enable GPIO strap mode."
+      bit_offset: 30
+      bit_size: 1
+    - name: SPI_STRAP_AUTOFETCH
+      description: "SCU70[31]: Enable SPI flash strap auto fetch mode."
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SCU_SILICON_REV:
+  description: Silicon Revision ID Register (SCU7C, read).
+  fields:
+    - name: COMPAT
+      description: "SCU7C[7:0]: Reserved for backward compatibility."
+      bit_offset: 0
+      bit_size: 8
+    - name: BOND
+      description: >
+        SCU7C[15:8]: Chip bonding option (product differentiation:
+        0x03 = AST2500, 0x01 = AST2510, 0x02 = AST2520, 0x04 = AST2530).
+      bit_offset: 8
+      bit_size: 8
+    - name: HW_REV
+      description: >
+        SCU7C[23:16]: Hardware revision ID.
+        0 = A0; 1 = A1; 3 = A2.
+      bit_offset: 16
+      bit_size: 8
+    - name: GEN
+      description: "SCU7C[31:24]: Reserved (0x04 for the AST2500 family)."
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/SCU_MHPLL_EXT:
+  description: Extended Parameter of M/H-PLL Register (SCU148).
+  fields:
+    - name: MPLL_PARAM_HI
+      description: "SCU148[5:0]: M-PLL parameter bits [15:10]."
+      bit_offset: 0
+      bit_size: 6
+    - name: MPLL_LOCK
+      description: "SCU148[6]: M-PLL lock status (read-only)."
+      bit_offset: 6
+      bit_size: 1
+    - name: HPLL_PARAM_HI
+      description: "SCU148[21:16]: H-PLL parameter bits [15:10]."
+      bit_offset: 16
+      bit_size: 6
+    - name: HPLL_LOCK
+      description: "SCU148[22]: H-PLL lock status (read-only)."
+      bit_offset: 22
+      bit_size: 1
+
+fieldset/SCU_UNIQUE_ID_H:
+  description: Chip Unique ID H (SCU154), i.e. bits [63:32] of the 64-bit ID.
+  fields:
+    - name: ID
+      description: Chip unique ID bits [59:32].
+      bit_offset: 0
+      bit_size: 28
+    - name: ADC_COMP
+      description: "ID bits [63:60]: ADC compensation."
+      bit_offset: 28
+      bit_size: 4
+
+fieldset/SCU_UART_24M_REF:
+  description: >
+    UART 24 MHz reference from H-PLL (SCU160).
+    CLK24M = H-PLL * R / (N * 4).
+  fields:
+    - name: R
+      description: "SCU160[7:0]: R-Value."
+      bit_offset: 0
+      bit_size: 8
+    - name: N
+      description: "SCU160[17:8]: N-Value."
+      bit_offset: 8
+      bit_size: 10
