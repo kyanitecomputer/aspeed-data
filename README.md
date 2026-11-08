@@ -29,6 +29,7 @@ aspeed-data/
 | AST1060 | Cortex-M4F | `thumbv7em-none-eabihf` | ✅ | — | planned |
 | AST2400 | ColdFire V1 | `m68k-none-elf` | — | ✅ | planned |
 | AST2500 | ColdFire V1 | `m68k-none-elf` | — | ✅ | planned |
+| AST2500 ARM | ARM1176JZF-S | `armv5te-none-eabi` | ✅ | — | planned |
 | AST2600 SSP | Cortex-M3 | `thumbv7m-none-eabi` | ✅ | — | planned |
 | AST2700 SSP | Cortex-M4F | `thumbv7em-none-eabihf` | ✅ | — | planned |
 | AST2700 TSP | Cortex-M4F | `thumbv7em-none-eabihf` | ✅ | — | planned |

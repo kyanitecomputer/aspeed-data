@@ -63,6 +63,7 @@ Feature flags select the chip. Each flag is mutually exclusive in practice:
 | Feature | Target | Output file |
 |---|---|---|
 | `ast1060` | `thumbv7em-none-eabihf` | `src/chips/ast1060.rs` |
+| `ast2500-arm` | `armv5te-none-eabi` | `src/chips/ast2500_arm.rs` |
 | `ast2600` | `thumbv7m-none-eabi` | `src/chips/ast2600.rs` |
 | `ast2700-ssp` | `thumbv7em-none-eabihf` | `src/chips/ast2700_ssp.rs` |
 | `ast2700-tsp` | `thumbv7em-none-eabihf` | `src/chips/ast2700_tsp.rs` |

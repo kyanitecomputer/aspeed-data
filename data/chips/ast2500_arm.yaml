@@ -1,0 +1,84 @@
+# ASPEED AST2500 ARM main-core chip definition.
+#
+# This is the view of the AST2500 from its main ARM1176JZF-S core, which
+# boots from the FMC CE0 SPI flash (mapped at 0x00000000) and runs the BMC
+# firmware.  Peripheral addresses are ARM physical addresses.
+#
+# Compare data/chips/ast2500.yaml, which describes the embedded ColdFire
+# coprocessor (C header output, 24-bit segment-mapped addresses).
+#
+# CPU: ARM1176JZF-S, built as ARMv5TE (armv5te-none-eabi) because
+#      LDREX/STREX hang on this SoC while the MMU is off.
+# Interrupts: VIC with up to 64 sources, driven by the firmware itself
+#      (arch: bare, no cortex-m/riscv runtime).  Not modelled yet.
+#
+# UARTs reuse uart_v1 (16550, 4-byte stride, offsets 0x00-0x1C match the
+# AST2500 UART).  AST2500 differences not reflected in uart_v1:
+# IER[7] is PTIME (programmable THRE interrupt mode), LCR[5] (stick parity)
+# and FCR[3] (DMA mode) are reserved.  The UART clock is 24 MHz, or
+# 24 MHz / 13 with SCU2C[12] (UART_DIV13).
+
+name:   AST2500_ARM
+family: ast25xx
+core:   arm1176jzf-s
+target: armv5te-none-eabi
+arch:   bare
+num_irqs: 64
+
+# ── Peripheral instances ──────────────────────────────────────────────────────
+
+peripherals:
+  - name:    FMC
+    block:   fmc_ast2500_v1::FMC
+    address: 0x1E620000
+    description: "Firmware SPI memory controller (FMC)"
+
+  - name:    SCU
+    block:   scu_ast2500_v1::SCU
+    address: 0x1E6E2000
+    description: "System control unit (SCU)"
+
+  - name:    UART1
+    block:   uart_v1::UART
+    address: 0x1E783000
+    description: "UART1 (LPC UART1, 16550, 4-byte stride)"
+
+  - name:    UART5
+    block:   uart_v1::UART
+    address: 0x1E784000
+    description: "UART5 (BMC debug UART, 16550, 4-byte stride)"
+
+  # Watchdog timers, 0x20-byte stride.
+  - name:    WDT1
+    block:   wdt_ast2500_v1::WDT
+    address: 0x1E785000
+    description: "Watchdog timer 1"
+
+  - name:    WDT2
+    block:   wdt_ast2500_v1::WDT
+    address: 0x1E785020
+    description: "Watchdog timer 2 (alternate boot watchdog)"
+
+  - name:    WDT3
+    block:   wdt_ast2500_v1::WDT
+    address: 0x1E785040
+    description: "Watchdog timer 3 (SPI address mode detection)"
+
+  - name:    UART2
+    block:   uart_v1::UART
+    address: 0x1E78D000
+    description: "UART2 (LPC UART2, 16550, 4-byte stride)"
+
+  - name:    UART3
+    block:   uart_v1::UART
+    address: 0x1E78E000
+    description: "UART3 (LPC UART3, 16550, 4-byte stride)"
+
+  - name:    UART4
+    block:   uart_v1::UART
+    address: 0x1E78F000
+    description: "UART4 (LPC UART4, 16550, 4-byte stride)"
+
+# ── Interrupt table ───────────────────────────────────────────────────────────
+# The VIC is not modelled yet; the generated Interrupt enum is empty.
+interrupts: []
