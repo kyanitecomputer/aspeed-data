@@ -13,12 +13,12 @@ publish     = false
 # ── Chip selection ─────────────────────────────────────────────────────────────
 # Exactly one chip feature must be enabled.
 [features]
-ast1030         = []   # ASPEED AST1030       — ARM Cortex-M4F standalone SoC
-ast1060         = []   # ASPEED AST1060       — ARM Cortex-M4F standalone SoC
-ast2600         = []   # ASPEED AST2600       — ARM Cortex-M3, 200 MHz
-ast2700         = []   # ASPEED AST2700       — (alias, deprecated; use ast2700-ssp)
-ast2700-ssp     = []   # ASPEED AST2700 SSP   — ARM Cortex-M4F (SCU0+0x120)
-ast2700-tsp     = []   # ASPEED AST2700 TSP   — ARM Cortex-M4F (SCU0+0x160)
+ast1030         = ["dep:cortex-m"]   # ASPEED AST1030       — ARM Cortex-M4F standalone SoC
+ast1060         = ["dep:cortex-m"]   # ASPEED AST1060       — ARM Cortex-M4F standalone SoC
+ast2600         = ["dep:cortex-m"]   # ASPEED AST2600       — ARM Cortex-M3, 200 MHz
+ast2700         = ["dep:cortex-m"]   # ASPEED AST2700       — (alias, deprecated; use ast2700-ssp)
+ast2700-ssp     = ["dep:cortex-m"]   # ASPEED AST2700 SSP   — ARM Cortex-M4F (SCU0+0x120)
+ast2700-tsp     = ["dep:cortex-m"]   # ASPEED AST2700 TSP   — ARM Cortex-M4F (SCU0+0x160)
 ast2700-bootmcu = ["dep:riscv"]  # ASPEED AST2700 BootMCU — RV32IMC (ibex)
 
 # Enable interrupt vector table + cortex_m_rt::interrupt re-export (ARM chips).
@@ -28,8 +28,9 @@ rt = ["dep:cortex-m-rt"]
 defmt = ["dep:defmt"]
 
 [dependencies]
-# Required by the generated ARM interrupt enum (InterruptNumber trait impl).
-cortex-m = { version = "0.7" }
+# Required by the generated Cortex-M interrupt enum (InterruptNumber trait
+# impl); enabled by the Cortex-M chip features only.
+cortex-m = { version = "0.7", optional = true }
 
 # Optional: exposes the __INTERRUPTS vector table and #[interrupt] attribute.
 cortex-m-rt = { version = "0.7", optional = true }

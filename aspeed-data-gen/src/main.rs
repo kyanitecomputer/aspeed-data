@@ -196,6 +196,7 @@ fn process_chip(chip_path: &Path, data_dir: &Path, out_dir: &Path) -> Result<(St
     // Select architecture backend from chip YAML.
     let arch = match chip.arch.as_str() {
         "riscv" => RustArch::RiscV,
+        "bare" => RustArch::Bare,
         _ => RustArch::CortexM,
     };
 

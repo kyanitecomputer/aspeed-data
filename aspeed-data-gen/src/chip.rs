@@ -34,7 +34,8 @@ pub struct ChipDef {
     pub core: String,
     pub target: String,
     /// CPU architecture string; selects the code-generator backend.
-    /// Valid values: `"cortex-m"` (default), `"riscv"`.
+    /// Valid values: `"cortex-m"` (default), `"riscv"`, `"bare"` (peripherals
+    /// and `Interrupt` enum only, no runtime crate), `"coldfire"` (C header).
     #[serde(default = "default_arch")]
     pub arch: String,
     /// NVIC priority bits.  Absent for RISC-V chips.
