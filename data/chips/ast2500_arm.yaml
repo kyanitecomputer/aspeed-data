@@ -43,6 +43,11 @@ peripherals:
     address: 0x1E6E2000
     description: "System control unit (SCU)"
 
+  - name:    TIMER
+    block:   timer_ast2500_v1::TIMER
+    address: 0x1E782000
+    description: "Timer controller (TMC), 8 timers"
+
   - name:    UART1
     block:   uart_v1::UART
     address: 0x1E783000

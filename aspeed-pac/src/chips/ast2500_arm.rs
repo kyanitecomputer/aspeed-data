@@ -18,6 +18,10 @@ pub const SDMC: sdmc_ast2500_v1::SDMC = unsafe {
 pub const SCU: scu_ast2500_v1::SCU = unsafe {
     scu_ast2500_v1::SCU::from_ptr(0x1e6e_2000usize as _)
 };
+///Timer controller (TMC), 8 timers
+pub const TIMER: timer_ast2500_v1::TIMER = unsafe {
+    timer_ast2500_v1::TIMER::from_ptr(0x1e78_2000usize as _)
+};
 ///UART1 (LPC UART1, 16550, 4-byte stride)
 pub const UART1: uart_v1::UART = unsafe {
     uart_v1::UART::from_ptr(0x1e78_3000usize as _)
@@ -7850,6 +7854,891 @@ pub mod sdmc_ast2500_v1 {
         #[inline(always)]
         fn from(val: VgaAperture) -> u8 {
             VgaAperture::to_bits(val)
+        }
+    }
+}
+pub mod timer_ast2500_v1 {
+    ///AST2500 Timer Controller (TMC). Base address: 0x1E78_2000. 8 x 32-bit decrementing timers.
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct TIMER {
+        ptr: *mut u8,
+    }
+    unsafe impl Send for TIMER {}
+    unsafe impl Sync for TIMER {}
+    impl TIMER {
+        #[inline(always)]
+        pub const unsafe fn from_ptr(ptr: *mut ()) -> Self {
+            Self { ptr: ptr as _ }
+        }
+        #[inline(always)]
+        pub const fn as_ptr(&self) -> *mut () {
+            self.ptr as _
+        }
+        ///Counter #1-#8 Status Registers (TMC00/10/20/40/50/60/70/80). Init = 0. Index n is timer n+1. Current counter value; loaded from RELOAD while the timer is disabled and decremented while enabled. Writable while enabled to set a new counting value.
+        #[inline(always)]
+        pub const fn STATUS(
+            self,
+            n: usize,
+        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            assert!(n < 8usize);
+            unsafe {
+                crate::common::Reg::from_ptr(
+                    self
+                        .ptr
+                        .wrapping_add(
+                            0x0usize
+                                + ([
+                                    0usize, 16usize, 32usize, 64usize, 80usize, 96usize,
+                                    112usize, 128usize,
+                                ][n] as usize),
+                        ) as _,
+                )
+            }
+        }
+        ///Counter #1-#8 Reload Value Registers (TMC04/14/24/44/54/64/74/84). Init = 0. Index n is timer n+1. Loaded into STATUS when the counter reaches 0; a reload value of 2 counts 2, 1, 0, 2, 1, ...
+        #[inline(always)]
+        pub const fn RELOAD(
+            self,
+            n: usize,
+        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            assert!(n < 8usize);
+            unsafe {
+                crate::common::Reg::from_ptr(
+                    self
+                        .ptr
+                        .wrapping_add(
+                            0x04usize
+                                + ([
+                                    0usize, 16usize, 32usize, 64usize, 80usize, 96usize,
+                                    112usize, 128usize,
+                                ][n] as usize),
+                        ) as _,
+                )
+            }
+        }
+        ///Counter #1-#8 First Matching Registers (TMC08/18/28/48/58/68/78/88). Init = 0. Index n is timer n+1. An edge triggered interrupt is generated when the counter equals this value. For timers 5-8 the pulse output switches to 1 on this match.
+        #[inline(always)]
+        pub const fn MATCH1(
+            self,
+            n: usize,
+        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            assert!(n < 8usize);
+            unsafe {
+                crate::common::Reg::from_ptr(
+                    self
+                        .ptr
+                        .wrapping_add(
+                            0x08usize
+                                + ([
+                                    0usize, 16usize, 32usize, 64usize, 80usize, 96usize,
+                                    112usize, 128usize,
+                                ][n] as usize),
+                        ) as _,
+                )
+            }
+        }
+        ///Counter #1-#8 Second Matching Registers (TMC0C/1C/2C/4C/5C/6C/7C/8C). Init = 0. Index n is timer n+1. An edge triggered interrupt is generated when the counter equals this value.
+        #[inline(always)]
+        pub const fn MATCH2(
+            self,
+            n: usize,
+        ) -> crate::common::Reg<TMC_COUNTER, crate::common::RW> {
+            assert!(n < 8usize);
+            unsafe {
+                crate::common::Reg::from_ptr(
+                    self
+                        .ptr
+                        .wrapping_add(
+                            0x0cusize
+                                + ([
+                                    0usize, 16usize, 32usize, 64usize, 80usize, 96usize,
+                                    112usize, 128usize,
+                                ][n] as usize),
+                        ) as _,
+                )
+            }
+        }
+        ///Control Register (TMC30). Init = 0. Per-timer enable, clock select, overflow interrupt and pulse output enable. In separate clear mode (CTRL3.SEPARATE_CLR = 1) writes can only set bits; clear them through CTRL_CLR.
+        #[inline(always)]
+        pub const fn CTRL(self) -> crate::common::Reg<TMC_CTRL, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _)
+            }
+        }
+        ///Control Register 2 (TMC34). Init = 0. Sequence pulse generation for timers 3-8. Only reset by power-on reset (SRST#) or a full chip watchdog reset. The timers must be disabled in CTRL while the sequence runs.
+        #[inline(always)]
+        pub const fn CTRL2(self) -> crate::common::Reg<TMC_CTRL2, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _)
+            }
+        }
+        ///Control Register 3 (TMC38). Init = 0. Selects the separate clear mode for CTRL.
+        #[inline(always)]
+        pub const fn CTRL3(self) -> crate::common::Reg<TMC_CTRL3, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _)
+            }
+        }
+        ///TMC30 Clear Register (TMC3C). Write-only. When CTRL3.SEPARATE_CLR = 1, writing 1 to a bit clears the same bit in CTRL (0 = no effect). No effect when SEPARATE_CLR = 0.
+        #[inline(always)]
+        pub const fn CTRL_CLR(self) -> crate::common::Reg<TMC_CTRL, crate::common::W> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _)
+            }
+        }
+    }
+    ///32-bit counter, reload or match value.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct TMC_COUNTER(pub u32);
+    impl TMC_COUNTER {
+        ///Counter value in ticks of the selected clock (PCLK or 1 MHz).
+        #[must_use]
+        #[inline(always)]
+        pub const fn VALUE(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0xffff_ffff;
+            val as u32
+        }
+        ///Counter value in ticks of the selected clock (PCLK or 1 MHz).
+        #[inline(always)]
+        pub const fn set_VALUE(&mut self, val: u32) {
+            self.0 = (self.0 & !(0xffff_ffff << 0usize))
+                | (((val as u32) & 0xffff_ffff) << 0usize);
+        }
+    }
+    impl Default for TMC_COUNTER {
+        #[inline(always)]
+        fn default() -> TMC_COUNTER {
+            TMC_COUNTER(0)
+        }
+    }
+    impl core::fmt::Debug for TMC_COUNTER {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("TMC_COUNTER").field("VALUE", &self.VALUE()).finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for TMC_COUNTER {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "TMC_COUNTER {{ VALUE: {=u32:?} }}", self.VALUE())
+        }
+    }
+    ///Control Register (TMC30) / TMC30 Clear Register (TMC3C). 4 bits per timer, timer N starting at bit 4(N-1): +0 EN timer enable (disabled: counter, reload and interrupt gated, STATUS loaded from RELOAD) +1 CLK_SEL clock source, 0 = PCLK (APB), 1 = 1 MHz +2 OVF_INTR interrupt when the counter reaches 0 +3 PULSE_EN pulse output (timers 5-8 only; reserved for 1-4)
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct TMC_CTRL(pub u32);
+    impl TMC_CTRL {
+        ///TMC30\[0\]: Timer 1 enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T1_EN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[0\]: Timer 1 enable.
+        #[inline(always)]
+        pub const fn set_T1_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///TMC30\[1\]: Timer 1 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T1_CLK_SEL(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[1\]: Timer 1 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[inline(always)]
+        pub const fn set_T1_CLK_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///TMC30\[2\]: Timer 1 overflow interrupt enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T1_OVF_INTR(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[2\]: Timer 1 overflow interrupt enable.
+        #[inline(always)]
+        pub const fn set_T1_OVF_INTR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///TMC30\[4\]: Timer 2 enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T2_EN(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[4\]: Timer 2 enable.
+        #[inline(always)]
+        pub const fn set_T2_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///TMC30\[5\]: Timer 2 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T2_CLK_SEL(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[5\]: Timer 2 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[inline(always)]
+        pub const fn set_T2_CLK_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///TMC30\[6\]: Timer 2 overflow interrupt enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T2_OVF_INTR(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[6\]: Timer 2 overflow interrupt enable.
+        #[inline(always)]
+        pub const fn set_T2_OVF_INTR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///TMC30\[8\]: Timer 3 enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T3_EN(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[8\]: Timer 3 enable.
+        #[inline(always)]
+        pub const fn set_T3_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///TMC30\[9\]: Timer 3 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T3_CLK_SEL(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[9\]: Timer 3 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[inline(always)]
+        pub const fn set_T3_CLK_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///TMC30\[10\]: Timer 3 overflow interrupt enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T3_OVF_INTR(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[10\]: Timer 3 overflow interrupt enable.
+        #[inline(always)]
+        pub const fn set_T3_OVF_INTR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+        ///TMC30\[12\]: Timer 4 enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T4_EN(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[12\]: Timer 4 enable.
+        #[inline(always)]
+        pub const fn set_T4_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///TMC30\[13\]: Timer 4 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T4_CLK_SEL(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[13\]: Timer 4 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[inline(always)]
+        pub const fn set_T4_CLK_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///TMC30\[14\]: Timer 4 overflow interrupt enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T4_OVF_INTR(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[14\]: Timer 4 overflow interrupt enable.
+        #[inline(always)]
+        pub const fn set_T4_OVF_INTR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///TMC30\[16\]: Timer 5 enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T5_EN(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[16\]: Timer 5 enable.
+        #[inline(always)]
+        pub const fn set_T5_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///TMC30\[17\]: Timer 5 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T5_CLK_SEL(&self) -> bool {
+            let val = (self.0 >> 17usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[17\]: Timer 5 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[inline(always)]
+        pub const fn set_T5_CLK_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 17usize)) | (((val as u32) & 0x01) << 17usize);
+        }
+        ///TMC30\[18\]: Timer 5 overflow interrupt enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T5_OVF_INTR(&self) -> bool {
+            let val = (self.0 >> 18usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[18\]: Timer 5 overflow interrupt enable.
+        #[inline(always)]
+        pub const fn set_T5_OVF_INTR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 18usize)) | (((val as u32) & 0x01) << 18usize);
+        }
+        ///TMC30\[19\]: Timer 5 pulse generation and output enable. The output switches to 1 on MATCH1 and back to 0 when the counter reaches 0.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T5_PULSE_EN(&self) -> bool {
+            let val = (self.0 >> 19usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[19\]: Timer 5 pulse generation and output enable. The output switches to 1 on MATCH1 and back to 0 when the counter reaches 0.
+        #[inline(always)]
+        pub const fn set_T5_PULSE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 19usize)) | (((val as u32) & 0x01) << 19usize);
+        }
+        ///TMC30\[20\]: Timer 6 enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T6_EN(&self) -> bool {
+            let val = (self.0 >> 20usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[20\]: Timer 6 enable.
+        #[inline(always)]
+        pub const fn set_T6_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 20usize)) | (((val as u32) & 0x01) << 20usize);
+        }
+        ///TMC30\[21\]: Timer 6 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T6_CLK_SEL(&self) -> bool {
+            let val = (self.0 >> 21usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[21\]: Timer 6 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[inline(always)]
+        pub const fn set_T6_CLK_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 21usize)) | (((val as u32) & 0x01) << 21usize);
+        }
+        ///TMC30\[22\]: Timer 6 overflow interrupt enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T6_OVF_INTR(&self) -> bool {
+            let val = (self.0 >> 22usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[22\]: Timer 6 overflow interrupt enable.
+        #[inline(always)]
+        pub const fn set_T6_OVF_INTR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 22usize)) | (((val as u32) & 0x01) << 22usize);
+        }
+        ///TMC30\[23\]: Timer 6 pulse generation and output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T6_PULSE_EN(&self) -> bool {
+            let val = (self.0 >> 23usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[23\]: Timer 6 pulse generation and output enable.
+        #[inline(always)]
+        pub const fn set_T6_PULSE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 23usize)) | (((val as u32) & 0x01) << 23usize);
+        }
+        ///TMC30\[24\]: Timer 7 enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T7_EN(&self) -> bool {
+            let val = (self.0 >> 24usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[24\]: Timer 7 enable.
+        #[inline(always)]
+        pub const fn set_T7_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 24usize)) | (((val as u32) & 0x01) << 24usize);
+        }
+        ///TMC30\[25\]: Timer 7 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T7_CLK_SEL(&self) -> bool {
+            let val = (self.0 >> 25usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[25\]: Timer 7 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[inline(always)]
+        pub const fn set_T7_CLK_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 25usize)) | (((val as u32) & 0x01) << 25usize);
+        }
+        ///TMC30\[26\]: Timer 7 overflow interrupt enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T7_OVF_INTR(&self) -> bool {
+            let val = (self.0 >> 26usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[26\]: Timer 7 overflow interrupt enable.
+        #[inline(always)]
+        pub const fn set_T7_OVF_INTR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 26usize)) | (((val as u32) & 0x01) << 26usize);
+        }
+        ///TMC30\[27\]: Timer 7 pulse generation and output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T7_PULSE_EN(&self) -> bool {
+            let val = (self.0 >> 27usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[27\]: Timer 7 pulse generation and output enable.
+        #[inline(always)]
+        pub const fn set_T7_PULSE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 27usize)) | (((val as u32) & 0x01) << 27usize);
+        }
+        ///TMC30\[28\]: Timer 8 enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T8_EN(&self) -> bool {
+            let val = (self.0 >> 28usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[28\]: Timer 8 enable.
+        #[inline(always)]
+        pub const fn set_T8_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 28usize)) | (((val as u32) & 0x01) << 28usize);
+        }
+        ///TMC30\[29\]: Timer 8 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T8_CLK_SEL(&self) -> bool {
+            let val = (self.0 >> 29usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[29\]: Timer 8 clock source. 0 = PCLK; 1 = 1 MHz.
+        #[inline(always)]
+        pub const fn set_T8_CLK_SEL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 29usize)) | (((val as u32) & 0x01) << 29usize);
+        }
+        ///TMC30\[30\]: Timer 8 overflow interrupt enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T8_OVF_INTR(&self) -> bool {
+            let val = (self.0 >> 30usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[30\]: Timer 8 overflow interrupt enable.
+        #[inline(always)]
+        pub const fn set_T8_OVF_INTR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 30usize)) | (((val as u32) & 0x01) << 30usize);
+        }
+        ///TMC30\[31\]: Timer 8 pulse generation and output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T8_PULSE_EN(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///TMC30\[31\]: Timer 8 pulse generation and output enable.
+        #[inline(always)]
+        pub const fn set_T8_PULSE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for TMC_CTRL {
+        #[inline(always)]
+        fn default() -> TMC_CTRL {
+            TMC_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for TMC_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("TMC_CTRL")
+                .field("T1_EN", &self.T1_EN())
+                .field("T1_CLK_SEL", &self.T1_CLK_SEL())
+                .field("T1_OVF_INTR", &self.T1_OVF_INTR())
+                .field("T2_EN", &self.T2_EN())
+                .field("T2_CLK_SEL", &self.T2_CLK_SEL())
+                .field("T2_OVF_INTR", &self.T2_OVF_INTR())
+                .field("T3_EN", &self.T3_EN())
+                .field("T3_CLK_SEL", &self.T3_CLK_SEL())
+                .field("T3_OVF_INTR", &self.T3_OVF_INTR())
+                .field("T4_EN", &self.T4_EN())
+                .field("T4_CLK_SEL", &self.T4_CLK_SEL())
+                .field("T4_OVF_INTR", &self.T4_OVF_INTR())
+                .field("T5_EN", &self.T5_EN())
+                .field("T5_CLK_SEL", &self.T5_CLK_SEL())
+                .field("T5_OVF_INTR", &self.T5_OVF_INTR())
+                .field("T5_PULSE_EN", &self.T5_PULSE_EN())
+                .field("T6_EN", &self.T6_EN())
+                .field("T6_CLK_SEL", &self.T6_CLK_SEL())
+                .field("T6_OVF_INTR", &self.T6_OVF_INTR())
+                .field("T6_PULSE_EN", &self.T6_PULSE_EN())
+                .field("T7_EN", &self.T7_EN())
+                .field("T7_CLK_SEL", &self.T7_CLK_SEL())
+                .field("T7_OVF_INTR", &self.T7_OVF_INTR())
+                .field("T7_PULSE_EN", &self.T7_PULSE_EN())
+                .field("T8_EN", &self.T8_EN())
+                .field("T8_CLK_SEL", &self.T8_CLK_SEL())
+                .field("T8_OVF_INTR", &self.T8_OVF_INTR())
+                .field("T8_PULSE_EN", &self.T8_PULSE_EN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for TMC_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "TMC_CTRL {{ T1_EN: {=bool:?}, T1_CLK_SEL: {=bool:?}, T1_OVF_INTR: {=bool:?}, T2_EN: {=bool:?}, T2_CLK_SEL: {=bool:?}, T2_OVF_INTR: {=bool:?}, T3_EN: {=bool:?}, T3_CLK_SEL: {=bool:?}, T3_OVF_INTR: {=bool:?}, T4_EN: {=bool:?}, T4_CLK_SEL: {=bool:?}, T4_OVF_INTR: {=bool:?}, T5_EN: {=bool:?}, T5_CLK_SEL: {=bool:?}, T5_OVF_INTR: {=bool:?}, T5_PULSE_EN: {=bool:?}, T6_EN: {=bool:?}, T6_CLK_SEL: {=bool:?}, T6_OVF_INTR: {=bool:?}, T6_PULSE_EN: {=bool:?}, T7_EN: {=bool:?}, T7_CLK_SEL: {=bool:?}, T7_OVF_INTR: {=bool:?}, T7_PULSE_EN: {=bool:?}, T8_EN: {=bool:?}, T8_CLK_SEL: {=bool:?}, T8_OVF_INTR: {=bool:?}, T8_PULSE_EN: {=bool:?} }}",
+                self.T1_EN(), self.T1_CLK_SEL(), self.T1_OVF_INTR(), self.T2_EN(), self
+                .T2_CLK_SEL(), self.T2_OVF_INTR(), self.T3_EN(), self.T3_CLK_SEL(), self
+                .T3_OVF_INTR(), self.T4_EN(), self.T4_CLK_SEL(), self.T4_OVF_INTR(), self
+                .T5_EN(), self.T5_CLK_SEL(), self.T5_OVF_INTR(), self.T5_PULSE_EN(), self
+                .T6_EN(), self.T6_CLK_SEL(), self.T6_OVF_INTR(), self.T6_PULSE_EN(), self
+                .T7_EN(), self.T7_CLK_SEL(), self.T7_OVF_INTR(), self.T7_PULSE_EN(), self
+                .T8_EN(), self.T8_CLK_SEL(), self.T8_OVF_INTR(), self.T8_PULSE_EN()
+            )
+        }
+    }
+    ///Control Register 2 (TMC34): sequence pulse generation for timers 3-8. Bits \[1:0\], \[9:8\], \[17:16\] and \[31:24\] reserved. Sequence: disable the timers in CTRL, set RELOAD and the clock/ interrupt bits, set the initial output values (Tn_SEQ_INIT), enable the outputs (Tn_SEQ_OUT_EN), then start counting (Tn_SEQ_START).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct TMC_CTRL2(pub u32);
+    impl TMC_CTRL2 {
+        ///TMC34\[2\]: Timer 3 sequence pulse output enable. When enabled the T3_SEQ_INIT value is driven; when disabled the pin is tri-stated.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T3_SEQ_OUT_EN(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[2\]: Timer 3 sequence pulse output enable. When enabled the T3_SEQ_INIT value is driven; when disabled the pin is tri-stated.
+        #[inline(always)]
+        pub const fn set_T3_SEQ_OUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///TMC34\[3\]: Timer 4 sequence pulse output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T4_SEQ_OUT_EN(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[3\]: Timer 4 sequence pulse output enable.
+        #[inline(always)]
+        pub const fn set_T4_SEQ_OUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///TMC34\[4\]: Timer 5 sequence pulse output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T5_SEQ_OUT_EN(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[4\]: Timer 5 sequence pulse output enable.
+        #[inline(always)]
+        pub const fn set_T5_SEQ_OUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///TMC34\[5\]: Timer 6 sequence pulse output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T6_SEQ_OUT_EN(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[5\]: Timer 6 sequence pulse output enable.
+        #[inline(always)]
+        pub const fn set_T6_SEQ_OUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///TMC34\[6\]: Timer 7 sequence pulse output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T7_SEQ_OUT_EN(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[6\]: Timer 7 sequence pulse output enable.
+        #[inline(always)]
+        pub const fn set_T7_SEQ_OUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///TMC34\[7\]: Timer 8 sequence pulse output enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T8_SEQ_OUT_EN(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[7\]: Timer 8 sequence pulse output enable.
+        #[inline(always)]
+        pub const fn set_T8_SEQ_OUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///TMC34\[10\]: Timer 3 sequence pulse start counting. While 0 the counter holds the RELOAD value; when set it decrements, and on reaching 0 the output toggles and this bit clears itself.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T3_SEQ_START(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[10\]: Timer 3 sequence pulse start counting. While 0 the counter holds the RELOAD value; when set it decrements, and on reaching 0 the output toggles and this bit clears itself.
+        #[inline(always)]
+        pub const fn set_T3_SEQ_START(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+        ///TMC34\[11\]: Timer 4 sequence pulse start counting.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T4_SEQ_START(&self) -> bool {
+            let val = (self.0 >> 11usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[11\]: Timer 4 sequence pulse start counting.
+        #[inline(always)]
+        pub const fn set_T4_SEQ_START(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 11usize)) | (((val as u32) & 0x01) << 11usize);
+        }
+        ///TMC34\[12\]: Timer 5 sequence pulse start counting.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T5_SEQ_START(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[12\]: Timer 5 sequence pulse start counting.
+        #[inline(always)]
+        pub const fn set_T5_SEQ_START(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///TMC34\[13\]: Timer 6 sequence pulse start counting.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T6_SEQ_START(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[13\]: Timer 6 sequence pulse start counting.
+        #[inline(always)]
+        pub const fn set_T6_SEQ_START(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///TMC34\[14\]: Timer 7 sequence pulse start counting.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T7_SEQ_START(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[14\]: Timer 7 sequence pulse start counting.
+        #[inline(always)]
+        pub const fn set_T7_SEQ_START(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///TMC34\[15\]: Timer 8 sequence pulse start counting.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T8_SEQ_START(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[15\]: Timer 8 sequence pulse start counting.
+        #[inline(always)]
+        pub const fn set_T8_SEQ_START(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+        ///TMC34\[18\]: Timer 3 sequence pulse initial output value, toggled when the counter reaches 0.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T3_SEQ_INIT(&self) -> bool {
+            let val = (self.0 >> 18usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[18\]: Timer 3 sequence pulse initial output value, toggled when the counter reaches 0.
+        #[inline(always)]
+        pub const fn set_T3_SEQ_INIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 18usize)) | (((val as u32) & 0x01) << 18usize);
+        }
+        ///TMC34\[19\]: Timer 4 sequence pulse initial output value.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T4_SEQ_INIT(&self) -> bool {
+            let val = (self.0 >> 19usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[19\]: Timer 4 sequence pulse initial output value.
+        #[inline(always)]
+        pub const fn set_T4_SEQ_INIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 19usize)) | (((val as u32) & 0x01) << 19usize);
+        }
+        ///TMC34\[20\]: Timer 5 sequence pulse initial output value.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T5_SEQ_INIT(&self) -> bool {
+            let val = (self.0 >> 20usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[20\]: Timer 5 sequence pulse initial output value.
+        #[inline(always)]
+        pub const fn set_T5_SEQ_INIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 20usize)) | (((val as u32) & 0x01) << 20usize);
+        }
+        ///TMC34\[21\]: Timer 6 sequence pulse initial output value.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T6_SEQ_INIT(&self) -> bool {
+            let val = (self.0 >> 21usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[21\]: Timer 6 sequence pulse initial output value.
+        #[inline(always)]
+        pub const fn set_T6_SEQ_INIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 21usize)) | (((val as u32) & 0x01) << 21usize);
+        }
+        ///TMC34\[22\]: Timer 7 sequence pulse initial output value.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T7_SEQ_INIT(&self) -> bool {
+            let val = (self.0 >> 22usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[22\]: Timer 7 sequence pulse initial output value.
+        #[inline(always)]
+        pub const fn set_T7_SEQ_INIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 22usize)) | (((val as u32) & 0x01) << 22usize);
+        }
+        ///TMC34\[23\]: Timer 8 sequence pulse initial output value.
+        #[must_use]
+        #[inline(always)]
+        pub const fn T8_SEQ_INIT(&self) -> bool {
+            let val = (self.0 >> 23usize) & 0x01;
+            val != 0
+        }
+        ///TMC34\[23\]: Timer 8 sequence pulse initial output value.
+        #[inline(always)]
+        pub const fn set_T8_SEQ_INIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 23usize)) | (((val as u32) & 0x01) << 23usize);
+        }
+    }
+    impl Default for TMC_CTRL2 {
+        #[inline(always)]
+        fn default() -> TMC_CTRL2 {
+            TMC_CTRL2(0)
+        }
+    }
+    impl core::fmt::Debug for TMC_CTRL2 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("TMC_CTRL2")
+                .field("T3_SEQ_OUT_EN", &self.T3_SEQ_OUT_EN())
+                .field("T4_SEQ_OUT_EN", &self.T4_SEQ_OUT_EN())
+                .field("T5_SEQ_OUT_EN", &self.T5_SEQ_OUT_EN())
+                .field("T6_SEQ_OUT_EN", &self.T6_SEQ_OUT_EN())
+                .field("T7_SEQ_OUT_EN", &self.T7_SEQ_OUT_EN())
+                .field("T8_SEQ_OUT_EN", &self.T8_SEQ_OUT_EN())
+                .field("T3_SEQ_START", &self.T3_SEQ_START())
+                .field("T4_SEQ_START", &self.T4_SEQ_START())
+                .field("T5_SEQ_START", &self.T5_SEQ_START())
+                .field("T6_SEQ_START", &self.T6_SEQ_START())
+                .field("T7_SEQ_START", &self.T7_SEQ_START())
+                .field("T8_SEQ_START", &self.T8_SEQ_START())
+                .field("T3_SEQ_INIT", &self.T3_SEQ_INIT())
+                .field("T4_SEQ_INIT", &self.T4_SEQ_INIT())
+                .field("T5_SEQ_INIT", &self.T5_SEQ_INIT())
+                .field("T6_SEQ_INIT", &self.T6_SEQ_INIT())
+                .field("T7_SEQ_INIT", &self.T7_SEQ_INIT())
+                .field("T8_SEQ_INIT", &self.T8_SEQ_INIT())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for TMC_CTRL2 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "TMC_CTRL2 {{ T3_SEQ_OUT_EN: {=bool:?}, T4_SEQ_OUT_EN: {=bool:?}, T5_SEQ_OUT_EN: {=bool:?}, T6_SEQ_OUT_EN: {=bool:?}, T7_SEQ_OUT_EN: {=bool:?}, T8_SEQ_OUT_EN: {=bool:?}, T3_SEQ_START: {=bool:?}, T4_SEQ_START: {=bool:?}, T5_SEQ_START: {=bool:?}, T6_SEQ_START: {=bool:?}, T7_SEQ_START: {=bool:?}, T8_SEQ_START: {=bool:?}, T3_SEQ_INIT: {=bool:?}, T4_SEQ_INIT: {=bool:?}, T5_SEQ_INIT: {=bool:?}, T6_SEQ_INIT: {=bool:?}, T7_SEQ_INIT: {=bool:?}, T8_SEQ_INIT: {=bool:?} }}",
+                self.T3_SEQ_OUT_EN(), self.T4_SEQ_OUT_EN(), self.T5_SEQ_OUT_EN(), self
+                .T6_SEQ_OUT_EN(), self.T7_SEQ_OUT_EN(), self.T8_SEQ_OUT_EN(), self
+                .T3_SEQ_START(), self.T4_SEQ_START(), self.T5_SEQ_START(), self
+                .T6_SEQ_START(), self.T7_SEQ_START(), self.T8_SEQ_START(), self
+                .T3_SEQ_INIT(), self.T4_SEQ_INIT(), self.T5_SEQ_INIT(), self
+                .T6_SEQ_INIT(), self.T7_SEQ_INIT(), self.T8_SEQ_INIT()
+            )
+        }
+    }
+    ///Control Register 3 (TMC38). Bits \[31:8\] reserved. The write command (bits \[7:0\]) and the read status (bit 0) share the low byte.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct TMC_CTRL3(pub u32);
+    impl TMC_CTRL3 {
+        ///TMC38\[7:0\] (write): Command. 0xAE sets SEPARATE_CLR; 0xEA clears it.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CMD(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///TMC38\[7:0\] (write): Command. 0xAE sets SEPARATE_CLR; 0xEA clears it.
+        #[inline(always)]
+        pub const fn set_CMD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///TMC38\[0\] (read): Separate clear control for TMC30. 0 = backward compatible mode, TMC30 writes set and clear bits; 1 = separate mode, TMC30 writes only set bits and CTRL_CLR (TMC3C) clears them.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEPARATE_CLR(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///TMC38\[0\] (read): Separate clear control for TMC30. 0 = backward compatible mode, TMC30 writes set and clear bits; 1 = separate mode, TMC30 writes only set bits and CTRL_CLR (TMC3C) clears them.
+        #[inline(always)]
+        pub const fn set_SEPARATE_CLR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+    }
+    impl Default for TMC_CTRL3 {
+        #[inline(always)]
+        fn default() -> TMC_CTRL3 {
+            TMC_CTRL3(0)
+        }
+    }
+    impl core::fmt::Debug for TMC_CTRL3 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("TMC_CTRL3")
+                .field("CMD", &self.CMD())
+                .field("SEPARATE_CLR", &self.SEPARATE_CLR())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for TMC_CTRL3 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f, "TMC_CTRL3 {{ CMD: {=u8:?}, SEPARATE_CLR: {=bool:?} }}", self.CMD(),
+                self.SEPARATE_CLR()
+            )
         }
     }
 }

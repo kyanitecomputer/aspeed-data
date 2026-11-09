@@ -1482,6 +1482,169 @@ const (
     SdmcAst2500V1SDMCVALUE32VALUEMsk = 0xffffffff << 0
 )
 
+// timer_ast2500_v1::TMC_COUNTER 32-bit counter, reload or match value.
+const (
+    // VALUE Counter value in ticks of the selected clock (PCLK or 1 MHz).
+    TimerAst2500V1TMCCOUNTERVALUEPos = 0
+    TimerAst2500V1TMCCOUNTERVALUEMsk = 0xffffffff << 0
+)
+
+// timer_ast2500_v1::TMC_CTRL Control Register (TMC30) / TMC30 Clear Register (TMC3C). 4 bits per timer, timer N starting at bit 4(N-1): +0 EN        timer enable (disabled: counter, reload and interrupt gated, STATUS loaded from RELOAD) +1 CLK_SEL   clock source, 0 = PCLK (APB), 1 = 1 MHz +2 OVF_INTR  interrupt when the counter reaches 0 +3 PULSE_EN  pulse output (timers 5-8 only; reserved for 1-4)
+const (
+    // T1EN TMC30[0]: Timer 1 enable.
+    TimerAst2500V1TMCCTRLT1ENPos = 0
+    TimerAst2500V1TMCCTRLT1ENMsk = 0x1 << 0
+    // T1CLKSEL TMC30[1]: Timer 1 clock source. 0 = PCLK; 1 = 1 MHz.
+    TimerAst2500V1TMCCTRLT1CLKSELPos = 1
+    TimerAst2500V1TMCCTRLT1CLKSELMsk = 0x1 << 1
+    // T1OVFINTR TMC30[2]: Timer 1 overflow interrupt enable.
+    TimerAst2500V1TMCCTRLT1OVFINTRPos = 2
+    TimerAst2500V1TMCCTRLT1OVFINTRMsk = 0x1 << 2
+    // T2EN TMC30[4]: Timer 2 enable.
+    TimerAst2500V1TMCCTRLT2ENPos = 4
+    TimerAst2500V1TMCCTRLT2ENMsk = 0x1 << 4
+    // T2CLKSEL TMC30[5]: Timer 2 clock source. 0 = PCLK; 1 = 1 MHz.
+    TimerAst2500V1TMCCTRLT2CLKSELPos = 5
+    TimerAst2500V1TMCCTRLT2CLKSELMsk = 0x1 << 5
+    // T2OVFINTR TMC30[6]: Timer 2 overflow interrupt enable.
+    TimerAst2500V1TMCCTRLT2OVFINTRPos = 6
+    TimerAst2500V1TMCCTRLT2OVFINTRMsk = 0x1 << 6
+    // T3EN TMC30[8]: Timer 3 enable.
+    TimerAst2500V1TMCCTRLT3ENPos = 8
+    TimerAst2500V1TMCCTRLT3ENMsk = 0x1 << 8
+    // T3CLKSEL TMC30[9]: Timer 3 clock source. 0 = PCLK; 1 = 1 MHz.
+    TimerAst2500V1TMCCTRLT3CLKSELPos = 9
+    TimerAst2500V1TMCCTRLT3CLKSELMsk = 0x1 << 9
+    // T3OVFINTR TMC30[10]: Timer 3 overflow interrupt enable.
+    TimerAst2500V1TMCCTRLT3OVFINTRPos = 10
+    TimerAst2500V1TMCCTRLT3OVFINTRMsk = 0x1 << 10
+    // T4EN TMC30[12]: Timer 4 enable.
+    TimerAst2500V1TMCCTRLT4ENPos = 12
+    TimerAst2500V1TMCCTRLT4ENMsk = 0x1 << 12
+    // T4CLKSEL TMC30[13]: Timer 4 clock source. 0 = PCLK; 1 = 1 MHz.
+    TimerAst2500V1TMCCTRLT4CLKSELPos = 13
+    TimerAst2500V1TMCCTRLT4CLKSELMsk = 0x1 << 13
+    // T4OVFINTR TMC30[14]: Timer 4 overflow interrupt enable.
+    TimerAst2500V1TMCCTRLT4OVFINTRPos = 14
+    TimerAst2500V1TMCCTRLT4OVFINTRMsk = 0x1 << 14
+    // T5EN TMC30[16]: Timer 5 enable.
+    TimerAst2500V1TMCCTRLT5ENPos = 16
+    TimerAst2500V1TMCCTRLT5ENMsk = 0x1 << 16
+    // T5CLKSEL TMC30[17]: Timer 5 clock source. 0 = PCLK; 1 = 1 MHz.
+    TimerAst2500V1TMCCTRLT5CLKSELPos = 17
+    TimerAst2500V1TMCCTRLT5CLKSELMsk = 0x1 << 17
+    // T5OVFINTR TMC30[18]: Timer 5 overflow interrupt enable.
+    TimerAst2500V1TMCCTRLT5OVFINTRPos = 18
+    TimerAst2500V1TMCCTRLT5OVFINTRMsk = 0x1 << 18
+    // T5PULSEEN TMC30[19]: Timer 5 pulse generation and output enable.  The output switches to 1 on MATCH1 and back to 0 when the counter reaches 0.
+    TimerAst2500V1TMCCTRLT5PULSEENPos = 19
+    TimerAst2500V1TMCCTRLT5PULSEENMsk = 0x1 << 19
+    // T6EN TMC30[20]: Timer 6 enable.
+    TimerAst2500V1TMCCTRLT6ENPos = 20
+    TimerAst2500V1TMCCTRLT6ENMsk = 0x1 << 20
+    // T6CLKSEL TMC30[21]: Timer 6 clock source. 0 = PCLK; 1 = 1 MHz.
+    TimerAst2500V1TMCCTRLT6CLKSELPos = 21
+    TimerAst2500V1TMCCTRLT6CLKSELMsk = 0x1 << 21
+    // T6OVFINTR TMC30[22]: Timer 6 overflow interrupt enable.
+    TimerAst2500V1TMCCTRLT6OVFINTRPos = 22
+    TimerAst2500V1TMCCTRLT6OVFINTRMsk = 0x1 << 22
+    // T6PULSEEN TMC30[23]: Timer 6 pulse generation and output enable.
+    TimerAst2500V1TMCCTRLT6PULSEENPos = 23
+    TimerAst2500V1TMCCTRLT6PULSEENMsk = 0x1 << 23
+    // T7EN TMC30[24]: Timer 7 enable.
+    TimerAst2500V1TMCCTRLT7ENPos = 24
+    TimerAst2500V1TMCCTRLT7ENMsk = 0x1 << 24
+    // T7CLKSEL TMC30[25]: Timer 7 clock source. 0 = PCLK; 1 = 1 MHz.
+    TimerAst2500V1TMCCTRLT7CLKSELPos = 25
+    TimerAst2500V1TMCCTRLT7CLKSELMsk = 0x1 << 25
+    // T7OVFINTR TMC30[26]: Timer 7 overflow interrupt enable.
+    TimerAst2500V1TMCCTRLT7OVFINTRPos = 26
+    TimerAst2500V1TMCCTRLT7OVFINTRMsk = 0x1 << 26
+    // T7PULSEEN TMC30[27]: Timer 7 pulse generation and output enable.
+    TimerAst2500V1TMCCTRLT7PULSEENPos = 27
+    TimerAst2500V1TMCCTRLT7PULSEENMsk = 0x1 << 27
+    // T8EN TMC30[28]: Timer 8 enable.
+    TimerAst2500V1TMCCTRLT8ENPos = 28
+    TimerAst2500V1TMCCTRLT8ENMsk = 0x1 << 28
+    // T8CLKSEL TMC30[29]: Timer 8 clock source. 0 = PCLK; 1 = 1 MHz.
+    TimerAst2500V1TMCCTRLT8CLKSELPos = 29
+    TimerAst2500V1TMCCTRLT8CLKSELMsk = 0x1 << 29
+    // T8OVFINTR TMC30[30]: Timer 8 overflow interrupt enable.
+    TimerAst2500V1TMCCTRLT8OVFINTRPos = 30
+    TimerAst2500V1TMCCTRLT8OVFINTRMsk = 0x1 << 30
+    // T8PULSEEN TMC30[31]: Timer 8 pulse generation and output enable.
+    TimerAst2500V1TMCCTRLT8PULSEENPos = 31
+    TimerAst2500V1TMCCTRLT8PULSEENMsk = 0x1 << 31
+)
+
+// timer_ast2500_v1::TMC_CTRL2 Control Register 2 (TMC34): sequence pulse generation for timers 3-8. Bits [1:0], [9:8], [17:16] and [31:24] reserved. Sequence: disable the timers in CTRL, set RELOAD and the clock/ interrupt bits, set the initial output values (Tn_SEQ_INIT), enable the outputs (Tn_SEQ_OUT_EN), then start counting (Tn_SEQ_START).
+const (
+    // T3SEQOUTEN TMC34[2]: Timer 3 sequence pulse output enable.  When enabled the T3_SEQ_INIT value is driven; when disabled the pin is tri-stated.
+    TimerAst2500V1TMCCTRL2T3SEQOUTENPos = 2
+    TimerAst2500V1TMCCTRL2T3SEQOUTENMsk = 0x1 << 2
+    // T4SEQOUTEN TMC34[3]: Timer 4 sequence pulse output enable.
+    TimerAst2500V1TMCCTRL2T4SEQOUTENPos = 3
+    TimerAst2500V1TMCCTRL2T4SEQOUTENMsk = 0x1 << 3
+    // T5SEQOUTEN TMC34[4]: Timer 5 sequence pulse output enable.
+    TimerAst2500V1TMCCTRL2T5SEQOUTENPos = 4
+    TimerAst2500V1TMCCTRL2T5SEQOUTENMsk = 0x1 << 4
+    // T6SEQOUTEN TMC34[5]: Timer 6 sequence pulse output enable.
+    TimerAst2500V1TMCCTRL2T6SEQOUTENPos = 5
+    TimerAst2500V1TMCCTRL2T6SEQOUTENMsk = 0x1 << 5
+    // T7SEQOUTEN TMC34[6]: Timer 7 sequence pulse output enable.
+    TimerAst2500V1TMCCTRL2T7SEQOUTENPos = 6
+    TimerAst2500V1TMCCTRL2T7SEQOUTENMsk = 0x1 << 6
+    // T8SEQOUTEN TMC34[7]: Timer 8 sequence pulse output enable.
+    TimerAst2500V1TMCCTRL2T8SEQOUTENPos = 7
+    TimerAst2500V1TMCCTRL2T8SEQOUTENMsk = 0x1 << 7
+    // T3SEQSTART TMC34[10]: Timer 3 sequence pulse start counting.  While 0 the counter holds the RELOAD value; when set it decrements, and on reaching 0 the output toggles and this bit clears itself.
+    TimerAst2500V1TMCCTRL2T3SEQSTARTPos = 10
+    TimerAst2500V1TMCCTRL2T3SEQSTARTMsk = 0x1 << 10
+    // T4SEQSTART TMC34[11]: Timer 4 sequence pulse start counting.
+    TimerAst2500V1TMCCTRL2T4SEQSTARTPos = 11
+    TimerAst2500V1TMCCTRL2T4SEQSTARTMsk = 0x1 << 11
+    // T5SEQSTART TMC34[12]: Timer 5 sequence pulse start counting.
+    TimerAst2500V1TMCCTRL2T5SEQSTARTPos = 12
+    TimerAst2500V1TMCCTRL2T5SEQSTARTMsk = 0x1 << 12
+    // T6SEQSTART TMC34[13]: Timer 6 sequence pulse start counting.
+    TimerAst2500V1TMCCTRL2T6SEQSTARTPos = 13
+    TimerAst2500V1TMCCTRL2T6SEQSTARTMsk = 0x1 << 13
+    // T7SEQSTART TMC34[14]: Timer 7 sequence pulse start counting.
+    TimerAst2500V1TMCCTRL2T7SEQSTARTPos = 14
+    TimerAst2500V1TMCCTRL2T7SEQSTARTMsk = 0x1 << 14
+    // T8SEQSTART TMC34[15]: Timer 8 sequence pulse start counting.
+    TimerAst2500V1TMCCTRL2T8SEQSTARTPos = 15
+    TimerAst2500V1TMCCTRL2T8SEQSTARTMsk = 0x1 << 15
+    // T3SEQINIT TMC34[18]: Timer 3 sequence pulse initial output value, toggled when the counter reaches 0.
+    TimerAst2500V1TMCCTRL2T3SEQINITPos = 18
+    TimerAst2500V1TMCCTRL2T3SEQINITMsk = 0x1 << 18
+    // T4SEQINIT TMC34[19]: Timer 4 sequence pulse initial output value.
+    TimerAst2500V1TMCCTRL2T4SEQINITPos = 19
+    TimerAst2500V1TMCCTRL2T4SEQINITMsk = 0x1 << 19
+    // T5SEQINIT TMC34[20]: Timer 5 sequence pulse initial output value.
+    TimerAst2500V1TMCCTRL2T5SEQINITPos = 20
+    TimerAst2500V1TMCCTRL2T5SEQINITMsk = 0x1 << 20
+    // T6SEQINIT TMC34[21]: Timer 6 sequence pulse initial output value.
+    TimerAst2500V1TMCCTRL2T6SEQINITPos = 21
+    TimerAst2500V1TMCCTRL2T6SEQINITMsk = 0x1 << 21
+    // T7SEQINIT TMC34[22]: Timer 7 sequence pulse initial output value.
+    TimerAst2500V1TMCCTRL2T7SEQINITPos = 22
+    TimerAst2500V1TMCCTRL2T7SEQINITMsk = 0x1 << 22
+    // T8SEQINIT TMC34[23]: Timer 8 sequence pulse initial output value.
+    TimerAst2500V1TMCCTRL2T8SEQINITPos = 23
+    TimerAst2500V1TMCCTRL2T8SEQINITMsk = 0x1 << 23
+)
+
+// timer_ast2500_v1::TMC_CTRL3 Control Register 3 (TMC38). Bits [31:8] reserved. The write command (bits [7:0]) and the read status (bit 0) share the low byte.
+const (
+    // CMD TMC38[7:0] (write): Command. 0xAE sets SEPARATE_CLR; 0xEA clears it.
+    TimerAst2500V1TMCCTRL3CMDPos = 0
+    TimerAst2500V1TMCCTRL3CMDMsk = 0xff << 0
+    // SEPARATECLR TMC38[0] (read): Separate clear control for TMC30. 0 = backward compatible mode, TMC30 writes set and clear bits; 1 = separate mode, TMC30 writes only set bits and CTRL_CLR (TMC3C) clears them.
+    TimerAst2500V1TMCCTRL3SEPARATECLRPos = 0
+    TimerAst2500V1TMCCTRL3SEPARATECLRMsk = 0x1 << 0
+)
+
 // uart_v1::DATA8 8-bit data register (RBR/THR and SCR share this layout).
 const (
     // DATA Data byte (bits [7:0]).

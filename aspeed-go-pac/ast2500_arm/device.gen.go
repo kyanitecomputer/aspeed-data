@@ -10,6 +10,8 @@ const (
     SDMC_BASE = 0x1e6e0000
     // SCU_BASE System control unit (SCU)
     SCU_BASE = 0x1e6e2000
+    // TIMER_BASE Timer controller (TMC), 8 timers
+    TIMER_BASE = 0x1e782000
     // UART1_BASE UART1 (LPC UART1, 16550, 4-byte stride)
     UART1_BASE = 0x1e783000
     // UART5_BASE UART5 (BMC debug UART, 16550, 4-byte stride)
