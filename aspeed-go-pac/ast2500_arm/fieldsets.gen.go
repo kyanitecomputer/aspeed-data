@@ -833,6 +833,655 @@ const (
     ScuAst2500V1SCUVGAHANDSHAKE0FWHANDSHAKEMsk = 0xff << 24
 )
 
+// sdmc_ast2500_v1::SDMC_AC_TIMING1 AC Timing Register #1 (MCR10).  Each field is bits [3:0] of a 5-bit value n; bit 4 is in AC_TIMING3.
+const (
+    // TWTR MCR10[3:0]: t-WTR (write to read). Timing = 2n + 3 CK.
+    SdmcAst2500V1SDMCACTIMING1TWTRPos = 0
+    SdmcAst2500V1SDMCACTIMING1TWTRMsk = 0xf << 0
+    // TRTW MCR10[7:4]: t-RTW (read to write). Timing = 2n + 3 CK.
+    SdmcAst2500V1SDMCACTIMING1TRTWPos = 4
+    SdmcAst2500V1SDMCACTIMING1TRTWMsk = 0xf << 4
+    // TWTP MCR10[11:8]: t-WTP (write to pre-charge, same bank). Timing = 2n CK.
+    SdmcAst2500V1SDMCACTIMING1TWTPPos = 8
+    SdmcAst2500V1SDMCACTIMING1TWTPMsk = 0xf << 8
+    // TRTP MCR10[15:12]: t-RTP (read to pre-charge, same bank). Timing = 2n + 1 CK.
+    SdmcAst2500V1SDMCACTIMING1TRTPPos = 12
+    SdmcAst2500V1SDMCACTIMING1TRTPMsk = 0xf << 12
+    // TAPD MCR10[19:16]: t-APD (ACT/PRE to read/write, different banks). Timing = 2n + 1 CK.
+    SdmcAst2500V1SDMCACTIMING1TAPDPos = 16
+    SdmcAst2500V1SDMCACTIMING1TAPDMsk = 0xf << 16
+    // TRCD MCR10[23:20]: t-RCD (active to read/write). Timing = 2n + 3 CK.
+    SdmcAst2500V1SDMCACTIMING1TRCDPos = 20
+    SdmcAst2500V1SDMCACTIMING1TRCDMsk = 0xf << 20
+    // TRRD MCR10[27:24]: t-RRD (active to active). Timing = 2n + 1 CK.
+    SdmcAst2500V1SDMCACTIMING1TRRDPos = 24
+    SdmcAst2500V1SDMCACTIMING1TRRDMsk = 0xf << 24
+    // TRP MCR10[31:28]: t-RP. Timing = 2n + 3 CK.
+    SdmcAst2500V1SDMCACTIMING1TRPPos = 28
+    SdmcAst2500V1SDMCACTIMING1TRPMsk = 0xf << 28
+)
+
+// sdmc_ast2500_v1::SDMC_AC_TIMING2 AC Timing Register
+const (
+    // TRFC MCR14[7:0]: t-RFC refresh interval. Timing = 2n + 4 CK.
+    SdmcAst2500V1SDMCACTIMING2TRFCPos = 0
+    SdmcAst2500V1SDMCACTIMING2TRFCMsk = 0xff << 0
+    // TMRD MCR14[11:8]: t-MRD / t-MOD mode set interval (the larger of the two). Timing = 4n + 2 CK.
+    SdmcAst2500V1SDMCACTIMING2TMRDPos = 8
+    SdmcAst2500V1SDMCACTIMING2TMRDMsk = 0xf << 8
+    // TRAS MCR14[15:12]: t-RAS bits [3:0] (active to minimum precharge). Timing = 2n + 1 CK.  Bit 4 is AC_TIMING3.TRAS_B4.
+    SdmcAst2500V1SDMCACTIMING2TRASPos = 12
+    SdmcAst2500V1SDMCACTIMING2TRASMsk = 0xf << 12
+    // CL MCR14[19:16]: DRAM read latency. 0 = not supported. DDR3: value = CL - 2; DDR4: value = CL - 1.
+    SdmcAst2500V1SDMCACTIMING2CLPos = 16
+    SdmcAst2500V1SDMCACTIMING2CLMsk = 0xf << 16
+    // CWL MCR14[23:20]: DRAM write latency. 0 = not supported. Value = CWL - 2.
+    SdmcAst2500V1SDMCACTIMING2CWLPos = 20
+    SdmcAst2500V1SDMCACTIMING2CWLMsk = 0xf << 20
+    // TXSNR MCR14[27:24]: t-XSNR. Timing = 32n + 32 CK.
+    SdmcAst2500V1SDMCACTIMING2TXSNRPos = 24
+    SdmcAst2500V1SDMCACTIMING2TXSNRMsk = 0xf << 24
+    // TFAW MCR14[31:28]: t-FAW (four bank active window) bits [3:0]. Timing = 2n + 1 CK.  Bit 4 is AC_TIMING3.TFAW_B4.
+    SdmcAst2500V1SDMCACTIMING2TFAWPos = 28
+    SdmcAst2500V1SDMCACTIMING2TFAWMsk = 0xf << 28
+)
+
+// sdmc_ast2500_v1::SDMC_AC_TIMING3 AC Timing Register
+const (
+    // TWTRB4 MCR18[0]: t-WTR setting bit 4.
+    SdmcAst2500V1SDMCACTIMING3TWTRB4Pos = 0
+    SdmcAst2500V1SDMCACTIMING3TWTRB4Msk = 0x1 << 0
+    // TRTWB4 MCR18[1]: t-RTW setting bit 4.
+    SdmcAst2500V1SDMCACTIMING3TRTWB4Pos = 1
+    SdmcAst2500V1SDMCACTIMING3TRTWB4Msk = 0x1 << 1
+    // TWTPB4 MCR18[2]: t-WTP setting bit 4.
+    SdmcAst2500V1SDMCACTIMING3TWTPB4Pos = 2
+    SdmcAst2500V1SDMCACTIMING3TWTPB4Msk = 0x1 << 2
+    // TRTPB4 MCR18[3]: t-RTP setting bit 4.
+    SdmcAst2500V1SDMCACTIMING3TRTPB4Pos = 3
+    SdmcAst2500V1SDMCACTIMING3TRTPB4Msk = 0x1 << 3
+    // TAPDB4 MCR18[4]: t-APD setting bit 4.
+    SdmcAst2500V1SDMCACTIMING3TAPDB4Pos = 4
+    SdmcAst2500V1SDMCACTIMING3TAPDB4Msk = 0x1 << 4
+    // TRCDB4 MCR18[5]: t-RCD setting bit 4.
+    SdmcAst2500V1SDMCACTIMING3TRCDB4Pos = 5
+    SdmcAst2500V1SDMCACTIMING3TRCDB4Msk = 0x1 << 5
+    // TRRDB4 MCR18[6]: t-RRD setting bit 4.
+    SdmcAst2500V1SDMCACTIMING3TRRDB4Pos = 6
+    SdmcAst2500V1SDMCACTIMING3TRRDB4Msk = 0x1 << 6
+    // TRPB4 MCR18[7]: t-RP setting bit 4.
+    SdmcAst2500V1SDMCACTIMING3TRPB4Pos = 7
+    SdmcAst2500V1SDMCACTIMING3TRPB4Msk = 0x1 << 7
+    // TRASB4 MCR18[8]: t-RAS setting bit 4.
+    SdmcAst2500V1SDMCACTIMING3TRASB4Pos = 8
+    SdmcAst2500V1SDMCACTIMING3TRASB4Msk = 0x1 << 8
+    // TFAWB4 MCR18[9]: t-FAW setting bit 4.
+    SdmcAst2500V1SDMCACTIMING3TFAWB4Pos = 9
+    SdmcAst2500V1SDMCACTIMING3TFAWB4Msk = 0x1 << 9
+    // RANKREADGAP MCR18[11:10]: Read command gap between different ranks, avoids overlapping data and preamble/postamble. Timing = 2n + 2 CK.
+    SdmcAst2500V1SDMCACTIMING3RANKREADGAPPos = 10
+    SdmcAst2500V1SDMCACTIMING3RANKREADGAPMsk = 0x3 << 10
+    // TCCDL MCR18[13:12]: t-CCD_L (DDR4 only). Timing = 2n + 4 CK.
+    SdmcAst2500V1SDMCACTIMING3TCCDLPos = 12
+    SdmcAst2500V1SDMCACTIMING3TCCDLMsk = 0x3 << 12
+    // TWTRL MCR18[15:14]: t-WTR_L minus t-WTR_S (DDR4 only). Timing = 2n CK.
+    SdmcAst2500V1SDMCACTIMING3TWTRLPos = 14
+    SdmcAst2500V1SDMCACTIMING3TWTRLMsk = 0x3 << 14
+    // CWLODD MCR18[16]: Write data delay phase selection; in normal operation indicates whether CWL is even (0) or odd (1).
+    SdmcAst2500V1SDMCACTIMING3CWLODDPos = 16
+    SdmcAst2500V1SDMCACTIMING3CWLODDMsk = 0x1 << 16
+)
+
+// sdmc_ast2500_v1::SDMC_COMPAT_MPLL AST2000 Backward Compatible SCU MPLL Parameter (MCR120). Bits [31:16] reserved.
+const (
+    // DENUM MCR120[4:0]: Denumerator.
+    SdmcAst2500V1SDMCCOMPATMPLLDENUMPos = 0
+    SdmcAst2500V1SDMCCOMPATMPLLDENUMMsk = 0x1f << 0
+    // NUM MCR120[13:5]: Numerator.
+    SdmcAst2500V1SDMCCOMPATMPLLNUMPos = 5
+    SdmcAst2500V1SDMCCOMPATMPLLNUMMsk = 0x1ff << 5
+    // POSTDIV MCR120[15:14]: Post divider.
+    SdmcAst2500V1SDMCCOMPATMPLLPOSTDIVPos = 14
+    SdmcAst2500V1SDMCCOMPATMPLLPOSTDIVMsk = 0x3 << 14
+)
+
+// sdmc_ast2500_v1::SDMC_CONFIG Configuration Register (MCR04). Bits [18:14] reserved.
+const (
+    // DRAMSIZE MCR04[1:0]: Total memory capacity for oversized write protection. Writes beyond the size are dropped; reads wrap around.
+    SdmcAst2500V1SDMCCONFIGDRAMSIZEPos = 0
+    SdmcAst2500V1SDMCCONFIGDRAMSIZEMsk = 0x3 << 0
+    // VGAAPERTURE MCR04[3:2] (read-only): Graphics memory aperture size, set from hardware strap SCU70[3:2].
+    SdmcAst2500V1SDMCCONFIGVGAAPERTUREPos = 2
+    SdmcAst2500V1SDMCCONFIGVGAAPERTUREMsk = 0x3 << 2
+    // DDR4 MCR04[4]: DRAM type. 0 = DDR3; 1 = DDR4.
+    SdmcAst2500V1SDMCCONFIGDDR4Pos = 4
+    SdmcAst2500V1SDMCCONFIGDDR4Msk = 0x1 << 4
+    // DUALRANK MCR04[5]: DRAM rank configuration for stacked DRAM. 0 = one rank; 1 = two ranks, MA15 functions as CS1. Only for stacked 8 Gbit parts.
+    SdmcAst2500V1SDMCCONFIGDUALRANKPos = 5
+    SdmcAst2500V1SDMCCONFIGDUALRANKMsk = 0x1 << 5
+    // VGA16BIT MCR04[6] (read-only): Reserved for VGA driver backward compatibility; reads 1 (16-bit).
+    SdmcAst2500V1SDMCCONFIGVGA16BITPos = 6
+    SdmcAst2500V1SDMCCONFIGVGA16BITMsk = 0x1 << 6
+    // ECCEN MCR04[7]: Enable ECC. Costs an extra 1/8 of the protected memory size.  CACHE_EN must also be set when ECC is enabled.
+    SdmcAst2500V1SDMCCONFIGECCENPos = 7
+    SdmcAst2500V1SDMCCONFIGECCENMsk = 0x1 << 7
+    // SCRAMBLEEN MCR04[8]: Enable data scrambling to reduce maximum SSO current.
+    SdmcAst2500V1SDMCCONFIGSCRAMBLEENPos = 8
+    SdmcAst2500V1SDMCCONFIGSCRAMBLEENMsk = 0x1 << 8
+    // SCRAMBLEPAT2 MCR04[9]: Data scramble pattern selection. 0 = pattern 1; 1 = pattern 2.
+    SdmcAst2500V1SDMCCONFIGSCRAMBLEPAT2Pos = 9
+    SdmcAst2500V1SDMCCONFIGSCRAMBLEPAT2Msk = 0x1 << 9
+    // CACHEEN MCR04[10]: Enable the DRAM controller cache.
+    SdmcAst2500V1SDMCCONFIGCACHEENPos = 10
+    SdmcAst2500V1SDMCCONFIGCACHEENMsk = 0x1 << 10
+    // CACHERANGEEN MCR04[11]: Cache operates only within the address range set in ECC_RANGE (MCR54). 0 = cache covers all addresses.
+    SdmcAst2500V1SDMCCONFIGCACHERANGEENPos = 11
+    SdmcAst2500V1SDMCCONFIGCACHERANGEENMsk = 0x1 << 11
+    // CACHEINITEN MCR04[12]: Start the cache initial sequence.  Only allowed while CACHE_EN = 0; poll CACHE_INIT_DONE afterwards.
+    SdmcAst2500V1SDMCCONFIGCACHEINITENPos = 12
+    SdmcAst2500V1SDMCCONFIGCACHEINITENMsk = 0x1 << 12
+    // DUALX8 MCR04[13]: DDR4 DRAM configuration. 0 = single x16 DRAM; 1 = dual x8 DRAM.
+    SdmcAst2500V1SDMCCONFIGDUALX8Pos = 13
+    SdmcAst2500V1SDMCCONFIGDUALX8Msk = 0x1 << 13
+    // CACHEINITDONE MCR04[19] (read-only): Cache initial done. 0 = not active or busy; 1 = done.
+    SdmcAst2500V1SDMCCONFIGCACHEINITDONEPos = 19
+    SdmcAst2500V1SDMCCONFIGCACHEINITDONEMsk = 0x1 << 19
+    // SWVERSION MCR04[27:20]: DRAM controller software version. 0 = earlier chip revision; other values are software defined (e.g. the DRAM init code version).
+    SdmcAst2500V1SDMCCONFIGSWVERSIONPos = 20
+    SdmcAst2500V1SDMCCONFIGSWVERSIONMsk = 0xff << 20
+    // HWVERSION MCR04[31:28] (read-only): DRAM controller hardware version. 0 = earlier chip revision; 1 = AST2500.
+    SdmcAst2500V1SDMCCONFIGHWVERSIONPos = 28
+    SdmcAst2500V1SDMCCONFIGHWVERSIONMsk = 0xf << 28
+)
+
+/* Enum: sdmc_ast2500_v1::DramSize */
+type SdmcAst2500V1DramSize uint8
+
+const (
+    MB128 SdmcAst2500V1DramSize = 0
+    MB256 SdmcAst2500V1DramSize = 1
+    MB512 SdmcAst2500V1DramSize = 2
+    GB1 SdmcAst2500V1DramSize = 3
+)
+
+/* Enum: sdmc_ast2500_v1::VgaAperture */
+type SdmcAst2500V1VgaAperture uint8
+
+const (
+    MB8 SdmcAst2500V1VgaAperture = 0
+    MB16 SdmcAst2500V1VgaAperture = 1
+    MB32 SdmcAst2500V1VgaAperture = 2
+    MB64 SdmcAst2500V1VgaAperture = 3
+)
+
+// sdmc_ast2500_v1::SDMC_ECC_ERR_ADDR ECC error address (MCR58 / MCR5C). Bits [3:0] and [31:30] reserved.
+const (
+    // ADDR [29:4]: DRAM address bits [29:4] of the recorded ECC error (16-byte granularity).
+    SdmcAst2500V1SDMCECCERRADDRADDRPos = 4
+    SdmcAst2500V1SDMCECCERRADDRADDRMsk = 0x3ffffff << 4
+)
+
+// sdmc_ast2500_v1::SDMC_ECC_RANGE ECC/Cache Address Range Control Register (MCR54). Bits [19:0] and [31:30] reserved.
+const (
+    // MAX MCR54[29:20]: Maximum ECC/cache work address in 1 MB units (work area = address <= MAX).  With ECC enabled firmware must reserve an extra 1/8 of the space for ECC data.  Also limits the cache when CONFIG.CACHE_RANGE_EN is set.
+    SdmcAst2500V1SDMCECCRANGEMAXPos = 20
+    SdmcAst2500V1SDMCECCRANGEMAXMsk = 0x3ff << 20
+)
+
+// sdmc_ast2500_v1::SDMC_INT_CTRL Interrupt Control/Status Register (MCR50). Bits 3, [11:7] and 30 reserved.
+const (
+    // ECCUNRECOVINTEN MCR50[0]: Enable ECC un-recoverable error interrupt.
+    SdmcAst2500V1SDMCINTCTRLECCUNRECOVINTENPos = 0
+    SdmcAst2500V1SDMCINTCTRLECCUNRECOVINTENMsk = 0x1 << 0
+    // ECCRECOVINTEN MCR50[1]: Enable ECC recoverable error interrupt.
+    SdmcAst2500V1SDMCINTCTRLECCRECOVINTENPos = 1
+    SdmcAst2500V1SDMCINTCTRLECCRECOVINTENMsk = 0x1 << 1
+    // OVERSIZEINTEN MCR50[2]: Enable oversized access interrupt.
+    SdmcAst2500V1SDMCINTCTRLOVERSIZEINTENPos = 2
+    SdmcAst2500V1SDMCINTCTRLOVERSIZEINTENMsk = 0x1 << 2
+    // ECCUNRECOVINT MCR50[4] (read-only): ECC un-recoverable error interrupt pending. Cleared by CLEAR (MCR50[31]).
+    SdmcAst2500V1SDMCINTCTRLECCUNRECOVINTPos = 4
+    SdmcAst2500V1SDMCINTCTRLECCUNRECOVINTMsk = 0x1 << 4
+    // ECCRECOVINT MCR50[5] (read-only): ECC recoverable error interrupt pending. Cleared by CLEAR.
+    SdmcAst2500V1SDMCINTCTRLECCRECOVINTPos = 5
+    SdmcAst2500V1SDMCINTCTRLECCRECOVINTMsk = 0x1 << 5
+    // OVERSIZEINT MCR50[6] (read-only): Oversized write error interrupt pending. Cleared by CLEAR.
+    SdmcAst2500V1SDMCINTCTRLOVERSIZEINTPos = 6
+    SdmcAst2500V1SDMCINTCTRLOVERSIZEINTMsk = 0x1 << 6
+    // ECCUNRECOVCOUNT MCR50[15:12] (read-only): ECC un-recoverable error counter, saturates at 15.
+    SdmcAst2500V1SDMCINTCTRLECCUNRECOVCOUNTPos = 12
+    SdmcAst2500V1SDMCINTCTRLECCUNRECOVCOUNTMsk = 0xf << 12
+    // ECCRECOVCOUNT MCR50[23:16] (read-only): ECC recoverable error counter, saturates at 255.
+    SdmcAst2500V1SDMCINTCTRLECCRECOVCOUNTPos = 16
+    SdmcAst2500V1SDMCINTCTRLECCRECOVCOUNTMsk = 0xff << 16
+    // OVERSIZEREQID MCR50[28:24] (read-only): Request ID of the last oversize access.
+    SdmcAst2500V1SDMCINTCTRLOVERSIZEREQIDPos = 24
+    SdmcAst2500V1SDMCINTCTRLOVERSIZEREQIDMsk = 0x1f << 24
+    // OVERSIZEWRITE MCR50[29] (read-only): Direction of the last oversize access. 0 = read; 1 = write.
+    SdmcAst2500V1SDMCINTCTRLOVERSIZEWRITEPos = 29
+    SdmcAst2500V1SDMCINTCTRLOVERSIZEWRITEMsk = 0x1 << 29
+    // CLEAR MCR50[31]: Write 1 to reset all interrupt flags and ECC error counters; software must write it back to 0 afterwards.
+    SdmcAst2500V1SDMCINTCTRLCLEARPos = 31
+    SdmcAst2500V1SDMCINTCTRLCLEARMsk = 0x1 << 31
+)
+
+// sdmc_ast2500_v1::SDMC_MAX_GRANT Maximum Grant Length Register (MCR40-MCR4C).  Field k of array element n is the grant length of REQ(8n+k), in units of 2 x 128 bits: value 0/1 = 2 x 128 bits, 2/3 = 4 x 128 bits, ... 14/15 = 16 x 128 bits.
+const (
+    // REQ0 [3:0]: Grant length of REQ(8n+0).
+    SdmcAst2500V1SDMCMAXGRANTREQ0Pos = 0
+    SdmcAst2500V1SDMCMAXGRANTREQ0Msk = 0xf << 0
+    // REQ1 [7:4]: Grant length of REQ(8n+1).
+    SdmcAst2500V1SDMCMAXGRANTREQ1Pos = 4
+    SdmcAst2500V1SDMCMAXGRANTREQ1Msk = 0xf << 4
+    // REQ2 [11:8]: Grant length of REQ(8n+2).
+    SdmcAst2500V1SDMCMAXGRANTREQ2Pos = 8
+    SdmcAst2500V1SDMCMAXGRANTREQ2Msk = 0xf << 8
+    // REQ3 [15:12]: Grant length of REQ(8n+3).
+    SdmcAst2500V1SDMCMAXGRANTREQ3Pos = 12
+    SdmcAst2500V1SDMCMAXGRANTREQ3Msk = 0xf << 12
+    // REQ4 [19:16]: Grant length of REQ(8n+4).
+    SdmcAst2500V1SDMCMAXGRANTREQ4Pos = 16
+    SdmcAst2500V1SDMCMAXGRANTREQ4Msk = 0xf << 16
+    // REQ5 [23:20]: Grant length of REQ(8n+5).
+    SdmcAst2500V1SDMCMAXGRANTREQ5Pos = 20
+    SdmcAst2500V1SDMCMAXGRANTREQ5Msk = 0xf << 20
+    // REQ6 [27:24]: Grant length of REQ(8n+6).
+    SdmcAst2500V1SDMCMAXGRANTREQ6Pos = 24
+    SdmcAst2500V1SDMCMAXGRANTREQ6Msk = 0xf << 24
+    // REQ7 [31:28]: Grant length of REQ(8n+7).  Reserved in MCR4C (REQ31 does not exist).
+    SdmcAst2500V1SDMCMAXGRANTREQ7Pos = 28
+    SdmcAst2500V1SDMCMAXGRANTREQ7Msk = 0xf << 28
+)
+
+// sdmc_ast2500_v1::SDMC_MISC Misc Control Register (MCR1C). Bits [31:5] reserved.
+const (
+    // REQTHRESHOLD MCR1C[4:0]: Request queued number threshold; requests masked in REQ_LIMIT_MASK (MCR38) are held while more requests are queued.
+    SdmcAst2500V1SDMCMISCREQTHRESHOLDPos = 0
+    SdmcAst2500V1SDMCMISCREQTHRESHOLDMsk = 0x1f << 0
+)
+
+// sdmc_ast2500_v1::SDMC_MR02 MR0/MR2 Mode Setting Register (MCR2C).
+const (
+    // MR0 MCR2C[12:0]: Mode register 0 value (write recovery, DLL reset at bit 8, CAS latency, burst type/length).
+    SdmcAst2500V1SDMCMR02MR0Pos = 0
+    SdmcAst2500V1SDMCMR02MR0Msk = 0x1fff << 0
+    // MR2 MCR2C[28:16]: Mode register 2 value (write CRC, RTT_WR, LP ASR, CWL).
+    SdmcAst2500V1SDMCMR02MR2Pos = 16
+    SdmcAst2500V1SDMCMR02MR2Msk = 0x1fff << 16
+)
+
+// sdmc_ast2500_v1::SDMC_MR13 MR1/MR3 Mode Setting Register (MCR30).
+const (
+    // MR1 MCR30[12:0]: Mode register 1 value (Qoff, TDQS, RTT_NOM, write leveling, AL, output driver impedance, DLL enable).
+    SdmcAst2500V1SDMCMR13MR1Pos = 0
+    SdmcAst2500V1SDMCMR13MR1Msk = 0x1fff << 0
+    // MR3 MCR30[28:16]: Mode register 3 value (MPR read format, write CMD latency, fine granularity refresh, geardown, MPR operation/page).
+    SdmcAst2500V1SDMCMR13MR3Pos = 16
+    SdmcAst2500V1SDMCMR13MR3Msk = 0x1fff << 16
+)
+
+// sdmc_ast2500_v1::SDMC_MR46 MR4/MR6 Mode Setting Register (MCR20).  Raw DRAM mode register values; see the JEDEC DDR4 standard for bit definitions.
+const (
+    // MR4 MCR20[12:0]: Mode register 4 value (DDR4: write/read preamble, self refresh abort, CAL, internal Vref monitor, TCR, max power down).
+    SdmcAst2500V1SDMCMR46MR4Pos = 0
+    SdmcAst2500V1SDMCMR46MR4Msk = 0x1fff << 0
+    // MR6 MCR20[28:16]: Mode register 6 value (DDR4: tCCD_L, VrefDQ training enable/range/value).
+    SdmcAst2500V1SDMCMR46MR6Pos = 16
+    SdmcAst2500V1SDMCMR46MR6Msk = 0x1fff << 16
+)
+
+// sdmc_ast2500_v1::SDMC_MR5 MR5 Mode Setting Register (MCR24).
+const (
+    // MR5 MCR24[12:0]: Mode register 5 value (DDR4: read/write DBI, data mask, CA parity, RTT_PARK, ODT input buffer in power down).
+    SdmcAst2500V1SDMCMR5MR5Pos = 0
+    SdmcAst2500V1SDMCMR5MR5Msk = 0x1fff << 0
+)
+
+// sdmc_ast2500_v1::SDMC_MRS_CTRL Mode Setting Control Register (MCR28). Bits [31:6] reserved.
+const (
+    // FIRE MCR28[0]: Write 1 to issue the selected mode register set command. Hardware clears it when done and holds off further AHB accesses to the controller meanwhile, so commands can be issued back to back.
+    SdmcAst2500V1SDMCMRSCTRLFIREPos = 0
+    SdmcAst2500V1SDMCMRSCTRLFIREMsk = 0x1 << 0
+    // MRSEL MCR28[3:1]: Mode register selection.
+    SdmcAst2500V1SDMCMRSCTRLMRSELPos = 1
+    SdmcAst2500V1SDMCMRSCTRLMRSELMsk = 0x7 << 1
+    // DLLRESETDELAY MCR28[4]: Enable the reset DLL delay timer, which blocks command execution after the command.
+    SdmcAst2500V1SDMCMRSCTRLDLLRESETDELAYPos = 4
+    SdmcAst2500V1SDMCMRSCTRLDLLRESETDELAYMsk = 0x1 << 4
+    // RANK1 MCR28[5]: Rank select. 0 = rank 0; 1 = rank 1.
+    SdmcAst2500V1SDMCMRSCTRLRANK1Pos = 5
+    SdmcAst2500V1SDMCMRSCTRLRANK1Msk = 0x1 << 5
+)
+
+/* Enum: sdmc_ast2500_v1::ModeReg */
+type SdmcAst2500V1ModeReg uint8
+
+const (
+    MR0 SdmcAst2500V1ModeReg = 0
+    MR1 SdmcAst2500V1ModeReg = 1
+    MR2 SdmcAst2500V1ModeReg = 2
+    MR3 SdmcAst2500V1ModeReg = 3
+    MR4 SdmcAst2500V1ModeReg = 4
+    MR5 SdmcAst2500V1ModeReg = 5
+    MR6 SdmcAst2500V1ModeReg = 6
+)
+
+// sdmc_ast2500_v1::SDMC_PHY_CTRL1 DDR PHY Control/Status Register #1 (MCR60). Bits [7:3] and [15:14] reserved.
+const (
+    // INIT MCR60[0]: DDR PHY init control/status.  Write 1 to start the PHY init cycle; reads 1 while busy and 0 when idle.
+    SdmcAst2500V1SDMCPHYCTRL1INITPos = 0
+    SdmcAst2500V1SDMCPHYCTRL1INITMsk = 0x1 << 0
+    // AUTOUPDATE MCR60[1]: Enable DDR PHY auto-update.
+    SdmcAst2500V1SDMCPHYCTRL1AUTOUPDATEPos = 1
+    SdmcAst2500V1SDMCPHYCTRL1AUTOUPDATEMsk = 0x1 << 1
+    // RESETDIS MCR60[2]: DDR PHY reset control. 0 = PHY held in reset; 1 = reset released.
+    SdmcAst2500V1SDMCPHYCTRL1RESETDISPos = 2
+    SdmcAst2500V1SDMCPHYCTRL1RESETDISMsk = 0x1 << 2
+    // GATETRAINSUPPORT MCR60[9:8] (read-only): Training interface gate training support. 01 = MC evaluation mode supported by the PHY.
+    SdmcAst2500V1SDMCPHYCTRL1GATETRAINSUPPORTPos = 8
+    SdmcAst2500V1SDMCPHYCTRL1GATETRAINSUPPORTMsk = 0x3 << 8
+    // EYETRAINSUPPORT MCR60[11:10] (read-only): Training interface data eye training support. 01 = MC evaluation mode supported by the PHY.
+    SdmcAst2500V1SDMCPHYCTRL1EYETRAINSUPPORTPos = 10
+    SdmcAst2500V1SDMCPHYCTRL1EYETRAINSUPPORTMsk = 0x3 << 10
+    // WRLVLSUPPORT MCR60[13:12] (read-only): Training interface write leveling support. 00 = not supported by the PHY.
+    SdmcAst2500V1SDMCPHYCTRL1WRLVLSUPPORTPos = 12
+    SdmcAst2500V1SDMCPHYCTRL1WRLVLSUPPORTMsk = 0x3 << 12
+    // RDLVLRESPONSE MCR60[31:16] (read-only): Training interface read leveling response.  Gate training: bit 0 = DQ[7:0], bit 8 = DQ[15:8]. Data eye training: bits [7:0] = DQ[7:0], bits [15:8] = DQ[15:8].
+    SdmcAst2500V1SDMCPHYCTRL1RDLVLRESPONSEPos = 16
+    SdmcAst2500V1SDMCPHYCTRL1RDLVLRESPONSEMsk = 0xffff << 16
+)
+
+// sdmc_ast2500_v1::SDMC_PHY_CTRL2 DDR PHY Control/Status Register #2 (MCR64). Bits [31:8] reserved.
+const (
+    // GATETRAINEN MCR64[1:0]: Training interface gate training logic enable.
+    SdmcAst2500V1SDMCPHYCTRL2GATETRAINENPos = 0
+    SdmcAst2500V1SDMCPHYCTRL2GATETRAINENMsk = 0x3 << 0
+    // EYETRAINEN MCR64[3:2]: Training interface PHY data eye training logic enable.
+    SdmcAst2500V1SDMCPHYCTRL2EYETRAINENPos = 2
+    SdmcAst2500V1SDMCPHYCTRL2EYETRAINENMsk = 0x3 << 2
+    // RDLVLLOAD MCR64[5:4]: Training interface read leveling load.
+    SdmcAst2500V1SDMCPHYCTRL2RDLVLLOADPos = 4
+    SdmcAst2500V1SDMCPHYCTRL2RDLVLLOADMsk = 0x3 << 4
+    // RDLVLDQSNEG MCR64[7:6]: Training interface read leveling read DQS edge. 0 = positive edge; 1 = negative edge.
+    SdmcAst2500V1SDMCPHYCTRL2RDLVLDQSNEGPos = 6
+    SdmcAst2500V1SDMCPHYCTRL2RDLVLDQSNEGMsk = 0x3 << 6
+)
+
+// sdmc_ast2500_v1::SDMC_PHY_CTRL4 DDR PHY Control/Status Register
+const (
+    // DQSDELAY MCR6C[15:0]: Training interface data eye training delay value for DQS.
+    SdmcAst2500V1SDMCPHYCTRL4DQSDELAYPos = 0
+    SdmcAst2500V1SDMCPHYCTRL4DQSDELAYMsk = 0xffff << 0
+    // DQSNDELAY MCR6C[31:16]: Training interface data eye training delay value for DQS#.
+    SdmcAst2500V1SDMCPHYCTRL4DQSNDELAYPos = 16
+    SdmcAst2500V1SDMCPHYCTRL4DQSNDELAYMsk = 0xffff << 16
+)
+
+// sdmc_ast2500_v1::SDMC_PHY_DBG_CTRL DDR PHY Debug Interface Control (MCR80). Bits [31:1] reserved.
+const (
+    // WRITE MCR80[0]: Command mode. 0 = read; 1 = write.
+    SdmcAst2500V1SDMCPHYDBGCTRLWRITEPos = 0
+    SdmcAst2500V1SDMCPHYDBGCTRLWRITEMsk = 0x1 << 0
+)
+
+// sdmc_ast2500_v1::SDMC_PHY_DBG_DATA DDR PHY Debug Interface Data (MCR84). Bits [31:24] reserved.
+const (
+    // ADDR MCR84[7:0]: Command address.
+    SdmcAst2500V1SDMCPHYDBGDATAADDRPos = 0
+    SdmcAst2500V1SDMCPHYDBGDATAADDRMsk = 0xff << 0
+    // WDATA MCR84[15:8]: Write data.
+    SdmcAst2500V1SDMCPHYDBGDATAWDATAPos = 8
+    SdmcAst2500V1SDMCPHYDBGDATAWDATAMsk = 0xff << 8
+    // RDATA MCR84[23:16] (read-only): Read data.
+    SdmcAst2500V1SDMCPHYDBGDATARDATAPos = 16
+    SdmcAst2500V1SDMCPHYDBGDATARDATAMsk = 0xff << 16
+)
+
+// sdmc_ast2500_v1::SDMC_POWER_CTRL Power Control Register (MCR34).  Bits 9 and 16 are RW reserved, bits [27:18] reserved.
+const (
+    // CKEEN MCR34[0]: Enable CKE. 0 = CKE forced low (state after power-on reset); 1 = CKE enabled.
+    SdmcAst2500V1SDMCPOWERCTRLCKEENPos = 0
+    SdmcAst2500V1SDMCPOWERCTRLCKEENMsk = 0x1 << 0
+    // AUTOPWRDNEN MCR34[1]: Enable auto power down (CKE driven dynamically when no request is pending).
+    SdmcAst2500V1SDMCPOWERCTRLAUTOPWRDNENPos = 1
+    SdmcAst2500V1SDMCPOWERCTRLAUTOPWRDNENMsk = 0x1 << 1
+    // SELFREFRESH MCR34[2]: Force SDRAM into self refresh. 0 = normal mode / exit self refresh.
+    SdmcAst2500V1SDMCPOWERCTRLSELFREFRESHPos = 2
+    SdmcAst2500V1SDMCPOWERCTRLSELFREFRESHMsk = 0x1 << 2
+    // CKOFFINSR MCR34[3]: Disable the CK/CK# output buffers while in self refresh.
+    SdmcAst2500V1SDMCPOWERCTRLCKOFFINSRPos = 3
+    SdmcAst2500V1SDMCPOWERCTRLCKOFFINSRMsk = 0x1 << 3
+    // CKEEXITDELAY MCR34[6:4]: CKE exit delay from power down to any command. Timing = 2n + 4 CK.
+    SdmcAst2500V1SDMCPOWERCTRLCKEEXITDELAYPos = 4
+    SdmcAst2500V1SDMCPOWERCTRLCKEEXITDELAYMsk = 0x7 << 4
+    // RESETDIS MCR34[7]: SDRAM RESET_N output. 0 = reset asserted (output low); 1 = reset released (output high).
+    SdmcAst2500V1SDMCPOWERCTRLRESETDISPos = 7
+    SdmcAst2500V1SDMCPOWERCTRLRESETDISMsk = 0x1 << 7
+    // ODTEN MCR34[8]: Enable DDR3/DDR4 SDRAM ODT.
+    SdmcAst2500V1SDMCPOWERCTRLODTENPos = 8
+    SdmcAst2500V1SDMCPOWERCTRLODTENMsk = 0x1 << 8
+    // ODTAUTOON MCR34[10]: Automatically turn SDRAM ODT on/off for write cycles (ODT_EN must be set first).
+    SdmcAst2500V1SDMCPOWERCTRLODTAUTOONPos = 10
+    SdmcAst2500V1SDMCPOWERCTRLODTAUTOONMsk = 0x1 << 10
+    // ODTEXTEND MCR34[11]: Extend the SDRAM ODT cycle.  Must be set for DDR3 when the tWL setting bit 0 is 0.
+    SdmcAst2500V1SDMCPOWERCTRLODTEXTENDPos = 11
+    SdmcAst2500V1SDMCPOWERCTRLODTEXTENDMsk = 0x1 << 11
+    // TCKEPW MCR34[14:12]: t-CKE, CKE minimum high/low pulse width. Timing = 2n + 2 CK.
+    SdmcAst2500V1SDMCPOWERCTRLTCKEPWPos = 12
+    SdmcAst2500V1SDMCPOWERCTRLTCKEPWMsk = 0x7 << 12
+    // READGAPEN MCR34[15]: Enable read gap control for the PHY read output.
+    SdmcAst2500V1SDMCPOWERCTRLREADGAPENPos = 15
+    SdmcAst2500V1SDMCPOWERCTRLREADGAPENMsk = 0x1 << 15
+    // REQINDIS MCR34[17]: Disable memory request input (set during DDR init).
+    SdmcAst2500V1SDMCPOWERCTRLREQINDISPos = 17
+    SdmcAst2500V1SDMCPOWERCTRLREQINDISMsk = 0x1 << 17
+    // SRSTATE MCR34[30:28] (read-only, debug): Self refresh control state. 0 = idle; 1 = wait for idle; 2 = entering self refresh; 3 = wait tXSNR; 4 = wait MRS DLL reset; 5 = wait 512 CK for DLL recovery.  Poll for 0 (idle) after a DLL reset.
+    SdmcAst2500V1SDMCPOWERCTRLSRSTATEPos = 28
+    SdmcAst2500V1SDMCPOWERCTRLSRSTATEMsk = 0x7 << 28
+    // CKEOUT MCR34[31] (read-only, debug): Current CKE pin output.
+    SdmcAst2500V1SDMCPOWERCTRLCKEOUTPos = 31
+    SdmcAst2500V1SDMCPOWERCTRLCKEOUTMsk = 0x1 << 31
+)
+
+// sdmc_ast2500_v1::SDMC_PRIORITY_GROUP Priority Group Setting Register (MCR3C).
+const (
+    // EQUAL MCR3C bit n: 0 = REQn has higher priority than REQ(n+1); 1 = REQn and REQ(n+1) have equal priority.
+    SdmcAst2500V1SDMCPRIORITYGROUPEQUALPos = 0
+    SdmcAst2500V1SDMCPRIORITYGROUPEQUALMsk = 0xffffffff << 0
+)
+
+// sdmc_ast2500_v1::SDMC_PROTECT Protection Key Register (MCR00).
+const (
+    // KEY MCR00[31:0]: Protection key.  Write 0xFC60_0309 to unlock, any other value to lock.  Reads 1 when unlocked, 0 when locked.
+    SdmcAst2500V1SDMCPROTECTKEYPos = 0
+    SdmcAst2500V1SDMCPROTECTKEYMsk = 0xffffffff << 0
+)
+
+// sdmc_ast2500_v1::SDMC_REFRESH Refresh Timing Register (MCR0C).
+const (
+    // CYCLES MCR0C[3:0]: Refresh cycles per refresh period. 0 = refresh disabled; 1-7 = n cycles; 1xxx = 8 cycles.
+    SdmcAst2500V1SDMCREFRESHCYCLESPos = 0
+    SdmcAst2500V1SDMCREFRESHCYCLESMsk = 0xf << 0
+    // PRECHARGEALL MCR0C[4]: Force all banks to be pre-charged before refresh cycles (insurance only).
+    SdmcAst2500V1SDMCREFRESHPRECHARGEALLPos = 4
+    SdmcAst2500V1SDMCREFRESHPRECHARGEALLMsk = 0x1 << 4
+    // LOWPRIOEN MCR0C[5]: Enable low-priority refresh requests once the refresh counter passes 1/4 of PERIOD (up to 8 cycles per request).
+    SdmcAst2500V1SDMCREFRESHLOWPRIOENPos = 5
+    SdmcAst2500V1SDMCREFRESHLOWPRIOENMsk = 0x1 << 5
+    // ZQCLEN MCR0C[6]: Issue ZQCL automatically after the DLL reset MRS command.
+    SdmcAst2500V1SDMCREFRESHZQCLENPos = 6
+    SdmcAst2500V1SDMCREFRESHZQCLENMsk = 0x1 << 6
+    // ZQCSEN MCR0C[7]: Issue ZQCS commands periodically (every ZQCS_PERIOD refresh cycles).
+    SdmcAst2500V1SDMCREFRESHZQCSENPos = 7
+    SdmcAst2500V1SDMCREFRESHZQCSENMsk = 0x1 << 7
+    // PERIOD MCR0C[15:8]: Period of high-priority refresh cycles in 12 MHz reference clocks (refresh frequency = 12 MHz / PERIOD).
+    SdmcAst2500V1SDMCREFRESHPERIODPos = 8
+    SdmcAst2500V1SDMCREFRESHPERIODMsk = 0xff << 8
+    // ZQCSPERIOD MCR0C[30:16]: Period of ZQCS commands in refresh cycles (e.g. 128 ms = 7.5 us * 0x42AA).  Applies to DDR3 and DDR4.
+    SdmcAst2500V1SDMCREFRESHZQCSPERIODPos = 16
+    SdmcAst2500V1SDMCREFRESHZQCSPERIODMsk = 0x7fff << 16
+    // ZQCSEXIT128 MCR0C[31]: ZQCS exit delay. 0 = 64 nCK; 1 = 128 nCK.
+    SdmcAst2500V1SDMCREFRESHZQCSEXIT128Pos = 31
+    SdmcAst2500V1SDMCREFRESHZQCSEXIT128Msk = 0x1 << 31
+)
+
+// sdmc_ast2500_v1::SDMC_REQ_MASK DRAM request mask (MCR08 / MCR38).  Bit n corresponds to REQn of the fixed priority request list.  REQ15, REQ19, REQ20 and REQ22-REQ27 are reserved and not named.
+const (
+    // VGAHWCURSOR REQ0: VGA hardware cursor read.
+    SdmcAst2500V1SDMCREQMASKVGAHWCURSORPos = 0
+    SdmcAst2500V1SDMCREQMASKVGAHWCURSORMsk = 0x1 << 0
+    // VGATEXTFONT REQ1: VGA text mode CG font read.
+    SdmcAst2500V1SDMCREQMASKVGATEXTFONTPos = 1
+    SdmcAst2500V1SDMCREQMASKVGATEXTFONTMsk = 0x1 << 1
+    // VGATEXTASCII REQ2: VGA text mode ASCII code read.
+    SdmcAst2500V1SDMCREQMASKVGATEXTASCIIPos = 2
+    SdmcAst2500V1SDMCREQMASKVGATEXTASCIIMsk = 0x1 << 2
+    // VGACRT REQ3: VGA CRT read.
+    SdmcAst2500V1SDMCREQMASKVGACRTPos = 3
+    SdmcAst2500V1SDMCREQMASKVGACRTMsk = 0x1 << 3
+    // SOCDCCURSOR REQ4: SOC display controller cursor read.
+    SdmcAst2500V1SDMCREQMASKSOCDCCURSORPos = 4
+    SdmcAst2500V1SDMCREQMASKSOCDCCURSORMsk = 0x1 << 4
+    // SOCDCOSD REQ5: SOC display controller OSD read.
+    SdmcAst2500V1SDMCREQMASKSOCDCOSDPos = 5
+    SdmcAst2500V1SDMCREQMASKSOCDCOSDMsk = 0x1 << 5
+    // SOCDCCRT REQ6: SOC display controller CRT read.
+    SdmcAst2500V1SDMCREQMASKSOCDCCRTPos = 6
+    SdmcAst2500V1SDMCREQMASKSOCDCCRTMsk = 0x1 << 6
+    // VIDEOHIPRIWRITE REQ7: Video high priority write.
+    SdmcAst2500V1SDMCREQMASKVIDEOHIPRIWRITEPos = 7
+    SdmcAst2500V1SDMCREQMASKVIDEOHIPRIWRITEMsk = 0x1 << 7
+    // USB20EHCI1 REQ8: USB2.0 hub / EHCI1 DMA read/write.
+    SdmcAst2500V1SDMCREQMASKUSB20EHCI1Pos = 8
+    SdmcAst2500V1SDMCREQMASKUSB20EHCI1Msk = 0x1 << 8
+    // USB20EHCI2 REQ9: USB2.0 device / EHCI2 DMA read/write.
+    SdmcAst2500V1SDMCREQMASKUSB20EHCI2Pos = 9
+    SdmcAst2500V1SDMCREQMASKUSB20EHCI2Msk = 0x1 << 9
+    // CPU REQ10: CPU data read/write.
+    SdmcAst2500V1SDMCREQMASKCPUPos = 10
+    SdmcAst2500V1SDMCREQMASKCPUMsk = 0x1 << 10
+    // AHB2 REQ11: AHB2 bus read/write.
+    SdmcAst2500V1SDMCREQMASKAHB2Pos = 11
+    SdmcAst2500V1SDMCREQMASKAHB2Msk = 0x1 << 11
+    // AHB REQ12: AHB bus read/write.
+    SdmcAst2500V1SDMCREQMASKAHBPos = 12
+    SdmcAst2500V1SDMCREQMASKAHBMsk = 0x1 << 12
+    // MAC0 REQ13: MAC0 DMA read/write.
+    SdmcAst2500V1SDMCREQMASKMAC0Pos = 13
+    SdmcAst2500V1SDMCREQMASKMAC0Msk = 0x1 << 13
+    // MAC1 REQ14: MAC1 DMA read/write.
+    SdmcAst2500V1SDMCREQMASKMAC1Pos = 14
+    SdmcAst2500V1SDMCREQMASKMAC1Msk = 0x1 << 14
+    // PCIE REQ16: PCI-E bus read/write.
+    SdmcAst2500V1SDMCREQMASKPCIEPos = 16
+    SdmcAst2500V1SDMCREQMASKPCIEMsk = 0x1 << 16
+    // XDMA REQ17: X-DMA message read/write.
+    SdmcAst2500V1SDMCREQMASKXDMAPos = 17
+    SdmcAst2500V1SDMCREQMASKXDMAMsk = 0x1 << 17
+    // CRYPTO REQ18: Encryption engine read/write.
+    SdmcAst2500V1SDMCREQMASKCRYPTOPos = 18
+    SdmcAst2500V1SDMCREQMASKCRYPTOMsk = 0x1 << 18
+    // VIDEOFLAG REQ21: Video flag read/write.
+    SdmcAst2500V1SDMCREQMASKVIDEOFLAGPos = 21
+    SdmcAst2500V1SDMCREQMASKVIDEOFLAGMsk = 0x1 << 21
+    // VIDEOLOPRIWRITE REQ28: Video low priority write.
+    SdmcAst2500V1SDMCREQMASKVIDEOLOPRIWRITEPos = 28
+    SdmcAst2500V1SDMCREQMASKVIDEOLOPRIWRITEMsk = 0x1 << 28
+    // GFX2D REQ29: 2D engine data read/write.
+    SdmcAst2500V1SDMCREQMASKGFX2DPos = 29
+    SdmcAst2500V1SDMCREQMASKGFX2DMsk = 0x1 << 29
+    // MEMCHECK REQ30: Memory integrity check engine read.
+    SdmcAst2500V1SDMCREQMASKMEMCHECKPos = 30
+    SdmcAst2500V1SDMCREQMASKMEMCHECKMsk = 0x1 << 30
+)
+
+// sdmc_ast2500_v1::SDMC_TEST_ADDR Testing Start Address and Length Register (MCR74). Bits [3:0] and [31:30] reserved.
+const (
+    // LENGTH MCR74[23:4]: Final test address within the 16 MB segment, in 16-byte units (testing runs from offset 0 to this address).
+    SdmcAst2500V1SDMCTESTADDRLENGTHPos = 4
+    SdmcAst2500V1SDMCTESTADDRLENGTHMsk = 0xfffff << 4
+    // BASE MCR74[29:24]: Test base address segment in 16 MB units.
+    SdmcAst2500V1SDMCTESTADDRBASEPos = 24
+    SdmcAst2500V1SDMCTESTADDRBASEMsk = 0x3f << 24
+)
+
+// sdmc_ast2500_v1::SDMC_TEST_CTRL ECC and Testing Control/Status Register (MCR70). Bits 11 and [15:14] reserved. ECC memory initialisation sequence: set CONFIG.ECC_EN, set ECC_RANGE, write TEST_INIT_VAL = 0, write TEST_CTRL = 0x221 (TEST_EN, TEST_GEN_MODE = 100, ECC_INIT), wait for DONE, write TEST_CTRL = 0, then pulse INT_CTRL.CLEAR (0x8000_0000, then 0).
+const (
+    // TESTEN MCR70[0]: Enable testing. 0 = disable and reset the test function and its status; 1 = start.
+    SdmcAst2500V1SDMCTESTCTRLTESTENPos = 0
+    SdmcAst2500V1SDMCTESTCTRLTESTENMsk = 0x1 << 0
+    // TESTMODE MCR70[2:1]: Testing mode.
+    SdmcAst2500V1SDMCTESTCTRLTESTMODEPos = 1
+    SdmcAst2500V1SDMCTESTCTRLTESTMODEMsk = 0x3 << 1
+    // TESTGENMODE MCR70[5:3]: Testing data generation mode, seeded from TEST_INIT_VAL.
+    SdmcAst2500V1SDMCTESTCTRLTESTGENMODEPos = 3
+    SdmcAst2500V1SDMCTESTCTRLTESTGENMODEMsk = 0x7 << 3
+    // TWOMODES MCR70[6]: Testing auxiliary control bit 0: run test mode 1 after test mode 0.
+    SdmcAst2500V1SDMCTESTCTRLTWOMODESPos = 6
+    SdmcAst2500V1SDMCTESTCTRLTWOMODESMsk = 0x1 << 6
+    // ERRSTOP MCR70[7]: Testing auxiliary control bit 1: terminate testing after a read error.
+    SdmcAst2500V1SDMCTESTCTRLERRSTOPPos = 7
+    SdmcAst2500V1SDMCTESTCTRLERRSTOPMsk = 0x1 << 7
+    // LOOPBACK MCR70[8]: Testing auxiliary control bit 2: bypass I/O buffer loopback mode.
+    SdmcAst2500V1SDMCTESTCTRLLOOPBACKPos = 8
+    SdmcAst2500V1SDMCTESTCTRLLOOPBACKMsk = 0x1 << 8
+    // ECCINIT MCR70[9]: ECC memory segment initialisation mode. 0 = normal test mode; 1 = ECC memory initialisation.
+    SdmcAst2500V1SDMCTESTCTRLECCINITPos = 9
+    SdmcAst2500V1SDMCTESTCTRLECCINITMsk = 0x1 << 9
+    // ECCSCRUBEN MCR70[10]: Automatically scrub memory after a recoverable ECC error.
+    SdmcAst2500V1SDMCTESTCTRLECCSCRUBENPos = 10
+    SdmcAst2500V1SDMCTESTCTRLECCSCRUBENMsk = 0x1 << 10
+    // DONE MCR70[12] (read-only): Testing finished. 0 = busy; 1 = finished. Cleared when TEST_EN is cleared.
+    SdmcAst2500V1SDMCTESTCTRLDONEPos = 12
+    SdmcAst2500V1SDMCTESTCTRLDONEMsk = 0x1 << 12
+    // FAIL MCR70[13] (read-only): Testing result. 0 = pass; 1 = fail. Cleared when TEST_EN is cleared.
+    SdmcAst2500V1SDMCTESTCTRLFAILPos = 13
+    SdmcAst2500V1SDMCTESTCTRLFAILMsk = 0x1 << 13
+    // FAILCOUNT MCR70[31:16] (read-only): Accumulated fail count, one per failing 64-bit unit; saturates.
+    SdmcAst2500V1SDMCTESTCTRLFAILCOUNTPos = 16
+    SdmcAst2500V1SDMCTESTCTRLFAILCOUNTMsk = 0xffff << 16
+)
+
+/* Enum: sdmc_ast2500_v1::TestMode */
+type SdmcAst2500V1TestMode uint8
+
+const (
+    WRITEONLY SdmcAst2500V1TestMode = 0
+    READCOMPARE SdmcAst2500V1TestMode = 1
+    WRITEREADCOMPARE SdmcAst2500V1TestMode = 2
+)
+
+/* Enum: sdmc_ast2500_v1::TestGenMode */
+type SdmcAst2500V1TestGenMode uint8
+
+const (
+    BYTETOGGLE SdmcAst2500V1TestGenMode = 0
+    BYTEROTATELEFT SdmcAst2500V1TestGenMode = 1
+    BYTEROTATERIGHT SdmcAst2500V1TestGenMode = 2
+    BYTEINCREMENT SdmcAst2500V1TestGenMode = 3
+    BYTESEQUENCE SdmcAst2500V1TestGenMode = 4
+    NIBBLESEQUENCE SdmcAst2500V1TestGenMode = 5
+    BIT2SEQUENCE SdmcAst2500V1TestGenMode = 6
+    BIT1SEQUENCE SdmcAst2500V1TestGenMode = 7
+)
+
+// sdmc_ast2500_v1::SDMC_TEST_FAIL_DQ Testing Fail DQ Bit Register (MCR78).
+const (
+    // RISE MCR78[15:0]: Failing DQ0-DQ15 on the rising edge.
+    SdmcAst2500V1SDMCTESTFAILDQRISEPos = 0
+    SdmcAst2500V1SDMCTESTFAILDQRISEMsk = 0xffff << 0
+    // FALL MCR78[31:16]: Failing DQ0-DQ15 on the falling edge.
+    SdmcAst2500V1SDMCTESTFAILDQFALLPos = 16
+    SdmcAst2500V1SDMCTESTFAILDQFALLMsk = 0xffff << 16
+)
+
+// sdmc_ast2500_v1::SDMC_VALUE32 Plain 32-bit value.
+const (
+    // VALUE 32-bit register value.
+    SdmcAst2500V1SDMCVALUE32VALUEPos = 0
+    SdmcAst2500V1SDMCVALUE32VALUEMsk = 0xffffffff << 0
+)
+
 // uart_v1::DATA8 8-bit data register (RBR/THR and SCR share this layout).
 const (
     // DATA Data byte (bits [7:0]).

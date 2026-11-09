@@ -33,6 +33,11 @@ peripherals:
     address: 0x1E620000
     description: "Firmware SPI memory controller (FMC)"
 
+  - name:    SDMC
+    block:   sdmc_ast2500_v1::SDMC
+    address: 0x1E6E0000
+    description: "SDRAM memory controller (SDMC)"
+
   - name:    SCU
     block:   scu_ast2500_v1::SCU
     address: 0x1E6E2000

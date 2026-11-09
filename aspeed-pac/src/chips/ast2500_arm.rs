@@ -10,6 +10,10 @@ pub enum Interrupt {}
 pub const FMC: fmc_ast2500_v1::FMC = unsafe {
     fmc_ast2500_v1::FMC::from_ptr(0x1e62_0000usize as _)
 };
+///SDRAM memory controller (SDMC)
+pub const SDMC: sdmc_ast2500_v1::SDMC = unsafe {
+    sdmc_ast2500_v1::SDMC::from_ptr(0x1e6e_0000usize as _)
+};
 ///System control unit (SCU)
 pub const SCU: scu_ast2500_v1::SCU = unsafe {
     scu_ast2500_v1::SCU::from_ptr(0x1e6e_2000usize as _)
@@ -4447,6 +4451,3405 @@ pub mod scu_ast2500_v1 {
                 .DRAM_INIT_READY(), self.DRAM_INIT_BY_SOC(), self.ASPEED_DEF(), self
                 .CUSTOMER_DEF(), self.FW_HANDSHAKE()
             )
+        }
+    }
+}
+pub mod sdmc_ast2500_v1 {
+    ///AST2500 SDRAM Memory Controller (SDMC). Base address: 0x1E6E_0000. DDR3/DDR4 controller with ECC, data scrambling, a built-in memory test engine and DDR PHY training interface.
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC {
+        ptr: *mut u8,
+    }
+    unsafe impl Send for SDMC {}
+    unsafe impl Sync for SDMC {}
+    impl SDMC {
+        #[inline(always)]
+        pub const unsafe fn from_ptr(ptr: *mut ()) -> Self {
+            Self { ptr: ptr as _ }
+        }
+        #[inline(always)]
+        pub const fn as_ptr(&self) -> *mut () {
+            self.ptr as _
+        }
+        ///Protection Key Register (MCR00). Init = 0 (locked). Write 0xFC60_0309 to unlock MCR04-MCR7C; write any other value to lock. Reads back 0x0000_0001 when unlocked and 0x0000_0000 when locked.
+        #[inline(always)]
+        pub const fn PROTECT(
+            self,
+        ) -> crate::common::Reg<SDMC_PROTECT, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
+        }
+        ///Configuration Register (MCR04). Init = 0x1000_000C. DRAM type, size, rank and ECC/cache/scramble configuration.
+        #[inline(always)]
+        pub const fn CONFIG(self) -> crate::common::Reg<SDMC_CONFIG, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
+            }
+        }
+        ///Graphics Memory Protection Register (MCR08). Init = 0. Bit n = 1 re-maps all accesses of REQn to the highest memory space (the graphics memory aperture), whose location is given by MCR04\[1:0\] (DRAM size) and MCR04\[3:2\] (VGA aperture size).
+        #[inline(always)]
+        pub const fn GFX_PROTECT(
+            self,
+        ) -> crate::common::Reg<SDMC_REQ_MASK, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
+            }
+        }
+        ///Refresh Timing Register (MCR0C). Init = 0. Read data is only valid while refresh is enabled (CYCLES != 0).
+        #[inline(always)]
+        pub const fn REFRESH(
+            self,
+        ) -> crate::common::Reg<SDMC_REFRESH, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
+            }
+        }
+        ///AC Timing Register #1 (MCR10). Init = 0. Bits \[3:0\] of the 5-bit t-RP/t-RRD/t-RCD/t-APD/t-RTP/t-WTP/t-RTW/ t-WTR settings; bit 4 of each is in AC_TIMING3.
+        #[inline(always)]
+        pub const fn AC_TIMING1(
+            self,
+        ) -> crate::common::Reg<SDMC_AC_TIMING1, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
+            }
+        }
+        ///AC Timing Register #2 (MCR14). Init = 0.
+        #[inline(always)]
+        pub const fn AC_TIMING2(
+            self,
+        ) -> crate::common::Reg<SDMC_AC_TIMING2, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
+            }
+        }
+        ///AC Timing Register #3 (MCR18). Init = 0. Bit 4 of the AC_TIMING1/AC_TIMING2 settings plus DDR4-only timings.
+        #[inline(always)]
+        pub const fn AC_TIMING3(
+            self,
+        ) -> crate::common::Reg<SDMC_AC_TIMING3, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
+            }
+        }
+        ///Misc Control Register (MCR1C). Init = 0.
+        #[inline(always)]
+        pub const fn MISC(self) -> crate::common::Reg<SDMC_MISC, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _)
+            }
+        }
+        ///MR4/MR6 Mode Setting Register (MCR20). Init = X. DRAM mode register values issued by MRS_CTRL. DDR3 uses 0.
+        #[inline(always)]
+        pub const fn MR46(self) -> crate::common::Reg<SDMC_MR46, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _)
+            }
+        }
+        ///MR5 Mode Setting Register (MCR24). Init = X. DRAM mode register value issued by MRS_CTRL. DDR3 uses 0.
+        #[inline(always)]
+        pub const fn MR5(self) -> crate::common::Reg<SDMC_MR5, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
+            }
+        }
+        ///Mode Setting Control Register (MCR28). Init = 0. Issues one mode register set command from MR02/MR13/MR46/MR5.
+        #[inline(always)]
+        pub const fn MRS_CTRL(
+            self,
+        ) -> crate::common::Reg<SDMC_MRS_CTRL, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
+            }
+        }
+        ///MR0/MR2 Mode Setting Register (MCR2C). Init = X.
+        #[inline(always)]
+        pub const fn MR02(self) -> crate::common::Reg<SDMC_MR02, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x2cusize) as _)
+            }
+        }
+        ///MR1/MR3 Mode Setting Register (MCR30). Init = X.
+        #[inline(always)]
+        pub const fn MR13(self) -> crate::common::Reg<SDMC_MR13, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x30usize) as _)
+            }
+        }
+        ///Power Control Register (MCR34). Init = 0. CKE, SDRAM reset, ODT and self refresh control.
+        #[inline(always)]
+        pub const fn POWER_CTRL(
+            self,
+        ) -> crate::common::Reg<SDMC_POWER_CTRL, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x34usize) as _)
+            }
+        }
+        ///Request Queued Limitation Mask Register (MCR38). Init = 0. Bit n = 1 masks REQn while the number of queued requests exceeds MISC.REQ_THRESHOLD; 0 never masks it. High priority requests (e.g. CRT display) are usually left unmasked.
+        #[inline(always)]
+        pub const fn REQ_LIMIT_MASK(
+            self,
+        ) -> crate::common::Reg<SDMC_REQ_MASK, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x38usize) as _)
+            }
+        }
+        ///Priority Group Setting Register (MCR3C). Init = 0.
+        #[inline(always)]
+        pub const fn PRIORITY_GROUP(
+            self,
+        ) -> crate::common::Reg<SDMC_PRIORITY_GROUP, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x3cusize) as _)
+            }
+        }
+        ///Maximum Grant Length Registers #1-#4 (MCR40/MCR44/MCR48/MCR4C). Init = 0. Element n holds the 4-bit grant lengths of REQ(8n)-REQ(8n+7); REQ31 (MCR4C\[31:28\]) does not exist.
+        #[inline(always)]
+        pub const fn MAX_GRANT(
+            self,
+            n: usize,
+        ) -> crate::common::Reg<SDMC_MAX_GRANT, crate::common::RW> {
+            assert!(n < 4usize);
+            unsafe {
+                crate::common::Reg::from_ptr(
+                    self.ptr.wrapping_add(0x40usize + n * 4usize) as _,
+                )
+            }
+        }
+        ///Interrupt Control/Status Register (MCR50). Init = 0. ECC and oversize-write interrupt enables, flags and error counters.
+        #[inline(always)]
+        pub const fn INT_CTRL(
+            self,
+        ) -> crate::common::Reg<SDMC_INT_CTRL, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x50usize) as _)
+            }
+        }
+        ///ECC/Cache Address Range Control Register (MCR54). Init = 0.
+        #[inline(always)]
+        pub const fn ECC_RANGE(
+            self,
+        ) -> crate::common::Reg<SDMC_ECC_RANGE, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x54usize) as _)
+            }
+        }
+        ///Address of First Un-Recoverable ECC Error (MCR58). Init = 0. Re-armed when the error counters are reset (INT_CTRL.CLEAR).
+        #[inline(always)]
+        pub const fn ECC_FIRST_UNRECOV_ADDR(
+            self,
+        ) -> crate::common::Reg<SDMC_ECC_ERR_ADDR, crate::common::R> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x58usize) as _)
+            }
+        }
+        ///Address of Last Recoverable ECC Error (MCR5C). Init = 0. Re-armed when the error counters are reset (INT_CTRL.CLEAR).
+        #[inline(always)]
+        pub const fn ECC_LAST_RECOV_ADDR(
+            self,
+        ) -> crate::common::Reg<SDMC_ECC_ERR_ADDR, crate::common::R> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x5cusize) as _)
+            }
+        }
+        ///DDR PHY Control/Status Register #1 (MCR60). Init = 0. PHY reset, init and auto-update control plus training interface capability/response. Not an array with MCR64-MCR6C because each register has a different layout.
+        #[inline(always)]
+        pub const fn PHY_CTRL1(
+            self,
+        ) -> crate::common::Reg<SDMC_PHY_CTRL1, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x60usize) as _)
+            }
+        }
+        ///DDR PHY Control/Status Register #2 (MCR64). Init = 0. Training interface logic enables.
+        #[inline(always)]
+        pub const fn PHY_CTRL2(
+            self,
+        ) -> crate::common::Reg<SDMC_PHY_CTRL2, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x64usize) as _)
+            }
+        }
+        ///DDR PHY Control/Status Register #3 (MCR68). Init = 0. Training interface gate training delay value.
+        #[inline(always)]
+        pub const fn PHY_CTRL3(
+            self,
+        ) -> crate::common::Reg<SDMC_VALUE32, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x68usize) as _)
+            }
+        }
+        ///DDR PHY Control/Status Register #4 (MCR6C). Init = 0. Training interface data eye training delay values.
+        #[inline(always)]
+        pub const fn PHY_CTRL4(
+            self,
+        ) -> crate::common::Reg<SDMC_PHY_CTRL4, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x6cusize) as _)
+            }
+        }
+        ///ECC and Testing Control/Status Register (MCR70). Init = 0. Built-in memory test engine and ECC memory initialisation. The tested range is set by TEST_ADDR and the data seed by TEST_INIT_VAL. Not recommended after a watchdog reset because testing disturbs the graphics display.
+        #[inline(always)]
+        pub const fn TEST_CTRL(
+            self,
+        ) -> crate::common::Reg<SDMC_TEST_CTRL, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x70usize) as _)
+            }
+        }
+        ///Testing Start Address and Length Register (MCR74). Init = 0.
+        #[inline(always)]
+        pub const fn TEST_ADDR(
+            self,
+        ) -> crate::common::Reg<SDMC_TEST_ADDR, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x74usize) as _)
+            }
+        }
+        ///Testing Fail DQ Bit Register (MCR78). Init = 0.
+        #[inline(always)]
+        pub const fn TEST_FAIL_DQ(
+            self,
+        ) -> crate::common::Reg<SDMC_TEST_FAIL_DQ, crate::common::R> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x78usize) as _)
+            }
+        }
+        ///Test Initial Value Register (MCR7C). Init = 0. Seed for the test data generator (TEST_CTRL.TEST_GEN_MODE). Modes 000-011: \[7:0\] rising-edge DQ value, \[15:8\] falling-edge DQ value, same for all DQS groups. Mode 100: bytes \[7:0\]/\[23:16\] rising and \[15:8\]/\[31:24\] falling, used in sequence. Mode 101: 4-bit, mode 110: 2-bit and mode 111: 1-bit groups alternating rising/falling, used in sequence. Must be 0 for ECC initialisation.
+        #[inline(always)]
+        pub const fn TEST_INIT_VAL(
+            self,
+        ) -> crate::common::Reg<SDMC_VALUE32, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x7cusize) as _)
+            }
+        }
+        ///DDR PHY Debug Interface Control (MCR80). Init = 0.
+        #[inline(always)]
+        pub const fn PHY_DBG_CTRL(
+            self,
+        ) -> crate::common::Reg<SDMC_PHY_DBG_CTRL, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x80usize) as _)
+            }
+        }
+        ///DDR PHY Debug Interface Data (MCR84). Init = 0.
+        #[inline(always)]
+        pub const fn PHY_DBG_DATA(
+            self,
+        ) -> crate::common::Reg<SDMC_PHY_DBG_DATA, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x84usize) as _)
+            }
+        }
+        ///Reserved Register (MCR88). Init = 0. 32-bit RW register with no hardware function; usable as software scratch storage.
+        #[inline(always)]
+        pub const fn SCRATCH0(
+            self,
+        ) -> crate::common::Reg<SDMC_VALUE32, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _)
+            }
+        }
+        ///Reserved Register (MCR8C). Init = 0. 32-bit RW register with no hardware function; usable as software scratch storage.
+        #[inline(always)]
+        pub const fn SCRATCH1(
+            self,
+        ) -> crate::common::Reg<SDMC_VALUE32, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x8cusize) as _)
+            }
+        }
+        ///AST2000 Backward Compatible SCU Password (MCR100). Init = 0x0000_00A8. Read-only.
+        #[inline(always)]
+        pub const fn COMPAT_SCU_KEY(
+            self,
+        ) -> crate::common::Reg<SDMC_VALUE32, crate::common::R> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0100usize) as _)
+            }
+        }
+        ///AST2000 Backward Compatible SCU MPLL Parameter (MCR120). Init = 0. Read/write; holds the M-PLL parameter reported in VGA compatible mode.
+        #[inline(always)]
+        pub const fn COMPAT_MPLL(
+            self,
+        ) -> crate::common::Reg<SDMC_COMPAT_MPLL, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0120usize) as _)
+            }
+        }
+        ///AST2000 Backward Compatible SCU Hardware Strapping Value (MCR170). Init = 0. Read-only, always 0.
+        #[inline(always)]
+        pub const fn COMPAT_SCU_HWSTRAP(
+            self,
+        ) -> crate::common::Reg<SDMC_VALUE32, crate::common::R> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0170usize) as _)
+            }
+        }
+    }
+    ///AC Timing Register #1 (MCR10). Each field is bits \[3:0\] of a 5-bit value n; bit 4 is in AC_TIMING3.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_AC_TIMING1(pub u32);
+    impl SDMC_AC_TIMING1 {
+        ///MCR10\[3:0\]: t-WTR (write to read). Timing = 2n + 3 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TWTR(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x0f;
+            val as u8
+        }
+        ///MCR10\[3:0\]: t-WTR (write to read). Timing = 2n + 3 CK.
+        #[inline(always)]
+        pub const fn set_TWTR(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 0usize)) | (((val as u32) & 0x0f) << 0usize);
+        }
+        ///MCR10\[7:4\]: t-RTW (read to write). Timing = 2n + 3 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRTW(&self) -> u8 {
+            let val = (self.0 >> 4usize) & 0x0f;
+            val as u8
+        }
+        ///MCR10\[7:4\]: t-RTW (read to write). Timing = 2n + 3 CK.
+        #[inline(always)]
+        pub const fn set_TRTW(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 4usize)) | (((val as u32) & 0x0f) << 4usize);
+        }
+        ///MCR10\[11:8\]: t-WTP (write to pre-charge, same bank). Timing = 2n CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TWTP(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x0f;
+            val as u8
+        }
+        ///MCR10\[11:8\]: t-WTP (write to pre-charge, same bank). Timing = 2n CK.
+        #[inline(always)]
+        pub const fn set_TWTP(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 8usize)) | (((val as u32) & 0x0f) << 8usize);
+        }
+        ///MCR10\[15:12\]: t-RTP (read to pre-charge, same bank). Timing = 2n + 1 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRTP(&self) -> u8 {
+            let val = (self.0 >> 12usize) & 0x0f;
+            val as u8
+        }
+        ///MCR10\[15:12\]: t-RTP (read to pre-charge, same bank). Timing = 2n + 1 CK.
+        #[inline(always)]
+        pub const fn set_TRTP(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 12usize)) | (((val as u32) & 0x0f) << 12usize);
+        }
+        ///MCR10\[19:16\]: t-APD (ACT/PRE to read/write, different banks). Timing = 2n + 1 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TAPD(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0x0f;
+            val as u8
+        }
+        ///MCR10\[19:16\]: t-APD (ACT/PRE to read/write, different banks). Timing = 2n + 1 CK.
+        #[inline(always)]
+        pub const fn set_TAPD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 16usize)) | (((val as u32) & 0x0f) << 16usize);
+        }
+        ///MCR10\[23:20\]: t-RCD (active to read/write). Timing = 2n + 3 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRCD(&self) -> u8 {
+            let val = (self.0 >> 20usize) & 0x0f;
+            val as u8
+        }
+        ///MCR10\[23:20\]: t-RCD (active to read/write). Timing = 2n + 3 CK.
+        #[inline(always)]
+        pub const fn set_TRCD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 20usize)) | (((val as u32) & 0x0f) << 20usize);
+        }
+        ///MCR10\[27:24\]: t-RRD (active to active). Timing = 2n + 1 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRRD(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x0f;
+            val as u8
+        }
+        ///MCR10\[27:24\]: t-RRD (active to active). Timing = 2n + 1 CK.
+        #[inline(always)]
+        pub const fn set_TRRD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 24usize)) | (((val as u32) & 0x0f) << 24usize);
+        }
+        ///MCR10\[31:28\]: t-RP. Timing = 2n + 3 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRP(&self) -> u8 {
+            let val = (self.0 >> 28usize) & 0x0f;
+            val as u8
+        }
+        ///MCR10\[31:28\]: t-RP. Timing = 2n + 3 CK.
+        #[inline(always)]
+        pub const fn set_TRP(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 28usize)) | (((val as u32) & 0x0f) << 28usize);
+        }
+    }
+    impl Default for SDMC_AC_TIMING1 {
+        #[inline(always)]
+        fn default() -> SDMC_AC_TIMING1 {
+            SDMC_AC_TIMING1(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_AC_TIMING1 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_AC_TIMING1")
+                .field("TWTR", &self.TWTR())
+                .field("TRTW", &self.TRTW())
+                .field("TWTP", &self.TWTP())
+                .field("TRTP", &self.TRTP())
+                .field("TAPD", &self.TAPD())
+                .field("TRCD", &self.TRCD())
+                .field("TRRD", &self.TRRD())
+                .field("TRP", &self.TRP())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_AC_TIMING1 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_AC_TIMING1 {{ TWTR: {=u8:?}, TRTW: {=u8:?}, TWTP: {=u8:?}, TRTP: {=u8:?}, TAPD: {=u8:?}, TRCD: {=u8:?}, TRRD: {=u8:?}, TRP: {=u8:?} }}",
+                self.TWTR(), self.TRTW(), self.TWTP(), self.TRTP(), self.TAPD(), self
+                .TRCD(), self.TRRD(), self.TRP()
+            )
+        }
+    }
+    ///AC Timing Register
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_AC_TIMING2(pub u32);
+    impl SDMC_AC_TIMING2 {
+        ///MCR14\[7:0\]: t-RFC refresh interval. Timing = 2n + 4 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRFC(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///MCR14\[7:0\]: t-RFC refresh interval. Timing = 2n + 4 CK.
+        #[inline(always)]
+        pub const fn set_TRFC(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///MCR14\[11:8\]: t-MRD / t-MOD mode set interval (the larger of the two). Timing = 4n + 2 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TMRD(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x0f;
+            val as u8
+        }
+        ///MCR14\[11:8\]: t-MRD / t-MOD mode set interval (the larger of the two). Timing = 4n + 2 CK.
+        #[inline(always)]
+        pub const fn set_TMRD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 8usize)) | (((val as u32) & 0x0f) << 8usize);
+        }
+        ///MCR14\[15:12\]: t-RAS bits \[3:0\] (active to minimum precharge). Timing = 2n + 1 CK. Bit 4 is AC_TIMING3.TRAS_B4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRAS(&self) -> u8 {
+            let val = (self.0 >> 12usize) & 0x0f;
+            val as u8
+        }
+        ///MCR14\[15:12\]: t-RAS bits \[3:0\] (active to minimum precharge). Timing = 2n + 1 CK. Bit 4 is AC_TIMING3.TRAS_B4.
+        #[inline(always)]
+        pub const fn set_TRAS(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 12usize)) | (((val as u32) & 0x0f) << 12usize);
+        }
+        ///MCR14\[19:16\]: DRAM read latency. 0 = not supported. DDR3: value = CL - 2; DDR4: value = CL - 1.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CL(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0x0f;
+            val as u8
+        }
+        ///MCR14\[19:16\]: DRAM read latency. 0 = not supported. DDR3: value = CL - 2; DDR4: value = CL - 1.
+        #[inline(always)]
+        pub const fn set_CL(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 16usize)) | (((val as u32) & 0x0f) << 16usize);
+        }
+        ///MCR14\[23:20\]: DRAM write latency. 0 = not supported. Value = CWL - 2.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CWL(&self) -> u8 {
+            let val = (self.0 >> 20usize) & 0x0f;
+            val as u8
+        }
+        ///MCR14\[23:20\]: DRAM write latency. 0 = not supported. Value = CWL - 2.
+        #[inline(always)]
+        pub const fn set_CWL(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 20usize)) | (((val as u32) & 0x0f) << 20usize);
+        }
+        ///MCR14\[27:24\]: t-XSNR. Timing = 32n + 32 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TXSNR(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x0f;
+            val as u8
+        }
+        ///MCR14\[27:24\]: t-XSNR. Timing = 32n + 32 CK.
+        #[inline(always)]
+        pub const fn set_TXSNR(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 24usize)) | (((val as u32) & 0x0f) << 24usize);
+        }
+        ///MCR14\[31:28\]: t-FAW (four bank active window) bits \[3:0\]. Timing = 2n + 1 CK. Bit 4 is AC_TIMING3.TFAW_B4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TFAW(&self) -> u8 {
+            let val = (self.0 >> 28usize) & 0x0f;
+            val as u8
+        }
+        ///MCR14\[31:28\]: t-FAW (four bank active window) bits \[3:0\]. Timing = 2n + 1 CK. Bit 4 is AC_TIMING3.TFAW_B4.
+        #[inline(always)]
+        pub const fn set_TFAW(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 28usize)) | (((val as u32) & 0x0f) << 28usize);
+        }
+    }
+    impl Default for SDMC_AC_TIMING2 {
+        #[inline(always)]
+        fn default() -> SDMC_AC_TIMING2 {
+            SDMC_AC_TIMING2(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_AC_TIMING2 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_AC_TIMING2")
+                .field("TRFC", &self.TRFC())
+                .field("TMRD", &self.TMRD())
+                .field("TRAS", &self.TRAS())
+                .field("CL", &self.CL())
+                .field("CWL", &self.CWL())
+                .field("TXSNR", &self.TXSNR())
+                .field("TFAW", &self.TFAW())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_AC_TIMING2 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_AC_TIMING2 {{ TRFC: {=u8:?}, TMRD: {=u8:?}, TRAS: {=u8:?}, CL: {=u8:?}, CWL: {=u8:?}, TXSNR: {=u8:?}, TFAW: {=u8:?} }}",
+                self.TRFC(), self.TMRD(), self.TRAS(), self.CL(), self.CWL(), self
+                .TXSNR(), self.TFAW()
+            )
+        }
+    }
+    ///AC Timing Register
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_AC_TIMING3(pub u32);
+    impl SDMC_AC_TIMING3 {
+        ///MCR18\[0\]: t-WTR setting bit 4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TWTR_B4(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[0\]: t-WTR setting bit 4.
+        #[inline(always)]
+        pub const fn set_TWTR_B4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///MCR18\[1\]: t-RTW setting bit 4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRTW_B4(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[1\]: t-RTW setting bit 4.
+        #[inline(always)]
+        pub const fn set_TRTW_B4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///MCR18\[2\]: t-WTP setting bit 4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TWTP_B4(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[2\]: t-WTP setting bit 4.
+        #[inline(always)]
+        pub const fn set_TWTP_B4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///MCR18\[3\]: t-RTP setting bit 4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRTP_B4(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[3\]: t-RTP setting bit 4.
+        #[inline(always)]
+        pub const fn set_TRTP_B4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///MCR18\[4\]: t-APD setting bit 4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TAPD_B4(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[4\]: t-APD setting bit 4.
+        #[inline(always)]
+        pub const fn set_TAPD_B4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///MCR18\[5\]: t-RCD setting bit 4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRCD_B4(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[5\]: t-RCD setting bit 4.
+        #[inline(always)]
+        pub const fn set_TRCD_B4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///MCR18\[6\]: t-RRD setting bit 4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRRD_B4(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[6\]: t-RRD setting bit 4.
+        #[inline(always)]
+        pub const fn set_TRRD_B4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///MCR18\[7\]: t-RP setting bit 4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRP_B4(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[7\]: t-RP setting bit 4.
+        #[inline(always)]
+        pub const fn set_TRP_B4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///MCR18\[8\]: t-RAS setting bit 4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TRAS_B4(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[8\]: t-RAS setting bit 4.
+        #[inline(always)]
+        pub const fn set_TRAS_B4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///MCR18\[9\]: t-FAW setting bit 4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TFAW_B4(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[9\]: t-FAW setting bit 4.
+        #[inline(always)]
+        pub const fn set_TFAW_B4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///MCR18\[11:10\]: Read command gap between different ranks, avoids overlapping data and preamble/postamble. Timing = 2n + 2 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RANK_READ_GAP(&self) -> u8 {
+            let val = (self.0 >> 10usize) & 0x03;
+            val as u8
+        }
+        ///MCR18\[11:10\]: Read command gap between different ranks, avoids overlapping data and preamble/postamble. Timing = 2n + 2 CK.
+        #[inline(always)]
+        pub const fn set_RANK_READ_GAP(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 10usize)) | (((val as u32) & 0x03) << 10usize);
+        }
+        ///MCR18\[13:12\]: t-CCD_L (DDR4 only). Timing = 2n + 4 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TCCD_L(&self) -> u8 {
+            let val = (self.0 >> 12usize) & 0x03;
+            val as u8
+        }
+        ///MCR18\[13:12\]: t-CCD_L (DDR4 only). Timing = 2n + 4 CK.
+        #[inline(always)]
+        pub const fn set_TCCD_L(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 12usize)) | (((val as u32) & 0x03) << 12usize);
+        }
+        ///MCR18\[15:14\]: t-WTR_L minus t-WTR_S (DDR4 only). Timing = 2n CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TWTR_L(&self) -> u8 {
+            let val = (self.0 >> 14usize) & 0x03;
+            val as u8
+        }
+        ///MCR18\[15:14\]: t-WTR_L minus t-WTR_S (DDR4 only). Timing = 2n CK.
+        #[inline(always)]
+        pub const fn set_TWTR_L(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 14usize)) | (((val as u32) & 0x03) << 14usize);
+        }
+        ///MCR18\[16\]: Write data delay phase selection; in normal operation indicates whether CWL is even (0) or odd (1).
+        #[must_use]
+        #[inline(always)]
+        pub const fn CWL_ODD(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///MCR18\[16\]: Write data delay phase selection; in normal operation indicates whether CWL is even (0) or odd (1).
+        #[inline(always)]
+        pub const fn set_CWL_ODD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+    }
+    impl Default for SDMC_AC_TIMING3 {
+        #[inline(always)]
+        fn default() -> SDMC_AC_TIMING3 {
+            SDMC_AC_TIMING3(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_AC_TIMING3 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_AC_TIMING3")
+                .field("TWTR_B4", &self.TWTR_B4())
+                .field("TRTW_B4", &self.TRTW_B4())
+                .field("TWTP_B4", &self.TWTP_B4())
+                .field("TRTP_B4", &self.TRTP_B4())
+                .field("TAPD_B4", &self.TAPD_B4())
+                .field("TRCD_B4", &self.TRCD_B4())
+                .field("TRRD_B4", &self.TRRD_B4())
+                .field("TRP_B4", &self.TRP_B4())
+                .field("TRAS_B4", &self.TRAS_B4())
+                .field("TFAW_B4", &self.TFAW_B4())
+                .field("RANK_READ_GAP", &self.RANK_READ_GAP())
+                .field("TCCD_L", &self.TCCD_L())
+                .field("TWTR_L", &self.TWTR_L())
+                .field("CWL_ODD", &self.CWL_ODD())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_AC_TIMING3 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_AC_TIMING3 {{ TWTR_B4: {=bool:?}, TRTW_B4: {=bool:?}, TWTP_B4: {=bool:?}, TRTP_B4: {=bool:?}, TAPD_B4: {=bool:?}, TRCD_B4: {=bool:?}, TRRD_B4: {=bool:?}, TRP_B4: {=bool:?}, TRAS_B4: {=bool:?}, TFAW_B4: {=bool:?}, RANK_READ_GAP: {=u8:?}, TCCD_L: {=u8:?}, TWTR_L: {=u8:?}, CWL_ODD: {=bool:?} }}",
+                self.TWTR_B4(), self.TRTW_B4(), self.TWTP_B4(), self.TRTP_B4(), self
+                .TAPD_B4(), self.TRCD_B4(), self.TRRD_B4(), self.TRP_B4(), self
+                .TRAS_B4(), self.TFAW_B4(), self.RANK_READ_GAP(), self.TCCD_L(), self
+                .TWTR_L(), self.CWL_ODD()
+            )
+        }
+    }
+    ///AST2000 Backward Compatible SCU MPLL Parameter (MCR120). Bits \[31:16\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_COMPAT_MPLL(pub u32);
+    impl SDMC_COMPAT_MPLL {
+        ///MCR120\[4:0\]: Denumerator.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DENUM(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x1f;
+            val as u8
+        }
+        ///MCR120\[4:0\]: Denumerator.
+        #[inline(always)]
+        pub const fn set_DENUM(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x1f << 0usize)) | (((val as u32) & 0x1f) << 0usize);
+        }
+        ///MCR120\[13:5\]: Numerator.
+        #[must_use]
+        #[inline(always)]
+        pub const fn NUM(&self) -> u16 {
+            let val = (self.0 >> 5usize) & 0x01ff;
+            val as u16
+        }
+        ///MCR120\[13:5\]: Numerator.
+        #[inline(always)]
+        pub const fn set_NUM(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x01ff << 5usize))
+                | (((val as u32) & 0x01ff) << 5usize);
+        }
+        ///MCR120\[15:14\]: Post divider.
+        #[must_use]
+        #[inline(always)]
+        pub const fn POST_DIV(&self) -> u8 {
+            let val = (self.0 >> 14usize) & 0x03;
+            val as u8
+        }
+        ///MCR120\[15:14\]: Post divider.
+        #[inline(always)]
+        pub const fn set_POST_DIV(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 14usize)) | (((val as u32) & 0x03) << 14usize);
+        }
+    }
+    impl Default for SDMC_COMPAT_MPLL {
+        #[inline(always)]
+        fn default() -> SDMC_COMPAT_MPLL {
+            SDMC_COMPAT_MPLL(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_COMPAT_MPLL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_COMPAT_MPLL")
+                .field("DENUM", &self.DENUM())
+                .field("NUM", &self.NUM())
+                .field("POST_DIV", &self.POST_DIV())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_COMPAT_MPLL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_COMPAT_MPLL {{ DENUM: {=u8:?}, NUM: {=u16:?}, POST_DIV: {=u8:?} }}",
+                self.DENUM(), self.NUM(), self.POST_DIV()
+            )
+        }
+    }
+    ///Configuration Register (MCR04). Bits \[18:14\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_CONFIG(pub u32);
+    impl SDMC_CONFIG {
+        ///MCR04\[1:0\]: Total memory capacity for oversized write protection. Writes beyond the size are dropped; reads wrap around.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DRAM_SIZE(&self) -> DramSize {
+            let val = (self.0 >> 0usize) & 0x03;
+            DramSize::from_bits(val as u8)
+        }
+        ///MCR04\[1:0\]: Total memory capacity for oversized write protection. Writes beyond the size are dropped; reads wrap around.
+        #[inline(always)]
+        pub const fn set_DRAM_SIZE(&mut self, val: DramSize) {
+            self.0 = (self.0 & !(0x03 << 0usize))
+                | (((val.to_bits() as u32) & 0x03) << 0usize);
+        }
+        ///MCR04\[3:2\] (read-only): Graphics memory aperture size, set from hardware strap SCU70\[3:2\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn VGA_APERTURE(&self) -> VgaAperture {
+            let val = (self.0 >> 2usize) & 0x03;
+            VgaAperture::from_bits(val as u8)
+        }
+        ///MCR04\[3:2\] (read-only): Graphics memory aperture size, set from hardware strap SCU70\[3:2\].
+        #[inline(always)]
+        pub const fn set_VGA_APERTURE(&mut self, val: VgaAperture) {
+            self.0 = (self.0 & !(0x03 << 2usize))
+                | (((val.to_bits() as u32) & 0x03) << 2usize);
+        }
+        ///MCR04\[4\]: DRAM type. 0 = DDR3; 1 = DDR4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DDR4(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[4\]: DRAM type. 0 = DDR3; 1 = DDR4.
+        #[inline(always)]
+        pub const fn set_DDR4(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///MCR04\[5\]: DRAM rank configuration for stacked DRAM. 0 = one rank; 1 = two ranks, MA15 functions as CS1. Only for stacked 8 Gbit parts.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DUAL_RANK(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[5\]: DRAM rank configuration for stacked DRAM. 0 = one rank; 1 = two ranks, MA15 functions as CS1. Only for stacked 8 Gbit parts.
+        #[inline(always)]
+        pub const fn set_DUAL_RANK(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///MCR04\[6\] (read-only): Reserved for VGA driver backward compatibility; reads 1 (16-bit).
+        #[must_use]
+        #[inline(always)]
+        pub const fn VGA_16BIT(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[6\] (read-only): Reserved for VGA driver backward compatibility; reads 1 (16-bit).
+        #[inline(always)]
+        pub const fn set_VGA_16BIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///MCR04\[7\]: Enable ECC. Costs an extra 1/8 of the protected memory size. CACHE_EN must also be set when ECC is enabled.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ECC_EN(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[7\]: Enable ECC. Costs an extra 1/8 of the protected memory size. CACHE_EN must also be set when ECC is enabled.
+        #[inline(always)]
+        pub const fn set_ECC_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///MCR04\[8\]: Enable data scrambling to reduce maximum SSO current.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SCRAMBLE_EN(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[8\]: Enable data scrambling to reduce maximum SSO current.
+        #[inline(always)]
+        pub const fn set_SCRAMBLE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///MCR04\[9\]: Data scramble pattern selection. 0 = pattern 1; 1 = pattern 2.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SCRAMBLE_PAT2(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[9\]: Data scramble pattern selection. 0 = pattern 1; 1 = pattern 2.
+        #[inline(always)]
+        pub const fn set_SCRAMBLE_PAT2(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///MCR04\[10\]: Enable the DRAM controller cache.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CACHE_EN(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[10\]: Enable the DRAM controller cache.
+        #[inline(always)]
+        pub const fn set_CACHE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+        ///MCR04\[11\]: Cache operates only within the address range set in ECC_RANGE (MCR54). 0 = cache covers all addresses.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CACHE_RANGE_EN(&self) -> bool {
+            let val = (self.0 >> 11usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[11\]: Cache operates only within the address range set in ECC_RANGE (MCR54). 0 = cache covers all addresses.
+        #[inline(always)]
+        pub const fn set_CACHE_RANGE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 11usize)) | (((val as u32) & 0x01) << 11usize);
+        }
+        ///MCR04\[12\]: Start the cache initial sequence. Only allowed while CACHE_EN = 0; poll CACHE_INIT_DONE afterwards.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CACHE_INIT_EN(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[12\]: Start the cache initial sequence. Only allowed while CACHE_EN = 0; poll CACHE_INIT_DONE afterwards.
+        #[inline(always)]
+        pub const fn set_CACHE_INIT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///MCR04\[13\]: DDR4 DRAM configuration. 0 = single x16 DRAM; 1 = dual x8 DRAM.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DUAL_X8(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[13\]: DDR4 DRAM configuration. 0 = single x16 DRAM; 1 = dual x8 DRAM.
+        #[inline(always)]
+        pub const fn set_DUAL_X8(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///MCR04\[19\] (read-only): Cache initial done. 0 = not active or busy; 1 = done.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CACHE_INIT_DONE(&self) -> bool {
+            let val = (self.0 >> 19usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[19\] (read-only): Cache initial done. 0 = not active or busy; 1 = done.
+        #[inline(always)]
+        pub const fn set_CACHE_INIT_DONE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 19usize)) | (((val as u32) & 0x01) << 19usize);
+        }
+        ///MCR04\[27:20\]: DRAM controller software version. 0 = earlier chip revision; other values are software defined (e.g. the DRAM init code version).
+        #[must_use]
+        #[inline(always)]
+        pub const fn SW_VERSION(&self) -> u8 {
+            let val = (self.0 >> 20usize) & 0xff;
+            val as u8
+        }
+        ///MCR04\[27:20\]: DRAM controller software version. 0 = earlier chip revision; other values are software defined (e.g. the DRAM init code version).
+        #[inline(always)]
+        pub const fn set_SW_VERSION(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 20usize)) | (((val as u32) & 0xff) << 20usize);
+        }
+        ///MCR04\[31:28\] (read-only): DRAM controller hardware version. 0 = earlier chip revision; 1 = AST2500.
+        #[must_use]
+        #[inline(always)]
+        pub const fn HW_VERSION(&self) -> u8 {
+            let val = (self.0 >> 28usize) & 0x0f;
+            val as u8
+        }
+        ///MCR04\[31:28\] (read-only): DRAM controller hardware version. 0 = earlier chip revision; 1 = AST2500.
+        #[inline(always)]
+        pub const fn set_HW_VERSION(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 28usize)) | (((val as u32) & 0x0f) << 28usize);
+        }
+    }
+    impl Default for SDMC_CONFIG {
+        #[inline(always)]
+        fn default() -> SDMC_CONFIG {
+            SDMC_CONFIG(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_CONFIG {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_CONFIG")
+                .field("DRAM_SIZE", &self.DRAM_SIZE())
+                .field("VGA_APERTURE", &self.VGA_APERTURE())
+                .field("DDR4", &self.DDR4())
+                .field("DUAL_RANK", &self.DUAL_RANK())
+                .field("VGA_16BIT", &self.VGA_16BIT())
+                .field("ECC_EN", &self.ECC_EN())
+                .field("SCRAMBLE_EN", &self.SCRAMBLE_EN())
+                .field("SCRAMBLE_PAT2", &self.SCRAMBLE_PAT2())
+                .field("CACHE_EN", &self.CACHE_EN())
+                .field("CACHE_RANGE_EN", &self.CACHE_RANGE_EN())
+                .field("CACHE_INIT_EN", &self.CACHE_INIT_EN())
+                .field("DUAL_X8", &self.DUAL_X8())
+                .field("CACHE_INIT_DONE", &self.CACHE_INIT_DONE())
+                .field("SW_VERSION", &self.SW_VERSION())
+                .field("HW_VERSION", &self.HW_VERSION())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_CONFIG {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_CONFIG {{ DRAM_SIZE: {:?}, VGA_APERTURE: {:?}, DDR4: {=bool:?}, DUAL_RANK: {=bool:?}, VGA_16BIT: {=bool:?}, ECC_EN: {=bool:?}, SCRAMBLE_EN: {=bool:?}, SCRAMBLE_PAT2: {=bool:?}, CACHE_EN: {=bool:?}, CACHE_RANGE_EN: {=bool:?}, CACHE_INIT_EN: {=bool:?}, DUAL_X8: {=bool:?}, CACHE_INIT_DONE: {=bool:?}, SW_VERSION: {=u8:?}, HW_VERSION: {=u8:?} }}",
+                self.DRAM_SIZE(), self.VGA_APERTURE(), self.DDR4(), self.DUAL_RANK(),
+                self.VGA_16BIT(), self.ECC_EN(), self.SCRAMBLE_EN(), self
+                .SCRAMBLE_PAT2(), self.CACHE_EN(), self.CACHE_RANGE_EN(), self
+                .CACHE_INIT_EN(), self.DUAL_X8(), self.CACHE_INIT_DONE(), self
+                .SW_VERSION(), self.HW_VERSION()
+            )
+        }
+    }
+    ///ECC error address (MCR58 / MCR5C). Bits \[3:0\] and \[31:30\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_ECC_ERR_ADDR(pub u32);
+    impl SDMC_ECC_ERR_ADDR {
+        ///29:4\]: DRAM address bits \[29:4\] of the recorded ECC error (16-byte granularity).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ADDR(&self) -> u32 {
+            let val = (self.0 >> 4usize) & 0x03ff_ffff;
+            val as u32
+        }
+        ///29:4\]: DRAM address bits \[29:4\] of the recorded ECC error (16-byte granularity).
+        #[inline(always)]
+        pub const fn set_ADDR(&mut self, val: u32) {
+            self.0 = (self.0 & !(0x03ff_ffff << 4usize))
+                | (((val as u32) & 0x03ff_ffff) << 4usize);
+        }
+    }
+    impl Default for SDMC_ECC_ERR_ADDR {
+        #[inline(always)]
+        fn default() -> SDMC_ECC_ERR_ADDR {
+            SDMC_ECC_ERR_ADDR(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_ECC_ERR_ADDR {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_ECC_ERR_ADDR").field("ADDR", &self.ADDR()).finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_ECC_ERR_ADDR {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "SDMC_ECC_ERR_ADDR {{ ADDR: {=u32:?} }}", self.ADDR())
+        }
+    }
+    ///ECC/Cache Address Range Control Register (MCR54). Bits \[19:0\] and \[31:30\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_ECC_RANGE(pub u32);
+    impl SDMC_ECC_RANGE {
+        ///MCR54\[29:20\]: Maximum ECC/cache work address in 1 MB units (work area = address <= MAX). With ECC enabled firmware must reserve an extra 1/8 of the space for ECC data. Also limits the cache when CONFIG.CACHE_RANGE_EN is set.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MAX(&self) -> u16 {
+            let val = (self.0 >> 20usize) & 0x03ff;
+            val as u16
+        }
+        ///MCR54\[29:20\]: Maximum ECC/cache work address in 1 MB units (work area = address <= MAX). With ECC enabled firmware must reserve an extra 1/8 of the space for ECC data. Also limits the cache when CONFIG.CACHE_RANGE_EN is set.
+        #[inline(always)]
+        pub const fn set_MAX(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x03ff << 20usize))
+                | (((val as u32) & 0x03ff) << 20usize);
+        }
+    }
+    impl Default for SDMC_ECC_RANGE {
+        #[inline(always)]
+        fn default() -> SDMC_ECC_RANGE {
+            SDMC_ECC_RANGE(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_ECC_RANGE {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_ECC_RANGE").field("MAX", &self.MAX()).finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_ECC_RANGE {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "SDMC_ECC_RANGE {{ MAX: {=u16:?} }}", self.MAX())
+        }
+    }
+    ///Interrupt Control/Status Register (MCR50). Bits 3, \[11:7\] and 30 reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_INT_CTRL(pub u32);
+    impl SDMC_INT_CTRL {
+        ///MCR50\[0\]: Enable ECC un-recoverable error interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ECC_UNRECOV_INT_EN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///MCR50\[0\]: Enable ECC un-recoverable error interrupt.
+        #[inline(always)]
+        pub const fn set_ECC_UNRECOV_INT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///MCR50\[1\]: Enable ECC recoverable error interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ECC_RECOV_INT_EN(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///MCR50\[1\]: Enable ECC recoverable error interrupt.
+        #[inline(always)]
+        pub const fn set_ECC_RECOV_INT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///MCR50\[2\]: Enable oversized access interrupt.
+        #[must_use]
+        #[inline(always)]
+        pub const fn OVERSIZE_INT_EN(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///MCR50\[2\]: Enable oversized access interrupt.
+        #[inline(always)]
+        pub const fn set_OVERSIZE_INT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///MCR50\[4\] (read-only): ECC un-recoverable error interrupt pending. Cleared by CLEAR (MCR50\[31\]).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ECC_UNRECOV_INT(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///MCR50\[4\] (read-only): ECC un-recoverable error interrupt pending. Cleared by CLEAR (MCR50\[31\]).
+        #[inline(always)]
+        pub const fn set_ECC_UNRECOV_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///MCR50\[5\] (read-only): ECC recoverable error interrupt pending. Cleared by CLEAR.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ECC_RECOV_INT(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///MCR50\[5\] (read-only): ECC recoverable error interrupt pending. Cleared by CLEAR.
+        #[inline(always)]
+        pub const fn set_ECC_RECOV_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///MCR50\[6\] (read-only): Oversized write error interrupt pending. Cleared by CLEAR.
+        #[must_use]
+        #[inline(always)]
+        pub const fn OVERSIZE_INT(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///MCR50\[6\] (read-only): Oversized write error interrupt pending. Cleared by CLEAR.
+        #[inline(always)]
+        pub const fn set_OVERSIZE_INT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///MCR50\[15:12\] (read-only): ECC un-recoverable error counter, saturates at 15.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ECC_UNRECOV_COUNT(&self) -> u8 {
+            let val = (self.0 >> 12usize) & 0x0f;
+            val as u8
+        }
+        ///MCR50\[15:12\] (read-only): ECC un-recoverable error counter, saturates at 15.
+        #[inline(always)]
+        pub const fn set_ECC_UNRECOV_COUNT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 12usize)) | (((val as u32) & 0x0f) << 12usize);
+        }
+        ///MCR50\[23:16\] (read-only): ECC recoverable error counter, saturates at 255.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ECC_RECOV_COUNT(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0xff;
+            val as u8
+        }
+        ///MCR50\[23:16\] (read-only): ECC recoverable error counter, saturates at 255.
+        #[inline(always)]
+        pub const fn set_ECC_RECOV_COUNT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 16usize)) | (((val as u32) & 0xff) << 16usize);
+        }
+        ///MCR50\[28:24\] (read-only): Request ID of the last oversize access.
+        #[must_use]
+        #[inline(always)]
+        pub const fn OVERSIZE_REQ_ID(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x1f;
+            val as u8
+        }
+        ///MCR50\[28:24\] (read-only): Request ID of the last oversize access.
+        #[inline(always)]
+        pub const fn set_OVERSIZE_REQ_ID(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x1f << 24usize)) | (((val as u32) & 0x1f) << 24usize);
+        }
+        ///MCR50\[29\] (read-only): Direction of the last oversize access. 0 = read; 1 = write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn OVERSIZE_WRITE(&self) -> bool {
+            let val = (self.0 >> 29usize) & 0x01;
+            val != 0
+        }
+        ///MCR50\[29\] (read-only): Direction of the last oversize access. 0 = read; 1 = write.
+        #[inline(always)]
+        pub const fn set_OVERSIZE_WRITE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 29usize)) | (((val as u32) & 0x01) << 29usize);
+        }
+        ///MCR50\[31\]: Write 1 to reset all interrupt flags and ECC error counters; software must write it back to 0 afterwards.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CLEAR(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///MCR50\[31\]: Write 1 to reset all interrupt flags and ECC error counters; software must write it back to 0 afterwards.
+        #[inline(always)]
+        pub const fn set_CLEAR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for SDMC_INT_CTRL {
+        #[inline(always)]
+        fn default() -> SDMC_INT_CTRL {
+            SDMC_INT_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_INT_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_INT_CTRL")
+                .field("ECC_UNRECOV_INT_EN", &self.ECC_UNRECOV_INT_EN())
+                .field("ECC_RECOV_INT_EN", &self.ECC_RECOV_INT_EN())
+                .field("OVERSIZE_INT_EN", &self.OVERSIZE_INT_EN())
+                .field("ECC_UNRECOV_INT", &self.ECC_UNRECOV_INT())
+                .field("ECC_RECOV_INT", &self.ECC_RECOV_INT())
+                .field("OVERSIZE_INT", &self.OVERSIZE_INT())
+                .field("ECC_UNRECOV_COUNT", &self.ECC_UNRECOV_COUNT())
+                .field("ECC_RECOV_COUNT", &self.ECC_RECOV_COUNT())
+                .field("OVERSIZE_REQ_ID", &self.OVERSIZE_REQ_ID())
+                .field("OVERSIZE_WRITE", &self.OVERSIZE_WRITE())
+                .field("CLEAR", &self.CLEAR())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_INT_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_INT_CTRL {{ ECC_UNRECOV_INT_EN: {=bool:?}, ECC_RECOV_INT_EN: {=bool:?}, OVERSIZE_INT_EN: {=bool:?}, ECC_UNRECOV_INT: {=bool:?}, ECC_RECOV_INT: {=bool:?}, OVERSIZE_INT: {=bool:?}, ECC_UNRECOV_COUNT: {=u8:?}, ECC_RECOV_COUNT: {=u8:?}, OVERSIZE_REQ_ID: {=u8:?}, OVERSIZE_WRITE: {=bool:?}, CLEAR: {=bool:?} }}",
+                self.ECC_UNRECOV_INT_EN(), self.ECC_RECOV_INT_EN(), self
+                .OVERSIZE_INT_EN(), self.ECC_UNRECOV_INT(), self.ECC_RECOV_INT(), self
+                .OVERSIZE_INT(), self.ECC_UNRECOV_COUNT(), self.ECC_RECOV_COUNT(), self
+                .OVERSIZE_REQ_ID(), self.OVERSIZE_WRITE(), self.CLEAR()
+            )
+        }
+    }
+    ///Maximum Grant Length Register (MCR40-MCR4C). Field k of array element n is the grant length of REQ(8n+k), in units of 2 x 128 bits: value 0/1 = 2 x 128 bits, 2/3 = 4 x 128 bits, ... 14/15 = 16 x 128 bits.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_MAX_GRANT(pub u32);
+    impl SDMC_MAX_GRANT {
+        ///3:0\]: Grant length of REQ(8n+0).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REQ0(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x0f;
+            val as u8
+        }
+        ///3:0\]: Grant length of REQ(8n+0).
+        #[inline(always)]
+        pub const fn set_REQ0(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 0usize)) | (((val as u32) & 0x0f) << 0usize);
+        }
+        ///7:4\]: Grant length of REQ(8n+1).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REQ1(&self) -> u8 {
+            let val = (self.0 >> 4usize) & 0x0f;
+            val as u8
+        }
+        ///7:4\]: Grant length of REQ(8n+1).
+        #[inline(always)]
+        pub const fn set_REQ1(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 4usize)) | (((val as u32) & 0x0f) << 4usize);
+        }
+        ///11:8\]: Grant length of REQ(8n+2).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REQ2(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x0f;
+            val as u8
+        }
+        ///11:8\]: Grant length of REQ(8n+2).
+        #[inline(always)]
+        pub const fn set_REQ2(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 8usize)) | (((val as u32) & 0x0f) << 8usize);
+        }
+        ///15:12\]: Grant length of REQ(8n+3).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REQ3(&self) -> u8 {
+            let val = (self.0 >> 12usize) & 0x0f;
+            val as u8
+        }
+        ///15:12\]: Grant length of REQ(8n+3).
+        #[inline(always)]
+        pub const fn set_REQ3(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 12usize)) | (((val as u32) & 0x0f) << 12usize);
+        }
+        ///19:16\]: Grant length of REQ(8n+4).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REQ4(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0x0f;
+            val as u8
+        }
+        ///19:16\]: Grant length of REQ(8n+4).
+        #[inline(always)]
+        pub const fn set_REQ4(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 16usize)) | (((val as u32) & 0x0f) << 16usize);
+        }
+        ///23:20\]: Grant length of REQ(8n+5).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REQ5(&self) -> u8 {
+            let val = (self.0 >> 20usize) & 0x0f;
+            val as u8
+        }
+        ///23:20\]: Grant length of REQ(8n+5).
+        #[inline(always)]
+        pub const fn set_REQ5(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 20usize)) | (((val as u32) & 0x0f) << 20usize);
+        }
+        ///27:24\]: Grant length of REQ(8n+6).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REQ6(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x0f;
+            val as u8
+        }
+        ///27:24\]: Grant length of REQ(8n+6).
+        #[inline(always)]
+        pub const fn set_REQ6(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 24usize)) | (((val as u32) & 0x0f) << 24usize);
+        }
+        ///31:28\]: Grant length of REQ(8n+7). Reserved in MCR4C (REQ31 does not exist).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REQ7(&self) -> u8 {
+            let val = (self.0 >> 28usize) & 0x0f;
+            val as u8
+        }
+        ///31:28\]: Grant length of REQ(8n+7). Reserved in MCR4C (REQ31 does not exist).
+        #[inline(always)]
+        pub const fn set_REQ7(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 28usize)) | (((val as u32) & 0x0f) << 28usize);
+        }
+    }
+    impl Default for SDMC_MAX_GRANT {
+        #[inline(always)]
+        fn default() -> SDMC_MAX_GRANT {
+            SDMC_MAX_GRANT(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_MAX_GRANT {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_MAX_GRANT")
+                .field("REQ0", &self.REQ0())
+                .field("REQ1", &self.REQ1())
+                .field("REQ2", &self.REQ2())
+                .field("REQ3", &self.REQ3())
+                .field("REQ4", &self.REQ4())
+                .field("REQ5", &self.REQ5())
+                .field("REQ6", &self.REQ6())
+                .field("REQ7", &self.REQ7())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_MAX_GRANT {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_MAX_GRANT {{ REQ0: {=u8:?}, REQ1: {=u8:?}, REQ2: {=u8:?}, REQ3: {=u8:?}, REQ4: {=u8:?}, REQ5: {=u8:?}, REQ6: {=u8:?}, REQ7: {=u8:?} }}",
+                self.REQ0(), self.REQ1(), self.REQ2(), self.REQ3(), self.REQ4(), self
+                .REQ5(), self.REQ6(), self.REQ7()
+            )
+        }
+    }
+    ///Misc Control Register (MCR1C). Bits \[31:5\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_MISC(pub u32);
+    impl SDMC_MISC {
+        ///MCR1C\[4:0\]: Request queued number threshold; requests masked in REQ_LIMIT_MASK (MCR38) are held while more requests are queued.
+        #[must_use]
+        #[inline(always)]
+        pub const fn REQ_THRESHOLD(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x1f;
+            val as u8
+        }
+        ///MCR1C\[4:0\]: Request queued number threshold; requests masked in REQ_LIMIT_MASK (MCR38) are held while more requests are queued.
+        #[inline(always)]
+        pub const fn set_REQ_THRESHOLD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x1f << 0usize)) | (((val as u32) & 0x1f) << 0usize);
+        }
+    }
+    impl Default for SDMC_MISC {
+        #[inline(always)]
+        fn default() -> SDMC_MISC {
+            SDMC_MISC(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_MISC {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_MISC")
+                .field("REQ_THRESHOLD", &self.REQ_THRESHOLD())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_MISC {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f, "SDMC_MISC {{ REQ_THRESHOLD: {=u8:?} }}", self.REQ_THRESHOLD()
+            )
+        }
+    }
+    ///MR0/MR2 Mode Setting Register (MCR2C).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_MR02(pub u32);
+    impl SDMC_MR02 {
+        ///MCR2C\[12:0\]: Mode register 0 value (write recovery, DLL reset at bit 8, CAS latency, burst type/length).
+        #[must_use]
+        #[inline(always)]
+        pub const fn MR0(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0x1fff;
+            val as u16
+        }
+        ///MCR2C\[12:0\]: Mode register 0 value (write recovery, DLL reset at bit 8, CAS latency, burst type/length).
+        #[inline(always)]
+        pub const fn set_MR0(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x1fff << 0usize))
+                | (((val as u32) & 0x1fff) << 0usize);
+        }
+        ///MCR2C\[28:16\]: Mode register 2 value (write CRC, RTT_WR, LP ASR, CWL).
+        #[must_use]
+        #[inline(always)]
+        pub const fn MR2(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0x1fff;
+            val as u16
+        }
+        ///MCR2C\[28:16\]: Mode register 2 value (write CRC, RTT_WR, LP ASR, CWL).
+        #[inline(always)]
+        pub const fn set_MR2(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x1fff << 16usize))
+                | (((val as u32) & 0x1fff) << 16usize);
+        }
+    }
+    impl Default for SDMC_MR02 {
+        #[inline(always)]
+        fn default() -> SDMC_MR02 {
+            SDMC_MR02(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_MR02 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_MR02")
+                .field("MR0", &self.MR0())
+                .field("MR2", &self.MR2())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_MR02 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f, "SDMC_MR02 {{ MR0: {=u16:?}, MR2: {=u16:?} }}", self.MR0(), self.MR2()
+            )
+        }
+    }
+    ///MR1/MR3 Mode Setting Register (MCR30).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_MR13(pub u32);
+    impl SDMC_MR13 {
+        ///MCR30\[12:0\]: Mode register 1 value (Qoff, TDQS, RTT_NOM, write leveling, AL, output driver impedance, DLL enable).
+        #[must_use]
+        #[inline(always)]
+        pub const fn MR1(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0x1fff;
+            val as u16
+        }
+        ///MCR30\[12:0\]: Mode register 1 value (Qoff, TDQS, RTT_NOM, write leveling, AL, output driver impedance, DLL enable).
+        #[inline(always)]
+        pub const fn set_MR1(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x1fff << 0usize))
+                | (((val as u32) & 0x1fff) << 0usize);
+        }
+        ///MCR30\[28:16\]: Mode register 3 value (MPR read format, write CMD latency, fine granularity refresh, geardown, MPR operation/page).
+        #[must_use]
+        #[inline(always)]
+        pub const fn MR3(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0x1fff;
+            val as u16
+        }
+        ///MCR30\[28:16\]: Mode register 3 value (MPR read format, write CMD latency, fine granularity refresh, geardown, MPR operation/page).
+        #[inline(always)]
+        pub const fn set_MR3(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x1fff << 16usize))
+                | (((val as u32) & 0x1fff) << 16usize);
+        }
+    }
+    impl Default for SDMC_MR13 {
+        #[inline(always)]
+        fn default() -> SDMC_MR13 {
+            SDMC_MR13(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_MR13 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_MR13")
+                .field("MR1", &self.MR1())
+                .field("MR3", &self.MR3())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_MR13 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f, "SDMC_MR13 {{ MR1: {=u16:?}, MR3: {=u16:?} }}", self.MR1(), self.MR3()
+            )
+        }
+    }
+    ///MR4/MR6 Mode Setting Register (MCR20). Raw DRAM mode register values; see the JEDEC DDR4 standard for bit definitions.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_MR46(pub u32);
+    impl SDMC_MR46 {
+        ///MCR20\[12:0\]: Mode register 4 value (DDR4: write/read preamble, self refresh abort, CAL, internal Vref monitor, TCR, max power down).
+        #[must_use]
+        #[inline(always)]
+        pub const fn MR4(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0x1fff;
+            val as u16
+        }
+        ///MCR20\[12:0\]: Mode register 4 value (DDR4: write/read preamble, self refresh abort, CAL, internal Vref monitor, TCR, max power down).
+        #[inline(always)]
+        pub const fn set_MR4(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x1fff << 0usize))
+                | (((val as u32) & 0x1fff) << 0usize);
+        }
+        ///MCR20\[28:16\]: Mode register 6 value (DDR4: tCCD_L, VrefDQ training enable/range/value).
+        #[must_use]
+        #[inline(always)]
+        pub const fn MR6(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0x1fff;
+            val as u16
+        }
+        ///MCR20\[28:16\]: Mode register 6 value (DDR4: tCCD_L, VrefDQ training enable/range/value).
+        #[inline(always)]
+        pub const fn set_MR6(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x1fff << 16usize))
+                | (((val as u32) & 0x1fff) << 16usize);
+        }
+    }
+    impl Default for SDMC_MR46 {
+        #[inline(always)]
+        fn default() -> SDMC_MR46 {
+            SDMC_MR46(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_MR46 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_MR46")
+                .field("MR4", &self.MR4())
+                .field("MR6", &self.MR6())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_MR46 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f, "SDMC_MR46 {{ MR4: {=u16:?}, MR6: {=u16:?} }}", self.MR4(), self.MR6()
+            )
+        }
+    }
+    ///MR5 Mode Setting Register (MCR24).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_MR5(pub u32);
+    impl SDMC_MR5 {
+        ///MCR24\[12:0\]: Mode register 5 value (DDR4: read/write DBI, data mask, CA parity, RTT_PARK, ODT input buffer in power down).
+        #[must_use]
+        #[inline(always)]
+        pub const fn MR5(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0x1fff;
+            val as u16
+        }
+        ///MCR24\[12:0\]: Mode register 5 value (DDR4: read/write DBI, data mask, CA parity, RTT_PARK, ODT input buffer in power down).
+        #[inline(always)]
+        pub const fn set_MR5(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x1fff << 0usize))
+                | (((val as u32) & 0x1fff) << 0usize);
+        }
+    }
+    impl Default for SDMC_MR5 {
+        #[inline(always)]
+        fn default() -> SDMC_MR5 {
+            SDMC_MR5(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_MR5 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_MR5").field("MR5", &self.MR5()).finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_MR5 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "SDMC_MR5 {{ MR5: {=u16:?} }}", self.MR5())
+        }
+    }
+    ///Mode Setting Control Register (MCR28). Bits \[31:6\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_MRS_CTRL(pub u32);
+    impl SDMC_MRS_CTRL {
+        ///MCR28\[0\]: Write 1 to issue the selected mode register set command. Hardware clears it when done and holds off further AHB accesses to the controller meanwhile, so commands can be issued back to back.
+        #[must_use]
+        #[inline(always)]
+        pub const fn FIRE(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///MCR28\[0\]: Write 1 to issue the selected mode register set command. Hardware clears it when done and holds off further AHB accesses to the controller meanwhile, so commands can be issued back to back.
+        #[inline(always)]
+        pub const fn set_FIRE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///MCR28\[3:1\]: Mode register selection.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MR_SEL(&self) -> ModeReg {
+            let val = (self.0 >> 1usize) & 0x07;
+            ModeReg::from_bits(val as u8)
+        }
+        ///MCR28\[3:1\]: Mode register selection.
+        #[inline(always)]
+        pub const fn set_MR_SEL(&mut self, val: ModeReg) {
+            self.0 = (self.0 & !(0x07 << 1usize))
+                | (((val.to_bits() as u32) & 0x07) << 1usize);
+        }
+        ///MCR28\[4\]: Enable the reset DLL delay timer, which blocks command execution after the command.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DLL_RESET_DELAY(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///MCR28\[4\]: Enable the reset DLL delay timer, which blocks command execution after the command.
+        #[inline(always)]
+        pub const fn set_DLL_RESET_DELAY(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///MCR28\[5\]: Rank select. 0 = rank 0; 1 = rank 1.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RANK1(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///MCR28\[5\]: Rank select. 0 = rank 0; 1 = rank 1.
+        #[inline(always)]
+        pub const fn set_RANK1(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+    }
+    impl Default for SDMC_MRS_CTRL {
+        #[inline(always)]
+        fn default() -> SDMC_MRS_CTRL {
+            SDMC_MRS_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_MRS_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_MRS_CTRL")
+                .field("FIRE", &self.FIRE())
+                .field("MR_SEL", &self.MR_SEL())
+                .field("DLL_RESET_DELAY", &self.DLL_RESET_DELAY())
+                .field("RANK1", &self.RANK1())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_MRS_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_MRS_CTRL {{ FIRE: {=bool:?}, MR_SEL: {:?}, DLL_RESET_DELAY: {=bool:?}, RANK1: {=bool:?} }}",
+                self.FIRE(), self.MR_SEL(), self.DLL_RESET_DELAY(), self.RANK1()
+            )
+        }
+    }
+    ///DDR PHY Control/Status Register #1 (MCR60). Bits \[7:3\] and \[15:14\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_PHY_CTRL1(pub u32);
+    impl SDMC_PHY_CTRL1 {
+        ///MCR60\[0\]: DDR PHY init control/status. Write 1 to start the PHY init cycle; reads 1 while busy and 0 when idle.
+        #[must_use]
+        #[inline(always)]
+        pub const fn INIT(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///MCR60\[0\]: DDR PHY init control/status. Write 1 to start the PHY init cycle; reads 1 while busy and 0 when idle.
+        #[inline(always)]
+        pub const fn set_INIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///MCR60\[1\]: Enable DDR PHY auto-update.
+        #[must_use]
+        #[inline(always)]
+        pub const fn AUTO_UPDATE(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///MCR60\[1\]: Enable DDR PHY auto-update.
+        #[inline(always)]
+        pub const fn set_AUTO_UPDATE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///MCR60\[2\]: DDR PHY reset control. 0 = PHY held in reset; 1 = reset released.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RESET_DIS(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///MCR60\[2\]: DDR PHY reset control. 0 = PHY held in reset; 1 = reset released.
+        #[inline(always)]
+        pub const fn set_RESET_DIS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///MCR60\[9:8\] (read-only): Training interface gate training support. 01 = MC evaluation mode supported by the PHY.
+        #[must_use]
+        #[inline(always)]
+        pub const fn GATE_TRAIN_SUPPORT(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x03;
+            val as u8
+        }
+        ///MCR60\[9:8\] (read-only): Training interface gate training support. 01 = MC evaluation mode supported by the PHY.
+        #[inline(always)]
+        pub const fn set_GATE_TRAIN_SUPPORT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 8usize)) | (((val as u32) & 0x03) << 8usize);
+        }
+        ///MCR60\[11:10\] (read-only): Training interface data eye training support. 01 = MC evaluation mode supported by the PHY.
+        #[must_use]
+        #[inline(always)]
+        pub const fn EYE_TRAIN_SUPPORT(&self) -> u8 {
+            let val = (self.0 >> 10usize) & 0x03;
+            val as u8
+        }
+        ///MCR60\[11:10\] (read-only): Training interface data eye training support. 01 = MC evaluation mode supported by the PHY.
+        #[inline(always)]
+        pub const fn set_EYE_TRAIN_SUPPORT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 10usize)) | (((val as u32) & 0x03) << 10usize);
+        }
+        ///MCR60\[13:12\] (read-only): Training interface write leveling support. 00 = not supported by the PHY.
+        #[must_use]
+        #[inline(always)]
+        pub const fn WRLVL_SUPPORT(&self) -> u8 {
+            let val = (self.0 >> 12usize) & 0x03;
+            val as u8
+        }
+        ///MCR60\[13:12\] (read-only): Training interface write leveling support. 00 = not supported by the PHY.
+        #[inline(always)]
+        pub const fn set_WRLVL_SUPPORT(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 12usize)) | (((val as u32) & 0x03) << 12usize);
+        }
+        ///MCR60\[31:16\] (read-only): Training interface read leveling response. Gate training: bit 0 = DQ\[7:0\], bit 8 = DQ\[15:8\]. Data eye training: bits \[7:0\] = DQ\[7:0\], bits \[15:8\] = DQ\[15:8\].
+        #[must_use]
+        #[inline(always)]
+        pub const fn RDLVL_RESPONSE(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0xffff;
+            val as u16
+        }
+        ///MCR60\[31:16\] (read-only): Training interface read leveling response. Gate training: bit 0 = DQ\[7:0\], bit 8 = DQ\[15:8\]. Data eye training: bits \[7:0\] = DQ\[7:0\], bits \[15:8\] = DQ\[15:8\].
+        #[inline(always)]
+        pub const fn set_RDLVL_RESPONSE(&mut self, val: u16) {
+            self.0 = (self.0 & !(0xffff << 16usize))
+                | (((val as u32) & 0xffff) << 16usize);
+        }
+    }
+    impl Default for SDMC_PHY_CTRL1 {
+        #[inline(always)]
+        fn default() -> SDMC_PHY_CTRL1 {
+            SDMC_PHY_CTRL1(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_PHY_CTRL1 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_PHY_CTRL1")
+                .field("INIT", &self.INIT())
+                .field("AUTO_UPDATE", &self.AUTO_UPDATE())
+                .field("RESET_DIS", &self.RESET_DIS())
+                .field("GATE_TRAIN_SUPPORT", &self.GATE_TRAIN_SUPPORT())
+                .field("EYE_TRAIN_SUPPORT", &self.EYE_TRAIN_SUPPORT())
+                .field("WRLVL_SUPPORT", &self.WRLVL_SUPPORT())
+                .field("RDLVL_RESPONSE", &self.RDLVL_RESPONSE())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_PHY_CTRL1 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_PHY_CTRL1 {{ INIT: {=bool:?}, AUTO_UPDATE: {=bool:?}, RESET_DIS: {=bool:?}, GATE_TRAIN_SUPPORT: {=u8:?}, EYE_TRAIN_SUPPORT: {=u8:?}, WRLVL_SUPPORT: {=u8:?}, RDLVL_RESPONSE: {=u16:?} }}",
+                self.INIT(), self.AUTO_UPDATE(), self.RESET_DIS(), self
+                .GATE_TRAIN_SUPPORT(), self.EYE_TRAIN_SUPPORT(), self.WRLVL_SUPPORT(),
+                self.RDLVL_RESPONSE()
+            )
+        }
+    }
+    ///DDR PHY Control/Status Register #2 (MCR64). Bits \[31:8\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_PHY_CTRL2(pub u32);
+    impl SDMC_PHY_CTRL2 {
+        ///MCR64\[1:0\]: Training interface gate training logic enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn GATE_TRAIN_EN(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x03;
+            val as u8
+        }
+        ///MCR64\[1:0\]: Training interface gate training logic enable.
+        #[inline(always)]
+        pub const fn set_GATE_TRAIN_EN(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 0usize)) | (((val as u32) & 0x03) << 0usize);
+        }
+        ///MCR64\[3:2\]: Training interface PHY data eye training logic enable.
+        #[must_use]
+        #[inline(always)]
+        pub const fn EYE_TRAIN_EN(&self) -> u8 {
+            let val = (self.0 >> 2usize) & 0x03;
+            val as u8
+        }
+        ///MCR64\[3:2\]: Training interface PHY data eye training logic enable.
+        #[inline(always)]
+        pub const fn set_EYE_TRAIN_EN(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 2usize)) | (((val as u32) & 0x03) << 2usize);
+        }
+        ///MCR64\[5:4\]: Training interface read leveling load.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RDLVL_LOAD(&self) -> u8 {
+            let val = (self.0 >> 4usize) & 0x03;
+            val as u8
+        }
+        ///MCR64\[5:4\]: Training interface read leveling load.
+        #[inline(always)]
+        pub const fn set_RDLVL_LOAD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 4usize)) | (((val as u32) & 0x03) << 4usize);
+        }
+        ///MCR64\[7:6\]: Training interface read leveling read DQS edge. 0 = positive edge; 1 = negative edge.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RDLVL_DQS_NEG(&self) -> u8 {
+            let val = (self.0 >> 6usize) & 0x03;
+            val as u8
+        }
+        ///MCR64\[7:6\]: Training interface read leveling read DQS edge. 0 = positive edge; 1 = negative edge.
+        #[inline(always)]
+        pub const fn set_RDLVL_DQS_NEG(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 6usize)) | (((val as u32) & 0x03) << 6usize);
+        }
+    }
+    impl Default for SDMC_PHY_CTRL2 {
+        #[inline(always)]
+        fn default() -> SDMC_PHY_CTRL2 {
+            SDMC_PHY_CTRL2(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_PHY_CTRL2 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_PHY_CTRL2")
+                .field("GATE_TRAIN_EN", &self.GATE_TRAIN_EN())
+                .field("EYE_TRAIN_EN", &self.EYE_TRAIN_EN())
+                .field("RDLVL_LOAD", &self.RDLVL_LOAD())
+                .field("RDLVL_DQS_NEG", &self.RDLVL_DQS_NEG())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_PHY_CTRL2 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_PHY_CTRL2 {{ GATE_TRAIN_EN: {=u8:?}, EYE_TRAIN_EN: {=u8:?}, RDLVL_LOAD: {=u8:?}, RDLVL_DQS_NEG: {=u8:?} }}",
+                self.GATE_TRAIN_EN(), self.EYE_TRAIN_EN(), self.RDLVL_LOAD(), self
+                .RDLVL_DQS_NEG()
+            )
+        }
+    }
+    ///DDR PHY Control/Status Register
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_PHY_CTRL4(pub u32);
+    impl SDMC_PHY_CTRL4 {
+        ///MCR6C\[15:0\]: Training interface data eye training delay value for DQS.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DQS_DELAY(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0xffff;
+            val as u16
+        }
+        ///MCR6C\[15:0\]: Training interface data eye training delay value for DQS.
+        #[inline(always)]
+        pub const fn set_DQS_DELAY(&mut self, val: u16) {
+            self.0 = (self.0 & !(0xffff << 0usize))
+                | (((val as u32) & 0xffff) << 0usize);
+        }
+        ///MCR6C\[31:16\]: Training interface data eye training delay value for DQS#.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DQSN_DELAY(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0xffff;
+            val as u16
+        }
+        ///MCR6C\[31:16\]: Training interface data eye training delay value for DQS#.
+        #[inline(always)]
+        pub const fn set_DQSN_DELAY(&mut self, val: u16) {
+            self.0 = (self.0 & !(0xffff << 16usize))
+                | (((val as u32) & 0xffff) << 16usize);
+        }
+    }
+    impl Default for SDMC_PHY_CTRL4 {
+        #[inline(always)]
+        fn default() -> SDMC_PHY_CTRL4 {
+            SDMC_PHY_CTRL4(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_PHY_CTRL4 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_PHY_CTRL4")
+                .field("DQS_DELAY", &self.DQS_DELAY())
+                .field("DQSN_DELAY", &self.DQSN_DELAY())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_PHY_CTRL4 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f, "SDMC_PHY_CTRL4 {{ DQS_DELAY: {=u16:?}, DQSN_DELAY: {=u16:?} }}", self
+                .DQS_DELAY(), self.DQSN_DELAY()
+            )
+        }
+    }
+    ///DDR PHY Debug Interface Control (MCR80). Bits \[31:1\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_PHY_DBG_CTRL(pub u32);
+    impl SDMC_PHY_DBG_CTRL {
+        ///MCR80\[0\]: Command mode. 0 = read; 1 = write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn WRITE(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///MCR80\[0\]: Command mode. 0 = read; 1 = write.
+        #[inline(always)]
+        pub const fn set_WRITE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+    }
+    impl Default for SDMC_PHY_DBG_CTRL {
+        #[inline(always)]
+        fn default() -> SDMC_PHY_DBG_CTRL {
+            SDMC_PHY_DBG_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_PHY_DBG_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_PHY_DBG_CTRL").field("WRITE", &self.WRITE()).finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_PHY_DBG_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "SDMC_PHY_DBG_CTRL {{ WRITE: {=bool:?} }}", self.WRITE())
+        }
+    }
+    ///DDR PHY Debug Interface Data (MCR84). Bits \[31:24\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_PHY_DBG_DATA(pub u32);
+    impl SDMC_PHY_DBG_DATA {
+        ///MCR84\[7:0\]: Command address.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ADDR(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///MCR84\[7:0\]: Command address.
+        #[inline(always)]
+        pub const fn set_ADDR(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///MCR84\[15:8\]: Write data.
+        #[must_use]
+        #[inline(always)]
+        pub const fn WDATA(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0xff;
+            val as u8
+        }
+        ///MCR84\[15:8\]: Write data.
+        #[inline(always)]
+        pub const fn set_WDATA(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 8usize)) | (((val as u32) & 0xff) << 8usize);
+        }
+        ///MCR84\[23:16\] (read-only): Read data.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RDATA(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0xff;
+            val as u8
+        }
+        ///MCR84\[23:16\] (read-only): Read data.
+        #[inline(always)]
+        pub const fn set_RDATA(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 16usize)) | (((val as u32) & 0xff) << 16usize);
+        }
+    }
+    impl Default for SDMC_PHY_DBG_DATA {
+        #[inline(always)]
+        fn default() -> SDMC_PHY_DBG_DATA {
+            SDMC_PHY_DBG_DATA(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_PHY_DBG_DATA {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_PHY_DBG_DATA")
+                .field("ADDR", &self.ADDR())
+                .field("WDATA", &self.WDATA())
+                .field("RDATA", &self.RDATA())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_PHY_DBG_DATA {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_PHY_DBG_DATA {{ ADDR: {=u8:?}, WDATA: {=u8:?}, RDATA: {=u8:?} }}",
+                self.ADDR(), self.WDATA(), self.RDATA()
+            )
+        }
+    }
+    ///Power Control Register (MCR34). Bits 9 and 16 are RW reserved, bits \[27:18\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_POWER_CTRL(pub u32);
+    impl SDMC_POWER_CTRL {
+        ///MCR34\[0\]: Enable CKE. 0 = CKE forced low (state after power-on reset); 1 = CKE enabled.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CKE_EN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[0\]: Enable CKE. 0 = CKE forced low (state after power-on reset); 1 = CKE enabled.
+        #[inline(always)]
+        pub const fn set_CKE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///MCR34\[1\]: Enable auto power down (CKE driven dynamically when no request is pending).
+        #[must_use]
+        #[inline(always)]
+        pub const fn AUTO_PWRDN_EN(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[1\]: Enable auto power down (CKE driven dynamically when no request is pending).
+        #[inline(always)]
+        pub const fn set_AUTO_PWRDN_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///MCR34\[2\]: Force SDRAM into self refresh. 0 = normal mode / exit self refresh.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SELF_REFRESH(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[2\]: Force SDRAM into self refresh. 0 = normal mode / exit self refresh.
+        #[inline(always)]
+        pub const fn set_SELF_REFRESH(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///MCR34\[3\]: Disable the CK/CK# output buffers while in self refresh.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CK_OFF_IN_SR(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[3\]: Disable the CK/CK# output buffers while in self refresh.
+        #[inline(always)]
+        pub const fn set_CK_OFF_IN_SR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///MCR34\[6:4\]: CKE exit delay from power down to any command. Timing = 2n + 4 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CKE_EXIT_DELAY(&self) -> u8 {
+            let val = (self.0 >> 4usize) & 0x07;
+            val as u8
+        }
+        ///MCR34\[6:4\]: CKE exit delay from power down to any command. Timing = 2n + 4 CK.
+        #[inline(always)]
+        pub const fn set_CKE_EXIT_DELAY(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 4usize)) | (((val as u32) & 0x07) << 4usize);
+        }
+        ///MCR34\[7\]: SDRAM RESET_N output. 0 = reset asserted (output low); 1 = reset released (output high).
+        #[must_use]
+        #[inline(always)]
+        pub const fn RESET_DIS(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[7\]: SDRAM RESET_N output. 0 = reset asserted (output low); 1 = reset released (output high).
+        #[inline(always)]
+        pub const fn set_RESET_DIS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///MCR34\[8\]: Enable DDR3/DDR4 SDRAM ODT.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ODT_EN(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[8\]: Enable DDR3/DDR4 SDRAM ODT.
+        #[inline(always)]
+        pub const fn set_ODT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///MCR34\[10\]: Automatically turn SDRAM ODT on/off for write cycles (ODT_EN must be set first).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ODT_AUTO_ON(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[10\]: Automatically turn SDRAM ODT on/off for write cycles (ODT_EN must be set first).
+        #[inline(always)]
+        pub const fn set_ODT_AUTO_ON(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+        ///MCR34\[11\]: Extend the SDRAM ODT cycle. Must be set for DDR3 when the tWL setting bit 0 is 0.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ODT_EXTEND(&self) -> bool {
+            let val = (self.0 >> 11usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[11\]: Extend the SDRAM ODT cycle. Must be set for DDR3 when the tWL setting bit 0 is 0.
+        #[inline(always)]
+        pub const fn set_ODT_EXTEND(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 11usize)) | (((val as u32) & 0x01) << 11usize);
+        }
+        ///MCR34\[14:12\]: t-CKE, CKE minimum high/low pulse width. Timing = 2n + 2 CK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TCKE_PW(&self) -> u8 {
+            let val = (self.0 >> 12usize) & 0x07;
+            val as u8
+        }
+        ///MCR34\[14:12\]: t-CKE, CKE minimum high/low pulse width. Timing = 2n + 2 CK.
+        #[inline(always)]
+        pub const fn set_TCKE_PW(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 12usize)) | (((val as u32) & 0x07) << 12usize);
+        }
+        ///MCR34\[15\]: Enable read gap control for the PHY read output.
+        #[must_use]
+        #[inline(always)]
+        pub const fn READ_GAP_EN(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[15\]: Enable read gap control for the PHY read output.
+        #[inline(always)]
+        pub const fn set_READ_GAP_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+        ///MCR34\[17\]: Disable memory request input (set during DDR init).
+        #[must_use]
+        #[inline(always)]
+        pub const fn REQ_IN_DIS(&self) -> bool {
+            let val = (self.0 >> 17usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[17\]: Disable memory request input (set during DDR init).
+        #[inline(always)]
+        pub const fn set_REQ_IN_DIS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 17usize)) | (((val as u32) & 0x01) << 17usize);
+        }
+        ///MCR34\[30:28\] (read-only, debug): Self refresh control state. 0 = idle; 1 = wait for idle; 2 = entering self refresh; 3 = wait tXSNR; 4 = wait MRS DLL reset; 5 = wait 512 CK for DLL recovery. Poll for 0 (idle) after a DLL reset.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SR_STATE(&self) -> u8 {
+            let val = (self.0 >> 28usize) & 0x07;
+            val as u8
+        }
+        ///MCR34\[30:28\] (read-only, debug): Self refresh control state. 0 = idle; 1 = wait for idle; 2 = entering self refresh; 3 = wait tXSNR; 4 = wait MRS DLL reset; 5 = wait 512 CK for DLL recovery. Poll for 0 (idle) after a DLL reset.
+        #[inline(always)]
+        pub const fn set_SR_STATE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 28usize)) | (((val as u32) & 0x07) << 28usize);
+        }
+        ///MCR34\[31\] (read-only, debug): Current CKE pin output.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CKE_OUT(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///MCR34\[31\] (read-only, debug): Current CKE pin output.
+        #[inline(always)]
+        pub const fn set_CKE_OUT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for SDMC_POWER_CTRL {
+        #[inline(always)]
+        fn default() -> SDMC_POWER_CTRL {
+            SDMC_POWER_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_POWER_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_POWER_CTRL")
+                .field("CKE_EN", &self.CKE_EN())
+                .field("AUTO_PWRDN_EN", &self.AUTO_PWRDN_EN())
+                .field("SELF_REFRESH", &self.SELF_REFRESH())
+                .field("CK_OFF_IN_SR", &self.CK_OFF_IN_SR())
+                .field("CKE_EXIT_DELAY", &self.CKE_EXIT_DELAY())
+                .field("RESET_DIS", &self.RESET_DIS())
+                .field("ODT_EN", &self.ODT_EN())
+                .field("ODT_AUTO_ON", &self.ODT_AUTO_ON())
+                .field("ODT_EXTEND", &self.ODT_EXTEND())
+                .field("TCKE_PW", &self.TCKE_PW())
+                .field("READ_GAP_EN", &self.READ_GAP_EN())
+                .field("REQ_IN_DIS", &self.REQ_IN_DIS())
+                .field("SR_STATE", &self.SR_STATE())
+                .field("CKE_OUT", &self.CKE_OUT())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_POWER_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_POWER_CTRL {{ CKE_EN: {=bool:?}, AUTO_PWRDN_EN: {=bool:?}, SELF_REFRESH: {=bool:?}, CK_OFF_IN_SR: {=bool:?}, CKE_EXIT_DELAY: {=u8:?}, RESET_DIS: {=bool:?}, ODT_EN: {=bool:?}, ODT_AUTO_ON: {=bool:?}, ODT_EXTEND: {=bool:?}, TCKE_PW: {=u8:?}, READ_GAP_EN: {=bool:?}, REQ_IN_DIS: {=bool:?}, SR_STATE: {=u8:?}, CKE_OUT: {=bool:?} }}",
+                self.CKE_EN(), self.AUTO_PWRDN_EN(), self.SELF_REFRESH(), self
+                .CK_OFF_IN_SR(), self.CKE_EXIT_DELAY(), self.RESET_DIS(), self.ODT_EN(),
+                self.ODT_AUTO_ON(), self.ODT_EXTEND(), self.TCKE_PW(), self
+                .READ_GAP_EN(), self.REQ_IN_DIS(), self.SR_STATE(), self.CKE_OUT()
+            )
+        }
+    }
+    ///Priority Group Setting Register (MCR3C).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_PRIORITY_GROUP(pub u32);
+    impl SDMC_PRIORITY_GROUP {
+        ///MCR3C bit n: 0 = REQn has higher priority than REQ(n+1); 1 = REQn and REQ(n+1) have equal priority.
+        #[must_use]
+        #[inline(always)]
+        pub const fn EQUAL(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0xffff_ffff;
+            val as u32
+        }
+        ///MCR3C bit n: 0 = REQn has higher priority than REQ(n+1); 1 = REQn and REQ(n+1) have equal priority.
+        #[inline(always)]
+        pub const fn set_EQUAL(&mut self, val: u32) {
+            self.0 = (self.0 & !(0xffff_ffff << 0usize))
+                | (((val as u32) & 0xffff_ffff) << 0usize);
+        }
+    }
+    impl Default for SDMC_PRIORITY_GROUP {
+        #[inline(always)]
+        fn default() -> SDMC_PRIORITY_GROUP {
+            SDMC_PRIORITY_GROUP(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_PRIORITY_GROUP {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_PRIORITY_GROUP").field("EQUAL", &self.EQUAL()).finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_PRIORITY_GROUP {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "SDMC_PRIORITY_GROUP {{ EQUAL: {=u32:?} }}", self.EQUAL())
+        }
+    }
+    ///Protection Key Register (MCR00).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_PROTECT(pub u32);
+    impl SDMC_PROTECT {
+        ///MCR00\[31:0\]: Protection key. Write 0xFC60_0309 to unlock, any other value to lock. Reads 1 when unlocked, 0 when locked.
+        #[must_use]
+        #[inline(always)]
+        pub const fn KEY(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0xffff_ffff;
+            val as u32
+        }
+        ///MCR00\[31:0\]: Protection key. Write 0xFC60_0309 to unlock, any other value to lock. Reads 1 when unlocked, 0 when locked.
+        #[inline(always)]
+        pub const fn set_KEY(&mut self, val: u32) {
+            self.0 = (self.0 & !(0xffff_ffff << 0usize))
+                | (((val as u32) & 0xffff_ffff) << 0usize);
+        }
+    }
+    impl Default for SDMC_PROTECT {
+        #[inline(always)]
+        fn default() -> SDMC_PROTECT {
+            SDMC_PROTECT(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_PROTECT {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_PROTECT").field("KEY", &self.KEY()).finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_PROTECT {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "SDMC_PROTECT {{ KEY: {=u32:?} }}", self.KEY())
+        }
+    }
+    ///Refresh Timing Register (MCR0C).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_REFRESH(pub u32);
+    impl SDMC_REFRESH {
+        ///MCR0C\[3:0\]: Refresh cycles per refresh period. 0 = refresh disabled; 1-7 = n cycles; 1xxx = 8 cycles.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CYCLES(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x0f;
+            val as u8
+        }
+        ///MCR0C\[3:0\]: Refresh cycles per refresh period. 0 = refresh disabled; 1-7 = n cycles; 1xxx = 8 cycles.
+        #[inline(always)]
+        pub const fn set_CYCLES(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x0f << 0usize)) | (((val as u32) & 0x0f) << 0usize);
+        }
+        ///MCR0C\[4\]: Force all banks to be pre-charged before refresh cycles (insurance only).
+        #[must_use]
+        #[inline(always)]
+        pub const fn PRECHARGE_ALL(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///MCR0C\[4\]: Force all banks to be pre-charged before refresh cycles (insurance only).
+        #[inline(always)]
+        pub const fn set_PRECHARGE_ALL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///MCR0C\[5\]: Enable low-priority refresh requests once the refresh counter passes 1/4 of PERIOD (up to 8 cycles per request).
+        #[must_use]
+        #[inline(always)]
+        pub const fn LOW_PRIO_EN(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///MCR0C\[5\]: Enable low-priority refresh requests once the refresh counter passes 1/4 of PERIOD (up to 8 cycles per request).
+        #[inline(always)]
+        pub const fn set_LOW_PRIO_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///MCR0C\[6\]: Issue ZQCL automatically after the DLL reset MRS command.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ZQCL_EN(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///MCR0C\[6\]: Issue ZQCL automatically after the DLL reset MRS command.
+        #[inline(always)]
+        pub const fn set_ZQCL_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///MCR0C\[7\]: Issue ZQCS commands periodically (every ZQCS_PERIOD refresh cycles).
+        #[must_use]
+        #[inline(always)]
+        pub const fn ZQCS_EN(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///MCR0C\[7\]: Issue ZQCS commands periodically (every ZQCS_PERIOD refresh cycles).
+        #[inline(always)]
+        pub const fn set_ZQCS_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///MCR0C\[15:8\]: Period of high-priority refresh cycles in 12 MHz reference clocks (refresh frequency = 12 MHz / PERIOD).
+        #[must_use]
+        #[inline(always)]
+        pub const fn PERIOD(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0xff;
+            val as u8
+        }
+        ///MCR0C\[15:8\]: Period of high-priority refresh cycles in 12 MHz reference clocks (refresh frequency = 12 MHz / PERIOD).
+        #[inline(always)]
+        pub const fn set_PERIOD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 8usize)) | (((val as u32) & 0xff) << 8usize);
+        }
+        ///MCR0C\[30:16\]: Period of ZQCS commands in refresh cycles (e.g. 128 ms = 7.5 us * 0x42AA). Applies to DDR3 and DDR4.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ZQCS_PERIOD(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0x7fff;
+            val as u16
+        }
+        ///MCR0C\[30:16\]: Period of ZQCS commands in refresh cycles (e.g. 128 ms = 7.5 us * 0x42AA). Applies to DDR3 and DDR4.
+        #[inline(always)]
+        pub const fn set_ZQCS_PERIOD(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x7fff << 16usize))
+                | (((val as u32) & 0x7fff) << 16usize);
+        }
+        ///MCR0C\[31\]: ZQCS exit delay. 0 = 64 nCK; 1 = 128 nCK.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ZQCS_EXIT_128(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///MCR0C\[31\]: ZQCS exit delay. 0 = 64 nCK; 1 = 128 nCK.
+        #[inline(always)]
+        pub const fn set_ZQCS_EXIT_128(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for SDMC_REFRESH {
+        #[inline(always)]
+        fn default() -> SDMC_REFRESH {
+            SDMC_REFRESH(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_REFRESH {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_REFRESH")
+                .field("CYCLES", &self.CYCLES())
+                .field("PRECHARGE_ALL", &self.PRECHARGE_ALL())
+                .field("LOW_PRIO_EN", &self.LOW_PRIO_EN())
+                .field("ZQCL_EN", &self.ZQCL_EN())
+                .field("ZQCS_EN", &self.ZQCS_EN())
+                .field("PERIOD", &self.PERIOD())
+                .field("ZQCS_PERIOD", &self.ZQCS_PERIOD())
+                .field("ZQCS_EXIT_128", &self.ZQCS_EXIT_128())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_REFRESH {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_REFRESH {{ CYCLES: {=u8:?}, PRECHARGE_ALL: {=bool:?}, LOW_PRIO_EN: {=bool:?}, ZQCL_EN: {=bool:?}, ZQCS_EN: {=bool:?}, PERIOD: {=u8:?}, ZQCS_PERIOD: {=u16:?}, ZQCS_EXIT_128: {=bool:?} }}",
+                self.CYCLES(), self.PRECHARGE_ALL(), self.LOW_PRIO_EN(), self.ZQCL_EN(),
+                self.ZQCS_EN(), self.PERIOD(), self.ZQCS_PERIOD(), self.ZQCS_EXIT_128()
+            )
+        }
+    }
+    ///DRAM request mask (MCR08 / MCR38). Bit n corresponds to REQn of the fixed priority request list. REQ15, REQ19, REQ20 and REQ22-REQ27 are reserved and not named.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_REQ_MASK(pub u32);
+    impl SDMC_REQ_MASK {
+        ///REQ0: VGA hardware cursor read.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VGA_HW_CURSOR(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///REQ0: VGA hardware cursor read.
+        #[inline(always)]
+        pub const fn set_VGA_HW_CURSOR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///REQ1: VGA text mode CG font read.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VGA_TEXT_FONT(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///REQ1: VGA text mode CG font read.
+        #[inline(always)]
+        pub const fn set_VGA_TEXT_FONT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///REQ2: VGA text mode ASCII code read.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VGA_TEXT_ASCII(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///REQ2: VGA text mode ASCII code read.
+        #[inline(always)]
+        pub const fn set_VGA_TEXT_ASCII(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///REQ3: VGA CRT read.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VGA_CRT(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///REQ3: VGA CRT read.
+        #[inline(always)]
+        pub const fn set_VGA_CRT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///REQ4: SOC display controller cursor read.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SOC_DC_CURSOR(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///REQ4: SOC display controller cursor read.
+        #[inline(always)]
+        pub const fn set_SOC_DC_CURSOR(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///REQ5: SOC display controller OSD read.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SOC_DC_OSD(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///REQ5: SOC display controller OSD read.
+        #[inline(always)]
+        pub const fn set_SOC_DC_OSD(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///REQ6: SOC display controller CRT read.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SOC_DC_CRT(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///REQ6: SOC display controller CRT read.
+        #[inline(always)]
+        pub const fn set_SOC_DC_CRT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///REQ7: Video high priority write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VIDEO_HIPRI_WRITE(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///REQ7: Video high priority write.
+        #[inline(always)]
+        pub const fn set_VIDEO_HIPRI_WRITE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///REQ8: USB2.0 hub / EHCI1 DMA read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn USB20_EHCI1(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///REQ8: USB2.0 hub / EHCI1 DMA read/write.
+        #[inline(always)]
+        pub const fn set_USB20_EHCI1(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///REQ9: USB2.0 device / EHCI2 DMA read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn USB20_EHCI2(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///REQ9: USB2.0 device / EHCI2 DMA read/write.
+        #[inline(always)]
+        pub const fn set_USB20_EHCI2(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///REQ10: CPU data read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CPU(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///REQ10: CPU data read/write.
+        #[inline(always)]
+        pub const fn set_CPU(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+        ///REQ11: AHB2 bus read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn AHB2(&self) -> bool {
+            let val = (self.0 >> 11usize) & 0x01;
+            val != 0
+        }
+        ///REQ11: AHB2 bus read/write.
+        #[inline(always)]
+        pub const fn set_AHB2(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 11usize)) | (((val as u32) & 0x01) << 11usize);
+        }
+        ///REQ12: AHB bus read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn AHB(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///REQ12: AHB bus read/write.
+        #[inline(always)]
+        pub const fn set_AHB(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///REQ13: MAC0 DMA read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MAC0(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///REQ13: MAC0 DMA read/write.
+        #[inline(always)]
+        pub const fn set_MAC0(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///REQ14: MAC1 DMA read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MAC1(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///REQ14: MAC1 DMA read/write.
+        #[inline(always)]
+        pub const fn set_MAC1(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///REQ16: PCI-E bus read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PCIE(&self) -> bool {
+            let val = (self.0 >> 16usize) & 0x01;
+            val != 0
+        }
+        ///REQ16: PCI-E bus read/write.
+        #[inline(always)]
+        pub const fn set_PCIE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 16usize)) | (((val as u32) & 0x01) << 16usize);
+        }
+        ///REQ17: X-DMA message read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn XDMA(&self) -> bool {
+            let val = (self.0 >> 17usize) & 0x01;
+            val != 0
+        }
+        ///REQ17: X-DMA message read/write.
+        #[inline(always)]
+        pub const fn set_XDMA(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 17usize)) | (((val as u32) & 0x01) << 17usize);
+        }
+        ///REQ18: Encryption engine read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CRYPTO(&self) -> bool {
+            let val = (self.0 >> 18usize) & 0x01;
+            val != 0
+        }
+        ///REQ18: Encryption engine read/write.
+        #[inline(always)]
+        pub const fn set_CRYPTO(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 18usize)) | (((val as u32) & 0x01) << 18usize);
+        }
+        ///REQ21: Video flag read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VIDEO_FLAG(&self) -> bool {
+            let val = (self.0 >> 21usize) & 0x01;
+            val != 0
+        }
+        ///REQ21: Video flag read/write.
+        #[inline(always)]
+        pub const fn set_VIDEO_FLAG(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 21usize)) | (((val as u32) & 0x01) << 21usize);
+        }
+        ///REQ28: Video low priority write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VIDEO_LOPRI_WRITE(&self) -> bool {
+            let val = (self.0 >> 28usize) & 0x01;
+            val != 0
+        }
+        ///REQ28: Video low priority write.
+        #[inline(always)]
+        pub const fn set_VIDEO_LOPRI_WRITE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 28usize)) | (((val as u32) & 0x01) << 28usize);
+        }
+        ///REQ29: 2D engine data read/write.
+        #[must_use]
+        #[inline(always)]
+        pub const fn GFX_2D(&self) -> bool {
+            let val = (self.0 >> 29usize) & 0x01;
+            val != 0
+        }
+        ///REQ29: 2D engine data read/write.
+        #[inline(always)]
+        pub const fn set_GFX_2D(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 29usize)) | (((val as u32) & 0x01) << 29usize);
+        }
+        ///REQ30: Memory integrity check engine read.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MEM_CHECK(&self) -> bool {
+            let val = (self.0 >> 30usize) & 0x01;
+            val != 0
+        }
+        ///REQ30: Memory integrity check engine read.
+        #[inline(always)]
+        pub const fn set_MEM_CHECK(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 30usize)) | (((val as u32) & 0x01) << 30usize);
+        }
+    }
+    impl Default for SDMC_REQ_MASK {
+        #[inline(always)]
+        fn default() -> SDMC_REQ_MASK {
+            SDMC_REQ_MASK(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_REQ_MASK {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_REQ_MASK")
+                .field("VGA_HW_CURSOR", &self.VGA_HW_CURSOR())
+                .field("VGA_TEXT_FONT", &self.VGA_TEXT_FONT())
+                .field("VGA_TEXT_ASCII", &self.VGA_TEXT_ASCII())
+                .field("VGA_CRT", &self.VGA_CRT())
+                .field("SOC_DC_CURSOR", &self.SOC_DC_CURSOR())
+                .field("SOC_DC_OSD", &self.SOC_DC_OSD())
+                .field("SOC_DC_CRT", &self.SOC_DC_CRT())
+                .field("VIDEO_HIPRI_WRITE", &self.VIDEO_HIPRI_WRITE())
+                .field("USB20_EHCI1", &self.USB20_EHCI1())
+                .field("USB20_EHCI2", &self.USB20_EHCI2())
+                .field("CPU", &self.CPU())
+                .field("AHB2", &self.AHB2())
+                .field("AHB", &self.AHB())
+                .field("MAC0", &self.MAC0())
+                .field("MAC1", &self.MAC1())
+                .field("PCIE", &self.PCIE())
+                .field("XDMA", &self.XDMA())
+                .field("CRYPTO", &self.CRYPTO())
+                .field("VIDEO_FLAG", &self.VIDEO_FLAG())
+                .field("VIDEO_LOPRI_WRITE", &self.VIDEO_LOPRI_WRITE())
+                .field("GFX_2D", &self.GFX_2D())
+                .field("MEM_CHECK", &self.MEM_CHECK())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_REQ_MASK {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_REQ_MASK {{ VGA_HW_CURSOR: {=bool:?}, VGA_TEXT_FONT: {=bool:?}, VGA_TEXT_ASCII: {=bool:?}, VGA_CRT: {=bool:?}, SOC_DC_CURSOR: {=bool:?}, SOC_DC_OSD: {=bool:?}, SOC_DC_CRT: {=bool:?}, VIDEO_HIPRI_WRITE: {=bool:?}, USB20_EHCI1: {=bool:?}, USB20_EHCI2: {=bool:?}, CPU: {=bool:?}, AHB2: {=bool:?}, AHB: {=bool:?}, MAC0: {=bool:?}, MAC1: {=bool:?}, PCIE: {=bool:?}, XDMA: {=bool:?}, CRYPTO: {=bool:?}, VIDEO_FLAG: {=bool:?}, VIDEO_LOPRI_WRITE: {=bool:?}, GFX_2D: {=bool:?}, MEM_CHECK: {=bool:?} }}",
+                self.VGA_HW_CURSOR(), self.VGA_TEXT_FONT(), self.VGA_TEXT_ASCII(), self
+                .VGA_CRT(), self.SOC_DC_CURSOR(), self.SOC_DC_OSD(), self.SOC_DC_CRT(),
+                self.VIDEO_HIPRI_WRITE(), self.USB20_EHCI1(), self.USB20_EHCI2(), self
+                .CPU(), self.AHB2(), self.AHB(), self.MAC0(), self.MAC1(), self.PCIE(),
+                self.XDMA(), self.CRYPTO(), self.VIDEO_FLAG(), self.VIDEO_LOPRI_WRITE(),
+                self.GFX_2D(), self.MEM_CHECK()
+            )
+        }
+    }
+    ///Testing Start Address and Length Register (MCR74). Bits \[3:0\] and \[31:30\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_TEST_ADDR(pub u32);
+    impl SDMC_TEST_ADDR {
+        ///MCR74\[23:4\]: Final test address within the 16 MB segment, in 16-byte units (testing runs from offset 0 to this address).
+        #[must_use]
+        #[inline(always)]
+        pub const fn LENGTH(&self) -> u32 {
+            let val = (self.0 >> 4usize) & 0x000f_ffff;
+            val as u32
+        }
+        ///MCR74\[23:4\]: Final test address within the 16 MB segment, in 16-byte units (testing runs from offset 0 to this address).
+        #[inline(always)]
+        pub const fn set_LENGTH(&mut self, val: u32) {
+            self.0 = (self.0 & !(0x000f_ffff << 4usize))
+                | (((val as u32) & 0x000f_ffff) << 4usize);
+        }
+        ///MCR74\[29:24\]: Test base address segment in 16 MB units.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BASE(&self) -> u8 {
+            let val = (self.0 >> 24usize) & 0x3f;
+            val as u8
+        }
+        ///MCR74\[29:24\]: Test base address segment in 16 MB units.
+        #[inline(always)]
+        pub const fn set_BASE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x3f << 24usize)) | (((val as u32) & 0x3f) << 24usize);
+        }
+    }
+    impl Default for SDMC_TEST_ADDR {
+        #[inline(always)]
+        fn default() -> SDMC_TEST_ADDR {
+            SDMC_TEST_ADDR(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_TEST_ADDR {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_TEST_ADDR")
+                .field("LENGTH", &self.LENGTH())
+                .field("BASE", &self.BASE())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_TEST_ADDR {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f, "SDMC_TEST_ADDR {{ LENGTH: {=u32:?}, BASE: {=u8:?} }}", self.LENGTH(),
+                self.BASE()
+            )
+        }
+    }
+    ///ECC and Testing Control/Status Register (MCR70). Bits 11 and \[15:14\] reserved. ECC memory initialisation sequence: set CONFIG.ECC_EN, set ECC_RANGE, write TEST_INIT_VAL = 0, write TEST_CTRL = 0x221 (TEST_EN, TEST_GEN_MODE = 100, ECC_INIT), wait for DONE, write TEST_CTRL = 0, then pulse INT_CTRL.CLEAR (0x8000_0000, then 0).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_TEST_CTRL(pub u32);
+    impl SDMC_TEST_CTRL {
+        ///MCR70\[0\]: Enable testing. 0 = disable and reset the test function and its status; 1 = start.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TEST_EN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///MCR70\[0\]: Enable testing. 0 = disable and reset the test function and its status; 1 = start.
+        #[inline(always)]
+        pub const fn set_TEST_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///MCR70\[2:1\]: Testing mode.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TEST_MODE(&self) -> TestMode {
+            let val = (self.0 >> 1usize) & 0x03;
+            TestMode::from_bits(val as u8)
+        }
+        ///MCR70\[2:1\]: Testing mode.
+        #[inline(always)]
+        pub const fn set_TEST_MODE(&mut self, val: TestMode) {
+            self.0 = (self.0 & !(0x03 << 1usize))
+                | (((val.to_bits() as u32) & 0x03) << 1usize);
+        }
+        ///MCR70\[5:3\]: Testing data generation mode, seeded from TEST_INIT_VAL.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TEST_GEN_MODE(&self) -> TestGenMode {
+            let val = (self.0 >> 3usize) & 0x07;
+            TestGenMode::from_bits(val as u8)
+        }
+        ///MCR70\[5:3\]: Testing data generation mode, seeded from TEST_INIT_VAL.
+        #[inline(always)]
+        pub const fn set_TEST_GEN_MODE(&mut self, val: TestGenMode) {
+            self.0 = (self.0 & !(0x07 << 3usize))
+                | (((val.to_bits() as u32) & 0x07) << 3usize);
+        }
+        ///MCR70\[6\]: Testing auxiliary control bit 0: run test mode 1 after test mode 0.
+        #[must_use]
+        #[inline(always)]
+        pub const fn TWO_MODES(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///MCR70\[6\]: Testing auxiliary control bit 0: run test mode 1 after test mode 0.
+        #[inline(always)]
+        pub const fn set_TWO_MODES(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///MCR70\[7\]: Testing auxiliary control bit 1: terminate testing after a read error.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ERRSTOP(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///MCR70\[7\]: Testing auxiliary control bit 1: terminate testing after a read error.
+        #[inline(always)]
+        pub const fn set_ERRSTOP(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///MCR70\[8\]: Testing auxiliary control bit 2: bypass I/O buffer loopback mode.
+        #[must_use]
+        #[inline(always)]
+        pub const fn LOOPBACK(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///MCR70\[8\]: Testing auxiliary control bit 2: bypass I/O buffer loopback mode.
+        #[inline(always)]
+        pub const fn set_LOOPBACK(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///MCR70\[9\]: ECC memory segment initialisation mode. 0 = normal test mode; 1 = ECC memory initialisation.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ECC_INIT(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///MCR70\[9\]: ECC memory segment initialisation mode. 0 = normal test mode; 1 = ECC memory initialisation.
+        #[inline(always)]
+        pub const fn set_ECC_INIT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///MCR70\[10\]: Automatically scrub memory after a recoverable ECC error.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ECC_SCRUB_EN(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///MCR70\[10\]: Automatically scrub memory after a recoverable ECC error.
+        #[inline(always)]
+        pub const fn set_ECC_SCRUB_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+        ///MCR70\[12\] (read-only): Testing finished. 0 = busy; 1 = finished. Cleared when TEST_EN is cleared.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DONE(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///MCR70\[12\] (read-only): Testing finished. 0 = busy; 1 = finished. Cleared when TEST_EN is cleared.
+        #[inline(always)]
+        pub const fn set_DONE(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///MCR70\[13\] (read-only): Testing result. 0 = pass; 1 = fail. Cleared when TEST_EN is cleared.
+        #[must_use]
+        #[inline(always)]
+        pub const fn FAIL(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///MCR70\[13\] (read-only): Testing result. 0 = pass; 1 = fail. Cleared when TEST_EN is cleared.
+        #[inline(always)]
+        pub const fn set_FAIL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///MCR70\[31:16\] (read-only): Accumulated fail count, one per failing 64-bit unit; saturates.
+        #[must_use]
+        #[inline(always)]
+        pub const fn FAIL_COUNT(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0xffff;
+            val as u16
+        }
+        ///MCR70\[31:16\] (read-only): Accumulated fail count, one per failing 64-bit unit; saturates.
+        #[inline(always)]
+        pub const fn set_FAIL_COUNT(&mut self, val: u16) {
+            self.0 = (self.0 & !(0xffff << 16usize))
+                | (((val as u32) & 0xffff) << 16usize);
+        }
+    }
+    impl Default for SDMC_TEST_CTRL {
+        #[inline(always)]
+        fn default() -> SDMC_TEST_CTRL {
+            SDMC_TEST_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_TEST_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_TEST_CTRL")
+                .field("TEST_EN", &self.TEST_EN())
+                .field("TEST_MODE", &self.TEST_MODE())
+                .field("TEST_GEN_MODE", &self.TEST_GEN_MODE())
+                .field("TWO_MODES", &self.TWO_MODES())
+                .field("ERRSTOP", &self.ERRSTOP())
+                .field("LOOPBACK", &self.LOOPBACK())
+                .field("ECC_INIT", &self.ECC_INIT())
+                .field("ECC_SCRUB_EN", &self.ECC_SCRUB_EN())
+                .field("DONE", &self.DONE())
+                .field("FAIL", &self.FAIL())
+                .field("FAIL_COUNT", &self.FAIL_COUNT())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_TEST_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_TEST_CTRL {{ TEST_EN: {=bool:?}, TEST_MODE: {:?}, TEST_GEN_MODE: {:?}, TWO_MODES: {=bool:?}, ERRSTOP: {=bool:?}, LOOPBACK: {=bool:?}, ECC_INIT: {=bool:?}, ECC_SCRUB_EN: {=bool:?}, DONE: {=bool:?}, FAIL: {=bool:?}, FAIL_COUNT: {=u16:?} }}",
+                self.TEST_EN(), self.TEST_MODE(), self.TEST_GEN_MODE(), self.TWO_MODES(),
+                self.ERRSTOP(), self.LOOPBACK(), self.ECC_INIT(), self.ECC_SCRUB_EN(),
+                self.DONE(), self.FAIL(), self.FAIL_COUNT()
+            )
+        }
+    }
+    ///Testing Fail DQ Bit Register (MCR78).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_TEST_FAIL_DQ(pub u32);
+    impl SDMC_TEST_FAIL_DQ {
+        ///MCR78\[15:0\]: Failing DQ0-DQ15 on the rising edge.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RISE(&self) -> u16 {
+            let val = (self.0 >> 0usize) & 0xffff;
+            val as u16
+        }
+        ///MCR78\[15:0\]: Failing DQ0-DQ15 on the rising edge.
+        #[inline(always)]
+        pub const fn set_RISE(&mut self, val: u16) {
+            self.0 = (self.0 & !(0xffff << 0usize))
+                | (((val as u32) & 0xffff) << 0usize);
+        }
+        ///MCR78\[31:16\]: Failing DQ0-DQ15 on the falling edge.
+        #[must_use]
+        #[inline(always)]
+        pub const fn FALL(&self) -> u16 {
+            let val = (self.0 >> 16usize) & 0xffff;
+            val as u16
+        }
+        ///MCR78\[31:16\]: Failing DQ0-DQ15 on the falling edge.
+        #[inline(always)]
+        pub const fn set_FALL(&mut self, val: u16) {
+            self.0 = (self.0 & !(0xffff << 16usize))
+                | (((val as u32) & 0xffff) << 16usize);
+        }
+    }
+    impl Default for SDMC_TEST_FAIL_DQ {
+        #[inline(always)]
+        fn default() -> SDMC_TEST_FAIL_DQ {
+            SDMC_TEST_FAIL_DQ(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_TEST_FAIL_DQ {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_TEST_FAIL_DQ")
+                .field("RISE", &self.RISE())
+                .field("FALL", &self.FALL())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_TEST_FAIL_DQ {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f, "SDMC_TEST_FAIL_DQ {{ RISE: {=u16:?}, FALL: {=u16:?} }}", self.RISE(),
+                self.FALL()
+            )
+        }
+    }
+    ///Plain 32-bit value.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_VALUE32(pub u32);
+    impl SDMC_VALUE32 {
+        ///32-bit register value.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VALUE(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0xffff_ffff;
+            val as u32
+        }
+        ///32-bit register value.
+        #[inline(always)]
+        pub const fn set_VALUE(&mut self, val: u32) {
+            self.0 = (self.0 & !(0xffff_ffff << 0usize))
+                | (((val as u32) & 0xffff_ffff) << 0usize);
+        }
+    }
+    impl Default for SDMC_VALUE32 {
+        #[inline(always)]
+        fn default() -> SDMC_VALUE32 {
+            SDMC_VALUE32(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_VALUE32 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_VALUE32").field("VALUE", &self.VALUE()).finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_VALUE32 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "SDMC_VALUE32 {{ VALUE: {=u32:?} }}", self.VALUE())
+        }
+    }
+    ///Total DRAM capacity (CONFIG.DRAM_SIZE).
+    #[repr(u8)]
+    #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+    #[cfg_attr(feature = "defmt", derive(defmt::Format))]
+    pub enum DramSize {
+        ///128 MB or smaller.
+        MB128 = 0x0,
+        ///256 MB.
+        MB256 = 0x01,
+        ///512 MB.
+        MB512 = 0x02,
+        ///1024 MB.
+        GB1 = 0x03,
+    }
+    impl DramSize {
+        #[inline(always)]
+        pub const fn from_bits(val: u8) -> DramSize {
+            unsafe { core::mem::transmute(val & 0x03) }
+        }
+        #[inline(always)]
+        pub const fn to_bits(self) -> u8 {
+            unsafe { core::mem::transmute(self) }
+        }
+    }
+    impl From<u8> for DramSize {
+        #[inline(always)]
+        fn from(val: u8) -> DramSize {
+            DramSize::from_bits(val)
+        }
+    }
+    impl From<DramSize> for u8 {
+        #[inline(always)]
+        fn from(val: DramSize) -> u8 {
+            DramSize::to_bits(val)
+        }
+    }
+    ///Mode register selection (MRS_CTRL.MR_SEL).
+    #[repr(u8)]
+    #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+    #[cfg_attr(feature = "defmt", derive(defmt::Format))]
+    pub enum ModeReg {
+        MR0 = 0x0,
+        MR1 = 0x01,
+        MR2 = 0x02,
+        MR3 = 0x03,
+        MR4 = 0x04,
+        MR5 = 0x05,
+        MR6 = 0x06,
+        _RESERVED_7 = 0x07,
+    }
+    impl ModeReg {
+        #[inline(always)]
+        pub const fn from_bits(val: u8) -> ModeReg {
+            unsafe { core::mem::transmute(val & 0x07) }
+        }
+        #[inline(always)]
+        pub const fn to_bits(self) -> u8 {
+            unsafe { core::mem::transmute(self) }
+        }
+    }
+    impl From<u8> for ModeReg {
+        #[inline(always)]
+        fn from(val: u8) -> ModeReg {
+            ModeReg::from_bits(val)
+        }
+    }
+    impl From<ModeReg> for u8 {
+        #[inline(always)]
+        fn from(val: ModeReg) -> u8 {
+            ModeReg::to_bits(val)
+        }
+    }
+    ///Memory test data generation mode (TEST_CTRL.TEST_GEN_MODE).
+    #[repr(u8)]
+    #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+    #[cfg_attr(feature = "defmt", derive(defmt::Format))]
+    pub enum TestGenMode {
+        ///Byte toggled data, 0 -> 1 -> 0 -> 1.
+        BYTE_TOGGLE = 0x0,
+        ///Byte rotate left, LSB -> MSB.
+        BYTE_ROTATE_LEFT = 0x01,
+        ///Byte rotate right, MSB -> LSB.
+        BYTE_ROTATE_RIGHT = 0x02,
+        ///Byte increment at each 8-bit unit.
+        BYTE_INCREMENT = 0x03,
+        ///Byte sequence data.
+        BYTE_SEQUENCE = 0x04,
+        ///4-bit sequence data.
+        NIBBLE_SEQUENCE = 0x05,
+        ///2-bit sequence data.
+        BIT2_SEQUENCE = 0x06,
+        ///1-bit sequence data.
+        BIT1_SEQUENCE = 0x07,
+    }
+    impl TestGenMode {
+        #[inline(always)]
+        pub const fn from_bits(val: u8) -> TestGenMode {
+            unsafe { core::mem::transmute(val & 0x07) }
+        }
+        #[inline(always)]
+        pub const fn to_bits(self) -> u8 {
+            unsafe { core::mem::transmute(self) }
+        }
+    }
+    impl From<u8> for TestGenMode {
+        #[inline(always)]
+        fn from(val: u8) -> TestGenMode {
+            TestGenMode::from_bits(val)
+        }
+    }
+    impl From<TestGenMode> for u8 {
+        #[inline(always)]
+        fn from(val: TestGenMode) -> u8 {
+            TestGenMode::to_bits(val)
+        }
+    }
+    ///Memory test mode (TEST_CTRL.TEST_MODE).
+    #[repr(u8)]
+    #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+    #[cfg_attr(feature = "defmt", derive(defmt::Format))]
+    pub enum TestMode {
+        ///Write memory only (FAIL always 0).
+        WRITE_ONLY = 0x0,
+        ///Read back and compare each location.
+        READ_COMPARE = 0x01,
+        ///Write one location, then read it back and compare with the expected value.
+        WRITE_READ_COMPARE = 0x02,
+        _RESERVED_3 = 0x03,
+    }
+    impl TestMode {
+        #[inline(always)]
+        pub const fn from_bits(val: u8) -> TestMode {
+            unsafe { core::mem::transmute(val & 0x03) }
+        }
+        #[inline(always)]
+        pub const fn to_bits(self) -> u8 {
+            unsafe { core::mem::transmute(self) }
+        }
+    }
+    impl From<u8> for TestMode {
+        #[inline(always)]
+        fn from(val: u8) -> TestMode {
+            TestMode::from_bits(val)
+        }
+    }
+    impl From<TestMode> for u8 {
+        #[inline(always)]
+        fn from(val: TestMode) -> u8 {
+            TestMode::to_bits(val)
+        }
+    }
+    ///Graphics memory aperture size (CONFIG.VGA_APERTURE).
+    #[repr(u8)]
+    #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+    #[cfg_attr(feature = "defmt", derive(defmt::Format))]
+    pub enum VgaAperture {
+        ///8 MB.
+        MB8 = 0x0,
+        ///16 MB.
+        MB16 = 0x01,
+        ///32 MB.
+        MB32 = 0x02,
+        ///64 MB.
+        MB64 = 0x03,
+    }
+    impl VgaAperture {
+        #[inline(always)]
+        pub const fn from_bits(val: u8) -> VgaAperture {
+            unsafe { core::mem::transmute(val & 0x03) }
+        }
+        #[inline(always)]
+        pub const fn to_bits(self) -> u8 {
+            unsafe { core::mem::transmute(self) }
+        }
+    }
+    impl From<u8> for VgaAperture {
+        #[inline(always)]
+        fn from(val: u8) -> VgaAperture {
+            VgaAperture::from_bits(val)
+        }
+    }
+    impl From<VgaAperture> for u8 {
+        #[inline(always)]
+        fn from(val: VgaAperture) -> u8 {
+            VgaAperture::to_bits(val)
         }
     }
 }

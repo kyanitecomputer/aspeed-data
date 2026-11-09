@@ -1,0 +1,1369 @@
+# AST2500 SDRAM Memory Controller (SDMC) registers.
+#
+# Base address: 0x1E6E_0000 (ARM main-core view).
+# DDR3/DDR4 controller, 16-bit data bus, up to 1 GB at 0x8000_0000.
+# The AST2500 controller is not backward compatible with the AST2400 one;
+# do not reuse this file for other generations.
+#
+# Key protection:
+#   MCR04-MCR7C are protected by MCR00 (write 0xFC60_0309 to unlock, any
+#   other value to lock).  Reads are not affected by the lock.
+#
+# Request IDs (REQ0-REQ30) used by MCR08, MCR38, MCR3C and MCR40-MCR4C are
+# the fixed priority DRAM request IDs; the request mask fieldset names the
+# assigned ones.
+#
+# Not modelled:
+#   - The DDR PHY register window at 0x1E6E_0200-0x1E6E_03FF (PHY setting
+#     and training result registers); drivers access it as raw MMIO.
+#   - The reserved gaps 0x090-0x0FC, 0x104-0x11C, 0x124-0x16C and
+#     0x174-0x1FC.
+
+block/SDMC:
+  description: >
+    AST2500 SDRAM Memory Controller (SDMC).
+    Base address: 0x1E6E_0000.  DDR3/DDR4 controller with ECC, data
+    scrambling, a built-in memory test engine and DDR PHY training
+    interface.
+  items:
+    - name: PROTECT
+      description: >
+        Protection Key Register (MCR00). Init = 0 (locked).
+        Write 0xFC60_0309 to unlock MCR04-MCR7C; write any other value to
+        lock.  Reads back 0x0000_0001 when unlocked and 0x0000_0000 when
+        locked.
+      byte_offset: 0x00
+      fieldset: SDMC_PROTECT
+
+    - name: CONFIG
+      description: >
+        Configuration Register (MCR04). Init = 0x1000_000C.
+        DRAM type, size, rank and ECC/cache/scramble configuration.
+      byte_offset: 0x04
+      fieldset: SDMC_CONFIG
+
+    - name: GFX_PROTECT
+      description: >
+        Graphics Memory Protection Register (MCR08). Init = 0.
+        Bit n = 1 re-maps all accesses of REQn to the highest memory space
+        (the graphics memory aperture), whose location is given by
+        MCR04[1:0] (DRAM size) and MCR04[3:2] (VGA aperture size).
+      byte_offset: 0x08
+      fieldset: SDMC_REQ_MASK
+
+    - name: REFRESH
+      description: >
+        Refresh Timing Register (MCR0C). Init = 0.
+        Read data is only valid while refresh is enabled (CYCLES != 0).
+      byte_offset: 0x0C
+      fieldset: SDMC_REFRESH
+
+    - name: AC_TIMING1
+      description: >
+        AC Timing Register #1 (MCR10). Init = 0.
+        Bits [3:0] of the 5-bit t-RP/t-RRD/t-RCD/t-APD/t-RTP/t-WTP/t-RTW/
+        t-WTR settings; bit 4 of each is in AC_TIMING3.
+      byte_offset: 0x10
+      fieldset: SDMC_AC_TIMING1
+
+    - name: AC_TIMING2
+      description: >
+        AC Timing Register #2 (MCR14). Init = 0.
+      byte_offset: 0x14
+      fieldset: SDMC_AC_TIMING2
+
+    - name: AC_TIMING3
+      description: >
+        AC Timing Register #3 (MCR18). Init = 0.
+        Bit 4 of the AC_TIMING1/AC_TIMING2 settings plus DDR4-only timings.
+      byte_offset: 0x18
+      fieldset: SDMC_AC_TIMING3
+
+    - name: MISC
+      description: >
+        Misc Control Register (MCR1C). Init = 0.
+      byte_offset: 0x1C
+      fieldset: SDMC_MISC
+
+    - name: MR46
+      description: >
+        MR4/MR6 Mode Setting Register (MCR20). Init = X.
+        DRAM mode register values issued by MRS_CTRL.  DDR3 uses 0.
+      byte_offset: 0x20
+      fieldset: SDMC_MR46
+
+    - name: MR5
+      description: >
+        MR5 Mode Setting Register (MCR24). Init = X.
+        DRAM mode register value issued by MRS_CTRL.  DDR3 uses 0.
+      byte_offset: 0x24
+      fieldset: SDMC_MR5
+
+    - name: MRS_CTRL
+      description: >
+        Mode Setting Control Register (MCR28). Init = 0.
+        Issues one mode register set command from MR02/MR13/MR46/MR5.
+      byte_offset: 0x28
+      fieldset: SDMC_MRS_CTRL
+
+    - name: MR02
+      description: >
+        MR0/MR2 Mode Setting Register (MCR2C). Init = X.
+      byte_offset: 0x2C
+      fieldset: SDMC_MR02
+
+    - name: MR13
+      description: >
+        MR1/MR3 Mode Setting Register (MCR30). Init = X.
+      byte_offset: 0x30
+      fieldset: SDMC_MR13
+
+    - name: POWER_CTRL
+      description: >
+        Power Control Register (MCR34). Init = 0.
+        CKE, SDRAM reset, ODT and self refresh control.
+      byte_offset: 0x34
+      fieldset: SDMC_POWER_CTRL
+
+    - name: REQ_LIMIT_MASK
+      description: >
+        Request Queued Limitation Mask Register (MCR38). Init = 0.
+        Bit n = 1 masks REQn while the number of queued requests exceeds
+        MISC.REQ_THRESHOLD; 0 never masks it.  High priority requests
+        (e.g. CRT display) are usually left unmasked.
+      byte_offset: 0x38
+      fieldset: SDMC_REQ_MASK
+
+    - name: PRIORITY_GROUP
+      description: >
+        Priority Group Setting Register (MCR3C). Init = 0.
+      byte_offset: 0x3C
+      fieldset: SDMC_PRIORITY_GROUP
+
+    - name: MAX_GRANT
+      description: >
+        Maximum Grant Length Registers #1-#4 (MCR40/MCR44/MCR48/MCR4C).
+        Init = 0.  Element n holds the 4-bit grant lengths of
+        REQ(8n)-REQ(8n+7); REQ31 (MCR4C[31:28]) does not exist.
+      byte_offset: 0x40
+      fieldset: SDMC_MAX_GRANT
+      array:
+        len: 4
+        stride: 4
+
+    - name: INT_CTRL
+      description: >
+        Interrupt Control/Status Register (MCR50). Init = 0.
+        ECC and oversize-write interrupt enables, flags and error counters.
+      byte_offset: 0x50
+      fieldset: SDMC_INT_CTRL
+
+    - name: ECC_RANGE
+      description: >
+        ECC/Cache Address Range Control Register (MCR54). Init = 0.
+      byte_offset: 0x54
+      fieldset: SDMC_ECC_RANGE
+
+    - name: ECC_FIRST_UNRECOV_ADDR
+      description: >
+        Address of First Un-Recoverable ECC Error (MCR58). Init = 0.
+        Re-armed when the error counters are reset (INT_CTRL.CLEAR).
+      byte_offset: 0x58
+      access: Read
+      fieldset: SDMC_ECC_ERR_ADDR
+
+    - name: ECC_LAST_RECOV_ADDR
+      description: >
+        Address of Last Recoverable ECC Error (MCR5C). Init = 0.
+        Re-armed when the error counters are reset (INT_CTRL.CLEAR).
+      byte_offset: 0x5C
+      access: Read
+      fieldset: SDMC_ECC_ERR_ADDR
+
+    - name: PHY_CTRL1
+      description: >
+        DDR PHY Control/Status Register #1 (MCR60). Init = 0.
+        PHY reset, init and auto-update control plus training interface
+        capability/response.  Not an array with MCR64-MCR6C because each
+        register has a different layout.
+      byte_offset: 0x60
+      fieldset: SDMC_PHY_CTRL1
+
+    - name: PHY_CTRL2
+      description: >
+        DDR PHY Control/Status Register #2 (MCR64). Init = 0.
+        Training interface logic enables.
+      byte_offset: 0x64
+      fieldset: SDMC_PHY_CTRL2
+
+    - name: PHY_CTRL3
+      description: >
+        DDR PHY Control/Status Register #3 (MCR68). Init = 0.
+        Training interface gate training delay value.
+      byte_offset: 0x68
+      fieldset: SDMC_VALUE32
+
+    - name: PHY_CTRL4
+      description: >
+        DDR PHY Control/Status Register #4 (MCR6C). Init = 0.
+        Training interface data eye training delay values.
+      byte_offset: 0x6C
+      fieldset: SDMC_PHY_CTRL4
+
+    - name: TEST_CTRL
+      description: >
+        ECC and Testing Control/Status Register (MCR70). Init = 0.
+        Built-in memory test engine and ECC memory initialisation.
+        The tested range is set by TEST_ADDR and the data seed by
+        TEST_INIT_VAL.  Not recommended after a watchdog reset because
+        testing disturbs the graphics display.
+      byte_offset: 0x70
+      fieldset: SDMC_TEST_CTRL
+
+    - name: TEST_ADDR
+      description: >
+        Testing Start Address and Length Register (MCR74). Init = 0.
+      byte_offset: 0x74
+      fieldset: SDMC_TEST_ADDR
+
+    - name: TEST_FAIL_DQ
+      description: >
+        Testing Fail DQ Bit Register (MCR78). Init = 0.
+      byte_offset: 0x78
+      access: Read
+      fieldset: SDMC_TEST_FAIL_DQ
+
+    - name: TEST_INIT_VAL
+      description: >
+        Test Initial Value Register (MCR7C). Init = 0.
+        Seed for the test data generator (TEST_CTRL.TEST_GEN_MODE).
+        Modes 000-011: [7:0] rising-edge DQ value, [15:8] falling-edge DQ
+        value, same for all DQS groups.  Mode 100: bytes [7:0]/[23:16]
+        rising and [15:8]/[31:24] falling, used in sequence.  Mode 101:
+        4-bit, mode 110: 2-bit and mode 111: 1-bit groups alternating
+        rising/falling, used in sequence.  Must be 0 for ECC
+        initialisation.
+      byte_offset: 0x7C
+      fieldset: SDMC_VALUE32
+
+    - name: PHY_DBG_CTRL
+      description: >
+        DDR PHY Debug Interface Control (MCR80). Init = 0.
+      byte_offset: 0x80
+      fieldset: SDMC_PHY_DBG_CTRL
+
+    - name: PHY_DBG_DATA
+      description: >
+        DDR PHY Debug Interface Data (MCR84). Init = 0.
+      byte_offset: 0x84
+      fieldset: SDMC_PHY_DBG_DATA
+
+    - name: SCRATCH0
+      description: >
+        Reserved Register (MCR88). Init = 0.
+        32-bit RW register with no hardware function; usable as software
+        scratch storage.
+      byte_offset: 0x88
+      fieldset: SDMC_VALUE32
+
+    - name: SCRATCH1
+      description: >
+        Reserved Register (MCR8C). Init = 0.
+        32-bit RW register with no hardware function; usable as software
+        scratch storage.
+      byte_offset: 0x8C
+      fieldset: SDMC_VALUE32
+
+    - name: COMPAT_SCU_KEY
+      description: >
+        AST2000 Backward Compatible SCU Password (MCR100).
+        Init = 0x0000_00A8.  Read-only.
+      byte_offset: 0x100
+      access: Read
+      fieldset: SDMC_VALUE32
+
+    - name: COMPAT_MPLL
+      description: >
+        AST2000 Backward Compatible SCU MPLL Parameter (MCR120). Init = 0.
+        Read/write; holds the M-PLL parameter reported in VGA compatible
+        mode.
+      byte_offset: 0x120
+      fieldset: SDMC_COMPAT_MPLL
+
+    - name: COMPAT_SCU_HWSTRAP
+      description: >
+        AST2000 Backward Compatible SCU Hardware Strapping Value (MCR170).
+        Init = 0.  Read-only, always 0.
+      byte_offset: 0x170
+      access: Read
+      fieldset: SDMC_VALUE32
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/SDMC_VALUE32:
+  description: Plain 32-bit value.
+  fields:
+    - name: VALUE
+      description: 32-bit register value.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SDMC_PROTECT:
+  description: Protection Key Register (MCR00).
+  fields:
+    - name: KEY
+      description: >
+        MCR00[31:0]: Protection key.  Write 0xFC60_0309 to unlock, any
+        other value to lock.  Reads 1 when unlocked, 0 when locked.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SDMC_CONFIG:
+  description: >
+    Configuration Register (MCR04). Bits [18:14] reserved.
+  fields:
+    - name: DRAM_SIZE
+      description: >
+        MCR04[1:0]: Total memory capacity for oversized write protection.
+        Writes beyond the size are dropped; reads wrap around.
+      bit_offset: 0
+      bit_size: 2
+      enum: DramSize
+    - name: VGA_APERTURE
+      description: >
+        MCR04[3:2] (read-only): Graphics memory aperture size, set from
+        hardware strap SCU70[3:2].
+      bit_offset: 2
+      bit_size: 2
+      enum: VgaAperture
+    - name: DDR4
+      description: "MCR04[4]: DRAM type. 0 = DDR3; 1 = DDR4."
+      bit_offset: 4
+      bit_size: 1
+    - name: DUAL_RANK
+      description: >
+        MCR04[5]: DRAM rank configuration for stacked DRAM.
+        0 = one rank; 1 = two ranks, MA15 functions as CS1.
+        Only for stacked 8 Gbit parts.
+      bit_offset: 5
+      bit_size: 1
+    - name: VGA_16BIT
+      description: >
+        MCR04[6] (read-only): Reserved for VGA driver backward
+        compatibility; reads 1 (16-bit).
+      bit_offset: 6
+      bit_size: 1
+    - name: ECC_EN
+      description: >
+        MCR04[7]: Enable ECC. Costs an extra 1/8 of the protected memory
+        size.  CACHE_EN must also be set when ECC is enabled.
+      bit_offset: 7
+      bit_size: 1
+    - name: SCRAMBLE_EN
+      description: >
+        MCR04[8]: Enable data scrambling to reduce maximum SSO current.
+      bit_offset: 8
+      bit_size: 1
+    - name: SCRAMBLE_PAT2
+      description: >
+        MCR04[9]: Data scramble pattern selection. 0 = pattern 1;
+        1 = pattern 2.
+      bit_offset: 9
+      bit_size: 1
+    - name: CACHE_EN
+      description: "MCR04[10]: Enable the DRAM controller cache."
+      bit_offset: 10
+      bit_size: 1
+    - name: CACHE_RANGE_EN
+      description: >
+        MCR04[11]: Cache operates only within the address range set in
+        ECC_RANGE (MCR54). 0 = cache covers all addresses.
+      bit_offset: 11
+      bit_size: 1
+    - name: CACHE_INIT_EN
+      description: >
+        MCR04[12]: Start the cache initial sequence.  Only allowed while
+        CACHE_EN = 0; poll CACHE_INIT_DONE afterwards.
+      bit_offset: 12
+      bit_size: 1
+    - name: DUAL_X8
+      description: >
+        MCR04[13]: DDR4 DRAM configuration. 0 = single x16 DRAM;
+        1 = dual x8 DRAM.
+      bit_offset: 13
+      bit_size: 1
+    - name: CACHE_INIT_DONE
+      description: >
+        MCR04[19] (read-only): Cache initial done. 0 = not active or busy;
+        1 = done.
+      bit_offset: 19
+      bit_size: 1
+    - name: SW_VERSION
+      description: >
+        MCR04[27:20]: DRAM controller software version. 0 = earlier chip
+        revision; other values are software defined (e.g. the DRAM init
+        code version).
+      bit_offset: 20
+      bit_size: 8
+    - name: HW_VERSION
+      description: >
+        MCR04[31:28] (read-only): DRAM controller hardware version.
+        0 = earlier chip revision; 1 = AST2500.
+      bit_offset: 28
+      bit_size: 4
+
+fieldset/SDMC_REQ_MASK:
+  description: >
+    DRAM request mask (MCR08 / MCR38).  Bit n corresponds to REQn of the
+    fixed priority request list.  REQ15, REQ19, REQ20 and
+    REQ22-REQ27 are reserved and not named.
+  fields:
+    - name: VGA_HW_CURSOR
+      description: "REQ0: VGA hardware cursor read."
+      bit_offset: 0
+      bit_size: 1
+    - name: VGA_TEXT_FONT
+      description: "REQ1: VGA text mode CG font read."
+      bit_offset: 1
+      bit_size: 1
+    - name: VGA_TEXT_ASCII
+      description: "REQ2: VGA text mode ASCII code read."
+      bit_offset: 2
+      bit_size: 1
+    - name: VGA_CRT
+      description: "REQ3: VGA CRT read."
+      bit_offset: 3
+      bit_size: 1
+    - name: SOC_DC_CURSOR
+      description: "REQ4: SOC display controller cursor read."
+      bit_offset: 4
+      bit_size: 1
+    - name: SOC_DC_OSD
+      description: "REQ5: SOC display controller OSD read."
+      bit_offset: 5
+      bit_size: 1
+    - name: SOC_DC_CRT
+      description: "REQ6: SOC display controller CRT read."
+      bit_offset: 6
+      bit_size: 1
+    - name: VIDEO_HIPRI_WRITE
+      description: "REQ7: Video high priority write."
+      bit_offset: 7
+      bit_size: 1
+    - name: USB20_EHCI1
+      description: "REQ8: USB2.0 hub / EHCI1 DMA read/write."
+      bit_offset: 8
+      bit_size: 1
+    - name: USB20_EHCI2
+      description: "REQ9: USB2.0 device / EHCI2 DMA read/write."
+      bit_offset: 9
+      bit_size: 1
+    - name: CPU
+      description: "REQ10: CPU data read/write."
+      bit_offset: 10
+      bit_size: 1
+    - name: AHB2
+      description: "REQ11: AHB2 bus read/write."
+      bit_offset: 11
+      bit_size: 1
+    - name: AHB
+      description: "REQ12: AHB bus read/write."
+      bit_offset: 12
+      bit_size: 1
+    - name: MAC0
+      description: "REQ13: MAC0 DMA read/write."
+      bit_offset: 13
+      bit_size: 1
+    - name: MAC1
+      description: "REQ14: MAC1 DMA read/write."
+      bit_offset: 14
+      bit_size: 1
+    - name: PCIE
+      description: "REQ16: PCI-E bus read/write."
+      bit_offset: 16
+      bit_size: 1
+    - name: XDMA
+      description: "REQ17: X-DMA message read/write."
+      bit_offset: 17
+      bit_size: 1
+    - name: CRYPTO
+      description: "REQ18: Encryption engine read/write."
+      bit_offset: 18
+      bit_size: 1
+    - name: VIDEO_FLAG
+      description: "REQ21: Video flag read/write."
+      bit_offset: 21
+      bit_size: 1
+    - name: VIDEO_LOPRI_WRITE
+      description: "REQ28: Video low priority write."
+      bit_offset: 28
+      bit_size: 1
+    - name: GFX_2D
+      description: "REQ29: 2D engine data read/write."
+      bit_offset: 29
+      bit_size: 1
+    - name: MEM_CHECK
+      description: "REQ30: Memory integrity check engine read."
+      bit_offset: 30
+      bit_size: 1
+
+fieldset/SDMC_REFRESH:
+  description: Refresh Timing Register (MCR0C).
+  fields:
+    - name: CYCLES
+      description: >
+        MCR0C[3:0]: Refresh cycles per refresh period. 0 = refresh
+        disabled; 1-7 = n cycles; 1xxx = 8 cycles.
+      bit_offset: 0
+      bit_size: 4
+    - name: PRECHARGE_ALL
+      description: >
+        MCR0C[4]: Force all banks to be pre-charged before refresh cycles
+        (insurance only).
+      bit_offset: 4
+      bit_size: 1
+    - name: LOW_PRIO_EN
+      description: >
+        MCR0C[5]: Enable low-priority refresh requests once the refresh
+        counter passes 1/4 of PERIOD (up to 8 cycles per request).
+      bit_offset: 5
+      bit_size: 1
+    - name: ZQCL_EN
+      description: >
+        MCR0C[6]: Issue ZQCL automatically after the DLL reset MRS command.
+      bit_offset: 6
+      bit_size: 1
+    - name: ZQCS_EN
+      description: >
+        MCR0C[7]: Issue ZQCS commands periodically (every ZQCS_PERIOD
+        refresh cycles).
+      bit_offset: 7
+      bit_size: 1
+    - name: PERIOD
+      description: >
+        MCR0C[15:8]: Period of high-priority refresh cycles in 12 MHz
+        reference clocks (refresh frequency = 12 MHz / PERIOD).
+      bit_offset: 8
+      bit_size: 8
+    - name: ZQCS_PERIOD
+      description: >
+        MCR0C[30:16]: Period of ZQCS commands in refresh cycles
+        (e.g. 128 ms = 7.5 us * 0x42AA).  Applies to DDR3 and DDR4.
+      bit_offset: 16
+      bit_size: 15
+    - name: ZQCS_EXIT_128
+      description: "MCR0C[31]: ZQCS exit delay. 0 = 64 nCK; 1 = 128 nCK."
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SDMC_AC_TIMING1:
+  description: >
+    AC Timing Register #1 (MCR10).  Each field is bits [3:0] of a 5-bit
+    value n; bit 4 is in AC_TIMING3.
+  fields:
+    - name: TWTR
+      description: "MCR10[3:0]: t-WTR (write to read). Timing = 2n + 3 CK."
+      bit_offset: 0
+      bit_size: 4
+    - name: TRTW
+      description: "MCR10[7:4]: t-RTW (read to write). Timing = 2n + 3 CK."
+      bit_offset: 4
+      bit_size: 4
+    - name: TWTP
+      description: >
+        MCR10[11:8]: t-WTP (write to pre-charge, same bank).
+        Timing = 2n CK.
+      bit_offset: 8
+      bit_size: 4
+    - name: TRTP
+      description: >
+        MCR10[15:12]: t-RTP (read to pre-charge, same bank).
+        Timing = 2n + 1 CK.
+      bit_offset: 12
+      bit_size: 4
+    - name: TAPD
+      description: >
+        MCR10[19:16]: t-APD (ACT/PRE to read/write, different banks).
+        Timing = 2n + 1 CK.
+      bit_offset: 16
+      bit_size: 4
+    - name: TRCD
+      description: >
+        MCR10[23:20]: t-RCD (active to read/write). Timing = 2n + 3 CK.
+      bit_offset: 20
+      bit_size: 4
+    - name: TRRD
+      description: >
+        MCR10[27:24]: t-RRD (active to active). Timing = 2n + 1 CK.
+      bit_offset: 24
+      bit_size: 4
+    - name: TRP
+      description: "MCR10[31:28]: t-RP. Timing = 2n + 3 CK."
+      bit_offset: 28
+      bit_size: 4
+
+fieldset/SDMC_AC_TIMING2:
+  description: AC Timing Register #2 (MCR14).
+  fields:
+    - name: TRFC
+      description: >
+        MCR14[7:0]: t-RFC refresh interval. Timing = 2n + 4 CK.
+      bit_offset: 0
+      bit_size: 8
+    - name: TMRD
+      description: >
+        MCR14[11:8]: t-MRD / t-MOD mode set interval (the larger of the
+        two). Timing = 4n + 2 CK.
+      bit_offset: 8
+      bit_size: 4
+    - name: TRAS
+      description: >
+        MCR14[15:12]: t-RAS bits [3:0] (active to minimum precharge).
+        Timing = 2n + 1 CK.  Bit 4 is AC_TIMING3.TRAS_B4.
+      bit_offset: 12
+      bit_size: 4
+    - name: CL
+      description: >
+        MCR14[19:16]: DRAM read latency. 0 = not supported.
+        DDR3: value = CL - 2; DDR4: value = CL - 1.
+      bit_offset: 16
+      bit_size: 4
+    - name: CWL
+      description: >
+        MCR14[23:20]: DRAM write latency. 0 = not supported.
+        Value = CWL - 2.
+      bit_offset: 20
+      bit_size: 4
+    - name: TXSNR
+      description: "MCR14[27:24]: t-XSNR. Timing = 32n + 32 CK."
+      bit_offset: 24
+      bit_size: 4
+    - name: TFAW
+      description: >
+        MCR14[31:28]: t-FAW (four bank active window) bits [3:0].
+        Timing = 2n + 1 CK.  Bit 4 is AC_TIMING3.TFAW_B4.
+      bit_offset: 28
+      bit_size: 4
+
+fieldset/SDMC_AC_TIMING3:
+  description: AC Timing Register #3 (MCR18). Bits [31:17] reserved.
+  fields:
+    - name: TWTR_B4
+      description: "MCR18[0]: t-WTR setting bit 4."
+      bit_offset: 0
+      bit_size: 1
+    - name: TRTW_B4
+      description: "MCR18[1]: t-RTW setting bit 4."
+      bit_offset: 1
+      bit_size: 1
+    - name: TWTP_B4
+      description: "MCR18[2]: t-WTP setting bit 4."
+      bit_offset: 2
+      bit_size: 1
+    - name: TRTP_B4
+      description: "MCR18[3]: t-RTP setting bit 4."
+      bit_offset: 3
+      bit_size: 1
+    - name: TAPD_B4
+      description: "MCR18[4]: t-APD setting bit 4."
+      bit_offset: 4
+      bit_size: 1
+    - name: TRCD_B4
+      description: "MCR18[5]: t-RCD setting bit 4."
+      bit_offset: 5
+      bit_size: 1
+    - name: TRRD_B4
+      description: "MCR18[6]: t-RRD setting bit 4."
+      bit_offset: 6
+      bit_size: 1
+    - name: TRP_B4
+      description: "MCR18[7]: t-RP setting bit 4."
+      bit_offset: 7
+      bit_size: 1
+    - name: TRAS_B4
+      description: "MCR18[8]: t-RAS setting bit 4."
+      bit_offset: 8
+      bit_size: 1
+    - name: TFAW_B4
+      description: "MCR18[9]: t-FAW setting bit 4."
+      bit_offset: 9
+      bit_size: 1
+    - name: RANK_READ_GAP
+      description: >
+        MCR18[11:10]: Read command gap between different ranks, avoids
+        overlapping data and preamble/postamble. Timing = 2n + 2 CK.
+      bit_offset: 10
+      bit_size: 2
+    - name: TCCD_L
+      description: >
+        MCR18[13:12]: t-CCD_L (DDR4 only). Timing = 2n + 4 CK.
+      bit_offset: 12
+      bit_size: 2
+    - name: TWTR_L
+      description: >
+        MCR18[15:14]: t-WTR_L minus t-WTR_S (DDR4 only). Timing = 2n CK.
+      bit_offset: 14
+      bit_size: 2
+    - name: CWL_ODD
+      description: >
+        MCR18[16]: Write data delay phase selection; in normal operation
+        indicates whether CWL is even (0) or odd (1).
+      bit_offset: 16
+      bit_size: 1
+
+fieldset/SDMC_MISC:
+  description: Misc Control Register (MCR1C). Bits [31:5] reserved.
+  fields:
+    - name: REQ_THRESHOLD
+      description: >
+        MCR1C[4:0]: Request queued number threshold; requests masked in
+        REQ_LIMIT_MASK (MCR38) are held while more requests are queued.
+      bit_offset: 0
+      bit_size: 5
+
+fieldset/SDMC_MR46:
+  description: >
+    MR4/MR6 Mode Setting Register (MCR20).  Raw DRAM mode register values;
+    see the JEDEC DDR4 standard for bit definitions.
+  fields:
+    - name: MR4
+      description: >
+        MCR20[12:0]: Mode register 4 value (DDR4: write/read preamble,
+        self refresh abort, CAL, internal Vref monitor, TCR, max power
+        down).
+      bit_offset: 0
+      bit_size: 13
+    - name: MR6
+      description: >
+        MCR20[28:16]: Mode register 6 value (DDR4: tCCD_L, VrefDQ
+        training enable/range/value).
+      bit_offset: 16
+      bit_size: 13
+
+fieldset/SDMC_MR5:
+  description: MR5 Mode Setting Register (MCR24).
+  fields:
+    - name: MR5
+      description: >
+        MCR24[12:0]: Mode register 5 value (DDR4: read/write DBI, data
+        mask, CA parity, RTT_PARK, ODT input buffer in power down).
+      bit_offset: 0
+      bit_size: 13
+
+fieldset/SDMC_MRS_CTRL:
+  description: Mode Setting Control Register (MCR28). Bits [31:6] reserved.
+  fields:
+    - name: FIRE
+      description: >
+        MCR28[0]: Write 1 to issue the selected mode register set command.
+        Hardware clears it when done and holds off further AHB accesses to
+        the controller meanwhile, so commands can be issued back to back.
+      bit_offset: 0
+      bit_size: 1
+    - name: MR_SEL
+      description: "MCR28[3:1]: Mode register selection."
+      bit_offset: 1
+      bit_size: 3
+      enum: ModeReg
+    - name: DLL_RESET_DELAY
+      description: >
+        MCR28[4]: Enable the reset DLL delay timer, which blocks command
+        execution after the command.
+      bit_offset: 4
+      bit_size: 1
+    - name: RANK1
+      description: "MCR28[5]: Rank select. 0 = rank 0; 1 = rank 1."
+      bit_offset: 5
+      bit_size: 1
+
+fieldset/SDMC_MR02:
+  description: MR0/MR2 Mode Setting Register (MCR2C).
+  fields:
+    - name: MR0
+      description: >
+        MCR2C[12:0]: Mode register 0 value (write recovery, DLL reset at
+        bit 8, CAS latency, burst type/length).
+      bit_offset: 0
+      bit_size: 13
+    - name: MR2
+      description: >
+        MCR2C[28:16]: Mode register 2 value (write CRC, RTT_WR, LP ASR,
+        CWL).
+      bit_offset: 16
+      bit_size: 13
+
+fieldset/SDMC_MR13:
+  description: MR1/MR3 Mode Setting Register (MCR30).
+  fields:
+    - name: MR1
+      description: >
+        MCR30[12:0]: Mode register 1 value (Qoff, TDQS, RTT_NOM, write
+        leveling, AL, output driver impedance, DLL enable).
+      bit_offset: 0
+      bit_size: 13
+    - name: MR3
+      description: >
+        MCR30[28:16]: Mode register 3 value (MPR read format, write CMD
+        latency, fine granularity refresh, geardown, MPR operation/page).
+      bit_offset: 16
+      bit_size: 13
+
+fieldset/SDMC_POWER_CTRL:
+  description: >
+    Power Control Register (MCR34).  Bits 9 and 16 are RW reserved,
+    bits [27:18] reserved.
+  fields:
+    - name: CKE_EN
+      description: >
+        MCR34[0]: Enable CKE. 0 = CKE forced low (state after power-on
+        reset); 1 = CKE enabled.
+      bit_offset: 0
+      bit_size: 1
+    - name: AUTO_PWRDN_EN
+      description: >
+        MCR34[1]: Enable auto power down (CKE driven dynamically when no
+        request is pending).
+      bit_offset: 1
+      bit_size: 1
+    - name: SELF_REFRESH
+      description: >
+        MCR34[2]: Force SDRAM into self refresh. 0 = normal mode / exit
+        self refresh.
+      bit_offset: 2
+      bit_size: 1
+    - name: CK_OFF_IN_SR
+      description: >
+        MCR34[3]: Disable the CK/CK# output buffers while in self refresh.
+      bit_offset: 3
+      bit_size: 1
+    - name: CKE_EXIT_DELAY
+      description: >
+        MCR34[6:4]: CKE exit delay from power down to any command.
+        Timing = 2n + 4 CK.
+      bit_offset: 4
+      bit_size: 3
+    - name: RESET_DIS
+      description: >
+        MCR34[7]: SDRAM RESET_N output. 0 = reset asserted (output low);
+        1 = reset released (output high).
+      bit_offset: 7
+      bit_size: 1
+    - name: ODT_EN
+      description: "MCR34[8]: Enable DDR3/DDR4 SDRAM ODT."
+      bit_offset: 8
+      bit_size: 1
+    - name: ODT_AUTO_ON
+      description: >
+        MCR34[10]: Automatically turn SDRAM ODT on/off for write cycles
+        (ODT_EN must be set first).
+      bit_offset: 10
+      bit_size: 1
+    - name: ODT_EXTEND
+      description: >
+        MCR34[11]: Extend the SDRAM ODT cycle.  Must be set for DDR3 when
+        the tWL setting bit 0 is 0.
+      bit_offset: 11
+      bit_size: 1
+    - name: TCKE_PW
+      description: >
+        MCR34[14:12]: t-CKE, CKE minimum high/low pulse width.
+        Timing = 2n + 2 CK.
+      bit_offset: 12
+      bit_size: 3
+    - name: READ_GAP_EN
+      description: "MCR34[15]: Enable read gap control for the PHY read output."
+      bit_offset: 15
+      bit_size: 1
+    - name: REQ_IN_DIS
+      description: >
+        MCR34[17]: Disable memory request input (set during DDR init).
+      bit_offset: 17
+      bit_size: 1
+    - name: SR_STATE
+      description: >
+        MCR34[30:28] (read-only, debug): Self refresh control state.
+        0 = idle; 1 = wait for idle; 2 = entering self refresh;
+        3 = wait tXSNR; 4 = wait MRS DLL reset; 5 = wait 512 CK for DLL
+        recovery.  Poll for 0 (idle) after a DLL reset.
+      bit_offset: 28
+      bit_size: 3
+    - name: CKE_OUT
+      description: "MCR34[31] (read-only, debug): Current CKE pin output."
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SDMC_PRIORITY_GROUP:
+  description: Priority Group Setting Register (MCR3C).
+  fields:
+    - name: EQUAL
+      description: >
+        MCR3C bit n: 0 = REQn has higher priority than REQ(n+1);
+        1 = REQn and REQ(n+1) have equal priority.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SDMC_MAX_GRANT:
+  description: >
+    Maximum Grant Length Register (MCR40-MCR4C).  Field k of array element
+    n is the grant length of REQ(8n+k), in units of 2 x 128 bits:
+    value 0/1 = 2 x 128 bits, 2/3 = 4 x 128 bits, ... 14/15 = 16 x 128
+    bits.
+  fields:
+    - name: REQ0
+      description: "[3:0]: Grant length of REQ(8n+0)."
+      bit_offset: 0
+      bit_size: 4
+    - name: REQ1
+      description: "[7:4]: Grant length of REQ(8n+1)."
+      bit_offset: 4
+      bit_size: 4
+    - name: REQ2
+      description: "[11:8]: Grant length of REQ(8n+2)."
+      bit_offset: 8
+      bit_size: 4
+    - name: REQ3
+      description: "[15:12]: Grant length of REQ(8n+3)."
+      bit_offset: 12
+      bit_size: 4
+    - name: REQ4
+      description: "[19:16]: Grant length of REQ(8n+4)."
+      bit_offset: 16
+      bit_size: 4
+    - name: REQ5
+      description: "[23:20]: Grant length of REQ(8n+5)."
+      bit_offset: 20
+      bit_size: 4
+    - name: REQ6
+      description: "[27:24]: Grant length of REQ(8n+6)."
+      bit_offset: 24
+      bit_size: 4
+    - name: REQ7
+      description: >
+        [31:28]: Grant length of REQ(8n+7).  Reserved in MCR4C (REQ31
+        does not exist).
+      bit_offset: 28
+      bit_size: 4
+
+fieldset/SDMC_INT_CTRL:
+  description: >
+    Interrupt Control/Status Register (MCR50).
+    Bits 3, [11:7] and 30 reserved.
+  fields:
+    - name: ECC_UNRECOV_INT_EN
+      description: "MCR50[0]: Enable ECC un-recoverable error interrupt."
+      bit_offset: 0
+      bit_size: 1
+    - name: ECC_RECOV_INT_EN
+      description: "MCR50[1]: Enable ECC recoverable error interrupt."
+      bit_offset: 1
+      bit_size: 1
+    - name: OVERSIZE_INT_EN
+      description: "MCR50[2]: Enable oversized access interrupt."
+      bit_offset: 2
+      bit_size: 1
+    - name: ECC_UNRECOV_INT
+      description: >
+        MCR50[4] (read-only): ECC un-recoverable error interrupt pending.
+        Cleared by CLEAR (MCR50[31]).
+      bit_offset: 4
+      bit_size: 1
+    - name: ECC_RECOV_INT
+      description: >
+        MCR50[5] (read-only): ECC recoverable error interrupt pending.
+        Cleared by CLEAR.
+      bit_offset: 5
+      bit_size: 1
+    - name: OVERSIZE_INT
+      description: >
+        MCR50[6] (read-only): Oversized write error interrupt pending.
+        Cleared by CLEAR.
+      bit_offset: 6
+      bit_size: 1
+    - name: ECC_UNRECOV_COUNT
+      description: >
+        MCR50[15:12] (read-only): ECC un-recoverable error counter,
+        saturates at 15.
+      bit_offset: 12
+      bit_size: 4
+    - name: ECC_RECOV_COUNT
+      description: >
+        MCR50[23:16] (read-only): ECC recoverable error counter,
+        saturates at 255.
+      bit_offset: 16
+      bit_size: 8
+    - name: OVERSIZE_REQ_ID
+      description: >
+        MCR50[28:24] (read-only): Request ID of the last oversize access.
+      bit_offset: 24
+      bit_size: 5
+    - name: OVERSIZE_WRITE
+      description: >
+        MCR50[29] (read-only): Direction of the last oversize access.
+        0 = read; 1 = write.
+      bit_offset: 29
+      bit_size: 1
+    - name: CLEAR
+      description: >
+        MCR50[31]: Write 1 to reset all interrupt flags and ECC error
+        counters; software must write it back to 0 afterwards.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/SDMC_ECC_RANGE:
+  description: >
+    ECC/Cache Address Range Control Register (MCR54).
+    Bits [19:0] and [31:30] reserved.
+  fields:
+    - name: MAX
+      description: >
+        MCR54[29:20]: Maximum ECC/cache work address in 1 MB units
+        (work area = address <= MAX).  With ECC enabled firmware must
+        reserve an extra 1/8 of the space for ECC data.  Also limits the
+        cache when CONFIG.CACHE_RANGE_EN is set.
+      bit_offset: 20
+      bit_size: 10
+
+fieldset/SDMC_ECC_ERR_ADDR:
+  description: >
+    ECC error address (MCR58 / MCR5C). Bits [3:0] and [31:30] reserved.
+  fields:
+    - name: ADDR
+      description: >
+        [29:4]: DRAM address bits [29:4] of the recorded ECC error
+        (16-byte granularity).
+      bit_offset: 4
+      bit_size: 26
+
+fieldset/SDMC_PHY_CTRL1:
+  description: >
+    DDR PHY Control/Status Register #1 (MCR60).
+    Bits [7:3] and [15:14] reserved.
+  fields:
+    - name: INIT
+      description: >
+        MCR60[0]: DDR PHY init control/status.  Write 1 to start the PHY
+        init cycle; reads 1 while busy and 0 when idle.
+      bit_offset: 0
+      bit_size: 1
+    - name: AUTO_UPDATE
+      description: "MCR60[1]: Enable DDR PHY auto-update."
+      bit_offset: 1
+      bit_size: 1
+    - name: RESET_DIS
+      description: >
+        MCR60[2]: DDR PHY reset control. 0 = PHY held in reset;
+        1 = reset released.
+      bit_offset: 2
+      bit_size: 1
+    - name: GATE_TRAIN_SUPPORT
+      description: >
+        MCR60[9:8] (read-only): Training interface gate training support.
+        01 = MC evaluation mode supported by the PHY.
+      bit_offset: 8
+      bit_size: 2
+    - name: EYE_TRAIN_SUPPORT
+      description: >
+        MCR60[11:10] (read-only): Training interface data eye training
+        support. 01 = MC evaluation mode supported by the PHY.
+      bit_offset: 10
+      bit_size: 2
+    - name: WRLVL_SUPPORT
+      description: >
+        MCR60[13:12] (read-only): Training interface write leveling
+        support. 00 = not supported by the PHY.
+      bit_offset: 12
+      bit_size: 2
+    - name: RDLVL_RESPONSE
+      description: >
+        MCR60[31:16] (read-only): Training interface read leveling
+        response.  Gate training: bit 0 = DQ[7:0], bit 8 = DQ[15:8].
+        Data eye training: bits [7:0] = DQ[7:0], bits [15:8] = DQ[15:8].
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/SDMC_PHY_CTRL2:
+  description: >
+    DDR PHY Control/Status Register #2 (MCR64). Bits [31:8] reserved.
+  fields:
+    - name: GATE_TRAIN_EN
+      description: "MCR64[1:0]: Training interface gate training logic enable."
+      bit_offset: 0
+      bit_size: 2
+    - name: EYE_TRAIN_EN
+      description: >
+        MCR64[3:2]: Training interface PHY data eye training logic enable.
+      bit_offset: 2
+      bit_size: 2
+    - name: RDLVL_LOAD
+      description: "MCR64[5:4]: Training interface read leveling load."
+      bit_offset: 4
+      bit_size: 2
+    - name: RDLVL_DQS_NEG
+      description: >
+        MCR64[7:6]: Training interface read leveling read DQS edge.
+        0 = positive edge; 1 = negative edge.
+      bit_offset: 6
+      bit_size: 2
+
+fieldset/SDMC_PHY_CTRL4:
+  description: DDR PHY Control/Status Register #4 (MCR6C).
+  fields:
+    - name: DQS_DELAY
+      description: >
+        MCR6C[15:0]: Training interface data eye training delay value for
+        DQS.
+      bit_offset: 0
+      bit_size: 16
+    - name: DQSN_DELAY
+      description: >
+        MCR6C[31:16]: Training interface data eye training delay value
+        for DQS#.
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/SDMC_TEST_CTRL:
+  description: >
+    ECC and Testing Control/Status Register (MCR70).
+    Bits 11 and [15:14] reserved.
+    ECC memory initialisation sequence: set CONFIG.ECC_EN,
+    set ECC_RANGE, write TEST_INIT_VAL = 0, write TEST_CTRL = 0x221
+    (TEST_EN, TEST_GEN_MODE = 100, ECC_INIT), wait for DONE, write
+    TEST_CTRL = 0, then pulse INT_CTRL.CLEAR (0x8000_0000, then 0).
+  fields:
+    - name: TEST_EN
+      description: >
+        MCR70[0]: Enable testing. 0 = disable and reset the test function
+        and its status; 1 = start.
+      bit_offset: 0
+      bit_size: 1
+    - name: TEST_MODE
+      description: "MCR70[2:1]: Testing mode."
+      bit_offset: 1
+      bit_size: 2
+      enum: TestMode
+    - name: TEST_GEN_MODE
+      description: >
+        MCR70[5:3]: Testing data generation mode, seeded from
+        TEST_INIT_VAL.
+      bit_offset: 3
+      bit_size: 3
+      enum: TestGenMode
+    - name: TWO_MODES
+      description: >
+        MCR70[6]: Testing auxiliary control bit 0: run test mode 1 after
+        test mode 0.
+      bit_offset: 6
+      bit_size: 1
+    - name: ERRSTOP
+      description: >
+        MCR70[7]: Testing auxiliary control bit 1: terminate testing after
+        a read error.
+      bit_offset: 7
+      bit_size: 1
+    - name: LOOPBACK
+      description: >
+        MCR70[8]: Testing auxiliary control bit 2: bypass I/O buffer
+        loopback mode.
+      bit_offset: 8
+      bit_size: 1
+    - name: ECC_INIT
+      description: >
+        MCR70[9]: ECC memory segment initialisation mode. 0 = normal test
+        mode; 1 = ECC memory initialisation.
+      bit_offset: 9
+      bit_size: 1
+    - name: ECC_SCRUB_EN
+      description: >
+        MCR70[10]: Automatically scrub memory after a recoverable ECC
+        error.
+      bit_offset: 10
+      bit_size: 1
+    - name: DONE
+      description: >
+        MCR70[12] (read-only): Testing finished. 0 = busy; 1 = finished.
+        Cleared when TEST_EN is cleared.
+      bit_offset: 12
+      bit_size: 1
+    - name: FAIL
+      description: >
+        MCR70[13] (read-only): Testing result. 0 = pass; 1 = fail.
+        Cleared when TEST_EN is cleared.
+      bit_offset: 13
+      bit_size: 1
+    - name: FAIL_COUNT
+      description: >
+        MCR70[31:16] (read-only): Accumulated fail count, one per failing
+        64-bit unit; saturates.
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/SDMC_TEST_ADDR:
+  description: >
+    Testing Start Address and Length Register (MCR74).
+    Bits [3:0] and [31:30] reserved.
+  fields:
+    - name: LENGTH
+      description: >
+        MCR74[23:4]: Final test address within the 16 MB segment, in
+        16-byte units (testing runs from offset 0 to this address).
+      bit_offset: 4
+      bit_size: 20
+    - name: BASE
+      description: >
+        MCR74[29:24]: Test base address segment in 16 MB units.
+      bit_offset: 24
+      bit_size: 6
+
+fieldset/SDMC_TEST_FAIL_DQ:
+  description: Testing Fail DQ Bit Register (MCR78).
+  fields:
+    - name: RISE
+      description: "MCR78[15:0]: Failing DQ0-DQ15 on the rising edge."
+      bit_offset: 0
+      bit_size: 16
+    - name: FALL
+      description: "MCR78[31:16]: Failing DQ0-DQ15 on the falling edge."
+      bit_offset: 16
+      bit_size: 16
+
+fieldset/SDMC_PHY_DBG_CTRL:
+  description: DDR PHY Debug Interface Control (MCR80). Bits [31:1] reserved.
+  fields:
+    - name: WRITE
+      description: "MCR80[0]: Command mode. 0 = read; 1 = write."
+      bit_offset: 0
+      bit_size: 1
+
+fieldset/SDMC_PHY_DBG_DATA:
+  description: DDR PHY Debug Interface Data (MCR84). Bits [31:24] reserved.
+  fields:
+    - name: ADDR
+      description: "MCR84[7:0]: Command address."
+      bit_offset: 0
+      bit_size: 8
+    - name: WDATA
+      description: "MCR84[15:8]: Write data."
+      bit_offset: 8
+      bit_size: 8
+    - name: RDATA
+      description: "MCR84[23:16] (read-only): Read data."
+      bit_offset: 16
+      bit_size: 8
+
+fieldset/SDMC_COMPAT_MPLL:
+  description: >
+    AST2000 Backward Compatible SCU MPLL Parameter (MCR120).
+    Bits [31:16] reserved.
+  fields:
+    - name: DENUM
+      description: "MCR120[4:0]: Denumerator."
+      bit_offset: 0
+      bit_size: 5
+    - name: NUM
+      description: "MCR120[13:5]: Numerator."
+      bit_offset: 5
+      bit_size: 9
+    - name: POST_DIV
+      description: "MCR120[15:14]: Post divider."
+      bit_offset: 14
+      bit_size: 2
+
+# ── Enumerations ───────────────────────────────────────────────────────────────
+
+enum/DramSize:
+  description: Total DRAM capacity (CONFIG.DRAM_SIZE).
+  bit_size: 2
+  variants:
+    - name: MB128
+      description: 128 MB or smaller.
+      value: 0
+    - name: MB256
+      description: 256 MB.
+      value: 1
+    - name: MB512
+      description: 512 MB.
+      value: 2
+    - name: GB1
+      description: 1024 MB.
+      value: 3
+
+enum/VgaAperture:
+  description: Graphics memory aperture size (CONFIG.VGA_APERTURE).
+  bit_size: 2
+  variants:
+    - name: MB8
+      description: 8 MB.
+      value: 0
+    - name: MB16
+      description: 16 MB.
+      value: 1
+    - name: MB32
+      description: 32 MB.
+      value: 2
+    - name: MB64
+      description: 64 MB.
+      value: 3
+
+enum/ModeReg:
+  description: Mode register selection (MRS_CTRL.MR_SEL).
+  bit_size: 3
+  variants:
+    - name: MR0
+      value: 0
+    - name: MR1
+      value: 1
+    - name: MR2
+      value: 2
+    - name: MR3
+      value: 3
+    - name: MR4
+      value: 4
+    - name: MR5
+      value: 5
+    - name: MR6
+      value: 6
+
+enum/TestMode:
+  description: Memory test mode (TEST_CTRL.TEST_MODE).
+  bit_size: 2
+  variants:
+    - name: WRITE_ONLY
+      description: Write memory only (FAIL always 0).
+      value: 0
+    - name: READ_COMPARE
+      description: Read back and compare each location.
+      value: 1
+    - name: WRITE_READ_COMPARE
+      description: >
+        Write one location, then read it back and compare with the
+        expected value.
+      value: 2
+
+enum/TestGenMode:
+  description: Memory test data generation mode (TEST_CTRL.TEST_GEN_MODE).
+  bit_size: 3
+  variants:
+    - name: BYTE_TOGGLE
+      description: Byte toggled data, 0 -> 1 -> 0 -> 1.
+      value: 0
+    - name: BYTE_ROTATE_LEFT
+      description: Byte rotate left, LSB -> MSB.
+      value: 1
+    - name: BYTE_ROTATE_RIGHT
+      description: Byte rotate right, MSB -> LSB.
+      value: 2
+    - name: BYTE_INCREMENT
+      description: Byte increment at each 8-bit unit.
+      value: 3
+    - name: BYTE_SEQUENCE
+      description: Byte sequence data.
+      value: 4
+    - name: NIBBLE_SEQUENCE
+      description: 4-bit sequence data.
+      value: 5
+    - name: BIT2_SEQUENCE
+      description: 2-bit sequence data.
+      value: 6
+    - name: BIT1_SEQUENCE
+      description: 1-bit sequence data.
+      value: 7
