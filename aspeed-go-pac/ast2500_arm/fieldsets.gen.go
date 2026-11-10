@@ -287,6 +287,19 @@ const (
     FmcAst2500V1FMCWRITEFILTERCTRLFILTER5MODEMsk = 0x3 << 8
 )
 
+// scu_ast2500_v1::SCU_CLK_DUTY Clock Duty Selection (SCU1DC).  Each field: bit 6 enables duty calibration, bit 5 inverts the source clock, bits [4:0] select the calibration stage.
+const (
+    // DCLK SCU1DC[6:0]: DCLK duty calibration.
+    ScuAst2500V1SCUCLKDUTYDCLKPos = 0
+    ScuAst2500V1SCUCLKDUTYDCLKMsk = 0x7f << 0
+    // RGMII1TXCK SCU1DC[14:8]: RGMII1 TXCK duty calibration.
+    ScuAst2500V1SCUCLKDUTYRGMII1TXCKPos = 8
+    ScuAst2500V1SCUCLKDUTYRGMII1TXCKMsk = 0x7f << 8
+    // RGMII2TXCK SCU1DC[22:16]: RGMII2 TXCK duty calibration.
+    ScuAst2500V1SCUCLKDUTYRGMII2TXCKPos = 16
+    ScuAst2500V1SCUCLKDUTYRGMII2TXCKMsk = 0x7f << 16
+)
+
 // scu_ast2500_v1::SCU_CLK_SEL Clock Selection Register (SCU08). Bits [11:9] are reserved and must keep their default value.
 const (
     // CPUDYNSLOWDOWNEN SCU08[0]: CPU/AHB clock dynamic slow down enable. The slow down ratio is defined at bits [6:4].
@@ -415,6 +428,47 @@ const (
     ScuAst2500V1SCUCLKSTOPCTRLLHCLKMsk = 0x1 << 28
 )
 
+// scu_ast2500_v1::SCU_D2PLL D2-PLL Parameter Register (SCU1C).
+const (
+    // M SCU1C[7:0]: D2-PLL numerator (M).
+    ScuAst2500V1SCUD2PLLMPos = 0
+    ScuAst2500V1SCUD2PLLMMsk = 0xff << 0
+    // N SCU1C[12:8]: D2-PLL denumerator (N).
+    ScuAst2500V1SCUD2PLLNPos = 8
+    ScuAst2500V1SCUD2PLLNMsk = 0x1f << 8
+    // P SCU1C[18:13]: D2-PLL post divider (P).
+    ScuAst2500V1SCUD2PLLPPos = 13
+    ScuAst2500V1SCUD2PLLPMsk = 0x3f << 13
+    // OD SCU1C[21:19]: D2-PLL output divider (OD).
+    ScuAst2500V1SCUD2PLLODPos = 19
+    ScuAst2500V1SCUD2PLLODMsk = 0x7 << 19
+    // SIC SCU1C[26:22]: D2-PLL SIC, chosen by the range of M.
+    ScuAst2500V1SCUD2PLLSICPos = 22
+    ScuAst2500V1SCUD2PLLSICMsk = 0x1f << 22
+    // SIP SCU1C[31:27]: D2-PLL SIP, chosen by the range of M.
+    ScuAst2500V1SCUD2PLLSIPPos = 27
+    ScuAst2500V1SCUD2PLLSIPMsk = 0x1f << 27
+)
+
+// scu_ast2500_v1::SCU_D2PLL_EXT D2-PLL Extended Parameter Register (SCU13C).
+const (
+    // POWERDOWN SCU13C[0]: Turn the D2-PLL off (power down, output 0).
+    ScuAst2500V1SCUD2PLLEXTPOWERDOWNPos = 0
+    ScuAst2500V1SCUD2PLLEXTPOWERDOWNMsk = 0x1 << 0
+    // BYPASS SCU13C[1]: D2-PLL bypass mode: the output is CLKIN.
+    ScuAst2500V1SCUD2PLLEXTBYPASSPos = 1
+    ScuAst2500V1SCUD2PLLEXTBYPASSMsk = 0x1 << 1
+    // RESET SCU13C[2]: Hold the D2-PLL in reset.
+    ScuAst2500V1SCUD2PLLEXTRESETPos = 2
+    ScuAst2500V1SCUD2PLLEXTRESETMsk = 0x1 << 2
+    // MODE SCU13C[4:3]: D2-PLL mode selection.
+    ScuAst2500V1SCUD2PLLEXTMODEPos = 3
+    ScuAst2500V1SCUD2PLLEXTMODEMsk = 0x3 << 3
+    // PARAM SCU13C[13:5]: D2-PLL parameter bits [36:28]; 0x2C for integer M/N/P settings.
+    ScuAst2500V1SCUD2PLLEXTPARAMPos = 5
+    ScuAst2500V1SCUD2PLLEXTPARAMMsk = 0x1ff << 5
+)
+
 // scu_ast2500_v1::SCU_HWSTRAP Hardware Strap Register (SCU70) / strap clear (SCU7C write). SCU70 writes can only set bits; write 1 to SCU7C to clear. Reserved: bit 28 (reads 1), bit 8 (0), bit 4 (0), bit 1 (reads 1).
 const (
     // CPUBOOTDIS SCU70[0]: Disable CPU boot. 0 = enable boot; 1 = disable CPU operation (no firmware).
@@ -489,6 +543,37 @@ const (
     // SPISTRAPAUTOFETCH SCU70[31]: Enable SPI flash strap auto fetch mode.
     ScuAst2500V1SCUHWSTRAPSPISTRAPAUTOFETCHPos = 31
     ScuAst2500V1SCUHWSTRAPSPISTRAPAUTOFETCHMsk = 0x1 << 31
+)
+
+// scu_ast2500_v1::SCU_MAC_CLK_DELAY MAC Interface Clock Delay Setting (SCU48).
+const (
+    // MAC1TXDELAY SCU48[5:0]: MAC#1 RGMII TXCLK (1G) clock output delay.
+    ScuAst2500V1SCUMACCLKDELAYMAC1TXDELAYPos = 0
+    ScuAst2500V1SCUMACCLKDELAYMAC1TXDELAYMsk = 0x3f << 0
+    // MAC2TXDELAY SCU48[11:6]: MAC#2 RGMII TXCLK (1G) clock output delay.
+    ScuAst2500V1SCUMACCLKDELAYMAC2TXDELAYPos = 6
+    ScuAst2500V1SCUMACCLKDELAYMAC2TXDELAYMsk = 0x3f << 6
+    // MAC1RXDELAY SCU48[17:12]: MAC#1 RMII RCLK / RGMII RXCLK (1G) clock input delay.
+    ScuAst2500V1SCUMACCLKDELAYMAC1RXDELAYPos = 12
+    ScuAst2500V1SCUMACCLKDELAYMAC1RXDELAYMsk = 0x3f << 12
+    // MAC2RXDELAY SCU48[23:18]: MAC#2 RMII RCLK / RGMII RXCLK (1G) clock input delay.
+    ScuAst2500V1SCUMACCLKDELAYMAC2RXDELAYPos = 18
+    ScuAst2500V1SCUMACCLKDELAYMAC2RXDELAYMsk = 0x3f << 18
+    // MAC1RMIITXFALLING SCU48[24]: MAC#1 RMII transmits data at the clock falling edge.
+    ScuAst2500V1SCUMACCLKDELAYMAC1RMIITXFALLINGPos = 24
+    ScuAst2500V1SCUMACCLKDELAYMAC1RMIITXFALLINGMsk = 0x1 << 24
+    // MAC2RMIITXFALLING SCU48[25]: MAC#2 RMII transmits data at the clock falling edge.
+    ScuAst2500V1SCUMACCLKDELAYMAC2RMIITXFALLINGPos = 25
+    ScuAst2500V1SCUMACCLKDELAYMAC2RMIITXFALLINGMsk = 0x1 << 25
+    // RMII1RCLKOUTEN SCU48[29]: Enable the RMII1 50 MHz RCLK output (RMII1RCLKO).
+    ScuAst2500V1SCUMACCLKDELAYRMII1RCLKOUTENPos = 29
+    ScuAst2500V1SCUMACCLKDELAYRMII1RCLKOUTENMsk = 0x1 << 29
+    // RMII2RCLKOUTEN SCU48[30]: Enable the RMII2 50 MHz RCLK output (RMII2RCLKO).
+    ScuAst2500V1SCUMACCLKDELAYRMII2RCLKOUTENPos = 30
+    ScuAst2500V1SCUMACCLKDELAYRMII2RCLKOUTENMsk = 0x1 << 30
+    // RGMIICLKINTERNAL SCU48[31]: RGMII 125 MHz clock source. 0 = RGMIICK pad; 1 = internal PLL (the SCU4C RGMII divider).
+    ScuAst2500V1SCUMACCLKDELAYRGMIICLKINTERNALPos = 31
+    ScuAst2500V1SCUMACCLKDELAYRGMIICLKINTERNALMsk = 0x1 << 31
 )
 
 // scu_ast2500_v1::SCU_MHPLL_EXT Extended Parameter of M/H-PLL Register (SCU148).
@@ -639,6 +724,35 @@ const (
     // PEWAKEOUTLOW SCU2C[30]: Enable PCIe PEWAKE# output low. 0 = tri-stated; 1 = drive low.
     ScuAst2500V1SCUMISCCTRLPEWAKEOUTLOWPos = 30
     ScuAst2500V1SCUMISCCTRLPEWAKEOUTLOWMsk = 0x1 << 30
+)
+
+// scu_ast2500_v1::SCU_PIN_CTRL3 Multi-function Pin Control
+const (
+    // MDC1EN SCU88[30]: Enable the MAC#1 MDC1 function pin (D8, else GPIOR6).
+    ScuAst2500V1SCUPINCTRL3MDC1ENPos = 30
+    ScuAst2500V1SCUPINCTRL3MDC1ENMsk = 0x1 << 30
+    // MDIO1EN SCU88[31]: Enable the MAC#1 MDIO1 function pin (E10, else GPIOR7).
+    ScuAst2500V1SCUPINCTRL3MDIO1ENPos = 31
+    ScuAst2500V1SCUPINCTRL3MDIO1ENMsk = 0x1 << 31
+)
+
+// scu_ast2500_v1::SCU_PIN_CTRL5 Multi-function Pin Control #5 (SCU90), MAC#2 management pins and MAC pin pull-downs.
+const (
+    // MDIO2EN SCU90[2]: Enable the MAC#2 MDC2/MDIO2 function pins (C13, B13; requires SCU90[6] = 0).
+    ScuAst2500V1SCUPINCTRL5MDIO2ENPos = 2
+    ScuAst2500V1SCUPINCTRL5MDIO2ENMsk = 0x1 << 2
+    // RGMII1TXPDDIS SCU90[12]: Disable the RGMII1/RMII1 TX pins' internal pull-downs. Default 0 (enabled).
+    ScuAst2500V1SCUPINCTRL5RGMII1TXPDDISPos = 12
+    ScuAst2500V1SCUPINCTRL5RGMII1TXPDDISMsk = 0x1 << 12
+    // RGMII1RXPDDIS SCU90[13]: Disable the RGMII1/RMII1 RX pins' internal pull-downs. Default 1 (disabled).
+    ScuAst2500V1SCUPINCTRL5RGMII1RXPDDISPos = 13
+    ScuAst2500V1SCUPINCTRL5RGMII1RXPDDISMsk = 0x1 << 13
+    // RGMII2TXPDDIS SCU90[14]: Disable the RGMII2/RMII2 TX pins' internal pull-downs, including RGMIICK.  Default 0 (enabled).
+    ScuAst2500V1SCUPINCTRL5RGMII2TXPDDISPos = 14
+    ScuAst2500V1SCUPINCTRL5RGMII2TXPDDISMsk = 0x1 << 14
+    // RGMII2RXPDDIS SCU90[15]: Disable the RGMII2/RMII2 RX pins' internal pull-downs. Default 1 (disabled).
+    ScuAst2500V1SCUPINCTRL5RGMII2RXPDDISPos = 15
+    ScuAst2500V1SCUPINCTRL5RGMII2RXPDDISMsk = 0x1 << 15
 )
 
 // scu_ast2500_v1::SCU_PLL M-PLL / H-PLL Parameter Register (SCU20 / SCU24). Output = CLKIN(24MHz) * (M+1) / (N+1) / (P+1). PLL parameter bits [15:10] live in SCU148.

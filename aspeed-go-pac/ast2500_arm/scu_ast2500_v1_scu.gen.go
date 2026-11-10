@@ -49,6 +49,16 @@ func (p *ScuAst2500V1SCU) WriteCLKSTOPCTRL(val uint32) {
     reg.Write(uint32(p.Base)+0x000c, uint32(val))
 }
 
+// ReadD2PLL reads D2-PLL Parameter Register (SCU1C). Init = 0x0004_E029; the D2-PLL is off after reset (D2PLL_EXT and SCU2C[4]).  It is the default source of the RGMII 125 MHz and RMII 50 MHz MAC clocks. Output = CLKIN * (M+1) / (N+1) / (P+1) / (OD+1).
+func (p *ScuAst2500V1SCU) ReadD2PLL() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x001c))
+}
+
+// WriteD2PLL writes D2-PLL Parameter Register (SCU1C). Init = 0x0004_E029; the D2-PLL is off after reset (D2PLL_EXT and SCU2C[4]).  It is the default source of the RGMII 125 MHz and RMII 50 MHz MAC clocks. Output = CLKIN * (M+1) / (N+1) / (P+1) / (OD+1).
+func (p *ScuAst2500V1SCU) WriteD2PLL(val uint32) {
+    reg.Write(uint32(p.Base)+0x001c, uint32(val))
+}
+
 // ReadMPLL reads M-PLL Parameter Register (SCU20). Init = 0x9300_2400.  M-PLL clocks the memory controller. Output = CLKIN(24MHz) * (M+1) / (N+1) / (P+1).
 func (p *ScuAst2500V1SCU) ReadMPLL() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x0020))
@@ -109,6 +119,16 @@ func (p *ScuAst2500V1SCU) WriteVGAHANDSHAKE1(val uint32) {
     reg.Write(uint32(p.Base)+0x0044, uint32(val))
 }
 
+// ReadMACCLKDELAY reads MAC Interface Clock Delay Setting (SCU48). Init = 0.  RGMII/RMII clock delays and clock sources, for 1G and, unless enabled in SCUB8/SCUBC, also for 100M and 10M.  Modify only while both MACs are held in reset (SCU04).
+func (p *ScuAst2500V1SCU) ReadMACCLKDELAY() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0048))
+}
+
+// WriteMACCLKDELAY writes MAC Interface Clock Delay Setting (SCU48). Init = 0.  RGMII/RMII clock delays and clock sources, for 1G and, unless enabled in SCUB8/SCUBC, also for 100M and 10M.  Modify only while both MACs are held in reset (SCU04).
+func (p *ScuAst2500V1SCU) WriteMACCLKDELAY(val uint32) {
+    reg.Write(uint32(p.Base)+0x0048, uint32(val))
+}
+
 // ReadMISC2CTRL reads Misc. 2 Control Register (SCU4C). Init = 0x03.  UART clock source and Ethernet clock dividers.
 func (p *ScuAst2500V1SCU) ReadMISC2CTRL() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x004c))
@@ -145,6 +165,36 @@ func (p *ScuAst2500V1SCU) ReadSILICONREV() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x007c))
 }
 
+// ReadPINCTRL3 reads Multi-function Pin Control #3 (SCU88). Init = 0x0300_0000.  Only the MAC#1 management pins are modelled.
+func (p *ScuAst2500V1SCU) ReadPINCTRL3() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0088))
+}
+
+// WritePINCTRL3 writes Multi-function Pin Control #3 (SCU88). Init = 0x0300_0000.  Only the MAC#1 management pins are modelled.
+func (p *ScuAst2500V1SCU) WritePINCTRL3(val uint32) {
+    reg.Write(uint32(p.Base)+0x0088, uint32(val))
+}
+
+// ReadPINCTRL5 reads Multi-function Pin Control #5 (SCU90). Init = 0x0000_A000.  Only the MAC#2 management pins and the MAC pin pull-downs are modelled.
+func (p *ScuAst2500V1SCU) ReadPINCTRL5() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x0090))
+}
+
+// WritePINCTRL5 writes Multi-function Pin Control #5 (SCU90). Init = 0x0000_A000.  Only the MAC#2 management pins and the MAC pin pull-downs are modelled.
+func (p *ScuAst2500V1SCU) WritePINCTRL5(val uint32) {
+    reg.Write(uint32(p.Base)+0x0090, uint32(val))
+}
+
+// ReadD2PLLEXT reads D2-PLL Extended Parameter Register (SCU13C). Init = 0.  Not key protected.  D2-PLL power, reset, bypass and parameter bits [36:28].
+func (p *ScuAst2500V1SCU) ReadD2PLLEXT() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x013c))
+}
+
+// WriteD2PLLEXT writes D2-PLL Extended Parameter Register (SCU13C). Init = 0.  Not key protected.  D2-PLL power, reset, bypass and parameter bits [36:28].
+func (p *ScuAst2500V1SCU) WriteD2PLLEXT(val uint32) {
+    reg.Write(uint32(p.Base)+0x013c, uint32(val))
+}
+
 // ReadMHPLLEXT reads Extended Parameter of M/H-PLL Register (SCU148). Init = 0x0019_0019.  Not key protected.  PLL parameter high bits and lock status.
 func (p *ScuAst2500V1SCU) ReadMHPLLEXT() uint32 {
     return uint32(reg.Read(uint32(p.Base) + 0x0148))
@@ -173,5 +223,15 @@ func (p *ScuAst2500V1SCU) ReadUART24MREF() uint32 {
 // WriteUART24MREF writes Generate UART 24 MHz Reference from H-PLL when CLKIN is 25 MHz (SCU160).  Init = 0x0001_1320. CLK24M frequency = H-PLL * R / (N * 4).
 func (p *ScuAst2500V1SCU) WriteUART24MREF(val uint32) {
     reg.Write(uint32(p.Base)+0x0160, uint32(val))
+}
+
+// ReadCLKDUTY reads Clock Duty Selection (SCU1DC). Init = 0.  Not key protected.  Duty calibration of the RGMII transmit clocks and DCLK.
+func (p *ScuAst2500V1SCU) ReadCLKDUTY() uint32 {
+    return uint32(reg.Read(uint32(p.Base) + 0x01dc))
+}
+
+// WriteCLKDUTY writes Clock Duty Selection (SCU1DC). Init = 0.  Not key protected.  Duty calibration of the RGMII transmit clocks and DCLK.
+func (p *ScuAst2500V1SCU) WriteCLKDUTY(val uint32) {
+    reg.Write(uint32(p.Base)+0x01dc, uint32(val))
 }
 

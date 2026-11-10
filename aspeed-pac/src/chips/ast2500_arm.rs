@@ -1770,6 +1770,13 @@ pub mod scu_ast2500_v1 {
                 crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
             }
         }
+        ///D2-PLL Parameter Register (SCU1C). Init = 0x0004_E029; the D2-PLL is off after reset (D2PLL_EXT and SCU2C\[4\]). It is the default source of the RGMII 125 MHz and RMII 50 MHz MAC clocks. Output = CLKIN * (M+1) / (N+1) / (P+1) / (OD+1).
+        #[inline(always)]
+        pub const fn D2PLL(self) -> crate::common::Reg<SCU_D2PLL, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _)
+            }
+        }
         ///M-PLL Parameter Register (SCU20). Init = 0x9300_2400. M-PLL clocks the memory controller. Output = CLKIN(24MHz) * (M+1) / (N+1) / (P+1).
         #[inline(always)]
         pub const fn MPLL(self) -> crate::common::Reg<SCU_PLL, crate::common::RW> {
@@ -1818,6 +1825,15 @@ pub mod scu_ast2500_v1 {
         ) -> crate::common::Reg<SCU_VALUE32, crate::common::RW> {
             unsafe {
                 crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x44usize) as _)
+            }
+        }
+        ///MAC Interface Clock Delay Setting (SCU48). Init = 0. RGMII/RMII clock delays and clock sources, for 1G and, unless enabled in SCUB8/SCUBC, also for 100M and 10M. Modify only while both MACs are held in reset (SCU04).
+        #[inline(always)]
+        pub const fn MAC_CLK_DELAY(
+            self,
+        ) -> crate::common::Reg<SCU_MAC_CLK_DELAY, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x48usize) as _)
             }
         }
         ///Misc. 2 Control Register (SCU4C). Init = 0x03. UART clock source and Ethernet clock dividers.
@@ -1869,6 +1885,33 @@ pub mod scu_ast2500_v1 {
                 crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x7cusize) as _)
             }
         }
+        ///Multi-function Pin Control #3 (SCU88). Init = 0x0300_0000. Only the MAC#1 management pins are modelled.
+        #[inline(always)]
+        pub const fn PIN_CTRL3(
+            self,
+        ) -> crate::common::Reg<SCU_PIN_CTRL3, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x88usize) as _)
+            }
+        }
+        ///Multi-function Pin Control #5 (SCU90). Init = 0x0000_A000. Only the MAC#2 management pins and the MAC pin pull-downs are modelled.
+        #[inline(always)]
+        pub const fn PIN_CTRL5(
+            self,
+        ) -> crate::common::Reg<SCU_PIN_CTRL5, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x90usize) as _)
+            }
+        }
+        ///D2-PLL Extended Parameter Register (SCU13C). Init = 0. Not key protected. D2-PLL power, reset, bypass and parameter bits \[36:28\].
+        #[inline(always)]
+        pub const fn D2PLL_EXT(
+            self,
+        ) -> crate::common::Reg<SCU_D2PLL_EXT, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x013cusize) as _)
+            }
+        }
         ///Extended Parameter of M/H-PLL Register (SCU148). Init = 0x0019_0019. Not key protected. PLL parameter high bits and lock status.
         #[inline(always)]
         pub const fn MHPLL_EXT(
@@ -1904,6 +1947,82 @@ pub mod scu_ast2500_v1 {
             unsafe {
                 crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0160usize) as _)
             }
+        }
+        ///Clock Duty Selection (SCU1DC). Init = 0. Not key protected. Duty calibration of the RGMII transmit clocks and DCLK.
+        #[inline(always)]
+        pub const fn CLK_DUTY(
+            self,
+        ) -> crate::common::Reg<SCU_CLK_DUTY, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x01dcusize) as _)
+            }
+        }
+    }
+    ///Clock Duty Selection (SCU1DC). Each field: bit 6 enables duty calibration, bit 5 inverts the source clock, bits \[4:0\] select the calibration stage.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SCU_CLK_DUTY(pub u32);
+    impl SCU_CLK_DUTY {
+        ///SCU1DC\[6:0\]: DCLK duty calibration.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DCLK(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x7f;
+            val as u8
+        }
+        ///SCU1DC\[6:0\]: DCLK duty calibration.
+        #[inline(always)]
+        pub const fn set_DCLK(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x7f << 0usize)) | (((val as u32) & 0x7f) << 0usize);
+        }
+        ///SCU1DC\[14:8\]: RGMII1 TXCK duty calibration.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RGMII1_TXCK(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x7f;
+            val as u8
+        }
+        ///SCU1DC\[14:8\]: RGMII1 TXCK duty calibration.
+        #[inline(always)]
+        pub const fn set_RGMII1_TXCK(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x7f << 8usize)) | (((val as u32) & 0x7f) << 8usize);
+        }
+        ///SCU1DC\[22:16\]: RGMII2 TXCK duty calibration.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RGMII2_TXCK(&self) -> u8 {
+            let val = (self.0 >> 16usize) & 0x7f;
+            val as u8
+        }
+        ///SCU1DC\[22:16\]: RGMII2 TXCK duty calibration.
+        #[inline(always)]
+        pub const fn set_RGMII2_TXCK(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x7f << 16usize)) | (((val as u32) & 0x7f) << 16usize);
+        }
+    }
+    impl Default for SCU_CLK_DUTY {
+        #[inline(always)]
+        fn default() -> SCU_CLK_DUTY {
+            SCU_CLK_DUTY(0)
+        }
+    }
+    impl core::fmt::Debug for SCU_CLK_DUTY {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SCU_CLK_DUTY")
+                .field("DCLK", &self.DCLK())
+                .field("RGMII1_TXCK", &self.RGMII1_TXCK())
+                .field("RGMII2_TXCK", &self.RGMII2_TXCK())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SCU_CLK_DUTY {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SCU_CLK_DUTY {{ DCLK: {=u8:?}, RGMII1_TXCK: {=u8:?}, RGMII2_TXCK: {=u8:?} }}",
+                self.DCLK(), self.RGMII1_TXCK(), self.RGMII2_TXCK()
+            )
         }
     }
     ///Clock Selection Register (SCU08). Bits \[11:9\] are reserved and must keep their default value.
@@ -2491,6 +2610,206 @@ pub mod scu_ast2500_v1 {
             )
         }
     }
+    ///D2-PLL Parameter Register (SCU1C).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SCU_D2PLL(pub u32);
+    impl SCU_D2PLL {
+        ///SCU1C\[7:0\]: D2-PLL numerator (M).
+        #[must_use]
+        #[inline(always)]
+        pub const fn M(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0xff;
+            val as u8
+        }
+        ///SCU1C\[7:0\]: D2-PLL numerator (M).
+        #[inline(always)]
+        pub const fn set_M(&mut self, val: u8) {
+            self.0 = (self.0 & !(0xff << 0usize)) | (((val as u32) & 0xff) << 0usize);
+        }
+        ///SCU1C\[12:8\]: D2-PLL denumerator (N).
+        #[must_use]
+        #[inline(always)]
+        pub const fn N(&self) -> u8 {
+            let val = (self.0 >> 8usize) & 0x1f;
+            val as u8
+        }
+        ///SCU1C\[12:8\]: D2-PLL denumerator (N).
+        #[inline(always)]
+        pub const fn set_N(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x1f << 8usize)) | (((val as u32) & 0x1f) << 8usize);
+        }
+        ///SCU1C\[18:13\]: D2-PLL post divider (P).
+        #[must_use]
+        #[inline(always)]
+        pub const fn P(&self) -> u8 {
+            let val = (self.0 >> 13usize) & 0x3f;
+            val as u8
+        }
+        ///SCU1C\[18:13\]: D2-PLL post divider (P).
+        #[inline(always)]
+        pub const fn set_P(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x3f << 13usize)) | (((val as u32) & 0x3f) << 13usize);
+        }
+        ///SCU1C\[21:19\]: D2-PLL output divider (OD).
+        #[must_use]
+        #[inline(always)]
+        pub const fn OD(&self) -> u8 {
+            let val = (self.0 >> 19usize) & 0x07;
+            val as u8
+        }
+        ///SCU1C\[21:19\]: D2-PLL output divider (OD).
+        #[inline(always)]
+        pub const fn set_OD(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x07 << 19usize)) | (((val as u32) & 0x07) << 19usize);
+        }
+        ///SCU1C\[26:22\]: D2-PLL SIC, chosen by the range of M.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SIC(&self) -> u8 {
+            let val = (self.0 >> 22usize) & 0x1f;
+            val as u8
+        }
+        ///SCU1C\[26:22\]: D2-PLL SIC, chosen by the range of M.
+        #[inline(always)]
+        pub const fn set_SIC(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x1f << 22usize)) | (((val as u32) & 0x1f) << 22usize);
+        }
+        ///SCU1C\[31:27\]: D2-PLL SIP, chosen by the range of M.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SIP(&self) -> u8 {
+            let val = (self.0 >> 27usize) & 0x1f;
+            val as u8
+        }
+        ///SCU1C\[31:27\]: D2-PLL SIP, chosen by the range of M.
+        #[inline(always)]
+        pub const fn set_SIP(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x1f << 27usize)) | (((val as u32) & 0x1f) << 27usize);
+        }
+    }
+    impl Default for SCU_D2PLL {
+        #[inline(always)]
+        fn default() -> SCU_D2PLL {
+            SCU_D2PLL(0)
+        }
+    }
+    impl core::fmt::Debug for SCU_D2PLL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SCU_D2PLL")
+                .field("M", &self.M())
+                .field("N", &self.N())
+                .field("P", &self.P())
+                .field("OD", &self.OD())
+                .field("SIC", &self.SIC())
+                .field("SIP", &self.SIP())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SCU_D2PLL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SCU_D2PLL {{ M: {=u8:?}, N: {=u8:?}, P: {=u8:?}, OD: {=u8:?}, SIC: {=u8:?}, SIP: {=u8:?} }}",
+                self.M(), self.N(), self.P(), self.OD(), self.SIC(), self.SIP()
+            )
+        }
+    }
+    ///D2-PLL Extended Parameter Register (SCU13C).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SCU_D2PLL_EXT(pub u32);
+    impl SCU_D2PLL_EXT {
+        ///SCU13C\[0\]: Turn the D2-PLL off (power down, output 0).
+        #[must_use]
+        #[inline(always)]
+        pub const fn POWER_DOWN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///SCU13C\[0\]: Turn the D2-PLL off (power down, output 0).
+        #[inline(always)]
+        pub const fn set_POWER_DOWN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///SCU13C\[1\]: D2-PLL bypass mode: the output is CLKIN.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BYPASS(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///SCU13C\[1\]: D2-PLL bypass mode: the output is CLKIN.
+        #[inline(always)]
+        pub const fn set_BYPASS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///SCU13C\[2\]: Hold the D2-PLL in reset.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RESET(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///SCU13C\[2\]: Hold the D2-PLL in reset.
+        #[inline(always)]
+        pub const fn set_RESET(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///SCU13C\[4:3\]: D2-PLL mode selection.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MODE(&self) -> u8 {
+            let val = (self.0 >> 3usize) & 0x03;
+            val as u8
+        }
+        ///SCU13C\[4:3\]: D2-PLL mode selection.
+        #[inline(always)]
+        pub const fn set_MODE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 3usize)) | (((val as u32) & 0x03) << 3usize);
+        }
+        ///SCU13C\[13:5\]: D2-PLL parameter bits \[36:28\]; 0x2C for integer M/N/P settings.
+        #[must_use]
+        #[inline(always)]
+        pub const fn PARAM(&self) -> u16 {
+            let val = (self.0 >> 5usize) & 0x01ff;
+            val as u16
+        }
+        ///SCU13C\[13:5\]: D2-PLL parameter bits \[36:28\]; 0x2C for integer M/N/P settings.
+        #[inline(always)]
+        pub const fn set_PARAM(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x01ff << 5usize))
+                | (((val as u32) & 0x01ff) << 5usize);
+        }
+    }
+    impl Default for SCU_D2PLL_EXT {
+        #[inline(always)]
+        fn default() -> SCU_D2PLL_EXT {
+            SCU_D2PLL_EXT(0)
+        }
+    }
+    impl core::fmt::Debug for SCU_D2PLL_EXT {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SCU_D2PLL_EXT")
+                .field("POWER_DOWN", &self.POWER_DOWN())
+                .field("BYPASS", &self.BYPASS())
+                .field("RESET", &self.RESET())
+                .field("MODE", &self.MODE())
+                .field("PARAM", &self.PARAM())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SCU_D2PLL_EXT {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SCU_D2PLL_EXT {{ POWER_DOWN: {=bool:?}, BYPASS: {=bool:?}, RESET: {=bool:?}, MODE: {=u8:?}, PARAM: {=u16:?} }}",
+                self.POWER_DOWN(), self.BYPASS(), self.RESET(), self.MODE(), self.PARAM()
+            )
+        }
+    }
     ///Hardware Strap Register (SCU70) / strap clear (SCU7C write). SCU70 writes can only set bits; write 1 to SCU7C to clear. Reserved: bit 28 (reads 1), bit 8 (0), bit 4 (0), bit 1 (reads 1).
     #[repr(transparent)]
     #[derive(Copy, Clone, Eq, PartialEq)]
@@ -2835,6 +3154,154 @@ pub mod scu_ast2500_v1 {
                 .CLKIN_25MHZ(), self.DDR4(), self.ESPI_MODE(), self.ESPI_FLASH_MODE(),
                 self.ICE_FAST_RESET(), self.DEBUG_UART5(), self.GPIO_STRAP_MODE(), self
                 .SPI_STRAP_AUTOFETCH()
+            )
+        }
+    }
+    ///MAC Interface Clock Delay Setting (SCU48).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SCU_MAC_CLK_DELAY(pub u32);
+    impl SCU_MAC_CLK_DELAY {
+        ///SCU48\[5:0\]: MAC#1 RGMII TXCLK (1G) clock output delay.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MAC1_TX_DELAY(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x3f;
+            val as u8
+        }
+        ///SCU48\[5:0\]: MAC#1 RGMII TXCLK (1G) clock output delay.
+        #[inline(always)]
+        pub const fn set_MAC1_TX_DELAY(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x3f << 0usize)) | (((val as u32) & 0x3f) << 0usize);
+        }
+        ///SCU48\[11:6\]: MAC#2 RGMII TXCLK (1G) clock output delay.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MAC2_TX_DELAY(&self) -> u8 {
+            let val = (self.0 >> 6usize) & 0x3f;
+            val as u8
+        }
+        ///SCU48\[11:6\]: MAC#2 RGMII TXCLK (1G) clock output delay.
+        #[inline(always)]
+        pub const fn set_MAC2_TX_DELAY(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x3f << 6usize)) | (((val as u32) & 0x3f) << 6usize);
+        }
+        ///SCU48\[17:12\]: MAC#1 RMII RCLK / RGMII RXCLK (1G) clock input delay.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MAC1_RX_DELAY(&self) -> u8 {
+            let val = (self.0 >> 12usize) & 0x3f;
+            val as u8
+        }
+        ///SCU48\[17:12\]: MAC#1 RMII RCLK / RGMII RXCLK (1G) clock input delay.
+        #[inline(always)]
+        pub const fn set_MAC1_RX_DELAY(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x3f << 12usize)) | (((val as u32) & 0x3f) << 12usize);
+        }
+        ///SCU48\[23:18\]: MAC#2 RMII RCLK / RGMII RXCLK (1G) clock input delay.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MAC2_RX_DELAY(&self) -> u8 {
+            let val = (self.0 >> 18usize) & 0x3f;
+            val as u8
+        }
+        ///SCU48\[23:18\]: MAC#2 RMII RCLK / RGMII RXCLK (1G) clock input delay.
+        #[inline(always)]
+        pub const fn set_MAC2_RX_DELAY(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x3f << 18usize)) | (((val as u32) & 0x3f) << 18usize);
+        }
+        ///SCU48\[24\]: MAC#1 RMII transmits data at the clock falling edge.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MAC1_RMII_TX_FALLING(&self) -> bool {
+            let val = (self.0 >> 24usize) & 0x01;
+            val != 0
+        }
+        ///SCU48\[24\]: MAC#1 RMII transmits data at the clock falling edge.
+        #[inline(always)]
+        pub const fn set_MAC1_RMII_TX_FALLING(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 24usize)) | (((val as u32) & 0x01) << 24usize);
+        }
+        ///SCU48\[25\]: MAC#2 RMII transmits data at the clock falling edge.
+        #[must_use]
+        #[inline(always)]
+        pub const fn MAC2_RMII_TX_FALLING(&self) -> bool {
+            let val = (self.0 >> 25usize) & 0x01;
+            val != 0
+        }
+        ///SCU48\[25\]: MAC#2 RMII transmits data at the clock falling edge.
+        #[inline(always)]
+        pub const fn set_MAC2_RMII_TX_FALLING(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 25usize)) | (((val as u32) & 0x01) << 25usize);
+        }
+        ///SCU48\[29\]: Enable the RMII1 50 MHz RCLK output (RMII1RCLKO).
+        #[must_use]
+        #[inline(always)]
+        pub const fn RMII1_RCLK_OUT_EN(&self) -> bool {
+            let val = (self.0 >> 29usize) & 0x01;
+            val != 0
+        }
+        ///SCU48\[29\]: Enable the RMII1 50 MHz RCLK output (RMII1RCLKO).
+        #[inline(always)]
+        pub const fn set_RMII1_RCLK_OUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 29usize)) | (((val as u32) & 0x01) << 29usize);
+        }
+        ///SCU48\[30\]: Enable the RMII2 50 MHz RCLK output (RMII2RCLKO).
+        #[must_use]
+        #[inline(always)]
+        pub const fn RMII2_RCLK_OUT_EN(&self) -> bool {
+            let val = (self.0 >> 30usize) & 0x01;
+            val != 0
+        }
+        ///SCU48\[30\]: Enable the RMII2 50 MHz RCLK output (RMII2RCLKO).
+        #[inline(always)]
+        pub const fn set_RMII2_RCLK_OUT_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 30usize)) | (((val as u32) & 0x01) << 30usize);
+        }
+        ///SCU48\[31\]: RGMII 125 MHz clock source. 0 = RGMIICK pad; 1 = internal PLL (the SCU4C RGMII divider).
+        #[must_use]
+        #[inline(always)]
+        pub const fn RGMII_CLK_INTERNAL(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///SCU48\[31\]: RGMII 125 MHz clock source. 0 = RGMIICK pad; 1 = internal PLL (the SCU4C RGMII divider).
+        #[inline(always)]
+        pub const fn set_RGMII_CLK_INTERNAL(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for SCU_MAC_CLK_DELAY {
+        #[inline(always)]
+        fn default() -> SCU_MAC_CLK_DELAY {
+            SCU_MAC_CLK_DELAY(0)
+        }
+    }
+    impl core::fmt::Debug for SCU_MAC_CLK_DELAY {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SCU_MAC_CLK_DELAY")
+                .field("MAC1_TX_DELAY", &self.MAC1_TX_DELAY())
+                .field("MAC2_TX_DELAY", &self.MAC2_TX_DELAY())
+                .field("MAC1_RX_DELAY", &self.MAC1_RX_DELAY())
+                .field("MAC2_RX_DELAY", &self.MAC2_RX_DELAY())
+                .field("MAC1_RMII_TX_FALLING", &self.MAC1_RMII_TX_FALLING())
+                .field("MAC2_RMII_TX_FALLING", &self.MAC2_RMII_TX_FALLING())
+                .field("RMII1_RCLK_OUT_EN", &self.RMII1_RCLK_OUT_EN())
+                .field("RMII2_RCLK_OUT_EN", &self.RMII2_RCLK_OUT_EN())
+                .field("RGMII_CLK_INTERNAL", &self.RGMII_CLK_INTERNAL())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SCU_MAC_CLK_DELAY {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SCU_MAC_CLK_DELAY {{ MAC1_TX_DELAY: {=u8:?}, MAC2_TX_DELAY: {=u8:?}, MAC1_RX_DELAY: {=u8:?}, MAC2_RX_DELAY: {=u8:?}, MAC1_RMII_TX_FALLING: {=bool:?}, MAC2_RMII_TX_FALLING: {=bool:?}, RMII1_RCLK_OUT_EN: {=bool:?}, RMII2_RCLK_OUT_EN: {=bool:?}, RGMII_CLK_INTERNAL: {=bool:?} }}",
+                self.MAC1_TX_DELAY(), self.MAC2_TX_DELAY(), self.MAC1_RX_DELAY(), self
+                .MAC2_RX_DELAY(), self.MAC1_RMII_TX_FALLING(), self
+                .MAC2_RMII_TX_FALLING(), self.RMII1_RCLK_OUT_EN(), self
+                .RMII2_RCLK_OUT_EN(), self.RGMII_CLK_INTERNAL()
             )
         }
     }
@@ -3529,6 +3996,153 @@ pub mod scu_ast2500_v1 {
                 .GCRT_CLK_SEL_HI(), self.P2A_FLASH_WRITE_DIS(), self.P2A_SOC_WRITE_DIS(),
                 self.P2A_LPC_WRITE_DIS(), self.P2A_DRAM_WRITE_DIS(), self.BCLK_24M(),
                 self.PEWAKE_EN(), self.PEWAKE_OUT_LOW()
+            )
+        }
+    }
+    ///Multi-function Pin Control
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SCU_PIN_CTRL3(pub u32);
+    impl SCU_PIN_CTRL3 {
+        ///SCU88\[30\]: Enable the MAC#1 MDC1 function pin (D8, else GPIOR6).
+        #[must_use]
+        #[inline(always)]
+        pub const fn MDC1_EN(&self) -> bool {
+            let val = (self.0 >> 30usize) & 0x01;
+            val != 0
+        }
+        ///SCU88\[30\]: Enable the MAC#1 MDC1 function pin (D8, else GPIOR6).
+        #[inline(always)]
+        pub const fn set_MDC1_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 30usize)) | (((val as u32) & 0x01) << 30usize);
+        }
+        ///SCU88\[31\]: Enable the MAC#1 MDIO1 function pin (E10, else GPIOR7).
+        #[must_use]
+        #[inline(always)]
+        pub const fn MDIO1_EN(&self) -> bool {
+            let val = (self.0 >> 31usize) & 0x01;
+            val != 0
+        }
+        ///SCU88\[31\]: Enable the MAC#1 MDIO1 function pin (E10, else GPIOR7).
+        #[inline(always)]
+        pub const fn set_MDIO1_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 31usize)) | (((val as u32) & 0x01) << 31usize);
+        }
+    }
+    impl Default for SCU_PIN_CTRL3 {
+        #[inline(always)]
+        fn default() -> SCU_PIN_CTRL3 {
+            SCU_PIN_CTRL3(0)
+        }
+    }
+    impl core::fmt::Debug for SCU_PIN_CTRL3 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SCU_PIN_CTRL3")
+                .field("MDC1_EN", &self.MDC1_EN())
+                .field("MDIO1_EN", &self.MDIO1_EN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SCU_PIN_CTRL3 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f, "SCU_PIN_CTRL3 {{ MDC1_EN: {=bool:?}, MDIO1_EN: {=bool:?} }}", self
+                .MDC1_EN(), self.MDIO1_EN()
+            )
+        }
+    }
+    ///Multi-function Pin Control #5 (SCU90), MAC#2 management pins and MAC pin pull-downs.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SCU_PIN_CTRL5(pub u32);
+    impl SCU_PIN_CTRL5 {
+        ///SCU90\[2\]: Enable the MAC#2 MDC2/MDIO2 function pins (C13, B13; requires SCU90\[6\] = 0).
+        #[must_use]
+        #[inline(always)]
+        pub const fn MDIO2_EN(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///SCU90\[2\]: Enable the MAC#2 MDC2/MDIO2 function pins (C13, B13; requires SCU90\[6\] = 0).
+        #[inline(always)]
+        pub const fn set_MDIO2_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///SCU90\[12\]: Disable the RGMII1/RMII1 TX pins' internal pull-downs. Default 0 (enabled).
+        #[must_use]
+        #[inline(always)]
+        pub const fn RGMII1_TX_PD_DIS(&self) -> bool {
+            let val = (self.0 >> 12usize) & 0x01;
+            val != 0
+        }
+        ///SCU90\[12\]: Disable the RGMII1/RMII1 TX pins' internal pull-downs. Default 0 (enabled).
+        #[inline(always)]
+        pub const fn set_RGMII1_TX_PD_DIS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 12usize)) | (((val as u32) & 0x01) << 12usize);
+        }
+        ///SCU90\[13\]: Disable the RGMII1/RMII1 RX pins' internal pull-downs. Default 1 (disabled).
+        #[must_use]
+        #[inline(always)]
+        pub const fn RGMII1_RX_PD_DIS(&self) -> bool {
+            let val = (self.0 >> 13usize) & 0x01;
+            val != 0
+        }
+        ///SCU90\[13\]: Disable the RGMII1/RMII1 RX pins' internal pull-downs. Default 1 (disabled).
+        #[inline(always)]
+        pub const fn set_RGMII1_RX_PD_DIS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 13usize)) | (((val as u32) & 0x01) << 13usize);
+        }
+        ///SCU90\[14\]: Disable the RGMII2/RMII2 TX pins' internal pull-downs, including RGMIICK. Default 0 (enabled).
+        #[must_use]
+        #[inline(always)]
+        pub const fn RGMII2_TX_PD_DIS(&self) -> bool {
+            let val = (self.0 >> 14usize) & 0x01;
+            val != 0
+        }
+        ///SCU90\[14\]: Disable the RGMII2/RMII2 TX pins' internal pull-downs, including RGMIICK. Default 0 (enabled).
+        #[inline(always)]
+        pub const fn set_RGMII2_TX_PD_DIS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 14usize)) | (((val as u32) & 0x01) << 14usize);
+        }
+        ///SCU90\[15\]: Disable the RGMII2/RMII2 RX pins' internal pull-downs. Default 1 (disabled).
+        #[must_use]
+        #[inline(always)]
+        pub const fn RGMII2_RX_PD_DIS(&self) -> bool {
+            let val = (self.0 >> 15usize) & 0x01;
+            val != 0
+        }
+        ///SCU90\[15\]: Disable the RGMII2/RMII2 RX pins' internal pull-downs. Default 1 (disabled).
+        #[inline(always)]
+        pub const fn set_RGMII2_RX_PD_DIS(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 15usize)) | (((val as u32) & 0x01) << 15usize);
+        }
+    }
+    impl Default for SCU_PIN_CTRL5 {
+        #[inline(always)]
+        fn default() -> SCU_PIN_CTRL5 {
+            SCU_PIN_CTRL5(0)
+        }
+    }
+    impl core::fmt::Debug for SCU_PIN_CTRL5 {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SCU_PIN_CTRL5")
+                .field("MDIO2_EN", &self.MDIO2_EN())
+                .field("RGMII1_TX_PD_DIS", &self.RGMII1_TX_PD_DIS())
+                .field("RGMII1_RX_PD_DIS", &self.RGMII1_RX_PD_DIS())
+                .field("RGMII2_TX_PD_DIS", &self.RGMII2_TX_PD_DIS())
+                .field("RGMII2_RX_PD_DIS", &self.RGMII2_RX_PD_DIS())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SCU_PIN_CTRL5 {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SCU_PIN_CTRL5 {{ MDIO2_EN: {=bool:?}, RGMII1_TX_PD_DIS: {=bool:?}, RGMII1_RX_PD_DIS: {=bool:?}, RGMII2_TX_PD_DIS: {=bool:?}, RGMII2_RX_PD_DIS: {=bool:?} }}",
+                self.MDIO2_EN(), self.RGMII1_TX_PD_DIS(), self.RGMII1_RX_PD_DIS(), self
+                .RGMII2_TX_PD_DIS(), self.RGMII2_RX_PD_DIS()
             )
         }
     }
