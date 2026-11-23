@@ -2,7 +2,7 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
-//!Peripheral access API (generated using chiptool v0.1.0 (5a2574e 2026-04-28))
+//!Peripheral access API (generated using chiptool v0.1.0 (711c987 2026-11-08))
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Interrupt {}
@@ -17,6 +17,10 @@ pub const SDMC: sdmc_ast2500_v1::SDMC = unsafe {
 ///System control unit (SCU)
 pub const SCU: scu_ast2500_v1::SCU = unsafe {
     scu_ast2500_v1::SCU::from_ptr(0x1e6e_2000usize as _)
+};
+///ColdFire coprocessor control (SCU100-SCU128)
+pub const COPROC: coproc_v1::COPROC = unsafe {
+    coproc_v1::COPROC::from_ptr(0x1e6e_2100usize as _)
 };
 ///Timer controller (TMC), 8 timers
 pub const TIMER: timer_ast2500_v1::TIMER = unsafe {
@@ -126,6 +130,402 @@ pub mod common {
             let mut val = self.read();
             f(&mut val);
             self.write_value(val);
+        }
+    }
+}
+pub mod coproc_v1 {
+    ///AST2500 ColdFire coprocessor control registers (SCU offset 0x100). Physical base (BMC): 0x1E6E2100. ColdFire virtual (default map): 0x2E2100. 9 segment registers map 1 MB ColdFire windows (the last one 8 MB) to the BMC address space.
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct COPROC {
+        ptr: *mut u8,
+    }
+    unsafe impl Send for COPROC {}
+    unsafe impl Sync for COPROC {}
+    impl COPROC {
+        #[inline(always)]
+        pub const unsafe fn from_ptr(ptr: *mut ()) -> Self {
+            Self { ptr: ptr as _ }
+        }
+        #[inline(always)]
+        pub const fn as_ptr(&self) -> *mut () {
+            self.ptr as _
+        }
+        ///ColdFire Coprocessor Control Register (SCU100). Controls enable, reset, and debug mode of the ColdFire core.
+        #[inline(always)]
+        pub const fn CTRL(self) -> crate::common::Reg<COPROC_CTRL, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
+        }
+        ///Segment 0 Base Register (SCU104). Maps ColdFire address range 0x000000–0x0FFFFF to BMC address space. BASE\[31:20\] selects the 1 MB-aligned BMC target; ENDIAN_SWAP swaps bytes.
+        #[inline(always)]
+        pub const fn SEG0_BASE(
+            self,
+        ) -> crate::common::Reg<COPROC_SEG_BASE, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
+            }
+        }
+        ///Segment 1 Base Register (SCU108). Maps ColdFire 0x100000–0x1FFFFF.
+        #[inline(always)]
+        pub const fn SEG1_BASE(
+            self,
+        ) -> crate::common::Reg<COPROC_SEG_BASE, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x08usize) as _)
+            }
+        }
+        ///Segment 2 Base Register (SCU10C). Maps ColdFire 0x200000–0x2FFFFF.
+        #[inline(always)]
+        pub const fn SEG2_BASE(
+            self,
+        ) -> crate::common::Reg<COPROC_SEG_BASE, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0cusize) as _)
+            }
+        }
+        ///Segment 3 Base Register (SCU110). Maps ColdFire 0x300000–0x3FFFFF.
+        #[inline(always)]
+        pub const fn SEG3_BASE(
+            self,
+        ) -> crate::common::Reg<COPROC_SEG_BASE, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x10usize) as _)
+            }
+        }
+        ///Segment 4 Base Register (SCU114). Maps ColdFire 0x400000–0x4FFFFF.
+        #[inline(always)]
+        pub const fn SEG4_BASE(
+            self,
+        ) -> crate::common::Reg<COPROC_SEG_BASE, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x14usize) as _)
+            }
+        }
+        ///Segment 5 Base Register (SCU118). Maps ColdFire 0x500000–0x5FFFFF.
+        #[inline(always)]
+        pub const fn SEG5_BASE(
+            self,
+        ) -> crate::common::Reg<COPROC_SEG_BASE, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x18usize) as _)
+            }
+        }
+        ///Segment 6 Base Register (SCU11C). Maps ColdFire 0x600000–0x6FFFFF.
+        #[inline(always)]
+        pub const fn SEG6_BASE(
+            self,
+        ) -> crate::common::Reg<COPROC_SEG_BASE, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x1cusize) as _)
+            }
+        }
+        ///Segment 7 Base Register (SCU120). Maps ColdFire 0x700000–0x7FFFFF.
+        #[inline(always)]
+        pub const fn SEG7_BASE(
+            self,
+        ) -> crate::common::Reg<COPROC_SEG_BASE, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x20usize) as _)
+            }
+        }
+        ///Segment 8 Base Register (SCU124). Maps ColdFire 0x800000–0xFFFFFF (8 MB).
+        #[inline(always)]
+        pub const fn SEG8_BASE(
+            self,
+        ) -> crate::common::Reg<COPROC_SEG_BASE, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x24usize) as _)
+            }
+        }
+        ///Cache Control Register (SCU128). GLOBAL_EN enables the ColdFire cache. SEGn_CACHE_EN enables caching for the corresponding segment window.
+        #[inline(always)]
+        pub const fn CACHE_CTRL(
+            self,
+        ) -> crate::common::Reg<COPROC_CACHE_CTRL, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x28usize) as _)
+            }
+        }
+    }
+    ///ColdFire Cache Control Register (SCU128).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct COPROC_CACHE_CTRL(pub u32);
+    impl COPROC_CACHE_CTRL {
+        ///Global cache enable. 0 = cache disabled (all fetches go to BMC memory); 1 = cache enabled for segments with SEGn_CACHE_EN=1.
+        #[must_use]
+        #[inline(always)]
+        pub const fn GLOBAL_EN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Global cache enable. 0 = cache disabled (all fetches go to BMC memory); 1 = cache enabled for segments with SEGn_CACHE_EN=1.
+        #[inline(always)]
+        pub const fn set_GLOBAL_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///Enable caching for segment 0 window.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEG0_CACHE_EN(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///Enable caching for segment 0 window.
+        #[inline(always)]
+        pub const fn set_SEG0_CACHE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///Enable caching for segment 1 window.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEG1_CACHE_EN(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///Enable caching for segment 1 window.
+        #[inline(always)]
+        pub const fn set_SEG1_CACHE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+        ///Enable caching for segment 2 window.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEG2_CACHE_EN(&self) -> bool {
+            let val = (self.0 >> 3usize) & 0x01;
+            val != 0
+        }
+        ///Enable caching for segment 2 window.
+        #[inline(always)]
+        pub const fn set_SEG2_CACHE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 3usize)) | (((val as u32) & 0x01) << 3usize);
+        }
+        ///Enable caching for segment 3 window.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEG3_CACHE_EN(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///Enable caching for segment 3 window.
+        #[inline(always)]
+        pub const fn set_SEG3_CACHE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///Enable caching for segment 4 window.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEG4_CACHE_EN(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///Enable caching for segment 4 window.
+        #[inline(always)]
+        pub const fn set_SEG4_CACHE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///Enable caching for segment 5 window.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEG5_CACHE_EN(&self) -> bool {
+            let val = (self.0 >> 6usize) & 0x01;
+            val != 0
+        }
+        ///Enable caching for segment 5 window.
+        #[inline(always)]
+        pub const fn set_SEG5_CACHE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 6usize)) | (((val as u32) & 0x01) << 6usize);
+        }
+        ///Enable caching for segment 6 window.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEG6_CACHE_EN(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///Enable caching for segment 6 window.
+        #[inline(always)]
+        pub const fn set_SEG6_CACHE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///Enable caching for segment 7 window.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEG7_CACHE_EN(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///Enable caching for segment 7 window.
+        #[inline(always)]
+        pub const fn set_SEG7_CACHE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///Enable caching for segment 8 window.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SEG8_CACHE_EN(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///Enable caching for segment 8 window.
+        #[inline(always)]
+        pub const fn set_SEG8_CACHE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+    }
+    impl Default for COPROC_CACHE_CTRL {
+        #[inline(always)]
+        fn default() -> COPROC_CACHE_CTRL {
+            COPROC_CACHE_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for COPROC_CACHE_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("COPROC_CACHE_CTRL")
+                .field("GLOBAL_EN", &self.GLOBAL_EN())
+                .field("SEG0_CACHE_EN", &self.SEG0_CACHE_EN())
+                .field("SEG1_CACHE_EN", &self.SEG1_CACHE_EN())
+                .field("SEG2_CACHE_EN", &self.SEG2_CACHE_EN())
+                .field("SEG3_CACHE_EN", &self.SEG3_CACHE_EN())
+                .field("SEG4_CACHE_EN", &self.SEG4_CACHE_EN())
+                .field("SEG5_CACHE_EN", &self.SEG5_CACHE_EN())
+                .field("SEG6_CACHE_EN", &self.SEG6_CACHE_EN())
+                .field("SEG7_CACHE_EN", &self.SEG7_CACHE_EN())
+                .field("SEG8_CACHE_EN", &self.SEG8_CACHE_EN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for COPROC_CACHE_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "COPROC_CACHE_CTRL {{ GLOBAL_EN: {=bool:?}, SEG0_CACHE_EN: {=bool:?}, SEG1_CACHE_EN: {=bool:?}, SEG2_CACHE_EN: {=bool:?}, SEG3_CACHE_EN: {=bool:?}, SEG4_CACHE_EN: {=bool:?}, SEG5_CACHE_EN: {=bool:?}, SEG6_CACHE_EN: {=bool:?}, SEG7_CACHE_EN: {=bool:?}, SEG8_CACHE_EN: {=bool:?} }}",
+                self.GLOBAL_EN(), self.SEG0_CACHE_EN(), self.SEG1_CACHE_EN(), self
+                .SEG2_CACHE_EN(), self.SEG3_CACHE_EN(), self.SEG4_CACHE_EN(), self
+                .SEG5_CACHE_EN(), self.SEG6_CACHE_EN(), self.SEG7_CACHE_EN(), self
+                .SEG8_CACHE_EN()
+            )
+        }
+    }
+    ///ColdFire Coprocessor Control Register (SCU100).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct COPROC_CTRL(pub u32);
+    impl COPROC_CTRL {
+        ///ColdFire Enable. 0 = coprocessor disabled, which also holds it in reset (default after power-on); 1 = enabled. Keep it off for at least 1 us. Set only after programming segment registers and loading firmware.
+        #[must_use]
+        #[inline(always)]
+        pub const fn EN(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///ColdFire Enable. 0 = coprocessor disabled, which also holds it in reset (default after power-on); 1 = enabled. Keep it off for at least 1 us. Set only after programming segment registers and loading firmware.
+        #[inline(always)]
+        pub const fn set_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///ColdFire Software Reset. Write 1 to assert reset (hold it for at least 1 us); write 0 to release.
+        #[must_use]
+        #[inline(always)]
+        pub const fn RESET(&self) -> bool {
+            let val = (self.0 >> 1usize) & 0x01;
+            val != 0
+        }
+        ///ColdFire Software Reset. Write 1 to assert reset (hold it for at least 1 us); write 0 to release.
+        #[inline(always)]
+        pub const fn set_RESET(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 1usize)) | (((val as u32) & 0x01) << 1usize);
+        }
+        ///ColdFire ICE debug pin enable. 1 = route the coprocessor ICE debug interface to its pins. Disabled while the coprocessor is disabled.
+        #[must_use]
+        #[inline(always)]
+        pub const fn DEBUG_EN(&self) -> bool {
+            let val = (self.0 >> 2usize) & 0x01;
+            val != 0
+        }
+        ///ColdFire ICE debug pin enable. 1 = route the coprocessor ICE debug interface to its pins. Disabled while the coprocessor is disabled.
+        #[inline(always)]
+        pub const fn set_DEBUG_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 2usize)) | (((val as u32) & 0x01) << 2usize);
+        }
+    }
+    impl Default for COPROC_CTRL {
+        #[inline(always)]
+        fn default() -> COPROC_CTRL {
+            COPROC_CTRL(0)
+        }
+    }
+    impl core::fmt::Debug for COPROC_CTRL {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("COPROC_CTRL")
+                .field("EN", &self.EN())
+                .field("RESET", &self.RESET())
+                .field("DEBUG_EN", &self.DEBUG_EN())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for COPROC_CTRL {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "COPROC_CTRL {{ EN: {=bool:?}, RESET: {=bool:?}, DEBUG_EN: {=bool:?} }}",
+                self.EN(), self.RESET(), self.DEBUG_EN()
+            )
+        }
+    }
+    ///Segment Base Register — maps a ColdFire window to BMC address space. BASE\[31:20\] is the upper 12 bits of the 32-bit BMC target address (1 MB-aligned). ENDIAN_SWAP\[0\] swaps byte order on reads/writes through this segment.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct COPROC_SEG_BASE(pub u32);
+    impl COPROC_SEG_BASE {
+        ///Byte-endian swap. 0 = pass bytes unchanged (little-endian view of BMC peripherals); 1 = swap bytes (big-endian ColdFire accessing little-endian BMC memory). Flash and DRAM windows need the swap.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ENDIAN_SWAP(&self) -> bool {
+            let val = (self.0 >> 0usize) & 0x01;
+            val != 0
+        }
+        ///Byte-endian swap. 0 = pass bytes unchanged (little-endian view of BMC peripherals); 1 = swap bytes (big-endian ColdFire accessing little-endian BMC memory). Flash and DRAM windows need the swap.
+        #[inline(always)]
+        pub const fn set_ENDIAN_SWAP(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 0usize)) | (((val as u32) & 0x01) << 0usize);
+        }
+        ///BMC target base address bits \[31:20\] (1 MB-aligned). Example: to map ColdFire segment to BMC 0x1E780000, set BASE = 0x1E7.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BASE(&self) -> u16 {
+            let val = (self.0 >> 20usize) & 0x0fff;
+            val as u16
+        }
+        ///BMC target base address bits \[31:20\] (1 MB-aligned). Example: to map ColdFire segment to BMC 0x1E780000, set BASE = 0x1E7.
+        #[inline(always)]
+        pub const fn set_BASE(&mut self, val: u16) {
+            self.0 = (self.0 & !(0x0fff << 20usize))
+                | (((val as u32) & 0x0fff) << 20usize);
+        }
+    }
+    impl Default for COPROC_SEG_BASE {
+        #[inline(always)]
+        fn default() -> COPROC_SEG_BASE {
+            COPROC_SEG_BASE(0)
+        }
+    }
+    impl core::fmt::Debug for COPROC_SEG_BASE {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("COPROC_SEG_BASE")
+                .field("ENDIAN_SWAP", &self.ENDIAN_SWAP())
+                .field("BASE", &self.BASE())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for COPROC_SEG_BASE {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f, "COPROC_SEG_BASE {{ ENDIAN_SWAP: {=bool:?}, BASE: {=u16:?} }}", self
+                .ENDIAN_SWAP(), self.BASE()
+            )
         }
     }
 }

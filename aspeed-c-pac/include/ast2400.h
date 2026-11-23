@@ -81,7 +81,9 @@ typedef struct {
     volatile uint32_t SEG1_BASE; /* 0x0008: Segment 1 Base Register (SCU108). Maps ColdFire 0x200000–0x3FFFFF. */
     volatile uint32_t SEG2_BASE; /* 0x000c: Segment 2 Base Register (SCU10C). Maps ColdFire 0x400000–0x5FFFFF. */
     volatile uint32_t SEG3_BASE; /* 0x0010: Segment 3 Base Register (SCU110). Maps ColdFire 0x600000–0x7FFFFF. */
-    volatile uint32_t SEG4_BASE; /* 0x0014: Segment 4 Base Register (SCU114). Maps ColdFire 0x800000–0x9FFFFF. */
+    volatile uint32_t SEG4_BASE; /* 0x0014: Segment 4 Base Register (SCU114). Maps ColdFire 0x800000–0xFFFFFF (8 MB). */
+    volatile uint32_t CACHE_CTRL; /* 0x0018: Cache Control Register (SCU118). GLOBAL_EN enables the ColdFire cache; SEGn_CACHE_EN enables caching for the corresponding segment window.
+ */
 } COPROC_V2_COPROCTypeDef;
 
 /* Fieldset: coproc_v2::COPROC_CTRL */
@@ -89,12 +91,28 @@ typedef struct {
 #define COPROC_V2_COPROC_CTRL_EN_Msk (1U << 0)
 #define COPROC_V2_COPROC_CTRL_RESET_Pos 1
 #define COPROC_V2_COPROC_CTRL_RESET_Msk (1U << 1)
+#define COPROC_V2_COPROC_CTRL_DEBUG_EN_Pos 2
+#define COPROC_V2_COPROC_CTRL_DEBUG_EN_Msk (1U << 2)
 
 /* Fieldset: coproc_v2::COPROC_SEG_BASE */
 #define COPROC_V2_COPROC_SEG_BASE_BASE_Pos 21
 #define COPROC_V2_COPROC_SEG_BASE_BASE_Msk (1023U << 21)
 #define COPROC_V2_COPROC_SEG_BASE_ENDIAN_SWAP_Pos 31
 #define COPROC_V2_COPROC_SEG_BASE_ENDIAN_SWAP_Msk (1U << 31)
+
+/* Fieldset: coproc_v2::COPROC_CACHE_CTRL */
+#define COPROC_V2_COPROC_CACHE_CTRL_GLOBAL_EN_Pos 0
+#define COPROC_V2_COPROC_CACHE_CTRL_GLOBAL_EN_Msk (1U << 0)
+#define COPROC_V2_COPROC_CACHE_CTRL_SEG0_CACHE_EN_Pos 1
+#define COPROC_V2_COPROC_CACHE_CTRL_SEG0_CACHE_EN_Msk (1U << 1)
+#define COPROC_V2_COPROC_CACHE_CTRL_SEG1_CACHE_EN_Pos 2
+#define COPROC_V2_COPROC_CACHE_CTRL_SEG1_CACHE_EN_Msk (1U << 2)
+#define COPROC_V2_COPROC_CACHE_CTRL_SEG2_CACHE_EN_Pos 3
+#define COPROC_V2_COPROC_CACHE_CTRL_SEG2_CACHE_EN_Msk (1U << 3)
+#define COPROC_V2_COPROC_CACHE_CTRL_SEG3_CACHE_EN_Pos 4
+#define COPROC_V2_COPROC_CACHE_CTRL_SEG3_CACHE_EN_Msk (1U << 4)
+#define COPROC_V2_COPROC_CACHE_CTRL_SEG4_CACHE_EN_Pos 5
+#define COPROC_V2_COPROC_CACHE_CTRL_SEG4_CACHE_EN_Msk (1U << 5)
 
 
 

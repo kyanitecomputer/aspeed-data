@@ -42,6 +42,7 @@ var pacTargets = []struct{ feature, target string }{
 	{"ast2700-ssp", targetARMHF},
 	{"ast2700-tsp", targetARMHF},
 	{"ast2700-bootmcu", targetRISCV},
+	{"ast2400-arm", targetARMv5},
 	{"ast2500-arm", targetARMv5},
 }
 

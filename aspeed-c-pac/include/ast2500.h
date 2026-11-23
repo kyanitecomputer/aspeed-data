@@ -76,17 +76,17 @@ typedef struct {
 typedef struct {
     volatile uint32_t CTRL; /* 0x0000: ColdFire Coprocessor Control Register (SCU100). Controls enable, reset, and debug mode of the ColdFire core.
  */
-    volatile uint32_t SEG0_BASE; /* 0x0004: Segment 0 Base Register (SCU104). Maps ColdFire address range 0x000000–0x00FFFF to BMC address space. BASE[31:20] selects the 1 MB-aligned BMC target; ENDIAN_SWAP swaps bytes.
+    volatile uint32_t SEG0_BASE; /* 0x0004: Segment 0 Base Register (SCU104). Maps ColdFire address range 0x000000–0x0FFFFF to BMC address space. BASE[31:20] selects the 1 MB-aligned BMC target; ENDIAN_SWAP swaps bytes.
  */
-    volatile uint32_t SEG1_BASE; /* 0x0008: Segment 1 Base Register (SCU108). Maps ColdFire 0x010000–0x01FFFF. */
-    volatile uint32_t SEG2_BASE; /* 0x000c: Segment 2 Base Register (SCU10C). Maps ColdFire 0x020000–0x02FFFF. */
-    volatile uint32_t SEG3_BASE; /* 0x0010: Segment 3 Base Register (SCU110). Maps ColdFire 0x030000–0x03FFFF. */
-    volatile uint32_t SEG4_BASE; /* 0x0014: Segment 4 Base Register (SCU114). Maps ColdFire 0x040000–0x04FFFF. */
-    volatile uint32_t SEG5_BASE; /* 0x0018: Segment 5 Base Register (SCU118). Maps ColdFire 0x050000–0x05FFFF. */
-    volatile uint32_t SEG6_BASE; /* 0x001c: Segment 6 Base Register (SCU11C). Maps ColdFire 0x060000–0x06FFFF. */
-    volatile uint32_t SEG7_BASE; /* 0x0020: Segment 7 Base Register (SCU120). Maps ColdFire 0x070000–0x07FFFF. */
-    volatile uint32_t SEG8_BASE; /* 0x0024: Segment 8 Base Register (SCU124). Maps ColdFire 0x080000–0x08FFFF. */
-    volatile uint32_t CACHE_CTRL; /* 0x0028: Cache Control Register (SCU128). GLOBAL_EN enables the ColdFire instruction cache. SEGn_CACHE_EN enables caching for the corresponding segment window.
+    volatile uint32_t SEG1_BASE; /* 0x0008: Segment 1 Base Register (SCU108). Maps ColdFire 0x100000–0x1FFFFF. */
+    volatile uint32_t SEG2_BASE; /* 0x000c: Segment 2 Base Register (SCU10C). Maps ColdFire 0x200000–0x2FFFFF. */
+    volatile uint32_t SEG3_BASE; /* 0x0010: Segment 3 Base Register (SCU110). Maps ColdFire 0x300000–0x3FFFFF. */
+    volatile uint32_t SEG4_BASE; /* 0x0014: Segment 4 Base Register (SCU114). Maps ColdFire 0x400000–0x4FFFFF. */
+    volatile uint32_t SEG5_BASE; /* 0x0018: Segment 5 Base Register (SCU118). Maps ColdFire 0x500000–0x5FFFFF. */
+    volatile uint32_t SEG6_BASE; /* 0x001c: Segment 6 Base Register (SCU11C). Maps ColdFire 0x600000–0x6FFFFF. */
+    volatile uint32_t SEG7_BASE; /* 0x0020: Segment 7 Base Register (SCU120). Maps ColdFire 0x700000–0x7FFFFF. */
+    volatile uint32_t SEG8_BASE; /* 0x0024: Segment 8 Base Register (SCU124). Maps ColdFire 0x800000–0xFFFFFF (8 MB). */
+    volatile uint32_t CACHE_CTRL; /* 0x0028: Cache Control Register (SCU128). GLOBAL_EN enables the ColdFire cache. SEGn_CACHE_EN enables caching for the corresponding segment window.
  */
 } COPROC_V1_COPROCTypeDef;
 

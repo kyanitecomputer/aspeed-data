@@ -1,21 +1,25 @@
 # ASPEED AST2400 ColdFire coprocessor chip definition.
 #
 # The AST2400 is the predecessor to AST2500.  Its embedded ColdFire V1
-# coprocessor has a 24-bit address space with 5 segments of 2 MB each
-# (compared to 9 × 64 KB segments on AST2500).
+# coprocessor has a 24-bit address space mapped by 5 segments: four of
+# 2 MB and one of 8 MB (compared to eight 1 MB and one 8 MB on AST2500).
+# The AST1250 variant of the die has no coprocessor.
 #
 # Key differences from AST2500:
-#   - 5 segments × 2 MB (vs. 9 segments × 64 KB)
+#   - 5 segments, 2 MB granularity (vs. 9 segments, 1 MB granularity)
 #   - Segment base register: ENDIAN_SWAP at bit[31] (vs. bit[0] on AST2500)
-#   - No instruction cache control register (CACHE_CTRL absent)
-#   - Default segment map uses 2 MB granularity
+#   - Cache control at SCU118 (vs. SCU128 on AST2500)
 #
-# Default segment mapping (after ROM boot, 2 MB windows):
-#   SEG0: CF 0x000000–0x1FFFFF → BMC 0x00000000 (boot ROM)
+# Segment mapping the ARM loader programs before releasing the core, and
+# which the addresses below assume:
+#   SEG0: CF 0x000000–0x1FFFFF → firmware image in DRAM
 #   SEG1: CF 0x200000–0x3FFFFF → BMC 0x1E600000 (SCU, VIC, HACE, ...)
 #   SEG2: CF 0x400000–0x5FFFFF → BMC 0x1E800000 (DRAM controller, ...)
 #   SEG3: CF 0x600000–0x7FFFFF → BMC 0x1E700000 (UART, GPIO, WDT, Timer)
-#   SEG4: CF 0x800000–0x9FFFFF → DRAM
+#   SEG4: CF 0x800000–0xFFFFFF → DRAM
+# The reset defaults differ: SEG0 → BMC 0x00000000 (swapped), SEG1 and SEG2
+# → 0, SEG3 → BMC 0x1E600000 (register space, both 2 MB), SEG4 → BMC
+# 0x40000000 (DRAM, swapped).
 #
 # Address translation for peripheral addresses below:
 #   CF addr = 0x200000 + (BMC_addr - 0x1E600000)  for BMC 0x1E6xxxxx (SEG1)

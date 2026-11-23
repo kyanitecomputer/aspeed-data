@@ -1,27 +1,29 @@
 # AST2400 ColdFire coprocessor control registers.
 #
-# Variant 2: 5 segments of 2 MB each (vs. 9 segments of 64 KB in v1).
+# Variant 2: 5 segments, four of 2 MB and one of 8 MB (vs. eight of 1 MB
+# and one of 8 MB in v1).
 # The ENDIAN_SWAP control bit moves to bit[31] (vs. bit[0] in v1).
-# No instruction cache (CACHE_CTRL register absent).
+# Cache control is at SCU118 (CACHE_CTRL), one enable per segment.
 #
 # Physical address (BMC view): SCU base 0x1E6E2000 + 0x100 = 0x1E6E2100.
 # ColdFire virtual address (default segment map): 0x2E2100.
 #
 # Segment mapping:
-#   Each segment covers a 2 MB (0x200000-byte) window in the 24-bit
-#   ColdFire address space, mapped to a 2 MB-aligned BMC address.
+#   Each segment covers a window of the 24-bit ColdFire address space,
+#   mapped to a 2 MB-aligned BMC address.
 #   SEG0: CF 0x000000–0x1FFFFF
 #   SEG1: CF 0x200000–0x3FFFFF
 #   SEG2: CF 0x400000–0x5FFFFF
 #   SEG3: CF 0x600000–0x7FFFFF
-#   SEG4: CF 0x800000–0x9FFFFF
+#   SEG4: CF 0x800000–0xFFFFFF (8 MB)
 #
 
 block/COPROC:
   description: >
     AST2400 ColdFire coprocessor control registers (SCU offset 0x100).
     Physical base (BMC): 0x1E6E2100. ColdFire virtual (default map): 0x2E2100.
-    5 segment registers, each mapping a 2 MB ColdFire window to BMC space.
+    5 segment registers mapping four 2 MB ColdFire windows and one 8 MB
+    window to BMC space.
     ENDIAN_SWAP at bit[31] (differs from coproc_v1 which uses bit[0]).
   items:
     - name: CTRL
@@ -54,9 +56,17 @@ block/COPROC:
       fieldset: COPROC_SEG_BASE
 
     - name: SEG4_BASE
-      description: Segment 4 Base Register (SCU114). Maps ColdFire 0x800000–0x9FFFFF.
+      description: Segment 4 Base Register (SCU114). Maps ColdFire 0x800000–0xFFFFFF (8 MB).
       byte_offset: 0x14
       fieldset: COPROC_SEG_BASE
+
+    - name: CACHE_CTRL
+      description: >
+        Cache Control Register (SCU118).
+        GLOBAL_EN enables the ColdFire cache; SEGn_CACHE_EN enables caching
+        for the corresponding segment window.
+      byte_offset: 0x18
+      fieldset: COPROC_CACHE_CTRL
 
 # ── Fieldsets ──────────────────────────────────────────────────────────────────
 
@@ -66,20 +76,27 @@ fieldset/COPROC_CTRL:
     - name: EN
       description: >
         ColdFire Enable.
-        0 = coprocessor held in reset;
-        1 = released, may execute.
+        0 = coprocessor disabled, which also holds it in reset (default);
+        1 = enabled.  Keep it off for at least 1 us.
       bit_offset: 0
       bit_size: 1
     - name: RESET
       description: >
         ColdFire Software Reset.
-        Write 1 to assert; 0 to release.
+        Write 1 to assert (hold it for at least 1 us); 0 to release.
       bit_offset: 1
+      bit_size: 1
+    - name: DEBUG_EN
+      description: >
+        ColdFire ICE debug pin enable.
+        1 = route the coprocessor ICE debug interface to its pins.
+        Disabled while the coprocessor is disabled.
+      bit_offset: 2
       bit_size: 1
 
 fieldset/COPROC_SEG_BASE:
   description: >
-    Segment Base Register — maps a 2 MB ColdFire window to BMC address space.
+    Segment Base Register — maps a ColdFire window to BMC address space.
     BASE[30:21] is bits [30:21] of the 32-bit BMC target (2 MB-aligned).
     ENDIAN_SWAP at bit[31] swaps byte order for this window.
   fields:
@@ -95,4 +112,32 @@ fieldset/COPROC_SEG_BASE:
         0 = no swap; 1 = byte-swap (big-endian ColdFire to little-endian BMC).
         Note: this bit is at position 31 (MSB), unlike coproc_v1 where it is bit 0.
       bit_offset: 31
+      bit_size: 1
+
+fieldset/COPROC_CACHE_CTRL:
+  description: ColdFire Cache Control Register (SCU118).
+  fields:
+    - name: GLOBAL_EN
+      description: Global cache enable.
+      bit_offset: 0
+      bit_size: 1
+    - name: SEG0_CACHE_EN
+      description: Enable caching for segment 0 (ColdFire 0x000000–0x1FFFFF).
+      bit_offset: 1
+      bit_size: 1
+    - name: SEG1_CACHE_EN
+      description: Enable caching for segment 1 (ColdFire 0x200000–0x3FFFFF).
+      bit_offset: 2
+      bit_size: 1
+    - name: SEG2_CACHE_EN
+      description: Enable caching for segment 2 (ColdFire 0x400000–0x5FFFFF).
+      bit_offset: 3
+      bit_size: 1
+    - name: SEG3_CACHE_EN
+      description: Enable caching for segment 3 (ColdFire 0x600000–0x7FFFFF).
+      bit_offset: 4
+      bit_size: 1
+    - name: SEG4_CACHE_EN
+      description: Enable caching for segment 4 (ColdFire 0x800000–0xFFFFFF).
+      bit_offset: 5
       bit_size: 1

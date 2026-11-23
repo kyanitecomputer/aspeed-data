@@ -1,0 +1,308 @@
+# AST2400 System Control Unit (SCU) registers.
+#
+# Base address: 0x1E6E_2000 (ARM main-core view).
+# This file models the SCU registers needed for early ARM bring-up:
+# protection key, H-PLL, the VGA/firmware handshake (DRAM init status),
+# hardware strap and silicon revision.  The coprocessor control registers
+# (SCU100-SCU118) are a separate block (coproc_v2).
+#
+# The same register map covers the AST1250, the AST2400 die without the
+# host graphics side.  Both read the same silicon revision, so firmware
+# cannot tell them apart.
+#
+# Key protection:
+#   SCU00-SCUFC are protected by SCU00 (write 0x1688_A8A8 to unlock).
+#
+# The AST2400 layout differs from the AST2500 SCU (scu_ast2500_v1): its
+# H-PLL encoding, the CPU/AHB ratio and DRAM type straps, a plain RW
+# hardware strap register without the SCU7C clear, and no SPI strap
+# auto fetch.
+
+block/SCU:
+  description: >
+    AST2400 System Control Unit (SCU).
+    Base address: 0x1E6E_2000.
+    Chip-level clock, strap and identification registers.
+  items:
+    - name: PROTECT
+      description: >
+        Protection Key Register (SCU00).
+        Write 0x1688_A8A8 to unlock the SCU; write any other value to
+        lock.  Reads back 0x0000_0001 when unlocked and 0x0000_0000 when
+        locked.
+      byte_offset: 0x00
+      fieldset: SCU_PROTECT
+
+    - name: HPLL
+      description: >
+        H-PLL Parameter Register (SCU24).
+        Init = 0x0000_0291.  H-PLL clocks the ARM CPU; unless PARAM_SEL is
+        set its frequency comes from strap SCU70[9:8].
+        Output = CLKIN * (2 - OD) * (NUM + 2) / (DENUM + 1).
+      byte_offset: 0x24
+      fieldset: SCU_HPLL
+
+    - name: VGA_HANDSHAKE0
+      description: >
+        ASPEED Defined for VGA Function Handshake (SCU40).
+        Init = 0.  Firmware/VBIOS handshake, including the DRAM
+        initialisation ownership and ready flags (bits 7:6) and the MAC
+        PHY modes.
+      byte_offset: 0x40
+      fieldset: SCU_VGA_HANDSHAKE0
+
+    - name: HWSTRAP
+      description: >
+        Hardware Strapping Register (SCU70).
+        Latched from the strap pins while SRST# is low; writable after.
+      byte_offset: 0x70
+      fieldset: SCU_HWSTRAP
+
+    - name: SILICON_REV
+      description: >
+        Silicon Revision ID Register (SCU7C). Read-only.
+        0x0201_0303 on AST2400-A1 and AST1250-A1.
+      byte_offset: 0x7C
+      access: Read
+      fieldset: SCU_SILICON_REV
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/SCU_PROTECT:
+  description: Protection Key Register (SCU00).
+  fields:
+    - name: KEY
+      description: >
+        Protection key.  Write 0x1688_A8A8 to unlock, any other value to
+        lock.  Reads 1 when unlocked, 0 when locked.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SCU_HPLL:
+  description: H-PLL Parameter Register (SCU24).  Bits [15:11], [31:19] reserved.
+  fields:
+    - name: DENUM
+      description: "SCU24[3:0]: H-PLL denumerator."
+      bit_offset: 0
+      bit_size: 4
+    - name: OD
+      description: "SCU24[4]: H-PLL output divider. Output scales by (2 - OD)."
+      bit_offset: 4
+      bit_size: 1
+    - name: NUM
+      description: "SCU24[10:5]: H-PLL numerator."
+      bit_offset: 5
+      bit_size: 6
+    - name: POWER_DOWN
+      description: "SCU24[16]: Turn off the H-PLL (power down, output 0)."
+      bit_offset: 16
+      bit_size: 1
+    - name: BYPASS
+      description: "SCU24[17]: H-PLL bypass mode: the output is CLKIN."
+      bit_offset: 17
+      bit_size: 1
+    - name: PARAM_SEL
+      description: >
+        SCU24[18]: H-PLL parameter selection.
+        0 = from the strap (SCU70[9:8]); 1 = from SCU24[17:0].
+      bit_offset: 18
+      bit_size: 1
+
+fieldset/SCU_VGA_HANDSHAKE0:
+  description: >
+    ASPEED Defined for VGA Function Handshake (SCU40).
+    DRAM init protocol: if bit 7 = 0 the VBIOS initialises DRAM; otherwise
+    SoC firmware does and sets bit 6 when DRAM is ready (VBIOS POST waits
+    for it).  The AST1250 has no VBIOS.  Bits 5, 3 and 2 are reserved
+    (AST2000 use only).
+  fields:
+    - name: IKVM_WIDE_SCREEN
+      description: "SCU40[0]: iKVM supports wide screen resolution."
+      bit_offset: 0
+      bit_size: 1
+    - name: FW_PROTECT
+      description: >
+        SCU40[1]: BMC firmware protection. 1 = forbid SOCFlash to update
+        flash.
+      bit_offset: 1
+      bit_size: 1
+    - name: VIRTUAL_EDID_EN
+      description: "SCU40[4]: KVM virtual EDID function selection."
+      bit_offset: 4
+      bit_size: 1
+    - name: DRAM_INIT_READY
+      description: >
+        SCU40[6]: SOC firmware initial DRAM status.
+        0 = DRAM init not ready; 1 = DRAM init ready.
+      bit_offset: 6
+      bit_size: 1
+    - name: DRAM_INIT_BY_SOC
+      description: >
+        SCU40[7]: DRAM initial selection.
+        0 = VBIOS initialises DRAM; 1 = SOC firmware initialises DRAM.
+      bit_offset: 7
+      bit_size: 1
+    - name: MAC2_PHY_MODE
+      description: >
+        SCU40[13:12]: MAC#2 PHY mode configuration.
+        00 = dedicated PHY; 01 = NC-SI; 10 = Intel NC-SI EVB.
+      bit_offset: 12
+      bit_size: 2
+    - name: MAC1_PHY_MODE
+      description: >
+        SCU40[15:14]: MAC#1 PHY mode configuration (encoding as MAC#2).
+      bit_offset: 14
+      bit_size: 2
+    - name: CUSTOMER_DEF
+      description: "SCU40[23:16]: Reserved for customer definition."
+      bit_offset: 16
+      bit_size: 8
+    - name: FW_HANDSHAKE
+      description: >
+        SCU40[31:24]: Firmware / SLT handshake.
+        0x5A = embedded Linux booted properly.
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/SCU_HWSTRAP:
+  description: Hardware Strapping Register (SCU70).
+  fields:
+    - name: BOOT_MODE
+      description: >
+        SCU70[1:0]: BMC CPU boot code selection.
+        00 = NOR flash; 01 = NAND flash; 10 = SPI flash; 11 = disable CPU.
+      bit_offset: 0
+      bit_size: 2
+    - name: VGA_MEM_SIZE
+      description: >
+        SCU70[3:2]: VGA memory size selection (shared with SOC memory).
+        00 = 8 MB; 01 = 16 MB; 10 = 32 MB; 11 = 64 MB.
+      bit_offset: 2
+      bit_size: 2
+    - name: BOOT_EXT
+      description: >
+        SCU70[4]: Boot flash extended option.  SPI: 0 = 3-byte, 1 = 4-byte
+        boot address mode; NOR: 0 = 8-bit, 1 = 16-bit data bus.
+      bit_offset: 4
+      bit_size: 1
+    - name: VGA_BIOS_ROM_EN
+      description: "SCU70[5]: Enable VGA BIOS ROM."
+      bit_offset: 5
+      bit_size: 1
+    - name: MAC1_RGMII
+      description: "SCU70[6]: Define MAC#1 interface. 0 = RMII/NCSI; 1 = RGMII."
+      bit_offset: 6
+      bit_size: 1
+    - name: MAC2_RGMII
+      description: "SCU70[7]: Define MAC#2 interface. 0 = RMII/NCSI; 1 = RGMII."
+      bit_offset: 7
+      bit_size: 1
+    - name: HPLL_DEFAULT
+      description: >
+        SCU70[9:8]: H-PLL default frequency. With a 24/48 MHz CLKIN:
+        00 = 384 MHz; 01 = 360 MHz; 10 = 336 MHz; 11 = 408 MHz. With a
+        25 MHz CLKIN: 400, 375, 350 and 425 MHz.
+      bit_offset: 8
+      bit_size: 2
+    - name: CPU_AHB_RATIO
+      description: >
+        SCU70[11:10]: CPU/AHB clock frequency ratio.
+        00 = 1:1; 01 = 2:1; 10 = 4:1; 11 = 3:1.
+      bit_offset: 10
+      bit_size: 2
+    - name: SPI_MODE
+      description: >
+        SCU70[13:12]: SPI mode selection.
+        00 = SPI disabled; 01 = SPI master; 10 = SPI master + SPI slave to
+        AHB bridge; 11 = SPI pass-through.
+      bit_offset: 12
+      bit_size: 2
+    - name: LPC_DEDICATED_RESET
+      description: >
+        SCU70[14]: Select dedicated LPC reset input.
+        0 = shared with the PCI reset; 1 = pin E19 / GPIOB4.
+      bit_offset: 14
+      bit_size: 1
+    - name: VGA_CLASS_CODE
+      description: >
+        SCU70[15]: VGA class code selection. 0 = video device; 1 = VGA
+        device.
+      bit_offset: 15
+      bit_size: 1
+    - name: SIO_ADDR_4E
+      description: >
+        SCU70[16]: SuperIO configuration address. 0 = 0x2E; 1 = 0x4E.
+      bit_offset: 16
+      bit_size: 1
+    - name: BOOT_2ND_WDT_EN
+      description: >
+        SCU70[17]: Enable BMC 2nd boot watchdog timer (WDT2 starts counting
+        at power up; on timeout the BMC resets and boots from CS1#).
+      bit_offset: 17
+      bit_size: 1
+    - name: CLKIN_SEL_LO
+      description: >
+        SCU70[18]: Clock source selection, low bit; see CLKIN_25MHZ.
+      bit_offset: 18
+      bit_size: 1
+    - name: ACPI_DIS
+      description: "SCU70[19]: Disable ACPI function."
+      bit_offset: 19
+      bit_size: 1
+    - name: SIO_DECODE_DIS
+      description: >
+        SCU70[20]: Disable LPC decoding of SuperIO 0x2E/0x4E address.
+      bit_offset: 20
+      bit_size: 1
+    - name: GPIOD_PASSTHRU
+      description: "SCU70[21]: Enable GPIOD pass-through mode at power on."
+      bit_offset: 21
+      bit_size: 1
+    - name: GPIOE_PASSTHRU
+      description: "SCU70[22]: Enable GPIOE pass-through mode at power on."
+      bit_offset: 22
+      bit_size: 1
+    - name: CLKIN_25MHZ
+      description: >
+        SCU70[23]: Clock source selection, high bit.  {SCU70[23], SCU70[18]}:
+        00 = 24 MHz CLKIN; 01 = 48 MHz CLKIN; 10 = 25 MHz CLKIN with
+        24 MHz USBCKI; 11 = 25 MHz CLKIN with 48 MHz USBCKI.
+      bit_offset: 23
+      bit_size: 1
+    - name: DRAM_CONFIG
+      description: >
+        SCU70[26:24]: DRAM type and CAS latency.  Even values are DDR3:
+        000 = CL5/CWL5; 010 = CL6/CWL5; 100 = CL7/CWL6; 110 = CL8/CWL6.
+        Odd values are DDR2: 001 = CL4; 011 = CL5; 101 = CL6; 111 = CL7.
+      bit_offset: 24
+      bit_size: 3
+    - name: DRAM_SIZE
+      description: >
+        SCU70[28:27]: DRAM size for the VGA driver.
+        00 = 64 MB; 01 = 128 MB; 10 = 256 MB; 11 = 512 MB.
+      bit_offset: 27
+      bit_size: 2
+    - name: SW_DEFINED
+      description: "SCU70[31:29]: Software defined strap bits."
+      bit_offset: 29
+      bit_size: 3
+
+fieldset/SCU_SILICON_REV:
+  description: Silicon Revision ID Register (SCU7C).
+  fields:
+    - name: COMPAT
+      description: "SCU7C[7:0]: Reserved for backward compatibility."
+      bit_offset: 0
+      bit_size: 8
+    - name: BOND
+      description: "SCU7C[9:8]: Chip bonding option."
+      bit_offset: 8
+      bit_size: 2
+    - name: HW_REV
+      description: "SCU7C[23:16]: Hardware revision ID. 0 = A0; 1 = A1; 2 = A2."
+      bit_offset: 16
+      bit_size: 8
+    - name: GEN
+      description: "SCU7C[31:24]: Reserved (0x02 for the AST2400 family)."
+      bit_offset: 24
+      bit_size: 8

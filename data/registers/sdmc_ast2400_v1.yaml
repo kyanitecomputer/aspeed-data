@@ -1,0 +1,82 @@
+# AST2400 SDRAM Memory Controller (SDMC) registers.
+#
+# Base address: 0x1E6E_0000 (ARM main-core view).
+# DDR2/DDR3 at 0x4000_0000, up to 512 MB; the graphics memory carve-out
+# (SCU70[3:2]) sits at the top of DRAM.
+#
+# This file models what firmware needs to use DRAM another stage, the
+# VBIOS or an emulator already initialised: the protection key and the
+# configuration register with the capacity, ECC and carve-out size.  The
+# timing, PHY and test engine registers follow with native DRAM init.
+
+block/SDMC:
+  description: >
+    AST2400 SDRAM Memory Controller (SDMC).
+    Base address: 0x1E6E_0000.
+  items:
+    - name: PROTECT
+      description: >
+        Protection Key Register (MCR00).
+        Write 0xFC60_0309 to unlock MCR04-MCR7C, any other value to lock.
+        Reads 1 when unlocked, 0 when locked.
+      byte_offset: 0x00
+      fieldset: SDMC_PROTECT
+
+    - name: CONFIG
+      description: Configuration Register (MCR04). Init = 0x40.
+      byte_offset: 0x04
+      fieldset: SDMC_CONFIG
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/SDMC_PROTECT:
+  description: Protection Key Register (MCR00).
+  fields:
+    - name: KEY
+      description: Protection key (0xFC60_0309 unlocks).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/SDMC_CONFIG:
+  description: Configuration Register (MCR04).  Bits [31:11] reserved.
+  fields:
+    - name: CAPACITY
+      description: >
+        MCR04[1:0]: Total memory capacity, for oversized write protection.
+        00 = 64 MB or less; 01 = 128 MB; 10 = 256 MB; 11 = 512 MB.
+      bit_offset: 0
+      bit_size: 2
+    - name: VGA_APERTURE
+      description: >
+        MCR04[3:2] (read-only): Graphics memory size from strap SCU70[3:2].
+        00 = 8 MB; 01 = 16 MB; 10 = 32 MB; 11 = 64 MB.  It is the top of
+        DRAM.
+      bit_offset: 2
+      bit_size: 2
+    - name: BURST_8
+      description: "MCR04[4]: DRAM burst length. 0 = 4; 1 = 8."
+      bit_offset: 4
+      bit_size: 1
+    - name: BANKS_8
+      description: "MCR04[5]: DRAM bank addressing. 0 = 4 banks; 1 = 8 banks."
+      bit_offset: 5
+      bit_size: 1
+    - name: ECC_EN
+      description: >
+        MCR04[7]: Enable ECC; the ECC data takes 1/8 of the memory.
+      bit_offset: 7
+      bit_size: 1
+    - name: SCRAMBLE_EN
+      description: "MCR04[8]: Enable data scrambling."
+      bit_offset: 8
+      bit_size: 1
+    - name: SCRAMBLE_PATTERN2
+      description: "MCR04[9]: Data scramble pattern. 0 = pattern 1; 1 = pattern 2."
+      bit_offset: 9
+      bit_size: 1
+    - name: AST2300_INCOMPAT
+      description: >
+        MCR04[10]: 0 = compatible to AST2300 mode (MCR08 25 requests,
+        MCR6C[7:0] only); 1 = not compatible.
+      bit_offset: 10
+      bit_size: 1
