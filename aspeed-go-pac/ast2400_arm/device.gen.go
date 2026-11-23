@@ -6,6 +6,8 @@ package pac
 const (
     // FMC_BASE Firmware SPI memory controller (FMC)
     FMC_BASE = 0x1e620000
+    // SDMC_BASE SDRAM memory controller (SDMC)
+    SDMC_BASE = 0x1e6e0000
     // SCU_BASE System control unit (SCU)
     SCU_BASE = 0x1e6e2000
     // COPROC_BASE ColdFire coprocessor control (SCU100-SCU118)

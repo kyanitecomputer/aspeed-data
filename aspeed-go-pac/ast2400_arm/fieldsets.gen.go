@@ -400,6 +400,41 @@ const (
     ScuAst2400V1SCUVGAHANDSHAKE0FWHANDSHAKEMsk = 0xff << 24
 )
 
+// sdmc_ast2400_v1::SDMC_CONFIG Configuration Register (MCR04).  Bits [31:11] reserved.
+const (
+    // CAPACITY MCR04[1:0]: Total memory capacity, for oversized write protection. 00 = 64 MB or less; 01 = 128 MB; 10 = 256 MB; 11 = 512 MB.
+    SdmcAst2400V1SDMCCONFIGCAPACITYPos = 0
+    SdmcAst2400V1SDMCCONFIGCAPACITYMsk = 0x3 << 0
+    // VGAAPERTURE MCR04[3:2] (read-only): Graphics memory size from strap SCU70[3:2]. 00 = 8 MB; 01 = 16 MB; 10 = 32 MB; 11 = 64 MB.  It is the top of DRAM.
+    SdmcAst2400V1SDMCCONFIGVGAAPERTUREPos = 2
+    SdmcAst2400V1SDMCCONFIGVGAAPERTUREMsk = 0x3 << 2
+    // BURST8 MCR04[4]: DRAM burst length. 0 = 4; 1 = 8.
+    SdmcAst2400V1SDMCCONFIGBURST8Pos = 4
+    SdmcAst2400V1SDMCCONFIGBURST8Msk = 0x1 << 4
+    // BANKS8 MCR04[5]: DRAM bank addressing. 0 = 4 banks; 1 = 8 banks.
+    SdmcAst2400V1SDMCCONFIGBANKS8Pos = 5
+    SdmcAst2400V1SDMCCONFIGBANKS8Msk = 0x1 << 5
+    // ECCEN MCR04[7]: Enable ECC; the ECC data takes 1/8 of the memory.
+    SdmcAst2400V1SDMCCONFIGECCENPos = 7
+    SdmcAst2400V1SDMCCONFIGECCENMsk = 0x1 << 7
+    // SCRAMBLEEN MCR04[8]: Enable data scrambling.
+    SdmcAst2400V1SDMCCONFIGSCRAMBLEENPos = 8
+    SdmcAst2400V1SDMCCONFIGSCRAMBLEENMsk = 0x1 << 8
+    // SCRAMBLEPATTERN2 MCR04[9]: Data scramble pattern. 0 = pattern 1; 1 = pattern 2.
+    SdmcAst2400V1SDMCCONFIGSCRAMBLEPATTERN2Pos = 9
+    SdmcAst2400V1SDMCCONFIGSCRAMBLEPATTERN2Msk = 0x1 << 9
+    // AST2300INCOMPAT MCR04[10]: 0 = compatible to AST2300 mode (MCR08 25 requests, MCR6C[7:0] only); 1 = not compatible.
+    SdmcAst2400V1SDMCCONFIGAST2300INCOMPATPos = 10
+    SdmcAst2400V1SDMCCONFIGAST2300INCOMPATMsk = 0x1 << 10
+)
+
+// sdmc_ast2400_v1::SDMC_PROTECT Protection Key Register (MCR00).
+const (
+    // KEY Protection key (0xFC60_0309 unlocks).
+    SdmcAst2400V1SDMCPROTECTKEYPos = 0
+    SdmcAst2400V1SDMCPROTECTKEYMsk = 0xffffffff << 0
+)
+
 // timer_ast2400_v1::TMC_COUNTER 32-bit counter, reload or match value.
 const (
     // VALUE Counter value in ticks of the selected clock (PCLK or 1 MHz).

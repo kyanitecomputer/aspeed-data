@@ -10,6 +10,10 @@ pub enum Interrupt {}
 pub const FMC: fmc_ast2400_v1::FMC = unsafe {
     fmc_ast2400_v1::FMC::from_ptr(0x1e62_0000usize as _)
 };
+///SDRAM memory controller (SDMC)
+pub const SDMC: sdmc_ast2400_v1::SDMC = unsafe {
+    sdmc_ast2400_v1::SDMC::from_ptr(0x1e6e_0000usize as _)
+};
 ///System control unit (SCU)
 pub const SCU: scu_ast2400_v1::SCU = unsafe {
     scu_ast2400_v1::SCU::from_ptr(0x1e6e_2000usize as _)
@@ -2304,6 +2308,209 @@ pub mod scu_ast2400_v1 {
                 .DRAM_INIT_READY(), self.DRAM_INIT_BY_SOC(), self.MAC2_PHY_MODE(), self
                 .MAC1_PHY_MODE(), self.CUSTOMER_DEF(), self.FW_HANDSHAKE()
             )
+        }
+    }
+}
+pub mod sdmc_ast2400_v1 {
+    ///AST2400 SDRAM Memory Controller (SDMC). Base address: 0x1E6E_0000.
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC {
+        ptr: *mut u8,
+    }
+    unsafe impl Send for SDMC {}
+    unsafe impl Sync for SDMC {}
+    impl SDMC {
+        #[inline(always)]
+        pub const unsafe fn from_ptr(ptr: *mut ()) -> Self {
+            Self { ptr: ptr as _ }
+        }
+        #[inline(always)]
+        pub const fn as_ptr(&self) -> *mut () {
+            self.ptr as _
+        }
+        ///Protection Key Register (MCR00). Write 0xFC60_0309 to unlock MCR04-MCR7C, any other value to lock. Reads 1 when unlocked, 0 when locked.
+        #[inline(always)]
+        pub const fn PROTECT(
+            self,
+        ) -> crate::common::Reg<SDMC_PROTECT, crate::common::RW> {
+            unsafe { crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x0usize) as _) }
+        }
+        ///Configuration Register (MCR04). Init = 0x40.
+        #[inline(always)]
+        pub const fn CONFIG(self) -> crate::common::Reg<SDMC_CONFIG, crate::common::RW> {
+            unsafe {
+                crate::common::Reg::from_ptr(self.ptr.wrapping_add(0x04usize) as _)
+            }
+        }
+    }
+    ///Configuration Register (MCR04). Bits \[31:11\] reserved.
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_CONFIG(pub u32);
+    impl SDMC_CONFIG {
+        ///MCR04\[1:0\]: Total memory capacity, for oversized write protection. 00 = 64 MB or less; 01 = 128 MB; 10 = 256 MB; 11 = 512 MB.
+        #[must_use]
+        #[inline(always)]
+        pub const fn CAPACITY(&self) -> u8 {
+            let val = (self.0 >> 0usize) & 0x03;
+            val as u8
+        }
+        ///MCR04\[1:0\]: Total memory capacity, for oversized write protection. 00 = 64 MB or less; 01 = 128 MB; 10 = 256 MB; 11 = 512 MB.
+        #[inline(always)]
+        pub const fn set_CAPACITY(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 0usize)) | (((val as u32) & 0x03) << 0usize);
+        }
+        ///MCR04\[3:2\] (read-only): Graphics memory size from strap SCU70\[3:2\]. 00 = 8 MB; 01 = 16 MB; 10 = 32 MB; 11 = 64 MB. It is the top of DRAM.
+        #[must_use]
+        #[inline(always)]
+        pub const fn VGA_APERTURE(&self) -> u8 {
+            let val = (self.0 >> 2usize) & 0x03;
+            val as u8
+        }
+        ///MCR04\[3:2\] (read-only): Graphics memory size from strap SCU70\[3:2\]. 00 = 8 MB; 01 = 16 MB; 10 = 32 MB; 11 = 64 MB. It is the top of DRAM.
+        #[inline(always)]
+        pub const fn set_VGA_APERTURE(&mut self, val: u8) {
+            self.0 = (self.0 & !(0x03 << 2usize)) | (((val as u32) & 0x03) << 2usize);
+        }
+        ///MCR04\[4\]: DRAM burst length. 0 = 4; 1 = 8.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BURST_8(&self) -> bool {
+            let val = (self.0 >> 4usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[4\]: DRAM burst length. 0 = 4; 1 = 8.
+        #[inline(always)]
+        pub const fn set_BURST_8(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 4usize)) | (((val as u32) & 0x01) << 4usize);
+        }
+        ///MCR04\[5\]: DRAM bank addressing. 0 = 4 banks; 1 = 8 banks.
+        #[must_use]
+        #[inline(always)]
+        pub const fn BANKS_8(&self) -> bool {
+            let val = (self.0 >> 5usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[5\]: DRAM bank addressing. 0 = 4 banks; 1 = 8 banks.
+        #[inline(always)]
+        pub const fn set_BANKS_8(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 5usize)) | (((val as u32) & 0x01) << 5usize);
+        }
+        ///MCR04\[7\]: Enable ECC; the ECC data takes 1/8 of the memory.
+        #[must_use]
+        #[inline(always)]
+        pub const fn ECC_EN(&self) -> bool {
+            let val = (self.0 >> 7usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[7\]: Enable ECC; the ECC data takes 1/8 of the memory.
+        #[inline(always)]
+        pub const fn set_ECC_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 7usize)) | (((val as u32) & 0x01) << 7usize);
+        }
+        ///MCR04\[8\]: Enable data scrambling.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SCRAMBLE_EN(&self) -> bool {
+            let val = (self.0 >> 8usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[8\]: Enable data scrambling.
+        #[inline(always)]
+        pub const fn set_SCRAMBLE_EN(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 8usize)) | (((val as u32) & 0x01) << 8usize);
+        }
+        ///MCR04\[9\]: Data scramble pattern. 0 = pattern 1; 1 = pattern 2.
+        #[must_use]
+        #[inline(always)]
+        pub const fn SCRAMBLE_PATTERN2(&self) -> bool {
+            let val = (self.0 >> 9usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[9\]: Data scramble pattern. 0 = pattern 1; 1 = pattern 2.
+        #[inline(always)]
+        pub const fn set_SCRAMBLE_PATTERN2(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 9usize)) | (((val as u32) & 0x01) << 9usize);
+        }
+        ///MCR04\[10\]: 0 = compatible to AST2300 mode (MCR08 25 requests, MCR6C\[7:0\] only); 1 = not compatible.
+        #[must_use]
+        #[inline(always)]
+        pub const fn AST2300_INCOMPAT(&self) -> bool {
+            let val = (self.0 >> 10usize) & 0x01;
+            val != 0
+        }
+        ///MCR04\[10\]: 0 = compatible to AST2300 mode (MCR08 25 requests, MCR6C\[7:0\] only); 1 = not compatible.
+        #[inline(always)]
+        pub const fn set_AST2300_INCOMPAT(&mut self, val: bool) {
+            self.0 = (self.0 & !(0x01 << 10usize)) | (((val as u32) & 0x01) << 10usize);
+        }
+    }
+    impl Default for SDMC_CONFIG {
+        #[inline(always)]
+        fn default() -> SDMC_CONFIG {
+            SDMC_CONFIG(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_CONFIG {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_CONFIG")
+                .field("CAPACITY", &self.CAPACITY())
+                .field("VGA_APERTURE", &self.VGA_APERTURE())
+                .field("BURST_8", &self.BURST_8())
+                .field("BANKS_8", &self.BANKS_8())
+                .field("ECC_EN", &self.ECC_EN())
+                .field("SCRAMBLE_EN", &self.SCRAMBLE_EN())
+                .field("SCRAMBLE_PATTERN2", &self.SCRAMBLE_PATTERN2())
+                .field("AST2300_INCOMPAT", &self.AST2300_INCOMPAT())
+                .finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_CONFIG {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(
+                f,
+                "SDMC_CONFIG {{ CAPACITY: {=u8:?}, VGA_APERTURE: {=u8:?}, BURST_8: {=bool:?}, BANKS_8: {=bool:?}, ECC_EN: {=bool:?}, SCRAMBLE_EN: {=bool:?}, SCRAMBLE_PATTERN2: {=bool:?}, AST2300_INCOMPAT: {=bool:?} }}",
+                self.CAPACITY(), self.VGA_APERTURE(), self.BURST_8(), self.BANKS_8(),
+                self.ECC_EN(), self.SCRAMBLE_EN(), self.SCRAMBLE_PATTERN2(), self
+                .AST2300_INCOMPAT()
+            )
+        }
+    }
+    ///Protection Key Register (MCR00).
+    #[repr(transparent)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    pub struct SDMC_PROTECT(pub u32);
+    impl SDMC_PROTECT {
+        ///Protection key (0xFC60_0309 unlocks).
+        #[must_use]
+        #[inline(always)]
+        pub const fn KEY(&self) -> u32 {
+            let val = (self.0 >> 0usize) & 0xffff_ffff;
+            val as u32
+        }
+        ///Protection key (0xFC60_0309 unlocks).
+        #[inline(always)]
+        pub const fn set_KEY(&mut self, val: u32) {
+            self.0 = (self.0 & !(0xffff_ffff << 0usize))
+                | (((val as u32) & 0xffff_ffff) << 0usize);
+        }
+    }
+    impl Default for SDMC_PROTECT {
+        #[inline(always)]
+        fn default() -> SDMC_PROTECT {
+            SDMC_PROTECT(0)
+        }
+    }
+    impl core::fmt::Debug for SDMC_PROTECT {
+        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+            f.debug_struct("SDMC_PROTECT").field("KEY", &self.KEY()).finish()
+        }
+    }
+    #[cfg(feature = "defmt")]
+    impl defmt::Format for SDMC_PROTECT {
+        fn format(&self, f: defmt::Formatter) {
+            defmt::write!(f, "SDMC_PROTECT {{ KEY: {=u32:?} }}", self.KEY())
         }
     }
 }
