@@ -10,6 +10,8 @@ const (
     SDMC_BASE = 0x1e6e0000
     // SCU_BASE System control unit (SCU)
     SCU_BASE = 0x1e6e2000
+    // COPROC_BASE ColdFire coprocessor control (SCU100-SCU128)
+    COPROC_BASE = 0x1e6e2100
     // TIMER_BASE Timer controller (TMC), 8 timers
     TIMER_BASE = 0x1e782000
     // UART1_BASE UART1 (LPC UART1, 16550, 4-byte stride)

@@ -43,6 +43,14 @@ peripherals:
     address: 0x1E6E2000
     description: "System control unit (SCU)"
 
+  # ColdFire coprocessor control (SCU100-SCU128): enable, reset, segment
+  # map and cache.  The coprocessor is off after power-on; whoever loads
+  # its firmware programs the segments and releases it.
+  - name:    COPROC
+    block:   coproc_v1::COPROC
+    address: 0x1E6E2100
+    description: "ColdFire coprocessor control (SCU100-SCU128)"
+
   - name:    TIMER
     block:   timer_ast2500_v1::TIMER
     address: 0x1E782000

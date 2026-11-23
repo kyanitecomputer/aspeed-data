@@ -2,6 +2,63 @@
 
 package pac
 
+// coproc_v1::COPROC_CACHE_CTRL ColdFire Cache Control Register (SCU128).
+const (
+    // GLOBALEN Global cache enable. 0 = cache disabled (all fetches go to BMC memory); 1 = cache enabled for segments with SEGn_CACHE_EN=1.
+    CoprocV1COPROCCACHECTRLGLOBALENPos = 0
+    CoprocV1COPROCCACHECTRLGLOBALENMsk = 0x1 << 0
+    // SEG0CACHEEN Enable caching for segment 0 window.
+    CoprocV1COPROCCACHECTRLSEG0CACHEENPos = 1
+    CoprocV1COPROCCACHECTRLSEG0CACHEENMsk = 0x1 << 1
+    // SEG1CACHEEN Enable caching for segment 1 window.
+    CoprocV1COPROCCACHECTRLSEG1CACHEENPos = 2
+    CoprocV1COPROCCACHECTRLSEG1CACHEENMsk = 0x1 << 2
+    // SEG2CACHEEN Enable caching for segment 2 window.
+    CoprocV1COPROCCACHECTRLSEG2CACHEENPos = 3
+    CoprocV1COPROCCACHECTRLSEG2CACHEENMsk = 0x1 << 3
+    // SEG3CACHEEN Enable caching for segment 3 window.
+    CoprocV1COPROCCACHECTRLSEG3CACHEENPos = 4
+    CoprocV1COPROCCACHECTRLSEG3CACHEENMsk = 0x1 << 4
+    // SEG4CACHEEN Enable caching for segment 4 window.
+    CoprocV1COPROCCACHECTRLSEG4CACHEENPos = 5
+    CoprocV1COPROCCACHECTRLSEG4CACHEENMsk = 0x1 << 5
+    // SEG5CACHEEN Enable caching for segment 5 window.
+    CoprocV1COPROCCACHECTRLSEG5CACHEENPos = 6
+    CoprocV1COPROCCACHECTRLSEG5CACHEENMsk = 0x1 << 6
+    // SEG6CACHEEN Enable caching for segment 6 window.
+    CoprocV1COPROCCACHECTRLSEG6CACHEENPos = 7
+    CoprocV1COPROCCACHECTRLSEG6CACHEENMsk = 0x1 << 7
+    // SEG7CACHEEN Enable caching for segment 7 window.
+    CoprocV1COPROCCACHECTRLSEG7CACHEENPos = 8
+    CoprocV1COPROCCACHECTRLSEG7CACHEENMsk = 0x1 << 8
+    // SEG8CACHEEN Enable caching for segment 8 window.
+    CoprocV1COPROCCACHECTRLSEG8CACHEENPos = 9
+    CoprocV1COPROCCACHECTRLSEG8CACHEENMsk = 0x1 << 9
+)
+
+// coproc_v1::COPROC_CTRL ColdFire Coprocessor Control Register (SCU100).
+const (
+    // EN ColdFire Enable. 0 = coprocessor disabled, which also holds it in reset (default after power-on); 1 = enabled.  Keep it off for at least 1 us. Set only after programming segment registers and loading firmware.
+    CoprocV1COPROCCTRLENPos = 0
+    CoprocV1COPROCCTRLENMsk = 0x1 << 0
+    // RESET ColdFire Software Reset. Write 1 to assert reset (hold it for at least 1 us); write 0 to release.
+    CoprocV1COPROCCTRLRESETPos = 1
+    CoprocV1COPROCCTRLRESETMsk = 0x1 << 1
+    // DEBUGEN ColdFire ICE debug pin enable. 1 = route the coprocessor ICE debug interface to its pins. Disabled while the coprocessor is disabled.
+    CoprocV1COPROCCTRLDEBUGENPos = 2
+    CoprocV1COPROCCTRLDEBUGENMsk = 0x1 << 2
+)
+
+// coproc_v1::COPROC_SEG_BASE Segment Base Register — maps a ColdFire window to BMC address space. BASE[31:20] is the upper 12 bits of the 32-bit BMC target address (1 MB-aligned). ENDIAN_SWAP[0] swaps byte order on reads/writes through this segment.
+const (
+    // ENDIANSWAP Byte-endian swap. 0 = pass bytes unchanged (little-endian view of BMC peripherals); 1 = swap bytes (big-endian ColdFire accessing little-endian BMC memory). Flash and DRAM windows need the swap.
+    CoprocV1COPROCSEGBASEENDIANSWAPPos = 0
+    CoprocV1COPROCSEGBASEENDIANSWAPMsk = 0x1 << 0
+    // BASE BMC target base address bits [31:20] (1 MB-aligned). Example: to map ColdFire segment to BMC 0x1E780000, set BASE = 0x1E7.
+    CoprocV1COPROCSEGBASEBASEPos = 20
+    CoprocV1COPROCSEGBASEBASEMsk = 0xfff << 20
+)
+
 // fmc_ast2500_v1::FMC_ADDR_RANGE CEx Address Decoding Range Register (FMC30-FMC38). Start and end are address bits A[30:23] (8 MB units); in each byte bits [7:6] hold A[30:29] and bits [5:0] hold A[28:23]. Valid segment: start <= address < end, within 0x2000_0000-0x2FFF_FFFF. CE0 start is read-only.  Segments must not overlap.
 const (
     // START FMC30[23:16]: Start address A[30:23] (address = START << 23).
