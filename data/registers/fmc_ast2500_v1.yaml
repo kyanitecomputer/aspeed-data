@@ -1,0 +1,585 @@
+# AST2500 Firmware SPI Memory Controller (FMC) registers.
+#
+# Base address: 0x1E62_0000 (ARM main-core view).
+# Flash decode window: 0x2000_0000-0x2FFF_FFFF (CE0 is also mapped at
+# 0x0000_0000 for booting).  Three chip-enables: CE0/CE1 are SPI only, CE2
+# can be SPI or parallel NOR (only the SPI layout of CEx_CTRL is modelled).
+#
+# The AST2500 layout differs from fmc_v1 (AST2600/AST10x0): three CEs,
+# address decoding in 8 MB units, a single read timing compensation
+# register, five write address filters and no FMC watchdog registers.
+# The alternate (2nd) boot watchdog is WDT2 in the WDT block.
+
+block/FMC:
+  description: >
+    AST2500 Firmware SPI Memory Controller (FMC).
+    Base: 0x1E62_0000.  Three chip-enables (CE0 = boot flash).
+    Flash memory mapped at 0x2000_0000-0x2FFF_FFFF.
+  items:
+    - name: CE_TYPE
+      description: >
+        CE Type Setting Register (FMC00). Init = 0x8000_002A.
+        Flash type and default write enable per CE.
+      byte_offset: 0x00
+      fieldset: FMC_CE_TYPE
+
+    - name: CE_CTRL
+      description: >
+        CE Control Register (FMC04). Init = 0x0000_0700.
+        Per-CE timing Div2 mode and SPI address mode.
+      byte_offset: 0x04
+      fieldset: FMC_CE_CTRL
+
+    - name: IRQ_CTRL
+      description: Interrupt Control and Status Register (FMC08). Init = 0.
+      byte_offset: 0x08
+      fieldset: FMC_IRQ_CTRL
+
+    - name: CMD_CTRL
+      description: Command Control Register (FMC0C). Init = 0.
+      byte_offset: 0x0C
+      fieldset: FMC_CMD_CTRL
+
+    - name: CE_N_CTRL
+      description: >
+        CE0/CE1/CE2 Control Registers (FMC10/FMC14/FMC18). Init = 0.
+        SPI flash interface layout.
+      byte_offset: 0x10
+      fieldset: FMC_CE_N_CTRL
+      array:
+        len: 3
+        stride: 4
+
+    - name: CE_N_ADDR_RANGE
+      description: >
+        CE0/CE1/CE2 Address Decoding Range Registers (FMC30/FMC34/FMC38).
+        Init = 0x5040_0000 / 0x5450_0000 / 0x5854_0000.
+      byte_offset: 0x30
+      fieldset: FMC_ADDR_RANGE
+      array:
+        len: 3
+        stride: 4
+
+    - name: DUMMY_CYCLE_DATA
+      description: >
+        SPI Dummy Cycle Data Register (FMC54). Init = 0.
+        Data output at the head of dummy cycles, shared by all CEs.
+      byte_offset: 0x54
+      fieldset: FMC_DUMMY_DATA
+
+    - name: DMA_CTRL
+      description: >
+        DMA Control/Status Register (FMC80). Init = 0.
+        Enable sequence: set FMC84, FMC88, FMC8C, then FMC80[1:0].
+      byte_offset: 0x80
+      fieldset: FMC_DMA_CTRL
+
+    - name: DMA_FLASH_ADDR
+      description: >
+        DMA Flash Side Address (FMC84). 4-byte aligned, valid range
+        0x2000_0000-0x2FFF_FFFF.  Reads return the current address.
+      byte_offset: 0x84
+      fieldset: FMC_VALUE32
+
+    - name: DMA_DRAM_ADDR
+      description: >
+        DMA DRAM Side Address (FMC88). 4-byte aligned, valid range
+        0x8000_0000-0xBFFF_FFFF.  Reads return the current address.
+      byte_offset: 0x88
+      fieldset: FMC_VALUE32
+
+    - name: DMA_LEN
+      description: >
+        DMA Length Register (FMC8C). Bits [24:2]: 0 = 4 bytes,
+        0x7F_FFFF = 32 MB.  Counts down to 0 while the DMA runs.
+      byte_offset: 0x8C
+      fieldset: FMC_VALUE32
+
+    - name: DMA_CHECKSUM
+      description: >
+        CheckSum Calculation Result (FMC90). Read-only.
+        32-bit accumulated flash read checksum; reset when DMA is disabled.
+      byte_offset: 0x90
+      access: Read
+      fieldset: FMC_VALUE32
+
+    - name: READ_TIMING
+      description: >
+        SPI Flash Read Timing Compensation (FMC94). Init = 0.
+        Applies to all CEs.
+      byte_offset: 0x94
+      fieldset: FMC_READ_TIMING
+
+    - name: SW_STRAP_STATUS
+      description: >
+        Software Strap Status (FMC9C). Init = 0.
+        Write 0xAEED_FC20 to clear the full register.
+      byte_offset: 0x9C
+      fieldset: FMC_SW_STRAP_STATUS
+
+    - name: CMD_FILTER_CTRL
+      description: Write Command Filter Control Register (FMCA0). Init = 0.
+      byte_offset: 0xA0
+      fieldset: FMC_CMD_FILTER_CTRL
+
+    - name: WRITE_FILTER_CTRL
+      description: Write Address Filter Control Register (FMCA4). Init = 0.
+      byte_offset: 0xA4
+      fieldset: FMC_WRITE_FILTER_CTRL
+
+    - name: LOCK_SRST
+      description: >
+        Register Lock Control Register (SRST#) (FMCA8). Init = 0.
+        Write-1 only; cleared only by SRST#.
+      byte_offset: 0xA8
+      fieldset: FMC_LOCK_CTRL
+
+    - name: LOCK_WDT
+      description: >
+        Register Lock Control Register (Watchdog) (FMCAC). Init = 0.
+        Write-1 only; cleared only by watchdog reset.
+      byte_offset: 0xAC
+      fieldset: FMC_LOCK_CTRL
+
+    - name: WRITE_ADDR_FILTER
+      description: >
+        Write Address Filter Registers #1-#5 (FMCB0-FMCC0). Init = 0.
+        Segment: lower limit <= address <= upper limit; mode in FMCA4.
+      byte_offset: 0xB0
+      fieldset: FMC_WRITE_ADDR_FILTER
+      array:
+        len: 5
+        stride: 4
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/FMC_VALUE32:
+  description: Plain 32-bit value.
+  fields:
+    - name: VALUE
+      description: 32-bit register value.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/FMC_CE_TYPE:
+  description: >
+    CE Type Setting Register (FMC00).
+    Bit 31 reserved (reads 1).  The default write type works with the
+    write address filters (FMCA4): if FMC00 disables writes, FMCA4 can
+    enable them, and vice versa.
+  fields:
+    - name: CE0_FLASH_TYPE
+      description: "FMC00[1:0] (read-only): CE0 flash type. 10 = SPI."
+      bit_offset: 0
+      bit_size: 2
+    - name: CE1_FLASH_TYPE
+      description: "FMC00[3:2] (read-only): CE1 flash type. 10 = SPI."
+      bit_offset: 2
+      bit_size: 2
+    - name: CE2_FLASH_TYPE
+      description: "FMC00[5:4]: CE2 flash type. 0x = NOR; 1x = SPI."
+      bit_offset: 4
+      bit_size: 2
+    - name: CE0_DEFAULT_WRITE
+      description: >
+        FMC00[16]: Enable CE0 default write type.
+        0 = write disabled by default; 1 = write enabled by default.
+      bit_offset: 16
+      bit_size: 1
+    - name: CE1_DEFAULT_WRITE
+      description: "FMC00[17]: Enable CE1 default write type."
+      bit_offset: 17
+      bit_size: 1
+    - name: CE2_DEFAULT_WRITE
+      description: "FMC00[18]: Enable CE2 default write type."
+      bit_offset: 18
+      bit_size: 1
+
+fieldset/FMC_CE_CTRL:
+  description: CE Control Register (FMC04).
+  fields:
+    - name: CE0_ADDR_4B
+      description: >
+        FMC04[0]: CE0 SPI address mode. 0 = 3 bytes (<= 16 MB);
+        1 = 4 bytes.  Set by the power-up auto-detect on first boot.
+      bit_offset: 0
+      bit_size: 1
+    - name: CE1_ADDR_4B
+      description: "FMC04[1]: CE1 SPI address mode (as CE0)."
+      bit_offset: 1
+      bit_size: 1
+    - name: CE2_ADDR_4B
+      description: "FMC04[2]: CE2 SPI address mode (as CE0)."
+      bit_offset: 2
+      bit_size: 1
+    - name: CE0_DIV2
+      description: >
+        FMC04[8]: Enable CE0 flash timing Div2 mode (half speed).
+        For SPI it doubles the CE# inactive width; with CEx_CTRL[13] it
+        divides the SPI clock by 4.
+      bit_offset: 8
+      bit_size: 1
+    - name: CE1_DIV2
+      description: "FMC04[9]: Enable CE1 flash timing Div2 mode."
+      bit_offset: 9
+      bit_size: 1
+    - name: CE2_DIV2
+      description: "FMC04[10]: Enable CE2 flash timing Div2 mode."
+      bit_offset: 10
+      bit_size: 1
+
+fieldset/FMC_IRQ_CTRL:
+  description: Interrupt Control and Status Register (FMC08).
+  fields:
+    - name: WRITE_PROTECT_IRQ_EN
+      description: "FMC08[1]: SPI write address protected interrupt enable."
+      bit_offset: 1
+      bit_size: 1
+    - name: CMD_ABORT_IRQ_EN
+      description: "FMC08[2]: SPI command abort interrupt enable."
+      bit_offset: 2
+      bit_size: 1
+    - name: DMA_IRQ_EN
+      description: "FMC08[3]: DMA interrupt enable."
+      bit_offset: 3
+      bit_size: 1
+    - name: WRITE_PROTECT_STATUS
+      description: >
+        FMC08[9]: SPI write address protected status (write 1 to clear).
+      bit_offset: 9
+      bit_size: 1
+    - name: CMD_ABORT_STATUS
+      description: >
+        FMC08[10]: SPI command abort status (write 1 to clear).
+      bit_offset: 10
+      bit_size: 1
+    - name: DMA_STATUS
+      description: >
+        FMC08[11] (read-only): DMA status. 1 = DMA finished; cleared by
+        disabling DMA.
+      bit_offset: 11
+      bit_size: 1
+
+fieldset/FMC_CMD_CTRL:
+  description: Command Control Register (FMC0C).
+  fields:
+    - name: DATA_LANE_DIS
+      description: >
+        FMC0C[3:0]: Data byte lane disable (bit n disables data byte n).
+      bit_offset: 0
+      bit_size: 4
+    - name: ADDR_LANE_DIS
+      description: >
+        FMC0C[7:4]: SPI address byte lane disable (bit n disables address
+        byte n; byte 3 only in 4-byte mode).
+      bit_offset: 4
+      bit_size: 4
+
+fieldset/FMC_CE_N_CTRL:
+  description: >
+    CEx Control Register (FMC10-FMC18), SPI flash interface.
+    Bit 31 reserved (keep 0); bit 4 reserved (clock mode 0/3 selection,
+    mode 3 is not supported).
+  fields:
+    - name: CMD_MODE
+      description: >
+        FMC10[1:0]: Command mode. 00 = normal read (03h); 01 = read command;
+        10 = write command; 11 = user mode.
+      bit_offset: 0
+      bit_size: 2
+    - name: CE_STOP
+      description: >
+        FMC10[2]: CE# stop active control. 1 = deassert CE# (ends a user
+        mode command).
+      bit_offset: 2
+      bit_size: 1
+    - name: DUAL_DATA_IN
+      description: >
+        FMC10[3]: Enable dual data input mode. Valid only when IO_MODE = 0.
+      bit_offset: 3
+      bit_size: 1
+    - name: BIT_ORDER
+      description: "FMC10[5]: 0 = MSB first (default); 1 = LSB first."
+      bit_offset: 5
+      bit_size: 1
+    - name: DUMMY_CYCLES_LO
+      description: >
+        FMC10[7:6]: Dummy bytes before data for fast read, low bits
+        ({bit14, bits[7:6]} = 0-7 bytes).
+      bit_offset: 6
+      bit_size: 2
+    - name: CLK_FREQ_SEL
+      description: >
+        FMC10[11:8]: SPI clock frequency selection.
+        0000 = HCLK/16 ... 0111 = HCLK/2; 1000 = HCLK/15 ... 1110 = HCLK/3;
+        1111 = HCLK.
+      bit_offset: 8
+      bit_size: 4
+    - name: DISABLE_CMD_MERGE
+      description: "FMC10[12]: Disable SPI flash read/write command merge."
+      bit_offset: 12
+      bit_size: 1
+    - name: CLK_DIV4
+      description: >
+        FMC10[13]: SPI clock divide-by-4 mode enable (with FMC04[10:8]).
+      bit_offset: 13
+      bit_size: 1
+    - name: DUMMY_CYCLES_HI
+      description: "FMC10[14]: Dummy bytes before data for fast read, high bit."
+      bit_offset: 14
+      bit_size: 1
+    - name: DUMMY_CMD_OUT
+      description: >
+        FMC10[15]: Dummy cycle command output. 1 = first dummy cycle has
+        command output.
+      bit_offset: 15
+      bit_size: 1
+    - name: SPI_CMD
+      description: >
+        FMC10[23:16]: Command data for read/write command modes.
+      bit_offset: 16
+      bit_size: 8
+    - name: CE_INACTIVE
+      description: >
+        FMC10[27:24]: CE# inactive pulse width. 0000 = 16T, 0001 = 15T ...
+        1111 = 1T (1T = 1 HCLK); doubled by FMC04 Div2.
+      bit_offset: 24
+      bit_size: 4
+    - name: IO_MODE
+      description: >
+        FMC10[30:28]: IO mode. 000 = single bit (or bit 3); 010 = dual,
+        data only; 011 = dual, including address and dummy; others reserved.
+      bit_offset: 28
+      bit_size: 3
+
+fieldset/FMC_ADDR_RANGE:
+  description: >
+    CEx Address Decoding Range Register (FMC30-FMC38).
+    Start and end are address bits A[30:23] (8 MB units); in each byte
+    bits [7:6] hold A[30:29] and bits [5:0] hold A[28:23].
+    Valid segment: start <= address < end, within 0x2000_0000-0x2FFF_FFFF.
+    CE0 start is read-only.  Segments must not overlap.
+  fields:
+    - name: START
+      description: >
+        FMC30[23:16]: Start address A[30:23] (address = START << 23).
+      bit_offset: 16
+      bit_size: 8
+    - name: END
+      description: >
+        FMC30[31:24]: End address A[30:23] (address = END << 23,
+        exclusive).
+      bit_offset: 24
+      bit_size: 8
+
+fieldset/FMC_DUMMY_DATA:
+  description: SPI Dummy Cycle Data Register (FMC54).
+  fields:
+    - name: DATA
+      description: "FMC54[7:0]: SPI dummy cycle output data."
+      bit_offset: 0
+      bit_size: 8
+
+fieldset/FMC_DMA_CTRL:
+  description: DMA Control/Status Register (FMC80).
+  fields:
+    - name: DMA_EN
+      description: "FMC80[0]: DMA enable. Clear to reset or disable the DMA."
+      bit_offset: 0
+      bit_size: 1
+    - name: DMA_WRITE
+      description: >
+        FMC80[1]: DMA direction. 0 = flash to DRAM; 1 = DRAM to flash.
+      bit_offset: 1
+      bit_size: 1
+    - name: CHECKSUM_ONLY
+      description: >
+        FMC80[2]: Checksum accumulation only (valid when DMA_WRITE = 0).
+      bit_offset: 2
+      bit_size: 1
+    - name: CALIB_MODE
+      description: >
+        FMC80[3]: Calibration mode (use with CHECKSUM_ONLY = 1); SPI clock
+        and read delay come from bits [11:4].
+      bit_offset: 3
+      bit_size: 1
+    - name: CALIB_CLK_FREQ
+      description: >
+        FMC80[7:4]: SPI clock frequency for calibration (encoding as
+        CE_N_CTRL.CLK_FREQ_SEL).
+      bit_offset: 4
+      bit_size: 4
+    - name: CALIB_DELAY
+      description: >
+        FMC80[11:8]: SPI read data input delay for calibration (encoding as
+        FMC94).
+      bit_offset: 8
+      bit_size: 4
+
+fieldset/FMC_READ_TIMING:
+  description: >
+    SPI Flash Read Timing Compensation (FMC94).
+    Each 4-bit field: bit 3 = DI input delay 4 ns; bits [2:0] = 0-4 HCLK
+    delay (others = 5 HCLK).
+  fields:
+    - name: HCLK_DIV1
+      description: "FMC94[3:0]: Data input delay for SPICLK = HCLK."
+      bit_offset: 0
+      bit_size: 4
+    - name: HCLK_DIV2
+      description: "FMC94[7:4]: Data input delay for SPICLK = HCLK/2."
+      bit_offset: 4
+      bit_size: 4
+    - name: HCLK_DIV3
+      description: "FMC94[11:8]: Data input delay for SPICLK = HCLK/3."
+      bit_offset: 8
+      bit_size: 4
+    - name: HCLK_DIV4
+      description: "FMC94[15:12]: Data input delay for SPICLK = HCLK/4."
+      bit_offset: 12
+      bit_size: 4
+    - name: HCLK_DIV5
+      description: "FMC94[19:16]: Data input delay for SPICLK = HCLK/5."
+      bit_offset: 16
+      bit_size: 4
+
+fieldset/FMC_SW_STRAP_STATUS:
+  description: Software Strap Status (FMC9C).
+  fields:
+    - name: DONE
+      description: >
+        FMC9C[0]: Strap operation status. 1 = strapping done.  Clearing it
+        forces the strap operation again on watchdog reset.
+      bit_offset: 0
+      bit_size: 1
+    - name: FAIL
+      description: >
+        FMC9C[1] (read-only): Strap operation result. 0 = success;
+        1 = no valid strap code found.
+      bit_offset: 1
+      bit_size: 1
+    - name: PARITY_ERR_COUNT
+      description: "FMC9C[7:4] (read-only): Strap parity error command count."
+      bit_offset: 4
+      bit_size: 4
+    - name: CMD_COUNT
+      description: "FMC9C[15:8] (read-only): Strap command count."
+      bit_offset: 8
+      bit_size: 8
+
+fieldset/FMC_CMD_FILTER_CTRL:
+  description: >
+    Write Command Filter Control Register (FMCA0).
+    When enabled, only the enabled write commands are accepted, user mode
+    is disabled and read mode accepts a fixed command list.
+  fields:
+    - name: EN
+      description: "FMCA0[0]: Enable write command filter."
+      bit_offset: 0
+      bit_size: 1
+    - name: CMD_01
+      description: "FMCA0[1]: Enable command 0x01 (Write Status Register)."
+      bit_offset: 1
+      bit_size: 1
+    - name: CMD_02
+      description: "FMCA0[2]: Enable command 0x02 + ADR3/4 (Page Program)."
+      bit_offset: 2
+      bit_size: 1
+    - name: CMD_04
+      description: "FMCA0[3]: Enable command 0x04 (Write Disable)."
+      bit_offset: 3
+      bit_size: 1
+    - name: CMD_06
+      description: "FMCA0[4]: Enable command 0x06 (Write Enable)."
+      bit_offset: 4
+      bit_size: 1
+    - name: CMD_12
+      description: "FMCA0[5]: Enable command 0x12 + ADR4 (4B Page Program)."
+      bit_offset: 5
+      bit_size: 1
+    - name: CMD_20
+      description: "FMCA0[6]: Enable command 0x20 + ADR3/4 (Sector Erase)."
+      bit_offset: 6
+      bit_size: 1
+    - name: CMD_21
+      description: "FMCA0[7]: Enable command 0x21 + ADR4 (4B Sector Erase)."
+      bit_offset: 7
+      bit_size: 1
+    - name: CMD_50
+      description: "FMCA0[8]: Enable command 0x50 (Clear Flag Status Register)."
+      bit_offset: 8
+      bit_size: 1
+    - name: CMD_52
+      description: "FMCA0[9]: Enable command 0x52 + ADR3/4 (SubBlock Erase)."
+      bit_offset: 9
+      bit_size: 1
+    - name: CMD_5C
+      description: "FMCA0[10]: Enable command 0x5C + ADR4 (4B SubBlock Erase)."
+      bit_offset: 10
+      bit_size: 1
+    - name: CMD_60
+      description: "FMCA0[11]: Enable command 0x60 (Chip Erase)."
+      bit_offset: 11
+      bit_size: 1
+    - name: CMD_C7
+      description: "FMCA0[12]: Enable command 0xC7 (Chip Erase)."
+      bit_offset: 12
+      bit_size: 1
+    - name: CMD_D8
+      description: "FMCA0[13]: Enable command 0xD8 + ADR3/4 (Block Erase)."
+      bit_offset: 13
+      bit_size: 1
+    - name: CMD_DC
+      description: "FMCA0[14]: Enable command 0xDC + ADR4 (4B Block Erase)."
+      bit_offset: 14
+      bit_size: 1
+
+fieldset/FMC_WRITE_FILTER_CTRL:
+  description: >
+    Write Address Filter Control Register (FMCA4).
+    Each 2-bit mode: 0x = NOP; 10 = write enabled; 11 = write disabled.
+  fields:
+    - name: FILTER1_MODE
+      description: "FMCA4[1:0]: Mode of write address filter #1."
+      bit_offset: 0
+      bit_size: 2
+    - name: FILTER2_MODE
+      description: "FMCA4[3:2]: Mode of write address filter #2."
+      bit_offset: 2
+      bit_size: 2
+    - name: FILTER3_MODE
+      description: "FMCA4[5:4]: Mode of write address filter #3."
+      bit_offset: 4
+      bit_size: 2
+    - name: FILTER4_MODE
+      description: "FMCA4[7:6]: Mode of write address filter #4."
+      bit_offset: 6
+      bit_size: 2
+    - name: FILTER5_MODE
+      description: "FMCA4[9:8]: Mode of write address filter #5."
+      bit_offset: 8
+      bit_size: 2
+
+fieldset/FMC_LOCK_CTRL:
+  description: >
+    Register Lock Control Register (FMCA8 / FMCAC).
+    Bit n locks: 0 FMC00, 1 FMC04, 2 FMC10, 3 FMC14, 4 FMC18, 5 FMC30,
+    6 FMC34, 7 FMC38, 8 FMC9C, 9 FMCA0, 10 FMCA4, 11 FMCB0, 12 FMCB4,
+    13 FMCB8, 14 FMCBC, 15 FMCC0.
+  fields:
+    - name: LOCK
+      description: "Bits [15:0]: Register write lock mask (write 1 only)."
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/FMC_WRITE_ADDR_FILTER:
+  description: Write Address Filter Register (FMCB0-FMCC0).
+  fields:
+    - name: LOWER
+      description: "Bits [15:0]: Lower address limit, segment address bits [27:12]."
+      bit_offset: 0
+      bit_size: 16
+    - name: UPPER
+      description: "Bits [31:16]: Upper address limit, segment address bits [27:12]."
+      bit_offset: 16
+      bit_size: 16

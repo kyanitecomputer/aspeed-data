@@ -1,0 +1,353 @@
+# AST2500 Watchdog Timer (WDT) registers.
+#
+# Base address: 0x1E78_5000 (ARM main-core view).
+# The AST2500 has 3 watchdog timers at stride 0x20:
+#   WDT1 = 0x1E78_5000 (WDT00-WDT1C)
+#   WDT2 = 0x1E78_5020 (WDT20-WDT3C)
+#   WDT3 = 0x1E78_5040 (WDT40-WDT5C)
+# This file models one instance.  Differences between instances:
+#   - WDT2 is the alternate (2nd) boot watchdog: CTRL.WDT_EN is loaded from
+#     strap SCU70[17] and firmware must disable it after booting.
+#   - WDT3 has no external reset output (CTRL bit 3 reserved) and no
+#     reset width register (WDT58 is reserved); CTRL bit 8 (SPI
+#     address mode toggling) exists on WDT3 only.  WDT3 is enabled at
+#     power on for SPI 3/4-byte address mode detection and firmware should
+#     disable it early.
+#
+# The AST2500 layout differs from wdt_v1 (AST2600): no software reset
+# registers, a clock select bit at CTRL[4] and a 2nd boot bit at CTRL[7].
+
+block/WDT:
+  description: >
+    AST2500 Watchdog Timer register block (one of WDT1/WDT2/WDT3).
+    WDT1 base: 0x1E78_5000, stride: 0x20 (3 instances).
+  items:
+    - name: STATUS
+      description: >
+        Counter Status Register (WDT00/WDT20/WDT40). Read-only.
+        Current down-counter value.  Loaded from RELOAD on reset or when
+        0x4755 is written to RESTART; holds its value while disabled.
+        Init = 0x014F_B180 (22 s) for WDT1/WDT2, 0x000F_4240 (1 s) for WDT3.
+      byte_offset: 0x00
+      access: Read
+      fieldset: WDT_COUNTER
+
+    - name: RELOAD
+      description: >
+        Counter Reload Value Register (WDT04/WDT24/WDT44).
+        Value loaded into STATUS on reset or restart.
+        Init = 0x014F_B180 for WDT1/WDT2, 0x000F_4240 for WDT3.
+      byte_offset: 0x04
+      fieldset: WDT_COUNTER
+
+    - name: RESTART
+      description: >
+        Counter Restart Register (WDT08/WDT28/WDT48). Write-only.
+        Write 0x4755 to reload STATUS from RELOAD and restart counting
+        (if CTRL.WDT_EN = 1).
+      byte_offset: 0x08
+      access: Write
+      fieldset: WDT_RESTART
+
+    - name: CTRL
+      description: >
+        Control Register (WDT0C/WDT2C/WDT4C).
+        Init = 0x10 (WDT1), 0x52 (WDT2, bit 0 from strap SCU70[17]),
+        0x153 (WDT3).
+      byte_offset: 0x0C
+      fieldset: WDT_CTRL
+
+    - name: TIMEOUT_STATUS
+      description: >
+        Timeout Status Register (WDT10/WDT30/WDT50). Read-only.
+      byte_offset: 0x10
+      access: Read
+      fieldset: WDT_TIMEOUT_STATUS
+
+    - name: CLEAR_TIMEOUT_STATUS
+      description: >
+        Clear Timeout Status Register (WDT14/WDT34/WDT54). Write-only.
+      byte_offset: 0x14
+      access: Write
+      fieldset: WDT_CLEAR_TIMEOUT_STATUS
+
+    - name: RESET_WIDTH
+      description: >
+        Reset Width Register (WDT18/WDT38). Init = 0xFF.
+        Not present on WDT3.
+      byte_offset: 0x18
+      fieldset: WDT_RESET_WIDTH
+
+    - name: RESET_MASK
+      description: >
+        Reset Mask Register (WDT1C/WDT3C/WDT5C). Init = 0x023F_FFF3.
+        Selects the IPs reset by this watchdog's SOC reset event
+        (CTRL.RST_MODE = 00).
+      byte_offset: 0x1C
+      fieldset: WDT_RESET_MASK
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/WDT_COUNTER:
+  description: 32-bit counter / reload value (WDT00 and WDT04 share this layout).
+  fields:
+    - name: VALUE
+      description: Counter value (1 us units with the 1 MHz clock source).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/WDT_RESTART:
+  description: Counter Restart Register (WDT08).
+  fields:
+    - name: KEY
+      description: Write 0x4755 to reload and restart the counter.
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/WDT_CTRL:
+  description: >
+    WDT Control Register (WDT0C).
+    Bits [11:9] reserved; bit 8 reserved on WDT1/WDT2.
+  fields:
+    - name: WDT_EN
+      description: >
+        WDT0C[0]: WDT enable signal. 0 = disable; 1 = enable.
+        WDT2: loaded from strap SCU70[17]; firmware must clear it after a
+        successful boot.  WDT3: enabled at power on for SPI address mode
+        detection; firmware should clear it early.
+      bit_offset: 0
+      bit_size: 1
+    - name: RST_SYS
+      description: >
+        WDT0C[1]: Reset system after timeout. In this mode the WDT is
+        cleared and disabled after the timeout.
+      bit_offset: 1
+      bit_size: 1
+    - name: WDT_INTR
+      description: >
+        WDT0C[2]: Generate interrupt when the counter equals the
+        pre-timeout setting.
+      bit_offset: 2
+      bit_size: 1
+    - name: WDT_EXT
+      description: >
+        WDT0C[3]: External signal enable after timeout (WDTRST1 pin T22 /
+        WDTRST2 pin R20); pulse width set by RESET_WIDTH.
+        Reserved on WDT3.
+      bit_offset: 3
+      bit_size: 1
+    - name: CLK_1MHZ
+      description: >
+        WDT0C[4]: Clock select for WDT counter. 0 = PCLK; 1 = 1 MHz.
+        Writable.  The 1 MHz clock requires PCLK > 10 MHz.
+      bit_offset: 4
+      bit_size: 1
+    - name: RST_MODE
+      description: >
+        WDT0C[6:5]: Reset system mode.
+        00 = SOC system (gated by RESET_MASK); 01 = full chip;
+        1x = ARM CPU only (reboot firmware, no other IP reset).
+      bit_offset: 5
+      bit_size: 2
+    - name: BOOT_2ND
+      description: >
+        WDT0C[7]: Enable second boot code.
+        0 = use default boot code on WDT reset; 1 = use second boot code
+        (CE0/CE1 swapped) on WDT reset.
+      bit_offset: 7
+      bit_size: 1
+    - name: SPI_ADDR_TOGGLE
+      description: >
+        WDT4C[8] (WDT3 only): Toggle SPI address mode (3/4 bytes) on every
+        WDT reset.
+      bit_offset: 8
+      bit_size: 1
+    - name: PRE_TIMEOUT
+      description: >
+        WDT0C[31:12]: Pre-timeout value for interrupt generation.
+        Interrupt when STATUS[31:20] == 0 and STATUS[19:0] == PRE_TIMEOUT.
+      bit_offset: 12
+      bit_size: 20
+
+fieldset/WDT_TIMEOUT_STATUS:
+  description: Timeout Status Register (WDT10).
+  fields:
+    - name: TIMEOUT
+      description: >
+        WDT10[0]: Indicate timeout. 1 = a timeout has occurred.
+      bit_offset: 0
+      bit_size: 1
+    - name: BOOT_2ND
+      description: >
+        WDT10[1]: Indicate boot code source. 0 = default; 1 = second boot
+        code.  Firmware must clear it (CLEAR_TIMEOUT_STATUS.CLEAR) after
+        jumping to the physical flash address; on WDT2 this restores the
+        CE0/CE1 address mapping.
+      bit_offset: 1
+      bit_size: 1
+    - name: INTR
+      description: >
+        WDT10[2]: Indicate interrupt (counter matched the pre-timeout).
+      bit_offset: 2
+      bit_size: 1
+    - name: EVENT_COUNT
+      description: "WDT10[15:8]: Watchdog timeout event counter."
+      bit_offset: 8
+      bit_size: 8
+
+fieldset/WDT_CLEAR_TIMEOUT_STATUS:
+  description: Clear Timeout Status Register (WDT14).
+  fields:
+    - name: CLEAR
+      description: >
+        WDT14[0]: Write 1 to clear the timeout, boot code source and
+        interrupt status.
+      bit_offset: 0
+      bit_size: 1
+    - name: CLEAR_EVENT_COUNT
+      description: >
+        WDT14[7:1]: Write 0x3B to clear the timeout event counter.
+      bit_offset: 1
+      bit_size: 7
+
+fieldset/WDT_RESET_WIDTH:
+  description: >
+    Reset Width Register (WDT18).
+    Bits 31 and 30 only change when bits [31:24] are written with a key:
+    0xA5 sets bit 31, 0x5A clears it; 0xA8 sets bit 30, 0x8A clears it.
+  fields:
+    - name: WIDTH
+      description: >
+        WDT18[19:0]: Assertion duration of wdt_ext and wdt_rstarm.
+        Default 0xFF (256 us).  Decremented while the pulse is generated.
+      bit_offset: 0
+      bit_size: 20
+    - name: KEY
+      description: >
+        WDT18[31:24] (write): polarity/drive key (0xA5, 0x5A, 0xA8, 0x8A).
+      bit_offset: 24
+      bit_size: 8
+    - name: PUSH_PULL
+      description: >
+        WDT18[30] (read): Reset pulse output driving type.
+        0 = open-drain; 1 = push-pull.
+      bit_offset: 30
+      bit_size: 1
+    - name: ACTIVE_HIGH
+      description: >
+        WDT18[31] (read): Reset pulse polarity.
+        0 = active low; 1 = active high.
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/WDT_RESET_MASK:
+  description: >
+    Reset Mask Register (WDT1C). 1 = reset the IP on the watchdog SOC
+    reset event.  Bits [31:26] reserved.
+  fields:
+    - name: ARM
+      description: "WDT1C[0]: Enable reset ARM."
+      bit_offset: 0
+      bit_size: 1
+    - name: COPROC
+      description: "WDT1C[1]: Enable reset coprocessor."
+      bit_offset: 1
+      bit_size: 1
+    - name: SDRAM
+      description: "WDT1C[2]: Enable reset SDRAM controller."
+      bit_offset: 2
+      bit_size: 1
+    - name: AHB
+      description: "WDT1C[3]: Enable reset AHB bridges."
+      bit_offset: 3
+      bit_size: 1
+    - name: I2C
+      description: "WDT1C[4]: Enable reset I2C controller."
+      bit_offset: 4
+      bit_size: 1
+    - name: MAC1
+      description: "WDT1C[5]: Enable reset MAC#1 controller."
+      bit_offset: 5
+      bit_size: 1
+    - name: MAC2
+      description: "WDT1C[6]: Enable reset MAC#2 controller."
+      bit_offset: 6
+      bit_size: 1
+    - name: GCRT
+      description: "WDT1C[7]: Enable reset Graphics CRT controller."
+      bit_offset: 7
+      bit_size: 1
+    - name: USB20_HUB
+      description: "WDT1C[8]: Enable reset USB2.0 Host/Hub controller."
+      bit_offset: 8
+      bit_size: 1
+    - name: USB11_HOST
+      description: "WDT1C[9]: Enable reset USB1.1 Host controller."
+      bit_offset: 9
+      bit_size: 1
+    - name: USB_PORT2
+      description: "WDT1C[10]: Enable reset USB1.1 HID/USB2.0 Host EHCI2 controller."
+      bit_offset: 10
+      bit_size: 1
+    - name: VIDEO
+      description: "WDT1C[11]: Enable reset Video engine."
+      bit_offset: 11
+      bit_size: 1
+    - name: HAC
+      description: "WDT1C[12]: Enable reset HAC engine."
+      bit_offset: 12
+      bit_size: 1
+    - name: LPC
+      description: "WDT1C[13]: Enable reset LPC controller."
+      bit_offset: 13
+      bit_size: 1
+    - name: SDIO
+      description: "WDT1C[14]: Enable reset SD/SDIO controller."
+      bit_offset: 14
+      bit_size: 1
+    - name: MIC
+      description: "WDT1C[15]: Enable reset MIC controller."
+      bit_offset: 15
+      bit_size: 1
+    - name: CRT_2D
+      description: "WDT1C[16]: Enable reset CRT mode 2D engine."
+      bit_offset: 16
+      bit_size: 1
+    - name: PWM
+      description: "WDT1C[17]: Enable reset PWM controller."
+      bit_offset: 17
+      bit_size: 1
+    - name: PECI
+      description: "WDT1C[18]: Enable reset PECI controller."
+      bit_offset: 18
+      bit_size: 1
+    - name: JTAG_MASTER
+      description: "WDT1C[19]: Enable reset JTAG master controller."
+      bit_offset: 19
+      bit_size: 1
+    - name: ADC
+      description: "WDT1C[20]: Enable reset ADC controller."
+      bit_offset: 20
+      bit_size: 1
+    - name: GPIO
+      description: "WDT1C[21]: Enable reset GPIO controller."
+      bit_offset: 21
+      bit_size: 1
+    - name: MCTP
+      description: "WDT1C[22]: Enable reset MCTP controller."
+      bit_offset: 22
+      bit_size: 1
+    - name: XDMA
+      description: "WDT1C[23]: Enable reset X-DMA controller."
+      bit_offset: 23
+      bit_size: 1
+    - name: SPI
+      description: "WDT1C[24]: Enable reset SPI controller."
+      bit_offset: 24
+      bit_size: 1
+    - name: MISC
+      description: >
+        WDT1C[25]: Enable reset Misc. SOC controller (WDT, RTC, Timer,
+        UART, SRAM).
+      bit_offset: 25
+      bit_size: 1

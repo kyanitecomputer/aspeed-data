@@ -32,6 +32,7 @@ const (
 	targetARM   = "thumbv7m-none-eabi"
 	targetARMHF = "thumbv7em-none-eabihf"
 	targetRISCV = "riscv32imc-unknown-none-elf"
+	targetARMv5 = "armv5te-none-eabi"
 )
 
 var pacTargets = []struct{ feature, target string }{
@@ -41,6 +42,7 @@ var pacTargets = []struct{ feature, target string }{
 	{"ast2700-ssp", targetARMHF},
 	{"ast2700-tsp", targetARMHF},
 	{"ast2700-bootmcu", targetRISCV},
+	{"ast2500-arm", targetARMv5},
 }
 
 type AspeedData struct{}

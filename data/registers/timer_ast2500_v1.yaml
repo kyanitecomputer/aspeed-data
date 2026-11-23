@@ -1,0 +1,354 @@
+# AST2500 Timer Controller (TMC) registers.
+#
+# Base address: 0x1E78_2000 (ARM main-core view).
+# 8 x 32-bit decrementing counters clocked from PCLK (APB) or 1 MHz, each
+# with a reload value and two match registers.  An interrupt is raised
+# when a counter reaches 0 (overflow, if enabled) or equals either match
+# register; set unused match registers to 0 or 0xFFFF_FFFF.
+#
+# Register layout (per-timer stride 0x10, control registers in the gap):
+#   Timers 1-3: STATUS/RELOAD/MATCH1/MATCH2 at 0x00, 0x10, 0x20
+#   0x30-0x3C:  CTRL (TMC30), CTRL2 (TMC34), CTRL3 (TMC38),
+#               CTRL_CLR (TMC3C)
+#   Timers 4-8: STATUS/RELOAD/MATCH1/MATCH2 at 0x40, 0x50, ..., 0x80
+# The per-timer registers are modelled as 8-element arrays with explicit
+# offsets; array index n is timer n+1.
+#
+# TMC30 holds 4 bits per timer (timer N at bits [4N-1:4N-4]):
+#   EN, CLK_SEL (1 MHz), OVF_INTR, and PULSE_EN for timers 5-8 only.
+# Clearing TMC30 bits:
+#   By default (TMC38[0] = 0) TMC30 is a plain RW register and TMC3C has
+#   no effect.  Writing 0xAE to TMC38 selects separate clear mode, in
+#   which TMC30 writes can only set bits and bits are cleared by writing
+#   1 to TMC3C; 0xEA returns to the default mode.
+#
+# The AST2500 layout differs from timer_v1 (AST2600): it has second match
+# registers, no interrupt status register at TMC34 (sequence pulse
+# control instead), a separate clear mode switch at TMC38, and no WDT
+# tolerance bits in TMC30.
+
+block/TIMER:
+  description: >
+    AST2500 Timer Controller (TMC).
+    Base address: 0x1E78_2000.  8 x 32-bit decrementing timers.
+  items:
+    - name: STATUS
+      description: >
+        Counter #1-#8 Status Registers (TMC00/10/20/40/50/60/70/80).
+        Init = 0.  Index n is timer n+1.  Current counter value; loaded
+        from RELOAD while the timer is disabled and decremented while
+        enabled.  Writable while enabled to set a new counting value.
+      byte_offset: 0x00
+      fieldset: TMC_COUNTER
+      array:
+        offsets: [0x00, 0x10, 0x20, 0x40, 0x50, 0x60, 0x70, 0x80]
+
+    - name: RELOAD
+      description: >
+        Counter #1-#8 Reload Value Registers (TMC04/14/24/44/54/64/74/84).
+        Init = 0.  Index n is timer n+1.  Loaded into STATUS when the
+        counter reaches 0; a reload value of 2 counts 2, 1, 0, 2, 1, ...
+      byte_offset: 0x04
+      fieldset: TMC_COUNTER
+      array:
+        offsets: [0x00, 0x10, 0x20, 0x40, 0x50, 0x60, 0x70, 0x80]
+
+    - name: MATCH1
+      description: >
+        Counter #1-#8 First Matching Registers (TMC08/18/28/48/58/68/78/88).
+        Init = 0.  Index n is timer n+1.  An edge triggered interrupt is
+        generated when the counter equals this value.  For timers 5-8 the
+        pulse output switches to 1 on this match.
+      byte_offset: 0x08
+      fieldset: TMC_COUNTER
+      array:
+        offsets: [0x00, 0x10, 0x20, 0x40, 0x50, 0x60, 0x70, 0x80]
+
+    - name: MATCH2
+      description: >
+        Counter #1-#8 Second Matching Registers (TMC0C/1C/2C/4C/5C/6C/7C/8C).
+        Init = 0.  Index n is timer n+1.  An edge triggered interrupt is
+        generated when the counter equals this value.
+      byte_offset: 0x0C
+      fieldset: TMC_COUNTER
+      array:
+        offsets: [0x00, 0x10, 0x20, 0x40, 0x50, 0x60, 0x70, 0x80]
+
+    - name: CTRL
+      description: >
+        Control Register (TMC30). Init = 0.
+        Per-timer enable, clock select, overflow interrupt and pulse
+        output enable.  In separate clear mode (CTRL3.SEPARATE_CLR = 1)
+        writes can only set bits; clear them through CTRL_CLR.
+      byte_offset: 0x30
+      fieldset: TMC_CTRL
+
+    - name: CTRL2
+      description: >
+        Control Register 2 (TMC34). Init = 0.
+        Sequence pulse generation for timers 3-8.  Only reset by power-on
+        reset (SRST#) or a full chip watchdog reset.  The timers must be
+        disabled in CTRL while the sequence runs.
+      byte_offset: 0x34
+      fieldset: TMC_CTRL2
+
+    - name: CTRL3
+      description: >
+        Control Register 3 (TMC38). Init = 0.
+        Selects the separate clear mode for CTRL.
+      byte_offset: 0x38
+      fieldset: TMC_CTRL3
+
+    - name: CTRL_CLR
+      description: >
+        TMC30 Clear Register (TMC3C). Write-only.
+        When CTRL3.SEPARATE_CLR = 1, writing 1 to a bit clears the same
+        bit in CTRL (0 = no effect).  No effect when SEPARATE_CLR = 0.
+      byte_offset: 0x3C
+      access: Write
+      fieldset: TMC_CTRL
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/TMC_COUNTER:
+  description: 32-bit counter, reload or match value.
+  fields:
+    - name: VALUE
+      description: >
+        Counter value in ticks of the selected clock (PCLK or 1 MHz).
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/TMC_CTRL:
+  description: >
+    Control Register (TMC30) / TMC30 Clear Register (TMC3C).
+    4 bits per timer, timer N starting at bit 4(N-1):
+      +0 EN        timer enable (disabled: counter, reload and interrupt
+                   gated, STATUS loaded from RELOAD)
+      +1 CLK_SEL   clock source, 0 = PCLK (APB), 1 = 1 MHz
+      +2 OVF_INTR  interrupt when the counter reaches 0
+      +3 PULSE_EN  pulse output (timers 5-8 only; reserved for 1-4)
+  fields:
+    - name: T1_EN
+      description: "TMC30[0]: Timer 1 enable."
+      bit_offset: 0
+      bit_size: 1
+    - name: T1_CLK_SEL
+      description: "TMC30[1]: Timer 1 clock source. 0 = PCLK; 1 = 1 MHz."
+      bit_offset: 1
+      bit_size: 1
+    - name: T1_OVF_INTR
+      description: "TMC30[2]: Timer 1 overflow interrupt enable."
+      bit_offset: 2
+      bit_size: 1
+    - name: T2_EN
+      description: "TMC30[4]: Timer 2 enable."
+      bit_offset: 4
+      bit_size: 1
+    - name: T2_CLK_SEL
+      description: "TMC30[5]: Timer 2 clock source. 0 = PCLK; 1 = 1 MHz."
+      bit_offset: 5
+      bit_size: 1
+    - name: T2_OVF_INTR
+      description: "TMC30[6]: Timer 2 overflow interrupt enable."
+      bit_offset: 6
+      bit_size: 1
+    - name: T3_EN
+      description: "TMC30[8]: Timer 3 enable."
+      bit_offset: 8
+      bit_size: 1
+    - name: T3_CLK_SEL
+      description: "TMC30[9]: Timer 3 clock source. 0 = PCLK; 1 = 1 MHz."
+      bit_offset: 9
+      bit_size: 1
+    - name: T3_OVF_INTR
+      description: "TMC30[10]: Timer 3 overflow interrupt enable."
+      bit_offset: 10
+      bit_size: 1
+    - name: T4_EN
+      description: "TMC30[12]: Timer 4 enable."
+      bit_offset: 12
+      bit_size: 1
+    - name: T4_CLK_SEL
+      description: "TMC30[13]: Timer 4 clock source. 0 = PCLK; 1 = 1 MHz."
+      bit_offset: 13
+      bit_size: 1
+    - name: T4_OVF_INTR
+      description: "TMC30[14]: Timer 4 overflow interrupt enable."
+      bit_offset: 14
+      bit_size: 1
+    - name: T5_EN
+      description: "TMC30[16]: Timer 5 enable."
+      bit_offset: 16
+      bit_size: 1
+    - name: T5_CLK_SEL
+      description: "TMC30[17]: Timer 5 clock source. 0 = PCLK; 1 = 1 MHz."
+      bit_offset: 17
+      bit_size: 1
+    - name: T5_OVF_INTR
+      description: "TMC30[18]: Timer 5 overflow interrupt enable."
+      bit_offset: 18
+      bit_size: 1
+    - name: T5_PULSE_EN
+      description: >
+        TMC30[19]: Timer 5 pulse generation and output enable.  The output
+        switches to 1 on MATCH1 and back to 0 when the counter reaches 0.
+      bit_offset: 19
+      bit_size: 1
+    - name: T6_EN
+      description: "TMC30[20]: Timer 6 enable."
+      bit_offset: 20
+      bit_size: 1
+    - name: T6_CLK_SEL
+      description: "TMC30[21]: Timer 6 clock source. 0 = PCLK; 1 = 1 MHz."
+      bit_offset: 21
+      bit_size: 1
+    - name: T6_OVF_INTR
+      description: "TMC30[22]: Timer 6 overflow interrupt enable."
+      bit_offset: 22
+      bit_size: 1
+    - name: T6_PULSE_EN
+      description: "TMC30[23]: Timer 6 pulse generation and output enable."
+      bit_offset: 23
+      bit_size: 1
+    - name: T7_EN
+      description: "TMC30[24]: Timer 7 enable."
+      bit_offset: 24
+      bit_size: 1
+    - name: T7_CLK_SEL
+      description: "TMC30[25]: Timer 7 clock source. 0 = PCLK; 1 = 1 MHz."
+      bit_offset: 25
+      bit_size: 1
+    - name: T7_OVF_INTR
+      description: "TMC30[26]: Timer 7 overflow interrupt enable."
+      bit_offset: 26
+      bit_size: 1
+    - name: T7_PULSE_EN
+      description: "TMC30[27]: Timer 7 pulse generation and output enable."
+      bit_offset: 27
+      bit_size: 1
+    - name: T8_EN
+      description: "TMC30[28]: Timer 8 enable."
+      bit_offset: 28
+      bit_size: 1
+    - name: T8_CLK_SEL
+      description: "TMC30[29]: Timer 8 clock source. 0 = PCLK; 1 = 1 MHz."
+      bit_offset: 29
+      bit_size: 1
+    - name: T8_OVF_INTR
+      description: "TMC30[30]: Timer 8 overflow interrupt enable."
+      bit_offset: 30
+      bit_size: 1
+    - name: T8_PULSE_EN
+      description: "TMC30[31]: Timer 8 pulse generation and output enable."
+      bit_offset: 31
+      bit_size: 1
+
+fieldset/TMC_CTRL2:
+  description: >
+    Control Register 2 (TMC34): sequence pulse generation for timers 3-8.
+    Bits [1:0], [9:8], [17:16] and [31:24] reserved.
+    Sequence: disable the timers in CTRL, set RELOAD and the clock/
+    interrupt bits, set the initial output values (Tn_SEQ_INIT), enable
+    the outputs (Tn_SEQ_OUT_EN), then start counting (Tn_SEQ_START).
+  fields:
+    - name: T3_SEQ_OUT_EN
+      description: >
+        TMC34[2]: Timer 3 sequence pulse output enable.  When enabled the
+        T3_SEQ_INIT value is driven; when disabled the pin is tri-stated.
+      bit_offset: 2
+      bit_size: 1
+    - name: T4_SEQ_OUT_EN
+      description: "TMC34[3]: Timer 4 sequence pulse output enable."
+      bit_offset: 3
+      bit_size: 1
+    - name: T5_SEQ_OUT_EN
+      description: "TMC34[4]: Timer 5 sequence pulse output enable."
+      bit_offset: 4
+      bit_size: 1
+    - name: T6_SEQ_OUT_EN
+      description: "TMC34[5]: Timer 6 sequence pulse output enable."
+      bit_offset: 5
+      bit_size: 1
+    - name: T7_SEQ_OUT_EN
+      description: "TMC34[6]: Timer 7 sequence pulse output enable."
+      bit_offset: 6
+      bit_size: 1
+    - name: T8_SEQ_OUT_EN
+      description: "TMC34[7]: Timer 8 sequence pulse output enable."
+      bit_offset: 7
+      bit_size: 1
+    - name: T3_SEQ_START
+      description: >
+        TMC34[10]: Timer 3 sequence pulse start counting.  While 0 the
+        counter holds the RELOAD value; when set it decrements, and on
+        reaching 0 the output toggles and this bit clears itself.
+      bit_offset: 10
+      bit_size: 1
+    - name: T4_SEQ_START
+      description: "TMC34[11]: Timer 4 sequence pulse start counting."
+      bit_offset: 11
+      bit_size: 1
+    - name: T5_SEQ_START
+      description: "TMC34[12]: Timer 5 sequence pulse start counting."
+      bit_offset: 12
+      bit_size: 1
+    - name: T6_SEQ_START
+      description: "TMC34[13]: Timer 6 sequence pulse start counting."
+      bit_offset: 13
+      bit_size: 1
+    - name: T7_SEQ_START
+      description: "TMC34[14]: Timer 7 sequence pulse start counting."
+      bit_offset: 14
+      bit_size: 1
+    - name: T8_SEQ_START
+      description: "TMC34[15]: Timer 8 sequence pulse start counting."
+      bit_offset: 15
+      bit_size: 1
+    - name: T3_SEQ_INIT
+      description: >
+        TMC34[18]: Timer 3 sequence pulse initial output value, toggled
+        when the counter reaches 0.
+      bit_offset: 18
+      bit_size: 1
+    - name: T4_SEQ_INIT
+      description: "TMC34[19]: Timer 4 sequence pulse initial output value."
+      bit_offset: 19
+      bit_size: 1
+    - name: T5_SEQ_INIT
+      description: "TMC34[20]: Timer 5 sequence pulse initial output value."
+      bit_offset: 20
+      bit_size: 1
+    - name: T6_SEQ_INIT
+      description: "TMC34[21]: Timer 6 sequence pulse initial output value."
+      bit_offset: 21
+      bit_size: 1
+    - name: T7_SEQ_INIT
+      description: "TMC34[22]: Timer 7 sequence pulse initial output value."
+      bit_offset: 22
+      bit_size: 1
+    - name: T8_SEQ_INIT
+      description: "TMC34[23]: Timer 8 sequence pulse initial output value."
+      bit_offset: 23
+      bit_size: 1
+
+fieldset/TMC_CTRL3:
+  description: >
+    Control Register 3 (TMC38). Bits [31:8] reserved.
+    The write command (bits [7:0]) and the read status (bit 0) share the
+    low byte.
+  fields:
+    - name: SEPARATE_CLR
+      description: >
+        TMC38[0] (read): Separate clear control for TMC30.
+        0 = backward compatible mode, TMC30 writes set and clear bits;
+        1 = separate mode, TMC30 writes only set bits and CTRL_CLR
+        (TMC3C) clears them.
+      bit_offset: 0
+      bit_size: 1
+    - name: CMD
+      description: >
+        TMC38[7:0] (write): Command. 0xAE sets SEPARATE_CLR; 0xEA clears
+        it.
+      bit_offset: 0
+      bit_size: 8
