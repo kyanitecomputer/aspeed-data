@@ -1,9 +1,10 @@
 # ASPEED AST2500 ColdFire coprocessor chip definition.
 #
 # The AST2500 BMC SoC embeds a Freescale ColdFire V1 (MCF5208-compatible)
-# coprocessor alongside the main ARM926 host processor.  The ColdFire runs
+# coprocessor alongside the main ARM1176 processor.  The ColdFire runs
 # big-endian and has a 24-bit address space.  It accesses BMC peripherals via
-# 9 programmable 64 KB segment windows mapped through the SCU.
+# 9 programmable segment windows (eight of 1 MB, one of 8 MB) mapped through
+# the SCU.
 #
 # Default segment mapping (after ROM boot):
 #   Segments 0x20–0x2F (CF 0x200000–0x2FFFFF) → BMC 0x1E600000–0x1E6FFFFF
