@@ -17,6 +17,13 @@ mod ast1060;
 #[cfg(feature = "ast1060")]
 pub use ast1060::*;
 
+// AST2400_ARM
+#[cfg(feature = "ast2400-arm")]
+#[path = "chips/ast2400_arm.rs"]
+mod ast2400_arm;
+#[cfg(feature = "ast2400-arm")]
+pub use ast2400_arm::*;
+
 // AST2500_ARM
 #[cfg(feature = "ast2500-arm")]
 #[path = "chips/ast2500_arm.rs"]

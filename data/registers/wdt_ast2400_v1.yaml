@@ -1,0 +1,177 @@
+# AST2400 Watchdog Timer (WDT) registers.
+#
+# Base address: 0x1E78_5000 (ARM main-core view).
+# The AST2400 has 2 watchdog timers at stride 0x20:
+#   WDT1 = 0x1E78_5000 (WDT00-WDT18)
+#   WDT2 = 0x1E78_5020 (WDT20-WDT38)
+# This file models one instance.  WDT2 is the alternate (2nd) boot
+# watchdog: CTRL.WDT_EN is loaded from strap SCU70[17] and firmware must
+# disable it after booting.
+#
+# Compared to the AST2500 (wdt_ast2500_v1): no third watchdog, no reset
+# mask register (WDT1C), no pre-timeout interrupt value in CTRL and an
+# 8-bit reset width without the polarity and drive keys.
+
+block/WDT:
+  description: >
+    AST2400 Watchdog Timer register block (one of WDT1/WDT2).
+    WDT1 base: 0x1E78_5000, stride: 0x20 (2 instances).
+  items:
+    - name: STATUS
+      description: >
+        Counter Status Register (WDT00/WDT20). Read-only.
+        Current down-counter value.  Loaded from RELOAD on reset or when
+        0x4755 is written to RESTART; holds its value while disabled.
+        Init = 0x03EF_1480 (WDT1), 0x0393_8700 (WDT2).
+      byte_offset: 0x00
+      access: Read
+      fieldset: WDT_COUNTER
+
+    - name: RELOAD
+      description: >
+        Counter Reload Value Register (WDT04/WDT24).
+        Value loaded into STATUS on reset or restart.
+      byte_offset: 0x04
+      fieldset: WDT_COUNTER
+
+    - name: RESTART
+      description: >
+        Counter Restart Register (WDT08/WDT28). Write-only.
+        Write 0x4755 to reload STATUS from RELOAD and restart counting
+        (if CTRL.WDT_EN = 1).
+      byte_offset: 0x08
+      access: Write
+      fieldset: WDT_RESTART
+
+    - name: CTRL
+      description: >
+        Control Register (WDT0C/WDT2C).  WDT2 bit 0 comes from strap
+        SCU70[17].
+      byte_offset: 0x0C
+      fieldset: WDT_CTRL
+
+    - name: TIMEOUT_STATUS
+      description: >
+        Timeout Status Register (WDT10/WDT30). Read-only.
+      byte_offset: 0x10
+      access: Read
+      fieldset: WDT_TIMEOUT_STATUS
+
+    - name: CLEAR_TIMEOUT_STATUS
+      description: >
+        Clear Timeout Status Register (WDT14/WDT34). Write-only.
+      byte_offset: 0x14
+      access: Write
+      fieldset: WDT_CLEAR_TIMEOUT_STATUS
+
+    - name: RESET_WIDTH
+      description: >
+        Reset Width Register (WDT18/WDT38). Init = 0xFF.
+      byte_offset: 0x18
+      fieldset: WDT_RESET_WIDTH
+
+# ── Fieldsets ──────────────────────────────────────────────────────────────────
+
+fieldset/WDT_COUNTER:
+  description: 32-bit counter / reload value (WDT00 and WDT04 share this layout).
+  fields:
+    - name: VALUE
+      description: Counter value in ticks of the selected clock.
+      bit_offset: 0
+      bit_size: 32
+
+fieldset/WDT_RESTART:
+  description: Counter Restart Register (WDT08).
+  fields:
+    - name: KEY
+      description: Write 0x4755 to reload and restart the counter.
+      bit_offset: 0
+      bit_size: 16
+
+fieldset/WDT_CTRL:
+  description: WDT Control Register (WDT0C).  Bits [31:8] reserved.
+  fields:
+    - name: WDT_EN
+      description: >
+        WDT0C[0]: WDT enable signal. 0 = disable; 1 = enable.
+        WDT2: loaded from strap SCU70[17]; firmware must clear it after a
+        successful boot.
+      bit_offset: 0
+      bit_size: 1
+    - name: RST_SYS
+      description: >
+        WDT0C[1]: Reset system after timeout. In this mode the WDT is
+        cleared and disabled after the timeout.
+      bit_offset: 1
+      bit_size: 1
+    - name: WDT_INTR
+      description: "WDT0C[2]: Interrupt after timeout."
+      bit_offset: 2
+      bit_size: 1
+    - name: WDT_EXT
+      description: >
+        WDT0C[3]: External signal enable after timeout (an active-high
+        pulse on the WDTRST pin, ended only by SRST#).
+      bit_offset: 3
+      bit_size: 1
+    - name: CLK_1MHZ
+      description: "WDT0C[4]: Clock select for WDT counter. 0 = PCLK; 1 = 1 MHz."
+      bit_offset: 4
+      bit_size: 1
+    - name: RST_MODE
+      description: >
+        WDT0C[6:5]: Reset system mode.
+        00 = SOC system; 01 = full chip; 1x = ARM CPU only (reboot
+        firmware, no other IP reset).
+      bit_offset: 5
+      bit_size: 2
+    - name: BOOT_2ND
+      description: >
+        WDT0C[7]: Enable second boot code.
+        0 = use default boot code on WDT reset; 1 = use second boot code
+        (CE0/CE1 swapped) on WDT reset.
+      bit_offset: 7
+      bit_size: 1
+
+fieldset/WDT_TIMEOUT_STATUS:
+  description: Timeout Status Register (WDT10).
+  fields:
+    - name: TIMEOUT
+      description: "WDT10[0]: Indicate timeout. 1 = a timeout has occurred."
+      bit_offset: 0
+      bit_size: 1
+    - name: BOOT_2ND
+      description: >
+        WDT10[1]: Indicate boot code source. 0 = default; 1 = second boot
+        code.  Firmware must clear it (CLEAR_TIMEOUT_STATUS.CLEAR) after
+        jumping to the physical flash address; on WDT2 this restores the
+        CE0/CE1 address mapping.
+      bit_offset: 1
+      bit_size: 1
+    - name: EVENT_COUNT
+      description: "WDT10[15:8]: Watchdog timeout event counter."
+      bit_offset: 8
+      bit_size: 8
+
+fieldset/WDT_CLEAR_TIMEOUT_STATUS:
+  description: Clear Timeout Status Register (WDT14).
+  fields:
+    - name: CLEAR
+      description: >
+        WDT14[0]: Write 1 to clear the timeout and boot code source status.
+      bit_offset: 0
+      bit_size: 1
+    - name: CLEAR_EVENT_COUNT
+      description: "WDT14[7:1]: Write 0x3B to clear the timeout event counter."
+      bit_offset: 1
+      bit_size: 7
+
+fieldset/WDT_RESET_WIDTH:
+  description: Reset Width Register (WDT18).
+  fields:
+    - name: WIDTH
+      description: >
+        WDT18[7:0]: Assertion duration of the interrupt, external and ARM
+        reset signals, in timer clock cycles.  Default 0xFF (256 cycles).
+      bit_offset: 0
+      bit_size: 8

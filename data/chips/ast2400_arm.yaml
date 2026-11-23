@@ -1,0 +1,90 @@
+# ASPEED AST2400 ARM main-core chip definition.
+#
+# This is the view of the AST2400 from its main ARM926EJ-S core, which
+# boots from the FMC CE0 SPI flash (mapped at 0x00000000) and runs the BMC
+# firmware.  Peripheral addresses are ARM physical addresses.  The same
+# view covers the AST1250, the AST2400 die without host graphics, PCIe,
+# the ColdFire coprocessor and two of the four system UARTs; the two
+# read the same silicon revision.
+#
+# Compare data/chips/ast2400.yaml, which describes the embedded ColdFire
+# coprocessor (C header output, 24-bit segment-mapped addresses).
+#
+# CPU: ARM926EJ-S (ARMv5TEJ), built as armv5te-none-eabi.
+# Memory: 32 KB SRAM at 0x1E72_0000, DDR2/DDR3 at 0x4000_0000 (up to
+#      512 MB), flash decode window at 0x2000_0000.
+# Interrupts: VIC, driven by the firmware itself (arch: bare).  Not
+#      modelled yet.
+#
+# UARTs reuse uart_v1 (16550, 4-byte stride).  The UART clock is 24 MHz.
+
+name:   AST2400_ARM
+family: ast24xx
+core:   arm926ej-s
+target: armv5te-none-eabi
+arch:   bare
+num_irqs: 32
+
+# ── Peripheral instances ──────────────────────────────────────────────────────
+
+peripherals:
+  - name:    FMC
+    block:   fmc_ast2400_v1::FMC
+    address: 0x1E620000
+    description: "Firmware SPI memory controller (FMC)"
+
+  - name:    SCU
+    block:   scu_ast2400_v1::SCU
+    address: 0x1E6E2000
+    description: "System control unit (SCU)"
+
+  # ColdFire coprocessor control (SCU100-SCU118).  Absent on the AST1250.
+  - name:    COPROC
+    block:   coproc_v2::COPROC
+    address: 0x1E6E2100
+    description: "ColdFire coprocessor control (SCU100-SCU118)"
+
+  - name:    TIMER
+    block:   timer_ast2400_v1::TIMER
+    address: 0x1E782000
+    description: "Timer controller (TMC), 8 timers"
+
+  - name:    UART1
+    block:   uart_v1::UART
+    address: 0x1E783000
+    description: "UART1 (LPC UART1, 16550, 4-byte stride)"
+
+  - name:    UART5
+    block:   uart_v1::UART
+    address: 0x1E784000
+    description: "UART5 (BMC debug UART, 16550, 4-byte stride)"
+
+  # Watchdog timers, 0x20-byte stride.
+  - name:    WDT1
+    block:   wdt_ast2400_v1::WDT
+    address: 0x1E785000
+    description: "Watchdog timer 1"
+
+  - name:    WDT2
+    block:   wdt_ast2400_v1::WDT
+    address: 0x1E785020
+    description: "Watchdog timer 2 (alternate boot watchdog)"
+
+  - name:    UART2
+    block:   uart_v1::UART
+    address: 0x1E78D000
+    description: "UART2 (LPC UART2, 16550, 4-byte stride)"
+
+  - name:    UART3
+    block:   uart_v1::UART
+    address: 0x1E78E000
+    description: "UART3 (16550, 4-byte stride; not on the AST1250)"
+
+  - name:    UART4
+    block:   uart_v1::UART
+    address: 0x1E78F000
+    description: "UART4 (16550, 4-byte stride; not on the AST1250)"
+
+# ── Interrupt table ───────────────────────────────────────────────────────────
+# The VIC is not modelled yet; the generated Interrupt enum is empty.
+interrupts: []
